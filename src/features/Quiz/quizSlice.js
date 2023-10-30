@@ -73,13 +73,11 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.user = action.payload;
       })
       .addCase(createQuiz.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.user = action.error;
         state.message = "Something went wrong!";
       })
       .addCase(viewQuiz.pending, (state, action) => {
@@ -89,13 +87,11 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.user = action.payload;
       })
       .addCase(viewQuiz.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.user = action.error;
         state.message = "Something went wrong!";
       })
       .addCase(updateQuiz.pending, (state, action) => {
@@ -105,13 +101,11 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.user = action.payload;
       })
       .addCase(updateQuiz.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.user = action.error;
         state.message = "Something went wrong!";
       })
       .addCase(resetState, () => initialState);

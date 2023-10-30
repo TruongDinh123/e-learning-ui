@@ -59,6 +59,14 @@ const removeStudentFromCourse = async (data) => {
   return res;
 };
 
+const getStudentCourses = async () => {
+  const res = await axiosInstance({
+    url: "/e-learning/get-student-course",
+    method: "GET",
+  });
+  return res.data;
+};
+
 export const courseService = {
   createCourse,
   viewCourse,
@@ -67,4 +75,5 @@ export const courseService = {
   getACourse,
   addStudentToCourse,
   removeStudentFromCourse,
+  getStudentCourses,
 };

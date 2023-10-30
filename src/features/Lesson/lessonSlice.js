@@ -16,7 +16,6 @@ export const createLesson = createAsyncThunk(
 export const createVdLesson = createAsyncThunk(
   "/e-learning/create-vd-lesson",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data);
     try {
       const response = await lessonService.createVdLesson(data);
       return response;
@@ -97,13 +96,11 @@ const lessonSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.user = action.payload;
       })
       .addCase(createLesson.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.user = action.error;
         state.message = "Something went wrong!";
       })
       .addCase(createVdLesson.pending, (state, action) => {
@@ -118,7 +115,6 @@ const lessonSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.user = action.error;
         state.message = "Something went wrong!";
       })
       .addCase(viewLesson.pending, (state, action) => {
@@ -133,7 +129,6 @@ const lessonSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.user = action.error;
         state.message = "Something went wrong!";
       })
       .addCase(deleteLesson.pending, (state, action) => {
@@ -148,24 +143,22 @@ const lessonSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.user = action.error;
         state.message = "Something went wrong!";
       })
-      .addCase(viewALesson.pending, (state, action) => {
-        state.isLoading = true;
-      })
-      .addCase(viewALesson.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isError = false;
-        state.isSuccess = true;
-      })
-      .addCase(viewALesson.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.isSuccess = false;
-        state.user = action.error;
-        state.message = "Something went wrong!";
-      })
+      // .addCase(viewALesson.pending, (state, action) => {
+      //   state.isLoading = true;
+      // })
+      // .addCase(viewALesson.fulfilled, (state, action) => {
+      //   state.isLoading = false;
+      //   state.isError = false;
+      //   state.isSuccess = true;
+      // })
+      // .addCase(viewALesson.rejected, (state, action) => {
+      //   state.isLoading = false;
+      //   state.isError = true;
+      //   state.isSuccess = false;
+      //   state.message = "Something went wrong!";
+      // })
       .addCase(resetState, () => initialState);
   },
 });

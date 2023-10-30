@@ -4,11 +4,15 @@ import { useDispatch } from "react-redux";
 import { Button, Popconfirm, Table, message } from "antd";
 import { useEffect, useState } from "react";
 import { getAllRole } from "@/features/User/userSlice";
+import EditRole from "../edit-role/page";
+import DelRole from "../delete-role/page";
+import CreateRole from "../create-role/page";
 
 export default function ViewRoles() {
   const dispatch = useDispatch();
   const [role, setRole] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
+  const [updateRole, setUpdateRole] = useState(0);
 
   const columns = [
     {
@@ -33,7 +37,6 @@ export default function ViewRoles() {
     dispatch(getAllRole())
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           messageApi
             .open({
@@ -50,7 +53,7 @@ export default function ViewRoles() {
       .catch((error) => {
         console.log(error);
       });
-  }, [dispatch, messageApi]);
+  }, [dispatch, messageApi, updateRole]);
 
   //table role
   let data = [];
@@ -60,15 +63,11 @@ export default function ViewRoles() {
       name: i?.name,
       action: (
         <>
-          <Popconfirm
-            title="Delete the Course"
-            description="Are you sure to delete this Course?"
-            okText="Yes"
-            cancelText="No"
-            onConfirm={() => handleDeleteUser(i?._id)}
-          >
-            <Button danger>Delete</Button>
-          </Popconfirm>
+          <EditRole id={i?._id} refresh={() => setUpdateRole(updateRole + 1)} />
+          <DelRole
+            idRole={i?._id}
+            refresh={() => setUpdateRole(updateRole + 1)}
+          />
         </>
       ),
     });
@@ -78,6 +77,7 @@ export default function ViewRoles() {
     <div>
       {contextHolder}
       <h1>hello Table Role User</h1>
+      <CreateRole refresh={() => setUpdateRole(updateRole + 1)} />
       <Table columns={columns} dataSource={data} />
     </div>
   );

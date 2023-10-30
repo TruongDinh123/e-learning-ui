@@ -64,7 +64,7 @@ export default function Login() {
                 );
 
                 localStorage.setItem("x-client-id", res.metadata.account._id);
-                res.metadata.account.roles.includes("trainee")
+                res.metadata.account.roles.includes("Trainee")
                   ? router.push("/")
                   : router.push("/admin/dashboard");
               });

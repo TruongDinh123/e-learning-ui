@@ -85,6 +85,18 @@ export const removeStudentFromCourse = createAsyncThunk(
   }
 );
 
+export const getStudentCourses = createAsyncThunk(
+  "/e-learning/get-student-course/",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await courseService.getStudentCourses();
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 const initialState = {
   course: "",
   isError: false,
@@ -108,13 +120,11 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.course = action.payload;
       })
       .addCase(createCourse.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.course = action.error;
         state.message = "Something went wrong!";
       })
       .addCase(viewCourses.pending, (state, action) => {
@@ -124,13 +134,11 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.course = action.payload;
       })
       .addCase(viewCourses.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.course = action.error;
         state.message = "Something went wrong!";
       })
       .addCase(deleteCourse.pending, (state, action) => {
@@ -145,7 +153,6 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.course = action.error;
         state.message = "Something went wrong!";
       })
       .addCase(editCourse.pending, (state, action) => {

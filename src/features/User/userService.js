@@ -52,6 +52,32 @@ const updateUserRoles = async (data) => {
   return res;
 };
 
+const createRole = async (data) => {
+  const res = await axiosInstance({
+    url: "/e-learning/role",
+    method: "POST",
+    data: data.values,
+  });
+  return res.data;
+};
+
+const deleteRole = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/role/${data.id}`,
+    method: "DELETE",
+  });
+  return res;
+};
+
+const updateRole = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/role/${data.id}`,
+    method: "PUT",
+    data: data.values,
+  });
+  return res;
+};
+
 export const authService = {
   loginAUser,
   registerAUser,
@@ -59,4 +85,7 @@ export const authService = {
   deleteUser,
   getAllRole,
   updateUserRoles,
+  createRole,
+  deleteRole,
+  updateRole,
 };

@@ -40,7 +40,6 @@ export const getAllUser = createAsyncThunk(
 export const deleteUser = createAsyncThunk(
   "/e-learning/user/delete",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data);
     try {
       const response = await authService.deleteUser(data);
       return response;
@@ -49,6 +48,8 @@ export const deleteUser = createAsyncThunk(
     }
   }
 );
+
+//roles
 
 export const getAllRole = createAsyncThunk(
   "/e-learning/role",
@@ -67,6 +68,42 @@ export const updateUserRoles = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await authService.updateUserRoles(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const updateRole = createAsyncThunk(
+  "/e-learning/role/update",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await authService.updateRole(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const deleteRole = createAsyncThunk(
+  "/e-learning/role/delete",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await authService.deleteRole(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const createRole = createAsyncThunk(
+  "/e-learning/role/create",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await authService.createRole(data);
       return response;
     } catch (err) {
       return rejectWithValue(err);

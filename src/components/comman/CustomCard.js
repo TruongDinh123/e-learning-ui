@@ -2,9 +2,11 @@
 import { Avatar, Card, Skeleton } from "antd";
 import { GrView } from "react-icons/gr";
 import { AiOutlineHeart } from "react-icons/ai";
+import Link from "next/link";
 const { Meta } = Card;
 
 export default function CustomCard(props) {
+  const { title, name, courseId } = props;
   return (
     <Card
       style={{
@@ -13,7 +15,9 @@ export default function CustomCard(props) {
       }}
       actions={[
         <AiOutlineHeart className="fs-4" key="wishlist" />,
-        <GrView key="view" />,
+        <Link href={`/courses/lessons/${courseId}`} key={"view"}>
+          <GrView key="view" />,
+        </Link>,
       ]}
     >
       <Skeleton loading={false} avatar active>
@@ -21,8 +25,8 @@ export default function CustomCard(props) {
           avatar={
             <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=2" />
           }
-          title="Card title"
-          description="This is the description"
+          name={name}
+          title={title}
         />
       </Skeleton>
     </Card>

@@ -42,7 +42,7 @@ export default function Header() {
             </Link>
             <Link
               className="fs-6 text-dark text-decoration-none me-4"
-              href="/courses"
+              href="/courses/view-course"
             >
               Course
             </Link>
