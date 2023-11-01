@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.API_URL,
+  baseURL: ["https://e-learning-95lab.onrender.com/" || process.env.API_URL],
   headers: {
     "Content-Type": "application/json",
     "x-api-key":
