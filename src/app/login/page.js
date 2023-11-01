@@ -46,7 +46,7 @@ export default function Login() {
               .then(() =>
                 message.info(
                   `Redirecting to ${
-                    res.metadata.account.roles.includes("trainee")
+                    res.metadata.account.roles.includes("Trainee")
                       ? "Home"
                       : "Dashboard"
                   } `,
@@ -103,6 +103,7 @@ export default function Login() {
               onBlur={formik.handleBlur("password")}
               value={formik.values.password}
               error={formik.touched.password && formik.errors.password}
+              type="password"
             />
             <Link
               href="#"

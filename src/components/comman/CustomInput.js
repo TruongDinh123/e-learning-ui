@@ -11,6 +11,7 @@ export default function CustomInput(props) {
     onBlur,
     value,
     error,
+    type,
   } = props;
   return (
     <>
@@ -23,6 +24,7 @@ export default function CustomInput(props) {
         onBlur={onBlur}
         value={value}
         status={error && "error"}
+        type={type}
       />
       {error && <p className="ms-2 mb-0 mt-1 text-danger">{error}</p>}
     </>

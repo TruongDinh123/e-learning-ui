@@ -137,7 +137,8 @@ export default function VideoLesson({ params }) {
             <div>
               <video width="100%" height="auto" controls>
                 <source
-                  src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${i?.url}`}
+                  // src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${i?.url}`}
+                  src={i?.url}
                   type="video/mp4"
                 />
                 Your browser does not support the video tag.
@@ -149,8 +150,8 @@ export default function VideoLesson({ params }) {
       action: (
         <>
           <Popconfirm
-            title="Delete the Course"
-            description="Are you sure to delete this Course?"
+            title="Delete video"
+            description="Are you sure to delete video?"
             okText="Yes"
             cancelText="No"
             onConfirm={() =>

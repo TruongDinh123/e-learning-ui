@@ -1,9 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Col, List, Row, message } from "antd";
+import { Button, Col, Collapse, List, Row, message } from "antd";
 import { useDispatch } from "react-redux";
 import { viewALesson, viewLesson } from "@/features/Lesson/lessonSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { FolderOpenOutlined } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
 
 export default function Lesson({ params }) {
   const dispatch = useDispatch();
@@ -11,7 +13,7 @@ export default function Lesson({ params }) {
   const [messageApi, contextHolder] = message.useMessage();
   const [videoLesson, setvideoLesson] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
-
+  const router = useRouter();
   useEffect(() => {
     dispatch(viewLesson({ courseId: params.id }))
       .then(unwrapResult)
@@ -56,40 +58,46 @@ export default function Lesson({ params }) {
   };
 
   return (
-    <Row>
-      {contextHolder}
-      <Col span={8}>
-        {lesson.map((i, index) => {
-          return i.lessons.map((item, subIndex) => (
-            <List
-              key={item.id}
-              dataSource={[item]}
-              renderItem={(item) => (
-                <List.Item
+    <div className="pt-4">
+      <Row>
+        {contextHolder}
+        <Col span={8}>
+          {lesson.map((i, index) => {
+            return i.lessons.map((item, subIndex) => (
+              <Collapse key={item.id}>
+                <Collapse.Panel
+                  header={item.name}
                   key={item.id}
                   onClick={() => {
                     handleSelectLesson(item);
                     setSelectedVideo(item.video);
                   }}
                 >
-                  {item.name}
-                </List.Item>
-              )}
-            />
-          ));
-        })}
-      </Col>
-      <Col span={16}>
-        {selectedVideo && (
-          <video width="100%" height="600px" controls>
-            <source
-              src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${selectedVideo?.url}`}
-              type="video/mp4"
-            />
-            Your browser does not support the video tag.
-          </video>
-        )}
-      </Col>
-    </Row>
+                  <Button
+                    className="me-3"
+                    courseId={i?._id}
+                    onClick={() => router.push(`/courses/lessons/view-quizs/${item._id}`)}
+                  >
+                    <FolderOpenOutlined />
+                    Quizs
+                  </Button>
+                </Collapse.Panel>
+              </Collapse>
+            ));
+          })}
+        </Col>
+        <Col span={16}>
+          {selectedVideo && (
+            <video width="100%" height="600px" controls>
+              <source
+                src={selectedVideo?.url}
+                type="video/mp4"
+              />
+              Your browser does not support the video tag.
+            </video>
+          )}
+        </Col>
+      </Row>
+    </div>
   );
 }

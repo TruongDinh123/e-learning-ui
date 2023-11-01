@@ -50,6 +50,42 @@ export const deleteQuiz = createAsyncThunk(
   }
 );
 
+export const getQuizsByLesson = createAsyncThunk(
+  "/e-learning/get-quizs-by-lesson",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await QuizService.getQuizsByLesson(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const submitQuiz = createAsyncThunk(
+  "/e-learning/submit-quiz",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await QuizService.submitQuiz(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const getScore = createAsyncThunk(
+  "/e-learning/get-score",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await QuizService.getScore(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 const initialState = {
   quiz: "",
   isError: false,
@@ -103,6 +139,34 @@ const quizSlice = createSlice({
         state.isSuccess = true;
       })
       .addCase(updateQuiz.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
+      .addCase(getQuizsByLesson.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getQuizsByLesson.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+      })
+      .addCase(getQuizsByLesson.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
+      .addCase(submitQuiz.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(submitQuiz.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+      })
+      .addCase(submitQuiz.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

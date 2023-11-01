@@ -48,9 +48,9 @@ export default function Header() {
             </Link>
             <Link
               className="fs-6 text-dark text-decoration-none me-4"
-              href="#Lesson"
+              href="/courses/view-score"
             >
-              Lesson
+              Score Quiz
             </Link>
             <Link
               className="fs-6 text-dark text-decoration-none me-4"

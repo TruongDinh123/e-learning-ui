@@ -10,7 +10,7 @@ export default function AdminFooter() {
         right: "0",
       }}
     >
-      95 IDeal Elearning {new Date().getFullYear} Created by Định
+      95 IDeal Elearning {new Date().getFullYear} Created by Team 95Lab
     </Footer>
   );
 }

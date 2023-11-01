@@ -34,9 +34,38 @@ const deleteQuiz = async (data) => {
   return res.data;
 };
 
+const getQuizsByLesson = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/lesson/${data.lessonId}/quizs`,
+    method: "GET",
+  });
+  return res.data;
+};
+
+const submitQuiz = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/quiz/${data.quizId}/submit`,
+    method: "POST",
+    data: data,
+  });
+  return res.data;
+};
+
+const getScore = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/score`,
+    method: "GET",
+    data: data,
+  });
+  return res.data;
+};
+
 export const QuizService = {
   createQuiz,
   viewQuiz,
   deleteQuiz,
   updateQuiz,
+  getQuizsByLesson,
+  submitQuiz,
+  getScore,
 };
