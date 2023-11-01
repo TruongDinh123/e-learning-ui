@@ -3,7 +3,7 @@ import axios from "axios";
 const axiosInstance = axios.create({
   baseURL: "https://e-learning-95lab.onrender.com/v1/api",
   headers: {
-    // "Content-Type": "application/json",
+    "Content-Type": "application/json",
     "x-api-key":
       "8ccaf2db9e10264dc29abdcc653f1c59673144131bd08c870751ce80490d926c407ad256fcf7c409df42c6af17f779b94c2695b769f3d1eb76f726e97a12773b",
   },
