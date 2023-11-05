@@ -5,16 +5,47 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Avatar, Layout, Menu } from "antd";
+import { Nav } from "react-bootstrap";
+import CustomButton from "../comman/CustomBtn";
+import Link from "next/link";
+import Cookies from "js-cookie";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { resetState } from "@/features/User/userSlice";
 
 const { Sider } = Layout;
 export default function AdminSidebar(props) {
   const { collapsed } = props;
   const router = useRouter();
+  const userState = useSelector((state) => state?.user?.user);
+  const dispatch = useDispatch();
+
   return (
     <Sider trigger={null} collapsible collapsed={collapsed}>
       <div className="demo-logo-vertical d-flex justify-content-center align-items-center py-3">
         <Avatar src="" />
+        <Nav>
+          {userState !== null ? (
+            <CustomButton
+              title="Logout"
+              type="link"
+              className="text-white"
+              onClick={() => {
+                localStorage.clear();
+                Cookies.remove("Bearer");
+                dispatch(resetState());
+                router.push("/login");
+              }}
+            />
+          ) : (
+            <Link
+              className="fs-6 text-dark text-decoration-none me-4"
+              href="/login"
+            >
+              Login
+            </Link>
+          )}
+        </Nav>
       </div>
       <Menu
         theme="dark"
@@ -43,6 +74,23 @@ export default function AdminSidebar(props) {
           },
           {
             key: "2",
+            icon: <VideoCameraOutlined />,
+            label: "Quiz",
+            children: [
+              {
+                key: "quiz/create-quiz",
+                icon: <UserOutlined />,
+                label: "Create Quiz",
+              },
+              {
+                key: "quiz/view-quiz",
+                icon: <UserOutlined />,
+                label: "View Quiz",
+              },
+            ],
+          },
+          {
+            key: "3",
             icon: <UserOutlined />,
             label: "User",
             children: [
@@ -50,6 +98,11 @@ export default function AdminSidebar(props) {
                 key: "users/view-users",
                 icon: <UserOutlined />,
                 label: "Table User",
+              },
+              {
+                key: "users/score-trainee",
+                icon: <UserOutlined />,
+                label: "Table Score User",
               },
             ],
           },

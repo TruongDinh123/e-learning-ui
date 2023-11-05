@@ -29,7 +29,6 @@ export default function Quizs({ params }) {
     dispatch(submitQuiz({ quizId: idQuiz, answer: formattedAnswers }))
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           messageApi
             .open({

@@ -20,7 +20,6 @@ export default function EditCourses(props) {
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState(null);
-  console.log("🚀 ~ data:", data);
 
   useEffect(() => {
     getACourseData();

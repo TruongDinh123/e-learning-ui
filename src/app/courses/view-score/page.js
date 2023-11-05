@@ -55,12 +55,11 @@ const ScoreManagement = () => {
       dataIndex: "action",
     },
   ];
-  //viewCourses api
+  //viewScore api
   useEffect(() => {
     dispatch(getScore())
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           messageApi
             .open({

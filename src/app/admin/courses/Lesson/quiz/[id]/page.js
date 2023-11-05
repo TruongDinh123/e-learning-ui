@@ -24,8 +24,8 @@ export default function QuizCreator({ params }) {
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [quiz, setquiz] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [updateQuiz, setUpdateQuiz] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [form] = Form.useForm();
 
@@ -111,7 +111,6 @@ export default function QuizCreator({ params }) {
     dispatch(viewQuiz({ lessonId: params?.id }))
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           messageApi
             .open({

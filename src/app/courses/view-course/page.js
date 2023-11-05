@@ -15,7 +15,6 @@ export default function Course() {
     dispatch(getStudentCourses())
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           messageApi
             .open({
@@ -33,26 +32,23 @@ export default function Course() {
       });
   }, []);
 
-  console.log("🚀 ~ course:", course);
-
   return (
     <main className="py-5">
       {contextHolder}
       <div className="container-fluid">
         <div className="row">
-          <div className="col-4">
-            {course &&
-              course.map((item, index) => {
-                return (
+          {course &&
+            course.map((item, index) => {
+              return (
+                <div key={index} className="col-12 col-sm-6 col-md-4 col-lg-3">
                   <CustomCard
-                    key={index}
                     title={item?.title}
                     name={item?.name}
                     courseId={item?._id}
                   />
-                );
-              })}
-          </div>
+                </div>
+              );
+            })}
         </div>
       </div>
     </main>

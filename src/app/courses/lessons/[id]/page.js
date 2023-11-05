@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Col, Collapse, List, Row, message } from "antd";
+import { Button, Col, Collapse, Row, message } from "antd";
 import { useDispatch } from "react-redux";
 import { viewALesson, viewLesson } from "@/features/Lesson/lessonSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -62,8 +62,8 @@ export default function Lesson({ params }) {
       <Row>
         {contextHolder}
         <Col span={8}>
-          {lesson.map((i, index) => {
-            return i.lessons.map((item, subIndex) => (
+          {lesson.map((i) => {
+            return i.lessons.map((item) => (
               <Collapse key={item.id}>
                 <Collapse.Panel
                   header={item.name}

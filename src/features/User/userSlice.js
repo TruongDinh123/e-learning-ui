@@ -4,7 +4,6 @@ import { authService } from "./userService";
 export const login = createAsyncThunk(
   "/e-learning/login",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data)
     try {
       const response = await authService.loginAUser(data);
       return response;

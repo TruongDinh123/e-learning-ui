@@ -20,7 +20,6 @@ export default function AddStudentToCourse(props) {
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setuser] = useState([]);
-  console.log("🚀 ~ user:", user);
 
   useEffect(() => {
     getAUserData();
@@ -30,7 +29,6 @@ export default function AddStudentToCourse(props) {
     dispatch(getAllUser())
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           setuser(res.data.metadata);
         } else {

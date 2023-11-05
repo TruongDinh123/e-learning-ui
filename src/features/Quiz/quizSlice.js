@@ -4,7 +4,6 @@ import { QuizService } from "./quizService";
 export const createQuiz = createAsyncThunk(
   "/e-learning/create-quiz",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data);
     try {
       const response = await QuizService.createQuiz(data);
       return response;
@@ -79,6 +78,18 @@ export const getScore = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await QuizService.getScore(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const getScoreByUserId = createAsyncThunk(
+  "/e-learning/get-score-userId",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await QuizService.getScoreByUserId(data);
       return response;
     } catch (err) {
       return rejectWithValue(err);
@@ -167,6 +178,20 @@ const quizSlice = createSlice({
         state.isSuccess = true;
       })
       .addCase(submitQuiz.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
+      .addCase(getScoreByUserId.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getScoreByUserId.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+      })
+      .addCase(getScoreByUserId.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

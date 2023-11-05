@@ -4,28 +4,40 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { Button, Modal, Table, message } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import AddStudentToCourse from "../add-student-course/page";
 import { getScoreByUserId } from "@/features/Quiz/quizSlice";
 
-export default function ViewStudentsCourse(props) {
-  const { id, refresh } = props;
+export default function ViewScoreDetail(props) {
+  const { quizId, userId, refresh } = props;
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [dataStudent, setData] = useState([]);
-  const [update, setUpdate] = useState(0);
   const [studentScores, setStudentScores] = useState([]);
   const [loadScores, setLoadScores] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+    formik.handleSubmit();
+  };
   useEffect(() => {
     getACourseData().then(() => setLoadScores(true));
-  }, [update]);
+  }, []);
 
   useEffect(() => {
     if (!loadScores) return;
     const scoresPromises = dataStudent?.map((student) =>
       dispatch(getScoreByUserId({ userId: student?._id }))
         .then(unwrapResult)
-        .then((result) => result.metadata)
+        .then((result) => {
+          return result.metadata;
+        })
     );
     Promise.all(scoresPromises).then((scores) => {
       const flattenedScores = scores.flat();
@@ -55,20 +67,6 @@ export default function ViewStudentsCourse(props) {
     {
       title: "SNo.",
       dataIndex: "key",
-    },
-    {
-      title: "Name",
-      dataIndex: "lastName",
-      onFilter: (value, record) => record.lastName.indexOf(value) === 0,
-      sorter: (a, b) => a.lastName.length - b.lastName.length,
-      sortDirections: ["descend"],
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      onFilter: (value, record) => record.email.indexOf(value) === 0,
-      sorter: (a, b) => a.email.length - b.email.length,
-      sortDirections: ["descend"],
     },
     {
       title: "Score",
@@ -119,10 +117,17 @@ export default function ViewStudentsCourse(props) {
   return (
     <>
       {contextHolder}
-      <AddStudentToCourse courseId={id} refresh={() => setUpdate(update + 1)}>
-        Invite Student
-      </AddStudentToCourse>
-      <Table columns={columns} dataSource={data} />
+      <Button type="primary" onClick={showModal} className="me-3">
+        View Score
+      </Button>
+      <Modal
+        title=""
+        open={isModalOpen}
+        onCancel={handleCancel}
+        onOk={handleOk}
+      >
+        <Table columns={columns} dataSource={data} />
+      </Modal>
     </>
   );
 }

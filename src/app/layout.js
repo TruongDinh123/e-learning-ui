@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
                 <AdminSidebar collapsed={collapsed} />
               )}
               <Layout>
-                {!pathname.includes("/admin") ? (
+                {!pathname.includes("/admin") && pathname !== '/login' ? (
                   <Header />
                 ) : (
                   <AdminHeader
@@ -36,7 +36,7 @@ export default function RootLayout({ children }) {
                 <div className={pathname.includes("/admin") && "p-3"}>
                   {children}
                 </div>
-                {!pathname.includes("/admin") ? (
+                {!pathname.includes("/admin") && pathname !== '/login' ? (
                   <CustomFooter />
                 ) : (
                   <AdminFooter />

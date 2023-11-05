@@ -7,8 +7,6 @@ import { useDispatch } from "react-redux";
 import { Button, Popconfirm } from "antd";
 import EditCourses from "../edit-course/Page";
 import { useRouter } from "next/navigation";
-import ViewStudentsCourse from "../view-students-courses/page";
-import AddStudentToCourse from "../add-student-course/page";
 
 export default function Courses() {
   const dispatch = useDispatch();
@@ -122,7 +120,7 @@ export default function Courses() {
   return (
     <div>
       {contextHolder}
-      <h1>hello courses</h1>
+      <h1>Course</h1>
       <Table columns={columns} dataSource={data} />
     </div>
   );

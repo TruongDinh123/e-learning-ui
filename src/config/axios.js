@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://e-learning-95lab.onrender.com/v1/api",
+  baseURL: process.env.API_URL,
   headers: {
     "Content-Type": "application/json",
     "x-api-key":
@@ -35,7 +35,6 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   function (error) {
-    console.log("🚀 ~ error:", error);
     return Promise.reject(error);
   }
 );

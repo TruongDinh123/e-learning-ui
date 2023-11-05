@@ -44,19 +44,13 @@ export default function Header() {
               className="fs-6 text-dark text-decoration-none me-4"
               href="/courses/view-course"
             >
-              Course
+              My Course
             </Link>
             <Link
               className="fs-6 text-dark text-decoration-none me-4"
               href="/courses/view-score"
             >
               Score Quiz
-            </Link>
-            <Link
-              className="fs-6 text-dark text-decoration-none me-4"
-              href="#Manager"
-            >
-              Manager User
             </Link>
           </Nav>
           <Nav>

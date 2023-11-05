@@ -114,15 +114,6 @@ export default function Lesson({ params }) {
             >
               View Video
             </Button>
-            <Button
-              className="me-3"
-              courseId={i?._id}
-              onClick={() =>
-                router.push(`/admin/courses/Lesson/quiz/${item?._id}`)
-              }
-            >
-              Quiz
-            </Button>
             <Popconfirm
               title="Delete the Course"
               description="Are you sure to delete this Course?"
@@ -177,10 +168,6 @@ export default function Lesson({ params }) {
         ))}
       </div>
       <Table columns={columns} dataSource={data} />
-      <div className="me-3">
-        <h1>Table Students</h1>
-        <ViewStudentsCourse id={params.id} />
-      </div>
     </div>
   );
 }

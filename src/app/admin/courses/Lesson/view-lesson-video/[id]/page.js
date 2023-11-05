@@ -96,7 +96,6 @@ export default function VideoLesson({ params }) {
     dispatch(viewALesson({ lessonId: params?.id }))
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           messageApi
             .open({

@@ -60,6 +60,15 @@ const getScore = async (data) => {
   return res.data;
 };
 
+const getScoreByUserId = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/${data.quizId}/${data.userId}/score`,
+    method: "GET",
+    data: data,
+  });
+  return res.data;
+};
+
 export const QuizService = {
   createQuiz,
   viewQuiz,
@@ -68,4 +77,5 @@ export const QuizService = {
   getQuizsByLesson,
   submitQuiz,
   getScore,
+  getScoreByUserId,
 };
