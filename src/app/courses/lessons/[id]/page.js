@@ -6,6 +6,7 @@ import { viewALesson, viewLesson } from "@/features/Lesson/lessonSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { FolderOpenOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
+import { useMediaQuery } from "react-responsive";
 
 export default function Lesson({ params }) {
   const dispatch = useDispatch();
@@ -14,6 +15,9 @@ export default function Lesson({ params }) {
   const [videoLesson, setvideoLesson] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const router = useRouter();
+
+  const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+
   useEffect(() => {
     dispatch(viewLesson({ courseId: params.id }))
       .then(unwrapResult)
@@ -59,9 +63,9 @@ export default function Lesson({ params }) {
 
   return (
     <div className="pt-4">
-      <Row>
+      <Row gutter={16}>
         {contextHolder}
-        <Col span={8}>
+        <Col xs={24} md={8}>
           {lesson.map((i) => {
             return i.lessons.map((item) => (
               <Collapse key={item.id}>
@@ -86,9 +90,9 @@ export default function Lesson({ params }) {
             ));
           })}
         </Col>
-        <Col span={16}>
+        <Col xs={24} md={16}>
           {selectedVideo && (
-            <video width="100%" height="600px" controls>
+            <video width="100%" height={isMobile ? "250px" : "600px"} controls>
               <source
                 src={selectedVideo?.url}
                 type="video/mp4"

@@ -54,9 +54,9 @@ export default function AddCourse() {
       {contextHolder}
       <h4>Add Course</h4>
       <div className="row">
-        <div className="col-3">
+        <div className="col-lg-3 col-md-6 col-sm-12">
           <form action="" className="pb-5">
-            <div className="mt-3">
+            <div className="mt-3 w-auto">
               <label htmlFor="course" className="fs-6 fw-bold">
                 Course Title
               </label>

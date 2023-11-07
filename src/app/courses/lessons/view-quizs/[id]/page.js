@@ -1,9 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Radio, Button, message } from "antd";
+import { Card, Radio, Button, message, Row, Col } from "antd";
 import { submitQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 
 export default function Quizs({ params }) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -11,6 +12,8 @@ export default function Quizs({ params }) {
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [submitted, setSubmitted] = useState(false);
+  const router = useRouter();
+
   const handleAnswer = (questionId, answer) => {
     setSelectedAnswers((prevAnswers) => ({
       ...prevAnswers,
@@ -38,6 +41,7 @@ export default function Quizs({ params }) {
             })
             .then(() => {
               setSubmitted(true);
+              router.push("/courses/view-course")
             })
             .then(() => message.success(res.message, 1.5));
         } else {
@@ -73,47 +77,52 @@ export default function Quizs({ params }) {
   }, []);
 
   return (
-    <div>
+    <Row style={{ paddingBottom:"200px", overflow: 'auto' }}>
       {contextHolder}
-      {quiz.map((item, index) => (
-        <Card key={item._id} title={item.name}>
-          {item.questions.map((question, questionIndex) => {
-            const isCorrectAnswer =
-              selectedAnswers[question._id] === question.answer;
-            const showAnswer = submitted && isCorrectAnswer;
-            const showWrongAnswer = submitted && !isCorrectAnswer; // Thêm biến trạng thái showWrongAnswer
-            return (
-              <div key={question._id}>
-                <h4
-                  style={{
-                    marginBottom: "10px",
-                    color: showAnswer ? "green" : showWrongAnswer ? "red" : "black", // Sử dụng màu đỏ cho câu trả lời sai
-                  }}
-                >
-                  Question {index + 1}.{questionIndex + 1}: {question.question}
-                  {showAnswer && " ✔️"}
-                  {showWrongAnswer && "❌"}
-                </h4>
-                <Radio.Group
-                  onChange={(e) =>
-                    handleAnswer(question._id, e.target.value)
-                  }
-                  disabled={submitted}
-                >
-                  {question.options.map((option) => (
-                    <div key={option}>
-                      <Radio value={option}>{option}</Radio>
-                    </div>
-                  ))}
-                </Radio.Group>
-              </div>
-            );
-          })}
-        </Card>
-      ))}
-      <Button type="primary" onClick={handleSubmit}>
-        Submit
-      </Button>
-    </div>
+      <Col xs={24} md={16}>
+        {quiz.map((item, index) => (
+          <Card key={item._id} title={item.name}>
+            {item.questions.map((question, questionIndex) => {
+              const isCorrectAnswer =
+                selectedAnswers[question._id] === question.answer;
+              const showAnswer = submitted && isCorrectAnswer;
+              const showWrongAnswer = submitted && !isCorrectAnswer; // Thêm biến trạng thái showWrongAnswer
+              return (
+                <div key={question._id}>
+                  <h4
+                    style={{
+                      marginBottom: "10px",
+                      color: showAnswer
+                        ? "green"
+                        : showWrongAnswer
+                        ? "red"
+                        : "black", // Sử dụng màu đỏ cho câu trả lời sai
+                    }}
+                  >
+                    Question {index + 1}.{questionIndex + 1}:{" "}
+                    {question.question}
+                    {showAnswer && " ✔️"}
+                    {showWrongAnswer && "❌"}
+                  </h4>
+                  <Radio.Group
+                    onChange={(e) => handleAnswer(question._id, e.target.value)}
+                    disabled={submitted}
+                  >
+                    {question.options.map((option) => (
+                      <div key={option}>
+                        <Radio value={option}>{option}</Radio>
+                      </div>
+                    ))}
+                  </Radio.Group>
+                </div>
+              );
+            })}
+          </Card>
+        ))}
+        <Button type="primary" onClick={handleSubmit}>
+          Submit
+        </Button>
+      </Col>
+    </Row>
   );
 }

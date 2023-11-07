@@ -83,7 +83,12 @@ export default function EditCourses(props) {
   return (
     <>
       {contextHolder}
-      <Button type="primary" onClick={showModal} className="me-3">
+      <Button
+        type="primary"
+        onClick={showModal}
+        className="me-3"
+        style={{ width: "100%" }}
+      >
         Edit
       </Button>
       <Modal

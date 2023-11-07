@@ -25,6 +25,7 @@ export default function Login() {
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useDispatch();
+
   const formik = useFormik({
     validationSchema: loginSchema,
     initialValues: {
@@ -69,19 +70,20 @@ export default function Login() {
                   : router.push("/admin/dashboard");
               });
           } else {
-            messageApi.error(res.message);
+            message.error(res.message, 2.5);
           }
         })
         .catch((error) => {
-          console.log(error);
+          message.error(error.response.data.message, 3.5);
         });
     },
   });
+
   return (
     <div className="container-fluid bg-white">
       {contextHolder}
       <div className="row py-5">
-        <div className="col-4 mx-auto py-5">
+        <div className="col-lg-4 col-md-6 col-sm-8 mx-auto py-5">
           <form
             action=""
             onSubmit={formik.handleSubmit}

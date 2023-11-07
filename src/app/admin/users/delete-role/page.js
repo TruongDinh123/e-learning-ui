@@ -42,7 +42,9 @@ export default function DelRole(props) {
         className="me-3"
         onConfirm={() => handleDeleteRole()}
       >
-        <Button danger>Delete</Button>
+        <Button danger style={{ width: "100%" }}>
+          Delete
+        </Button>
       </Popconfirm>
     </>
   );

@@ -46,7 +46,6 @@ export default function ViewScoreDetail(props) {
     });
   }, [loadScores, dataStudent, dispatch]);
 
-  console.log("studentScores::", studentScores);
   const getACourseData = () => {
     return dispatch(getACourse(id))
       .then(unwrapResult)
@@ -125,6 +124,7 @@ export default function ViewScoreDetail(props) {
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
+        
       >
         <Table columns={columns} dataSource={data} />
       </Modal>

@@ -16,11 +16,11 @@ export default function CustomFooter() {
     >
       <Container>
         <Row>
-          <Col md={6}>
+          <Col xs={24} sm={24} md={12}>
             <h5>95LAB IDEAL </h5>
             <p>Công ty cung cấp giải pháp về R&D hiệu quả nhất</p>
           </Col>
-          <Col md={6}>
+          <Col xs={24} sm={24} md={12}>
             <h5>Contact Us</h5>
             <p>Email: 95LABIDEAL@gmail.com</p>
             <p>Phone: 123-456-7890</p>

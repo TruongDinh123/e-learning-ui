@@ -1,12 +1,13 @@
 "use client";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import { Button, Popconfirm, Table, message } from "antd";
+import { Button, Dropdown, Menu, Space, Table, message } from "antd";
 import { useEffect, useState } from "react";
 import { getAllRole } from "@/features/User/userSlice";
 import EditRole from "../edit-role/page";
 import DelRole from "../delete-role/page";
 import CreateRole from "../create-role/page";
+import { useMediaQuery } from "react-responsive";
 
 export default function ViewRoles() {
   const dispatch = useDispatch();
@@ -55,20 +56,44 @@ export default function ViewRoles() {
       });
   }, [dispatch, messageApi, updateRole]);
 
+  const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
+
   //table role
   let data = [];
   role.forEach((i, index) => {
+    const menu = (
+      <Menu>
+        <Menu.Item>
+          <EditRole id={i?._id} refresh={() => setUpdateRole(updateRole + 1)} />
+        </Menu.Item>
+        <Menu.Item>
+          <DelRole
+            idRole={i?._id}
+            refresh={() => setUpdateRole(updateRole + 1)}
+          />
+        </Menu.Item>
+      </Menu>
+    );
     data.push({
       key: index + 1,
       name: i?.name,
-      action: (
-        <>
+      action: isMobile ? (
+        <Dropdown overlay={menu} placement="bottomCenter">
+          <Button
+            className="text-center justify-self-center"
+            onClick={(e) => e.preventDefault()}
+          >
+            Actions
+          </Button>
+        </Dropdown>
+      ) : (
+        <Space size={"middle"}>
           <EditRole id={i?._id} refresh={() => setUpdateRole(updateRole + 1)} />
           <DelRole
             idRole={i?._id}
             refresh={() => setUpdateRole(updateRole + 1)}
           />
-        </>
+        </Space>
       ),
     });
   });
@@ -76,9 +101,9 @@ export default function ViewRoles() {
   return (
     <div>
       {contextHolder}
-      <h1>hello Table Role User</h1>
+      <h1>Table Role</h1>
       <CreateRole refresh={() => setUpdateRole(updateRole + 1)} />
-      <Table columns={columns} dataSource={data} />
+      <Table columns={columns} dataSource={data} className="pt-3" />
     </div>
   );
 }

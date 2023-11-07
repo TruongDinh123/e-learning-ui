@@ -19,14 +19,14 @@ export default function ViewStudentsCourse() {
   const [scores, setScores] = useState({}); // Change to an object
   const [selectedCourseDetails, setSelectedCourseDetails] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState({}); // Change to an object
-  
+
   const showModal = (studentId) => {
     const lessons = selectedCourseDetails?.lessons;
-  
+
     return Promise.all(
       lessons.map((lesson) => {
         const quizId = lesson.quiz;
-  
+
         return dispatch(getScoreByUserId({ userId: studentId, quizId }))
           .then(unwrapResult)
           .then((result) => {
@@ -47,13 +47,6 @@ export default function ViewStudentsCourse() {
         [studentId]: true,
       }));
     });
-  };
-
-  const handleCancel = (studentId) => {
-    setIsModalOpen((prevIsModalOpen) => ({
-      ...prevIsModalOpen,
-      [studentId]: false,
-    }));
   };
 
   const handleOk = () => {
@@ -148,17 +141,26 @@ export default function ViewStudentsCourse() {
       email: student?.email,
       action: (
         <>
-          <Button type="primary" onClick={() => showModal(userId)} className="me-3">
+          <Button
+            type="primary"
+            onClick={() => showModal(userId)}
+            className="me-3"
+          >
             View Score
           </Button>
           <Modal
             title=""
             open={isStudentModalOpen}
-            onCancel={handleCancel}
             onOk={handleOk}
+            footer={[
+              <>
+                <Button key="back" onClick={handleOk}>
+                  OK
+                </Button>
+              </>,
+            ]}
           >
             {studentScores?.map((score, index) => {
-              console.log("🚀 ~ scores:", scores);
               const course = courses.find(
                 (course) => course._id === score.lesson.courseId
               );
@@ -195,26 +197,27 @@ export default function ViewStudentsCourse() {
       ),
     });
   });
-  console.log("🚀 ~ dataStudent:", dataStudent);
 
   return (
     <>
       {contextHolder}
-      <Select
-        placeholder="Select a course"
-        onChange={handleCourseChange}
-        value={selectedCourse}
-        className="me-3"
-      >
-        {courses.map((course) => (
-          <Option key={course._id} value={course._id}>
-            {course.name}
-          </Option>
-        ))}
-      </Select>
-      <Button type="primary" onClick={handleViewCourse} className="me-3">
-        View
-      </Button>
+      <div className="pb-3">
+        <Select
+          placeholder="Select a course"
+          onChange={handleCourseChange}
+          value={selectedCourse}
+          className="me-3"
+        >
+          {courses.map((course) => (
+            <Option key={course._id} value={course._id}>
+              {course.name}
+            </Option>
+          ))}
+        </Select>
+        <Button type="primary" onClick={handleViewCourse} className="me-3">
+          View
+        </Button>
+      </div>
       <AddStudentToCourse
         courseId={selectedCourse}
         refresh={() => setUpdate(update + 1)}

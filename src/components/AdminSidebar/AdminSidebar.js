@@ -3,6 +3,7 @@ import {
   UploadOutlined,
   UserOutlined,
   VideoCameraOutlined,
+  FileAddOutlined,
 } from "@ant-design/icons";
 import { Avatar, Layout, Menu } from "antd";
 import { Nav } from "react-bootstrap";
@@ -74,7 +75,7 @@ export default function AdminSidebar(props) {
           },
           {
             key: "2",
-            icon: <VideoCameraOutlined />,
+            icon: <FileAddOutlined />,
             label: "Quiz",
             children: [
               {
@@ -105,11 +106,6 @@ export default function AdminSidebar(props) {
                 label: "Table Score User",
               },
             ],
-          },
-          {
-            key: "3",
-            icon: <UploadOutlined />,
-            label: "nav 3",
           },
         ]}
       />

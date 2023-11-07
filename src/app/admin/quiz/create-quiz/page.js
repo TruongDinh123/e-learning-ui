@@ -101,127 +101,131 @@ export default function QuizCreator() {
   return (
     <div>
       {contextHolder}
-      <Form
-        form={form}
-        name="quiz_form"
-        initialValues={{
-          questions: [{}],
-        }}
-        onFinish={handleSaveQuiz}
-      >
-        <Select
-          placeholder="Select a course"
-          onChange={handleCourseChange}
-          value={selectedCourse}
+      <div className="me-3" style={{ paddingBottom: "100px" }}>
+        <Form
+          form={form}
+          name="quiz_form"
+          initialValues={{
+            questions: [{}],
+          }}
+          onFinish={handleSaveQuiz}
         >
-          {courses.map((course) => (
-            <Option key={course._id} value={course._id}>
-              {course.name}
-            </Option>
-          ))}
-        </Select>
-
-        <Select
-          placeholder="Select a lesson"
-          onChange={handleLessonChange}
-          value={selectedLesson}
-        >
-          {selectedCourseLessons.map((lesson) => (
-            <Option key={lesson._id} value={lesson._id}>
-              {lesson.name}
-            </Option>
-          ))}
-        </Select>
-        <Form.Item
-          label="Quiz Name"
-          name="name"
-          rules={[{ required: true, message: "Please enter the quiz name" }]}
-        >
-          <Input placeholder="Quiz Name" />
-        </Form.Item>
-        <Form.List name="questions">
-          {(fields, { add, remove }) => (
-            <div>
-              {fields.map((field, index) => (
-                <Card
-                  key={field.key}
-                  title={`Question ${index + 1}`}
-                  extra={
-                    <Button onClick={() => handleRemoveQuestion(index)}>
-                      Remove
-                    </Button>
-                  }
-                >
-                  <Form.Item
-                    label="Question"
-                    name={[field.name, "question"]}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please enter a question",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Question" />
-                  </Form.Item>
-                  <Form.List name={[field.name, "options"]}>
-                    {(subFields, subMeta) => (
-                      <div>
-                        {subFields.map((subField, subIndex) => (
-                          <Space key={subField.key}>
-                            <Form.Item
-                              noStyle
-                              name={[subField.name, "option"]}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Please enter an option",
-                                },
-                              ]}
-                            >
-                              <Input placeholder="Option" />
-                            </Form.Item>
-                            <CloseOutlined
-                              onClick={() => subMeta.remove(subIndex)}
-                            />
-                          </Space>
-                        ))}
-                        <Button
-                          type="dashed"
-                          onClick={() => subMeta.add()}
-                          block
-                        >
-                          + Add Option
-                        </Button>
-                      </div>
-                    )}
-                  </Form.List>
-                  <Form.Item
-                    label="Answer"
-                    name={[field.name, "answer"]}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please enter the answer",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Answer" />
-                  </Form.Item>
-                </Card>
+          <div style={{ display: "flex" }}>
+            <Select
+              placeholder="Select a course"
+              onChange={handleCourseChange}
+              value={selectedCourse}
+              style={{marginRight: "10px"}}
+            >
+              {courses.map((course) => (
+                <Option key={course._id} value={course._id}>
+                  {course.name}
+                </Option>
               ))}
-              <Button type="dashed" onClick={() => handleAddQuestion()} block>
-                + Add Question
-              </Button>
-            </div>
-          )}
-        </Form.List>
-        <div className="pt-2 text-end">
-          <Button type="primary" htmlType="submit">
-            Save Quiz
-          </Button>
-        </div>
-      </Form>
+            </Select>
+            <Select
+              placeholder="Select a lesson"
+              onChange={handleLessonChange}
+              value={selectedLesson}
+            >
+              {selectedCourseLessons.map((lesson) => (
+                <Option key={lesson._id} value={lesson._id}>
+                  {lesson.name}
+                </Option>
+              ))}
+            </Select>
+          </div>
+          <Form.Item
+            label="Quiz Name"
+            name="name"
+            rules={[{ required: true, message: "Please enter the quiz name" }]}
+          >
+            <Input placeholder="Quiz Name" />
+          </Form.Item>
+          <Form.List name="questions">
+            {(fields, { add, remove }) => (
+              <div>
+                {fields.map((field, index) => (
+                  <Card
+                    key={field.key}
+                    title={`Question ${index + 1}`}
+                    extra={
+                      <Button onClick={() => handleRemoveQuestion(index)}>
+                        Remove
+                      </Button>
+                    }
+                  >
+                    <Form.Item
+                      label="Question"
+                      name={[field.name, "question"]}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please enter a question",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="Question" />
+                    </Form.Item>
+                    <Form.List name={[field.name, "options"]}>
+                      {(subFields, subMeta) => (
+                        <div>
+                          {subFields.map((subField, subIndex) => (
+                            <Space key={subField.key}>
+                              <Form.Item
+                                noStyle
+                                name={[subField.name, "option"]}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please enter an option",
+                                  },
+                                ]}
+                              >
+                                <Input placeholder="Option" />
+                              </Form.Item>
+                              <CloseOutlined
+                                onClick={() => subMeta.remove(subIndex)}
+                              />
+                            </Space>
+                          ))}
+                          <Button
+                            type="dashed"
+                            onClick={() => subMeta.add()}
+                            block
+                          >
+                            + Add Option
+                          </Button>
+                        </div>
+                      )}
+                    </Form.List>
+                    <Form.Item
+                      label="Answer"
+                      name={[field.name, "answer"]}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please enter the answer",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="Answer" />
+                    </Form.Item>
+                  </Card>
+                ))}
+                <Button type="dashed" onClick={() => handleAddQuestion()} block>
+                  + Add Question
+                </Button>
+              </div>
+            )}
+          </Form.List>
+          <div className="pt-2 text-end">
+            <Button type="primary" htmlType="submit">
+              Save Quiz
+            </Button>
+          </div>
+        </Form>
+      </div>
     </div>
   );
 }

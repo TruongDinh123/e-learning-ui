@@ -125,7 +125,6 @@ export default function ViewUsers() {
   return (
     <div>
       {contextHolder}
-      <h1>hello Table User</h1>
       <Table columns={columns} dataSource={data} />
       <>
         <ViewRoles />

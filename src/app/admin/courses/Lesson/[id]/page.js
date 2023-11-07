@@ -1,7 +1,7 @@
 "use client";
 import { deleteCourse, getACourse } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Table, message } from "antd";
+import { Dropdown, Menu, Space, Table, message } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button, Popconfirm } from "antd";
@@ -9,6 +9,7 @@ import { deleteLesson, viewLesson } from "@/features/Lesson/lessonSlice";
 import CreateLesson from "../create-lesson/page";
 import { useRouter } from "next/navigation";
 import ViewStudentsCourse from "../../view-students-courses/page";
+import { useMediaQuery } from "react-responsive";
 
 export default function Lesson({ params }) {
   const dispatch = useDispatch();
@@ -69,6 +70,8 @@ export default function Lesson({ params }) {
     },
   ];
 
+  const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
+
   //viewLesson api
   useEffect(() => {
     dispatch(viewLesson({ courseId: params?.id }))
@@ -96,13 +99,55 @@ export default function Lesson({ params }) {
   let data = [];
   lesson?.forEach((i, index) => {
     i.lessons.forEach((item, subIndex) => {
+      const menu = (
+        <Menu>
+          <Menu.Item>
+            <Button
+              className="me-3"
+              style={{ width: "100%" }}
+              courseId={i?._id}
+              onClick={() =>
+                router.push(
+                  `/admin/courses/Lesson/view-lesson-video/${item?._id}`
+                )
+              }
+            >
+              View Video
+            </Button>
+          </Menu.Item>
+          <Menu.Item>
+            <Popconfirm
+              title="Delete the Course"
+              description="Are you sure to delete this Course?"
+              okText="Yes"
+              cancelText="No"
+              onConfirm={() =>
+                handleDeleteLesson({ courseId: i?._id, lessonId: item?._id })
+              }
+            >
+              <Button danger style={{ width: "100%" }}>
+                Delete
+              </Button>
+            </Popconfirm>
+          </Menu.Item>
+        </Menu>
+      );
       data.push({
         key: `${index + 1}.${subIndex + 1}`,
         nameCourse: i?.name,
         name: item?.name,
         content: item?.content,
-        action: (
-          <>
+        action: isMobile ? (
+          <Dropdown overlay={menu}>
+            <Button
+              className="text-center justify-self-center"
+              onClick={(e) => e.preventDefault()}
+            >
+              Actions
+            </Button>
+          </Dropdown>
+        ) : (
+          <Space size={"middle"}>
             <Button
               className="me-3"
               courseId={i?._id}
@@ -125,7 +170,7 @@ export default function Lesson({ params }) {
             >
               <Button danger>Delete</Button>
             </Popconfirm>
-          </>
+          </Space>
         ),
       });
     });

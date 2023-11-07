@@ -69,7 +69,21 @@ export default function UpdateQuiz(props) {
       <Button type="primary" onClick={showModal} className="me-3">
         update quiz
       </Button>
-      <Modal title="Create Quiz" open={isModalOpen} onCancel={handleCancel}>
+      <Modal
+        title="Create Quiz"
+        open={isModalOpen}
+        onCancel={handleCancel}
+        footer={[
+          <>
+            <Button key="back" onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button type="primary" htmlType="submit">
+              Save
+            </Button>
+          </>,
+        ]}
+      >
         <Form
           form={form}
           name="quiz_form"
@@ -162,12 +176,6 @@ export default function UpdateQuiz(props) {
               </div>
             )}
           </Form.List>
-
-          <div className="pt-2 text-end">
-            <Button type="primary" htmlType="submit">
-              Save Quiz
-            </Button>
-          </div>
         </Form>
       </Modal>
     </>

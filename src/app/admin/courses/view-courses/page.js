@@ -1,12 +1,14 @@
 "use client";
 import { deleteCourse, viewCourses } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Table, message } from "antd";
+import { Table, message, Space, Menu, Dropdown } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button, Popconfirm } from "antd";
 import EditCourses from "../edit-course/Page";
 import { useRouter } from "next/navigation";
+import { useMediaQuery } from "react-responsive";
+import { DownOutlined } from "@ant-design/icons";
 
 export default function Courses() {
   const dispatch = useDispatch();
@@ -60,15 +62,60 @@ export default function Courses() {
       });
   }, [updateCourse]);
 
+  const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
+
   //table data
   let data = [];
   course.forEach((i, index) => {
+    const menu = (
+      <Menu>
+        <Menu.Item>
+          <EditCourses
+            id={i?._id}
+            refresh={() => setUpdateCourse(updateCourse + 1)}
+          />
+        </Menu.Item>
+        <Menu.Item>
+          <Button
+            className="me-3"
+            style={{ width: "100%" }}
+            courseId={i?._id}
+            onClick={() => router.push(`/admin/courses/Lesson/${i?._id}`)}
+          >
+            View details
+          </Button>
+        </Menu.Item>
+        <Menu.Item>
+          <Popconfirm
+            title="Delete the Course"
+            description="Are you sure to delete this Course?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => handleDeleteCourse(i?._id)}
+          >
+            <Button danger style={{ width: "100%" }}>
+              Delete
+            </Button>
+          </Popconfirm>
+        </Menu.Item>
+      </Menu>
+    );
+
     data.push({
       key: index + 1,
       title: i?.title,
       name: i?.name,
-      action: (
-        <>
+      action: isMobile ? (
+        <Dropdown overlay={menu}>
+          <Button
+            className="ant-dropdown-link text-center justify-self-center"
+            onClick={(e) => e.preventDefault()}
+          >
+            Actions
+          </Button>
+        </Dropdown>
+      ) : (
+        <Space size="middle">
           <EditCourses
             id={i?._id}
             refresh={() => setUpdateCourse(updateCourse + 1)}
@@ -89,7 +136,7 @@ export default function Courses() {
           >
             <Button danger>Delete</Button>
           </Popconfirm>
-        </>
+        </Space>
       ),
     });
   });
@@ -118,10 +165,9 @@ export default function Courses() {
   };
 
   return (
-    <div>
+    <>
       {contextHolder}
-      <h1>Course</h1>
       <Table columns={columns} dataSource={data} />
-    </div>
+    </>
   );
 }

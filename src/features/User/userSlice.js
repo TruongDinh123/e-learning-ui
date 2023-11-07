@@ -128,7 +128,7 @@ const initialState = {
 export const resetState = createAction("Reset_all");
 
 const userSlice = createSlice({
-  name: "counter",
+  name: "login",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -162,7 +162,6 @@ const userSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.user = action.error;
-        state.message = "Something went wrong!";
       })
       .addCase(getAllUser.pending, (state, action) => {
         state.isLoading = true;
@@ -176,7 +175,6 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
       })
       .addCase(deleteUser.pending, (state, action) => {
         state.isLoading = true;
@@ -190,7 +188,6 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
       })
       .addCase(getAllRole.pending, (state, action) => {
         state.isLoading = true;
@@ -204,7 +201,6 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
       })
       .addCase(updateUserRoles.pending, (state, action) => {
         state.isLoading = true;
@@ -218,7 +214,6 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
       })
       .addCase(resetState, () => initialState);
   },
