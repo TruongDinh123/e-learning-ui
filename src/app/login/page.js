@@ -12,6 +12,8 @@ import * as yup from "yup";
 import { message } from "antd";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { BsEye, BsEyeSlash } from "react-icons/bs";
+import { useState } from "react";
 
 const loginSchema = yup.object({
   email: yup
@@ -25,7 +27,8 @@ export default function Login() {
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useDispatch();
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordValue, setPasswordValue] = useState("");
   const formik = useFormik({
     validationSchema: loginSchema,
     initialValues: {
@@ -99,20 +102,38 @@ export default function Login() {
             />
             <CustomInput
               prefix={<RiLockPasswordLine />}
+              suffix={
+                showPassword ? (
+                  <BsEyeSlash
+                    onClick={() => setShowPassword(false)}
+                    style={{ cursor: "pointer" }}
+                  />
+                ) : (
+                  <BsEye
+                    onClick={() => setShowPassword(true)}
+                    style={{ cursor: "pointer" }}
+                  />
+                )
+              }
               placeholder="Password"
               className="mt-3"
-              onChange={formik.handleChange("password")}
+              onChange={(e) => {
+                formik.handleChange("password")(e);
+                setPasswordValue(e.target.value);
+              }}
               onBlur={formik.handleBlur("password")}
-              value={formik.values.password}
+              value={passwordValue}
               error={formik.touched.password && formik.errors.password}
-              type="password"
+              type={showPassword ? "text" : "password"}
             />
-            <Link
-              href="#"
-              className="text-dark text-decoration-none my-3 text-end"
-            >
-              Forgot Password?
-            </Link>
+            <div className="pt-3 pb-2">
+              <Link
+                href="#"
+                className="text-decoration-none my-3 text-end"
+              >
+                Forgot Password ?
+              </Link>
+            </div>
             <CustomButton
               title="login"
               type="primary"

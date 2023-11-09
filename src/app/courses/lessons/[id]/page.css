@@ -1,0 +1,19 @@
+.collapse-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  
+  .collapse-container:hover {
+    background-color: darkgray;
+  }
+  
+  .button-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .button-container .anticon {
+    margin-right: 5px;
+  }

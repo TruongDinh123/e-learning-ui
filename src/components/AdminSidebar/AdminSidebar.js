@@ -105,6 +105,11 @@ export default function AdminSidebar(props) {
                 icon: <UserOutlined />,
                 label: "Table Score User",
               },
+              {
+                key: "users/view-role",
+                icon: <UserOutlined />,
+                label: "Table Role",
+              },
             ],
           },
         ]}

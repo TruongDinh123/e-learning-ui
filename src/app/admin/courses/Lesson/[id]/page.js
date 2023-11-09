@@ -1,7 +1,7 @@
 "use client";
 import { deleteCourse, getACourse } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Dropdown, Menu, Space, Table, message } from "antd";
+import { Dropdown, Menu, Space, Spin, Table, message } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button, Popconfirm } from "antd";
@@ -17,6 +17,7 @@ export default function Lesson({ params }) {
   const [messageApi, contextHolder] = message.useMessage();
   const [updateLesson, setUpdateLesson] = useState(0);
   const [dataCourse, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -24,17 +25,18 @@ export default function Lesson({ params }) {
   }, []);
 
   const getACourseData = () => {
+    setIsLoading(true);
     dispatch(getACourse(params.id))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
           setData(res.metadata);
-        } else {
-          messageApi.error(res.message);
         }
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   };
 
@@ -74,24 +76,18 @@ export default function Lesson({ params }) {
 
   //viewLesson api
   useEffect(() => {
+    setIsLoading(true);
     dispatch(viewLesson({ courseId: params?.id }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          messageApi
-            .open({
-              type: "success",
-              content: "Action in progress...",
-              duration: 2.5,
-            })
-            .then(() => setLesson(res.data.metadata))
-            .then(() => message.success(res.message, 1.5));
-        } else {
-          messageApi.error(res.message);
+          setLesson(res.data.metadata);
         }
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   }, [updateLesson, dispatch, messageApi]);
 
@@ -160,8 +156,8 @@ export default function Lesson({ params }) {
               View Video
             </Button>
             <Popconfirm
-              title="Delete the Course"
-              description="Are you sure to delete this Course?"
+              title="Delete the Lesson"
+              description="Are you sure to delete this Lesson?"
               okText="Yes"
               cancelText="No"
               onConfirm={() =>
@@ -178,41 +174,43 @@ export default function Lesson({ params }) {
 
   //handleDeleteLesson
   const handleDeleteLesson = ({ courseId, lessonId }) => {
+    setIsLoading(true);
     dispatch(deleteLesson({ courseId, lessonId }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          messageApi
-            .open({
-              type: "success",
-              content: "Action in progress...",
-              duration: 2.5,
-            })
-            .then(() => setUpdateLesson(updateLesson + 1))
-            .then(() => message.success(res.message, 2.5));
+          setUpdateLesson(updateLesson + 1);
+          setIsLoading(false);
         } else {
           messageApi.error(res.message);
+          setIsLoading(false);
         }
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   };
 
   return (
     <div>
-      {contextHolder}
       <h1>Table Lessons</h1>
       <div className="p-3">
-        {lesson?.map((i, index) => (
-          <CreateLesson
-            key={index}
-            courseId={i?._id}
-            refresh={() => setUpdateLesson(updateLesson + 1)}
-          />
-        ))}
+        {isLoading ? (
+          <Spin />
+        ) : (
+          <>
+            {lesson?.map((i, index) => (
+              <CreateLesson
+                key={index}
+                courseId={i?._id}
+                refresh={() => setUpdateLesson(updateLesson + 1)}
+              />
+            ))}
+            <Table columns={columns} dataSource={data} />
+          </>
+        )}
       </div>
-      <Table columns={columns} dataSource={data} />
     </div>
   );
 }

@@ -14,7 +14,7 @@ import { Providers } from "@/Provider";
 export default function RootLayout({ children }) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
-
+  const shouldRenderFooter = !pathname.includes("/web-rtc/room");
   return (
     <html lang="en">
       <body>
@@ -27,6 +27,8 @@ export default function RootLayout({ children }) {
               <Layout>
                 {!pathname.includes("/admin") && pathname !== "/login" ? (
                   <Header />
+                ) : pathname === "/login" ? (
+                  <Header />
                 ) : (
                   <AdminHeader
                     setCollapsed={setCollapsed}
@@ -36,11 +38,12 @@ export default function RootLayout({ children }) {
                 <div className={pathname.includes("/admin") && "p-3"}>
                   {children}
                 </div>
-                {!pathname.includes("/admin") && pathname !== "/login" ? (
-                  <CustomFooter />
-                ) : (
-                  <AdminFooter />
-                )}
+                {shouldRenderFooter &&
+                  (!pathname.includes("/admin") && pathname !== "/login" ? (
+                    <CustomFooter />
+                  ) : (
+                    <AdminFooter />
+                  ))}
               </Layout>
             </Layout>
           </Suspense>

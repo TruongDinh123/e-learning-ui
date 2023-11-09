@@ -6,6 +6,7 @@ export default function CustomInput(props) {
   const {
     placeholder,
     prefix,
+    suffix,
     className,
     onChange,
     onBlur,
@@ -19,6 +20,7 @@ export default function CustomInput(props) {
         size="large"
         placeholder={placeholder}
         prefix={prefix}
+        suffix={suffix}
         className={className}
         onChange={onChange}
         onBlur={onBlur}

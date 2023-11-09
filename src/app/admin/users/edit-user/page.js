@@ -8,17 +8,19 @@ import { Button } from "antd";
 import CustomInput from "@/components/comman/CustomInput";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { updateRole } from "@/features/User/userSlice";
+import { updateRole, updateUser } from "@/features/User/userSlice";
 
-const RoleSchema = yup.object({
-  name: yup.string().min(6).required("name is required"),
+const Userchema = yup.object({
+  lastName: yup.string().min(6).required("name is required"),
+  email: yup.string().email().required("email is required"),
 });
 
-export default function EditRole(props) {
+export default function EditUser(props) {
   const { id, refresh } = props;
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [data, setData] = useState(null);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -33,23 +35,22 @@ export default function EditRole(props) {
   };
 
   const formik = useFormik({
-    validationSchema: RoleSchema,
+    validationSchema: Userchema,
     enableReinitialize: true,
     initialValues: {
-      name: "",
+      lastName: data?.lastName,
+      email: data?.email,
     },
     onSubmit: (values) => {
-      dispatch(updateRole({ id: id, values }))
+      dispatch(updateUser({ id: id, values }))
         .then(unwrapResult)
         .then((res) => {
-          messageApi
-            .open({
-              type: "success",
-              content: "Action in progress...",
-            })
-            .then(() => {
-              refresh();
-            });
+          if (res.status) {
+            setData(res.metadata);
+          } else {
+            messageApi.error(res.message);
+          }
+          refresh();
         })
         .catch((error) => {
           console.log(error);
@@ -76,14 +77,26 @@ export default function EditRole(props) {
       >
         <div>
           <label htmlFor="role" className="fs-6 fw-bold">
-            Name Role
+            Last Name
           </label>
           <CustomInput
             className="mb-3"
-            onChange={formik.handleChange("name")}
-            onBlur={formik.handleBlur("name")}
-            value={formik.values.name}
-            error={formik.touched.name && formik.errors.name}
+            onChange={formik.handleChange("lastName")}
+            onBlur={formik.handleBlur("lastName")}
+            value={formik.values.lastName}
+            error={formik.touched.lastName && formik.errors.lastName}
+          />
+        </div>
+        <div>
+          <label htmlFor="role" className="fs-6 fw-bold">
+            Email
+          </label>
+          <CustomInput
+            className="mb-3"
+            onChange={formik.handleChange("email")}
+            onBlur={formik.handleBlur("email")}
+            value={formik.values.email}
+            error={formik.touched.email && formik.errors.email}
           />
         </div>
       </Modal>

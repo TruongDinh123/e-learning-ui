@@ -70,7 +70,6 @@ export default function EditCourses(props) {
               duration: 2.5,
             })
             .then(() => {
-              message.success(res.message, 1.5);
               refresh();
             });
         })

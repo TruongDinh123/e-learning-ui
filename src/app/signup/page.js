@@ -85,12 +85,15 @@ export default function SignUp() {
               value={formik.values.password}
               error={formik.touched.password && formik.errors.password}
             />
-            <Link
-              href="/login"
-              className="text-dark text-decoration-none my-3 text-end"
-            >
-              Login
-            </Link>
+            <div className="mt-2 mb-2">
+              <Link
+                href="/login"
+                className="text-decoration-none my-3 text-end"
+                style={{fontSize:"16px", fontWeight:"bold"}}
+              >
+                Login
+              </Link>
+            </div>
             <CustomButton
               title="register"
               type="primary"
@@ -103,3 +106,4 @@ export default function SignUp() {
     </div>
   );
 }
+  

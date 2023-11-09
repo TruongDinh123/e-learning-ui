@@ -47,7 +47,6 @@ export default function CreateRole(props) {
               content: "Action in progress...",
             })
             .then(() => {
-              message.success(res.message);
               refresh();
             });
         })

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Collapse, Modal, Table, message } from "antd";
+import { Button, Collapse, Modal, Spin, Table, message } from "antd";
 import { useDispatch } from "react-redux";
 import { getScore } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -8,10 +8,10 @@ import { unwrapResult } from "@reduxjs/toolkit";
 const ScoreManagement = () => {
   const dispatch = useDispatch();
   const [score, setScore] = useState([]);
-  const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(
     Array(score.length).fill(false)
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   const showModal = (index) => {
     const updatedIsModalOpen = [...isModalOpen];
@@ -57,23 +57,19 @@ const ScoreManagement = () => {
   ];
   //viewScore api
   useEffect(() => {
+    setIsLoading(true);
+
     dispatch(getScore())
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          messageApi
-            .open({
-              type: "success",
-              content: "Action in progress...",
-              duration: 1.5,
-            })
-            .then(() => setScore(res.metadata));
-        } else {
-          messageApi.error(res.message);
+          setScore(res.metadata);
         }
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   }, []);
 
@@ -86,7 +82,6 @@ const ScoreManagement = () => {
       score: i?.score,
       action: (
         <>
-          {contextHolder}
           <Button
             type="primary"
             onClick={() => showModal(index)}
@@ -115,9 +110,14 @@ const ScoreManagement = () => {
                   >
                     <p>{question.question}</p>
                     {question.options.map((option, idxOption) => (
-                      <p key={idxOption}>{idxOption + 1}: {option}</p>
+                      <p key={idxOption}>
+                        {idxOption + 1}: {option}
+                      </p>
                     ))}
-                    <p><span style={{ color: 'red' }}>Your answer:</span> {answer}</p>
+                    <p>
+                      <span style={{ color: "red" }}>Your answer:</span>{" "}
+                      {answer}
+                    </p>
                   </Collapse.Panel>
                 );
               })}
@@ -130,8 +130,14 @@ const ScoreManagement = () => {
 
   return (
     <div className="p-5">
-      {contextHolder}
-      <Table columns={columns} dataSource={data} />
+      {isLoading ? (
+        <Spin />
+      ) : (
+        <>
+          <h1>My Scoce</h1>
+          <Table columns={columns} dataSource={data} />
+        </>
+      )}
     </div>
   );
 };

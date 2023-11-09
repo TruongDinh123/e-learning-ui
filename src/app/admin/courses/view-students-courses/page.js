@@ -32,7 +32,7 @@ export default function ViewStudentsCourse(props) {
       setStudentScores(flattenedScores);
       setLoadScores(false);
     });
-  }, [loadScores, dataStudent, dispatch]);
+  }, [loadScores, dataStudent, dispatch,update]);
 
   console.log("studentScores::", studentScores);
   const getACourseData = () => {

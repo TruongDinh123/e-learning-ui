@@ -1,17 +1,21 @@
 "use client";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import { Table, message } from "antd";
+import { Dropdown, Menu, Space, Spin, Table, message } from "antd";
 import { useEffect, useState } from "react";
 import { Button, Popconfirm } from "antd";
-import { deleteUser, getAllRole, getAllUser } from "@/features/User/userSlice";
-import ViewRoles from "../view-role/page";
+import { deleteUser, getAllUser } from "@/features/User/userSlice";
+import EditUser from "../edit-user/page";
+import { useMediaQuery } from "react-responsive";
 
 export default function ViewUsers() {
   const dispatch = useDispatch();
   const [user, setUser] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
   const [updateUser, setUpdateUser] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
+
   const columns = [
     {
       title: "SNo.",
@@ -53,38 +57,32 @@ export default function ViewUsers() {
 
   //viewUsers api
   useEffect(() => {
+    setIsLoading(true);
     dispatch(getAllUser())
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          messageApi
-            .open({
-              type: "success",
-              content: "Action in progress...",
-              duration: 2.5,
-            })
-            .then(() => setUser(res.data.metadata))
-            .then(() => message.success(res.message, 1.5));
+          setUser(res.data.metadata);
         } else {
           messageApi.error(res.message);
         }
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   }, [updateUser, dispatch, messageApi]);
 
   //table data
   let data = [];
   user.forEach((i, index) => {
-    data.push({
-      key: index + 1,
-      lastName: i?.lastName,
-      email: i?.email,
-      status: i?.status,
-      roles: i?.roles,
-      action: (
-        <>
+    const menu = (
+      <Menu>
+        <Menu.Item>
+          <EditUser id={i?._id} refresh={() => setUpdateUser(updateUser + 1)} />
+        </Menu.Item>
+        <Menu.Item>
           <Popconfirm
             title="Delete the Course"
             description="Are you sure to delete this Course?"
@@ -94,7 +92,38 @@ export default function ViewUsers() {
           >
             <Button danger>Delete</Button>
           </Popconfirm>
-        </>
+        </Menu.Item>
+      </Menu>
+    );
+    data.push({
+      key: index + 1,
+      lastName: i?.lastName,
+      email: i?.email,
+      status: i?.status,
+      roles: i?.roles,
+      action: isMobile ? (
+        <Dropdown overlay={menu} placement="bottomCenter">
+          <Button
+            className="text-center justify-self-center"
+            onClick={(e) => e.preventDefault()}
+          >
+            Actions
+          </Button>
+        </Dropdown>
+      ) : (
+        <Space size={"middle"}>
+          <EditUser id={i?._id} refresh={() => setUpdateUser(updateUser + 1)} />
+
+          <Popconfirm
+            title="Delete the Course"
+            description="Are you sure to delete this Course?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => handleDeleteUser(i?._id)}
+          >
+            <Button danger>Delete</Button>
+          </Popconfirm>
+        </Space>
       ),
     });
   });
@@ -111,8 +140,7 @@ export default function ViewUsers() {
               content: "Action in progress...",
               duration: 2.5,
             })
-            .then(() => setUpdateUser(updateUser + 1))
-            .then(() => message.success(res.message, 2.5));
+            .then(() => setUpdateUser(updateUser + 1));
         } else {
           messageApi.error(res.message);
         }
@@ -125,10 +153,14 @@ export default function ViewUsers() {
   return (
     <div>
       {contextHolder}
-      <Table columns={columns} dataSource={data} />
-      <>
-        <ViewRoles />
-      </>
+      {isLoading ? (
+        <Spin />
+      ) : (
+        <>
+          <h1>Table User</h1>
+          <Table columns={columns} dataSource={data} />
+        </>
+      )}
     </div>
   );
 }

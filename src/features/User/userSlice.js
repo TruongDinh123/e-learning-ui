@@ -49,6 +49,18 @@ export const deleteUser = createAsyncThunk(
   }
 );
 
+export const updateUser = createAsyncThunk(
+  "/e-learning/update-user",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await authService.updateUser(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 //roles
 
 export const getAllRole = createAsyncThunk(

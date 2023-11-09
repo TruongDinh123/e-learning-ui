@@ -16,7 +16,7 @@ function AdminFooter() {
           justifyContent: "center",
         }}
       >
-        95 IDeal Elearning {new Date().getFullYear()} Created by Team 95Lab
+        95Elearning {new Date().getFullYear()} created by 95IDEAL
       </Footer>
     )
   );

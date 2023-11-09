@@ -1,6 +1,6 @@
 "use client";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Modal, Table, Upload, message } from "antd";
+import { Modal, Spin, Table, Upload, message } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button, Popconfirm } from "antd";
@@ -19,6 +19,7 @@ export default function VideoLesson({ params }) {
   const [updateLesson, setUpdateLesson] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -32,25 +33,19 @@ export default function VideoLesson({ params }) {
   };
 
   const handleSave = () => {
+    setIsLoading(true);
     dispatch(createVdLesson({ lessonId: params?.id, filename: file }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          messageApi
-            .open({
-              type: "success",
-              content: "Action in progress...",
-              duration: 2.5,
-            })
-            .then(() => setUpdateLesson(updateLesson + 1))
-            .then(() => setFile(null))
-            .then(() => message.success(res.message, 2.5));
-        } else {
-          messageApi.error(res.message);
+          setUpdateLesson(updateLesson + 1);
+          setFile(null);
         }
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   };
 
@@ -93,25 +88,21 @@ export default function VideoLesson({ params }) {
 
   //viewLesson api
   useEffect(() => {
+    setIsLoading(true);
     dispatch(viewALesson({ lessonId: params?.id }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          messageApi
-            .open({
-              type: "success",
-              content: "Action in progress...",
-              duration: 2.5,
-            })
-            .then(() => setvideoLesson(res.metadata.videos))
-            .then(() => setLesson(res.metadata))
-            .then(() => message.success(res.message, 1.5));
+          setvideoLesson(res.metadata.videos);
+          setLesson(res.metadata);
         } else {
           messageApi.error(res.message);
         }
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   }, [updateLesson, dispatch, messageApi]);
 
@@ -168,40 +159,41 @@ export default function VideoLesson({ params }) {
   });
 
   const handleDelVideoLesson = ({ videoLessonId, lessonId }) => {
+    setIsLoading(true);
+
     dispatch(deleteVdLesson({ videoLessonId, lessonId }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          messageApi
-            .open({
-              type: "success",
-              content: "Action in progress...",
-              duration: 2.5,
-            })
-            .then(() => setUpdateLesson(updateLesson + 1))
-            .then(() => message.success(res.message, 2.5));
+          setUpdateLesson(updateLesson + 1);
         } else {
-          messageApi.error(res.message);
         }
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   };
 
   return (
     <div>
-      {contextHolder}
       <h1>Video to Lesson</h1>
-      <>
-        <Upload {...props}>
-          <Button icon={<UploadOutlined />}>Select File</Button>
-        </Upload>
-        <Button type="primary" onClick={handleSave} className="mt-2 mb-2">
-          save
-        </Button>
-      </>
-      <Table columns={columns} dataSource={data} />
+      {isLoading ? (
+        <Spin />
+      ) : (
+        <>
+          <>
+            <Upload {...props}>
+              <Button icon={<UploadOutlined />}>Select File</Button>
+            </Upload>
+            <Button type="primary" onClick={handleSave} className="mt-2 mb-2">
+              save
+            </Button>
+          </>
+          <Table columns={columns} dataSource={data} />
+        </>
+      )}
     </div>
   );
 }

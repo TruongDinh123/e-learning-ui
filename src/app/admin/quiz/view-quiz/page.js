@@ -1,13 +1,13 @@
 "use client";
 import {
   Button,
-  message,
   Table,
   Typography,
   List,
   Collapse,
   Popconfirm,
   Select,
+  Spin,
 } from "antd";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
@@ -20,13 +20,13 @@ const { Option } = Select;
 
 export default function ViewQuiz() {
   const dispatch = useDispatch();
-  const [messageApi, contextHolder] = message.useMessage();
   const [quiz, setquiz] = useState([]);
   const [updateQuiz, setUpdateQuiz] = useState(0);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [selectedCourseLessons, setSelectedCourseLessons] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { Text } = Typography;
   const { Panel } = Collapse;
@@ -37,7 +37,6 @@ export default function ViewQuiz() {
     const selectedCourse = courses.find((course) => course._id === value);
     setSelectedCourseLessons(selectedCourse?.lessons || []);
   };
-  console.log("🚀 ~ selectedCourse:", selectedCourse);
 
   // Hàm xử lý khi chọn bài học
   const handleLessonChange = (value) => {
@@ -45,51 +44,39 @@ export default function ViewQuiz() {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     dispatch(viewCourses())
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          messageApi
-            .open({
-              type: "success",
-              content: "Action in progress...",
-              duration: 1.5,
-            })
-            .then(() => {
-              setCourses(res.data.metadata);
-              setSelectedCourseLessons(res.data.metadata[0]?.lessons || []);
-            });
+          setCourses(res.data.metadata);
+          setSelectedCourseLessons(res.data.metadata[0]?.lessons || []);
         } else {
-          messageApi.error(res.message);
         }
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   }, []);
 
   const handleViewQuiz = () => {
+    setIsLoading(true);
+
     dispatch(viewQuiz({ lessonId: selectedLesson }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          messageApi
-            .open({
-              type: "success",
-              content: "Action in progress...",
-              duration: 2.5,
-            })
-            .then(() => setquiz(res.metadata))
-            .then(() => {
-              setUpdateQuiz(updateQuiz + 1);
-              message.success(res.message, 1.5);
-            });
+          setquiz(res.metadata);
+          setUpdateQuiz(updateQuiz + 1);
         } else {
-          messageApi.error(res.message);
         }
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   };
 
@@ -121,10 +108,7 @@ export default function ViewQuiz() {
   let data = [];
   quiz?.forEach((i, index) => {
     const questions = i.questions.map((question) => (
-      <Panel
-        header={question.question}
-        key={question._id}
-      >
+      <Panel header={question.question} key={question._id}>
         <List
           dataSource={question.options}
           renderItem={(option, optionIndex) => (
@@ -175,23 +159,16 @@ export default function ViewQuiz() {
   });
 
   const handleDeleteQuiz = ({ quizId, questionId }) => {
+    setIsLoading(true);
+
     dispatch(deleteQuiz({ quizId, questionId }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          messageApi
-            .open({
-              type: "success",
-              content: "Action in progress...",
-              duration: 2.5,
-            })
-            .then(() => {
-              setUpdateQuiz(updateQuiz + 1);
-              message.success(res.message, 2.5);
-            });
+          setUpdateQuiz(updateQuiz + 1);
         } else {
-          messageApi.error(res.message);
         }
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -200,40 +177,48 @@ export default function ViewQuiz() {
 
   return (
     <div className="">
-      {contextHolder}
-      <div className="pb-3">
-        <div style={{ display: "flex", paddingBottom: "20px" }}>
-          <Select
-            placeholder="Select a course"
-            onChange={handleCourseChange}
-            value={selectedCourse}
-            className="me-3"
-          >
-            {courses.map((course) => (
-              <Option key={course._id} value={course._id}>
-                {course.name}
-              </Option>
-            ))}
-          </Select>
+      <>
+        {isLoading ? (
+          <Spin />
+        ) : (
+          <>
+            <div className="pb-3">
+              <div style={{ display: "flex", paddingBottom: "20px" }}>
+                <Select
+                  placeholder="Select a course"
+                  onChange={handleCourseChange}
+                  value={selectedCourse}
+                  className="me-3"
+                >
+                  {courses.map((course) => (
+                    <Option key={course._id} value={course._id}>
+                      {course.name}
+                    </Option>
+                  ))}
+                </Select>
 
-          <Select
-            placeholder="Select a lesson"
-            onChange={handleLessonChange}
-            value={selectedLesson}
-            className="me-3"
-          >
-            {selectedCourseLessons.map((lesson) => (
-              <Option key={lesson._id} value={lesson._id}>
-                {lesson.name}
-              </Option>
-            ))}
-          </Select>
-        </div>
-        <Button type="primary" onClick={handleViewQuiz}>
-          View Quiz
-        </Button>
-      </div>
-      <Table columns={columns} dataSource={data} />
+                <Select
+                  placeholder="Select a lesson"
+                  onChange={handleLessonChange}
+                  value={selectedLesson}
+                  className="me-3"
+                >
+                  {selectedCourseLessons.map((lesson) => (
+                    <Option key={lesson._id} value={lesson._id}>
+                      {lesson.name}
+                    </Option>
+                  ))}
+                </Select>
+              </div>
+              <Button type="primary" onClick={handleViewQuiz}>
+                View Quiz
+              </Button>
+            </div>
+            <h3>Table Quiz</h3>
+            <Table columns={columns} dataSource={data} />
+          </>
+        )}
+      </>
     </div>
   );
 }

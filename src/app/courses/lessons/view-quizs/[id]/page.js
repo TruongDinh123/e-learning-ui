@@ -12,6 +12,7 @@ export default function Quizs({ params }) {
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const handleAnswer = (questionId, answer) => {
@@ -41,7 +42,7 @@ export default function Quizs({ params }) {
             })
             .then(() => {
               setSubmitted(true);
-              router.push("/courses/view-course")
+              router.push("/courses/view-course");
             })
             .then(() => message.success(res.message, 1.5));
         } else {
@@ -49,7 +50,6 @@ export default function Quizs({ params }) {
         }
       })
       .catch((error) => {
-        // Xử lý lỗi (error)
         console.log(error);
       });
   };
@@ -73,55 +73,70 @@ export default function Quizs({ params }) {
       })
       .catch((error) => {
         console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
   return (
-    <Row style={{ paddingBottom:"200px", overflow: 'auto' }}>
+    <Row style={{ paddingBottom: "200px", overflow: "auto" }}>
       {contextHolder}
       <Col xs={24} md={16}>
-        {quiz.map((item, index) => (
-          <Card key={item._id} title={item.name}>
-            {item.questions.map((question, questionIndex) => {
-              const isCorrectAnswer =
-                selectedAnswers[question._id] === question.answer;
-              const showAnswer = submitted && isCorrectAnswer;
-              const showWrongAnswer = submitted && !isCorrectAnswer; // Thêm biến trạng thái showWrongAnswer
-              return (
-                <div key={question._id}>
-                  <h4
-                    style={{
-                      marginBottom: "10px",
-                      color: showAnswer
-                        ? "green"
-                        : showWrongAnswer
-                        ? "red"
-                        : "black", // Sử dụng màu đỏ cho câu trả lời sai
-                    }}
-                  >
-                    Question {index + 1}.{questionIndex + 1}:{" "}
-                    {question.question}
-                    {showAnswer && " ✔️"}
-                    {showWrongAnswer && "❌"}
-                  </h4>
-                  <Radio.Group
-                    onChange={(e) => handleAnswer(question._id, e.target.value)}
-                    disabled={submitted}
-                  >
-                    {question.options.map((option) => (
-                      <div key={option}>
-                        <Radio value={option}>{option}</Radio>
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          <>
+            {quiz.map((item, index) => (
+              <>
+                <Card key={item._id} title={item.name}>
+                  {item.questions.map((question, questionIndex) => {
+                    const isCorrectAnswer =
+                      selectedAnswers[question._id] === question.answer;
+                    const showAnswer = submitted && isCorrectAnswer;
+                    const showWrongAnswer = submitted && !isCorrectAnswer;
+                    return (
+                      <div key={question._id}>
+                        <h4
+                          style={{
+                            marginBottom: "10px",
+                            color: showAnswer
+                              ? "green"
+                              : showWrongAnswer
+                              ? "red"
+                              : "black",
+                          }}
+                        >
+                          Question {index + 1}.{questionIndex + 1}:{" "}
+                          {question.question}
+                          {showAnswer && " ✔️"}
+                          {showWrongAnswer && "❌"}
+                        </h4>
+                        <Radio.Group
+                          onChange={(e) =>
+                            handleAnswer(question._id, e.target.value)
+                          }
+                          disabled={submitted}
+                        >
+                          {question.options.map((option) => (
+                            <div key={option}>
+                              <Radio value={option}>{option}</Radio>
+                            </div>
+                          ))}
+                        </Radio.Group>
                       </div>
-                    ))}
-                  </Radio.Group>
+                    );
+                  })}
+                </Card>
+                <div style={{ padding: "1rem" }}>
+                  <Button type="primary" onClick={handleSubmit}>
+                    Submit
+                  </Button>
                 </div>
-              );
-            })}
-          </Card>
-        ))}
-        <Button type="primary" onClick={handleSubmit}>
-          Submit
-        </Button>
+              </>
+            ))}
+          </>
+        )}
       </Col>
     </Row>
   );

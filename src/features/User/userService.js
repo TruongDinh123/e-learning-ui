@@ -34,6 +34,15 @@ const deleteUser = async (data) => {
   return res;
 };
 
+const updateUser = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/update-user/${data.id}`,
+    method: "PUT",
+    data: data.values,
+  });
+  return res;
+};
+
 ///roles///
 const getAllRole = async () => {
   const res = await axiosInstance({
@@ -88,4 +97,5 @@ export const authService = {
   createRole,
   deleteRole,
   updateRole,
+  updateUser,
 };

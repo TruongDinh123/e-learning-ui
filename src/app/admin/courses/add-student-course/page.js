@@ -86,7 +86,7 @@ export default function AddStudentToCourse(props) {
         invite
       </Button>
       <Modal
-        title="Edit Course"
+        title="Invite Email"
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}

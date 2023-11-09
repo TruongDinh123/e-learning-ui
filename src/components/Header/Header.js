@@ -9,10 +9,18 @@ import CustomButton from "../comman/CustomBtn";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { resetState } from "@/features/User/userSlice";
-import { Tooltip } from "antd";
-import { LogoutOutlined, LoginOutlined, UserAddOutlined } from '@ant-design/icons';
+import { Image, Tooltip } from "antd";
+import {
+  LogoutOutlined,
+  LoginOutlined,
+  UserAddOutlined,
+} from "@ant-design/icons";
+
+const logo = "/images/logo.jpg";
+
 export default function Header() {
   const userState = useSelector((state) => state?.user?.user);
+  console.log("🚀 ~ userState:", userState);
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -25,6 +33,9 @@ export default function Header() {
     >
       <Container fluid>
         <Navbar.Brand href="#home" className="d-flex align-items-center">
+          <div style={{ maxWidth: "100px", height: "auto" }}>
+            <Image src={logo} alt="Logo" layout="responsive" />
+          </div>
           <Link
             className="fs-bold fs-3 text-dark text-decoration-none me-4 nav-link"
             href="/"
@@ -37,39 +48,72 @@ export default function Header() {
           <Nav className="me-auto">
             <Link
               className="fs-6 text-dark text-decoration-none me-4 nav-link"
-              href="#Home"
+              href="/"
             >
               Home
             </Link>
-            <Link
-              className="fs-6 text-dark text-decoration-none me-4 nav-link"
-              href="/courses/view-course"
-            >
-              My Course
-            </Link>
-            <Link
-              className="fs-6 text-dark text-decoration-none me-4 nav-link"
-              href="/courses/view-score"
-            >
-              Score Quiz
-            </Link>
+            {userState && (
+              <>
+                <Link
+                  className="fs-6 text-dark text-decoration-none me-4 nav-link"
+                  href="/courses/view-course"
+                >
+                  My Course
+                </Link>
+                <Link
+                  className="fs-6 text-dark text-decoration-none me-4 nav-link"
+                  href="/courses/view-score"
+                >
+                  Score Quiz
+                </Link>
+                <Link
+                  className="fs-6 text-dark text-decoration-none me-4 nav-link"
+                  href="/web-rtc/room"
+                >
+                  Room
+                </Link>
+              </>
+            )}
           </Nav>
-          <Nav>
+          <Nav
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {userState ? (
+              <span
+                className="fs-6 text-dark text-decoration-none me-4 nav-link"
+                style={{ textAlign: "center" }}
+              >
+                {userState.metadata.account.lastName}
+              </span>
+            ) : (
+              <span
+                className="fs-6 text-dark text-decoration-none me-4 nav-link"
+                style={{ textAlign: "center" }}
+              >
+                Guest
+              </span>
+            )}
             {userState !== null ? (
-              <Tooltip title="Logout">
-                <CustomButton
-                  title="Logout"
-                  type="link"
-                  className="text-dark"
-                  onClick={() => {
-                    localStorage.clear();
-                    Cookies.remove("Bearer");
-                    dispatch(resetState());
-                    router.push("/login");
-                  }}
-                  icon={<LogoutOutlined />}
-                />
-              </Tooltip>
+              <>
+                <Tooltip title="Logout">
+                  <CustomButton
+                    title="Logout"
+                    type="link"
+                    className="text-dark"
+                    onClick={() => {
+                      localStorage.clear();
+                      Cookies.remove("Bearer");
+                      dispatch(resetState());
+                      router.push("/login");
+                    }}
+                    icon={<LogoutOutlined />}
+                  />
+                </Tooltip>
+              </>
             ) : (
               <Tooltip title="Login">
                 <Link

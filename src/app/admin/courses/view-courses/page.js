@@ -1,21 +1,23 @@
 "use client";
 import { deleteCourse, viewCourses } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Table, message, Space, Menu, Dropdown } from "antd";
+import { Table, message, Space, Menu, Dropdown, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button, Popconfirm } from "antd";
 import EditCourses from "../edit-course/Page";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
-import { DownOutlined } from "@ant-design/icons";
 
 export default function Courses() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
   const [updateCourse, setUpdateCourse] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
+
   const columns = [
     {
       title: "SNo.",
@@ -42,23 +44,18 @@ export default function Courses() {
   ];
   //viewCourses api
   useEffect(() => {
+    setIsLoading(true);
     dispatch(viewCourses())
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          messageApi
-            .open({
-              type: "success",
-              content: "Action in progress...",
-              duration: 1.5,
-            })
-            .then(() => setCourse(res.data.metadata));
-        } else {
-          messageApi.error(res.message);
+          setCourse(res.data.metadata);
         }
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   }, [updateCourse]);
 
@@ -143,31 +140,31 @@ export default function Courses() {
 
   //handleDeleteCourse
   const handleDeleteCourse = (id) => {
+    setIsLoading(true);
     dispatch(deleteCourse(id))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          messageApi
-            .open({
-              type: "success",
-              content: "Action in progress...",
-              duration: 2.5,
-            })
-            .then(() => setUpdateCourse(updateCourse + 1))
-            .then(() => message.success(res.message, 2.5));
-        } else {
-          messageApi.error(res.message);
+          setUpdateCourse(updateCourse + 1);
         }
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   };
 
   return (
     <>
-      {contextHolder}
-      <Table columns={columns} dataSource={data} />
+      {isLoading ? (
+        <Spin />
+      ) : (
+        <>
+          <h1>View Course</h1>
+          <Table columns={columns} dataSource={data} />
+        </>
+      )}
     </>
   );
 }
