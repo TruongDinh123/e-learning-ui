@@ -87,7 +87,7 @@ export default function Header() {
                 className="fs-6 text-dark text-decoration-none me-4 nav-link"
                 style={{ textAlign: "center" }}
               >
-                {userState.metadata.account.lastName}
+                {userState.metadata?.account?.lastName}
               </span>
             ) : (
               <span

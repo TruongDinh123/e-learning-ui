@@ -175,6 +175,16 @@
 #stream_box {
   background-color: #3f434a;
   height: 60vh;
+  display: none;
+}
+
+#stream_box .video_container {
+  border: 2px solid #000 !important;
+  border-radius: 0;
+  height: 100% !important;
+  width: 100% !important;
+
+  background-size: 300px;
 }
 
 #streams_container {
@@ -197,7 +207,21 @@
   overflow: hidden;
   height: 300px;
   width: 300px;
+
+  background-image: url("../../../../public/images/logo.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 75px;
 }
+
+.video-player {
+  height: 100%;
+  width: 100%;
+}
+
+/* .video-player video {
+  border-radius: 50%;
+} */
 
 @media (max-width: 1400px) {
   .video_container {
