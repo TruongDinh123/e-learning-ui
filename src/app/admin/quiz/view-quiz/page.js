@@ -61,9 +61,22 @@ export default function ViewQuiz() {
       });
   }, []);
 
+  useEffect(() => {
+    dispatch(viewQuiz({ lessonId: selectedLesson }))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setquiz(res.metadata);
+        } else {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [updateQuiz]);
+
   const handleViewQuiz = () => {
     setIsLoading(true);
-
     dispatch(viewQuiz({ lessonId: selectedLesson }))
       .then(unwrapResult)
       .then((res) => {

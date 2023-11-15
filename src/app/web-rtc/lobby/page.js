@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import "../lobby/lobby.css";
 import { useRouter } from "next/navigation";
 
@@ -9,9 +9,11 @@ export default function Lobby() {
   const router = useRouter();
 
   let displayName = window.sessionStorage.getItem("display_name");
-  if (displayName) {
-    setUserName(displayName);
-  }
+  useEffect(() => {
+    if (displayName) {
+      setUserName(displayName);
+    }
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -20,33 +20,32 @@ export default function ViewStudentsCourse() {
   const [selectedCourseDetails, setSelectedCourseDetails] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState({}); // Change to an object
 
-  const showModal = (studentId) => {
+  const showModal = async (studentId) => {
     const lessons = selectedCourseDetails?.lessons;
 
-    return Promise.all(
+    const lessonScores = await Promise.all(
       lessons.map((lesson) => {
         const quizId = lesson.quiz;
 
         return dispatch(getScoreByUserId({ userId: studentId, quizId }))
           .then(unwrapResult)
-          .then((result) => {
+          .then((result_1) => {
             return {
               lesson,
-              score: result.metadata,
+              score: result_1.metadata,
               userId: studentId,
             };
           });
       })
-    ).then((lessonScores) => {
-      setScores((prevScores) => ({
-        ...prevScores,
-        [studentId]: lessonScores,
-      }));
-      setIsModalOpen((prevIsModalOpen) => ({
-        ...prevIsModalOpen,
-        [studentId]: true,
-      }));
-    });
+    );
+    setScores((prevScores) => ({
+      ...prevScores,
+      [studentId]: lessonScores,
+    }));
+    setIsModalOpen((prevIsModalOpen) => ({
+      ...prevIsModalOpen,
+      [studentId]: true,
+    }));
   };
 
   const handleOk = () => {
@@ -85,6 +84,10 @@ export default function ViewStudentsCourse() {
         console.log(error);
       });
   }, []);
+
+  useEffect(() => {
+    getACourseData();
+  }, [update]);
 
   const getACourseData = () => {
     return dispatch(getACourse(selectedCourse))
@@ -160,13 +163,13 @@ export default function ViewStudentsCourse() {
               </>,
             ]}
           >
-            {studentScores?.map((score, index) => {
+            {/* {studentScores?.map((score, index) => {
               const course = courses.find(
                 (course) => course._id === score.lesson.courseId
               );
 
               // Kiểm tra xem đã hiển thị tên khóa học hay chưa
-              if (course && course.name !== displayedCourseName) {
+              if (course && course?.name !== displayedCourseName) {
                 displayedCourseName = course.name; // Lưu trữ tên khóa học đã hiển thị
                 return (
                   <div key={index}>
@@ -191,7 +194,107 @@ export default function ViewStudentsCourse() {
                   </div>
                 );
               }
-            })}
+            })} */}
+
+            {/* {studentScores?.map((score, index) => {
+              const course = courses.find(
+                (course) => course._id === score.lesson.courseId
+              );
+
+              const dataSource = score?.score.map(
+                (studentScore, studentIndex) => ({
+                  key: studentIndex,
+                  lessonName: score?.lesson.name,
+                  score: studentScore?.score,
+                })
+              );
+
+              const columns = [
+                {
+                  title: "Lesson Name",
+                  dataIndex: "lessonName",
+                  key: "lessonName",
+                },
+                {
+                  title: "Score",
+                  dataIndex: "score",
+                  key: "score",
+                },
+              ];
+
+              if (course && course.name !== displayedCourseName) {
+                displayedCourseName = course.name; // Lưu trữ tên khóa học đã hiển thị
+                return (
+                  <div key={index}>
+                    <p>Course Name: {course.name}</p>
+                    <Table dataSource={dataSource} columns={columns} pagination={false} />
+                  </div>
+                );
+              } else {
+                return (
+                  <div key={index}>
+                    <Table dataSource={dataSource} columns={columns} pagination={false} />
+                  </div>
+                );
+              }
+            })} */}
+
+            {(() => {
+              let displayedCourseName = ""; // Biến để lưu trữ tên khóa học đã hiển thị
+              let dataSource = [];
+
+              studentScores?.forEach((score, index) => {
+                const course = courses.find(
+                  (course) => course._id === score.lesson?.courseId
+                );
+
+                if (course && course.name !== displayedCourseName) {
+                  displayedCourseName = course?.name; // Lưu trữ tên khóa học đã hiển thị
+                  score?.score.forEach((studentScore, studentIndex) => {
+                    dataSource.push({
+                      key: `${index}-${studentIndex}`,
+                      courseName: course?.name,
+                      lessonName: score?.lesson.name,
+                      score: studentScore?.score,
+                    });
+                  });
+                } else {
+                  score?.score.forEach((studentScore, studentIndex) => {
+                    dataSource.push({
+                      key: `${index}-${studentIndex}`,
+                      lessonName: score?.lesson.name,
+                      score: studentScore?.score,
+                    });
+                  });
+                }
+              });
+
+              const columns = [
+                {
+                  title: "Course Name",
+                  dataIndex: "courseName",
+                  key: "courseName",
+                },
+                {
+                  title: "Lesson Name",
+                  dataIndex: "lessonName",
+                  key: "lessonName",
+                },
+                {
+                  title: "Score",
+                  dataIndex: "score",
+                  key: "score",
+                },
+              ];
+
+              return (
+                <Table
+                  dataSource={dataSource}
+                  columns={columns}
+                  pagination={false}
+                />
+              );
+            })()}
           </Modal>
         </>
       ),

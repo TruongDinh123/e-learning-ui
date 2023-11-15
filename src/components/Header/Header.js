@@ -20,7 +20,6 @@ const logo = "/images/logo.jpg";
 
 export default function Header() {
   const userState = useSelector((state) => state?.user?.user);
-  console.log("🚀 ~ userState:", userState);
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -68,9 +67,9 @@ export default function Header() {
                 </Link>
                 <Link
                   className="fs-6 text-dark text-decoration-none me-4 nav-link"
-                  href="/web-rtc/room"
+                  href="/web-rtc/lobby"
                 >
-                  Room
+                  Create Room
                 </Link>
               </>
             )}

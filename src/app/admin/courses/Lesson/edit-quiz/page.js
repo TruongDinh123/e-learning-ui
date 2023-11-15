@@ -75,13 +75,7 @@ export default function UpdateQuiz(props) {
         onCancel={handleCancel}
         footer={[
           <>
-            <Button key="back" onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button type="primary" htmlType="submit">
-              Save
-            </Button>
-          </>,
+          </>
         ]}
       >
         <Form
@@ -176,6 +170,11 @@ export default function UpdateQuiz(props) {
               </div>
             )}
           </Form.List>
+          <div className="pt-2 text-end">
+            <Button type="primary" htmlType="submit">
+              Save Quiz
+            </Button>
+          </div>
         </Form>
       </Modal>
     </>
