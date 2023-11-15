@@ -18,11 +18,7 @@ export default function Room() {
   });
   const router = useRouter();
   // const channelId = uuidv4();
-  // const urlParams = new URLSearchParams(window.location.search);
-  let urlParams;
-  if (typeof window !== 'undefined') {
-    urlParams = new URLSearchParams(window.location.search);
-  }
+  const urlParams = new URLSearchParams(window.location.search);
   let channelId = urlParams.get("room");
   if (!channelId) {
     channelId = "main";
