@@ -10,3 +10,15 @@
   max-width: 100px;
   height: auto;
 }
+
+.header-container {
+  background-color: #f2f2f2;
+}
+
+.header-link {
+  color: #333;
+}
+
+.header-link:hover {
+  color: #ff0000;
+}

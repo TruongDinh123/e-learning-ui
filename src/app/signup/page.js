@@ -89,7 +89,12 @@ export default function SignUp() {
               <Link
                 href="/login"
                 className="text-decoration-none my-3 text-end"
-                style={{fontSize:"16px", fontWeight:"bold"}}
+                style={{
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  color: "#fff",
+                  backgroundColor: "#1890ff",
+                }}
               >
                 Login
               </Link>
@@ -98,6 +103,7 @@ export default function SignUp() {
               title="register"
               type="primary"
               className="w-100 d-block mb-3"
+              style={{ color: "#fff", backgroundColor: "#1890ff" }}
               onClick={() => formik.handleSubmit()}
             />
           </form>
@@ -106,4 +112,3 @@ export default function SignUp() {
     </div>
   );
 }
-  

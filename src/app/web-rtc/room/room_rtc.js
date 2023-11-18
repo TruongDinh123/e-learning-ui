@@ -61,13 +61,17 @@ export default function RoomRTC() {
 
     await clientMess.addOrUpdateLocalUserAttributes({ name: displayName });
 
-    // channel = await clientMess.createChannel(channelId);
-    // await channel.join();
-    // setChannelReady(true);
-
     const channelInstance = await clientMess.createChannel(channelId);
     await channelInstance.join();
     setChannel(channelInstance);
+
+    const handleChannelMessage = async (messageData, memberId) => {
+      console.log("a new mess");
+      let data = JSON.parse(messageData.text);
+      if (data.type === "chat") {
+        addMessageToDom(data.displayName, data.message);
+      }
+    };
 
     const handleMemberJoined = async (memberId) => {
       console.log("A new member has joined", memberId);
@@ -83,18 +87,6 @@ export default function RoomRTC() {
       updatememberTotal(members);
     };
 
-    const handleChannelMessage = async (messageData, memberId) => {
-      console.log("a new mess");
-      let data = JSON.parse(messageData.text);
-      if(data.type === 'chat') {
-        addMessageToDom(data.displayName, data.message);
-      }
-    };
-
-    channelInstance.on("MemberJoined", handleMemberJoined);
-    channelInstance.on("MemberLeft", handleMemberLeft);
-    channelInstance.on("ChannelMessage", handleChannelMessage);
-
     let getMembers = async () => {
       let members = await channelInstance.getMembers();
       updatememberTotal(members);
@@ -104,6 +96,10 @@ export default function RoomRTC() {
     };
 
     getMembers();
+
+    channelInstance.on("MemberJoined", handleMemberJoined);
+    channelInstance.on("MemberLeft", handleMemberLeft);
+    channelInstance.on("ChannelMessage", handleChannelMessage);
 
     await client.join(appId, channelId, token, uid);
     const [audioTrack, videoTrack] =
@@ -145,6 +141,10 @@ export default function RoomRTC() {
       document
         .getElementById("srceen-btn")
         .addEventListener("click", toggleScreenShare);
+
+      document
+        .getElementById("leave-btn")
+        .addEventListener("click", leaveChannel);
 
       let messageForm = document.getElementById("message__form");
       messageForm.addEventListener("submit", sendMessage);
@@ -371,6 +371,7 @@ export default function RoomRTC() {
   let leaveChannel = async () => {
     await client.leave();
     await clientMess.logout();
+    router.push("/");
   };
 
   let addMemberToDom = async (memberId) => {

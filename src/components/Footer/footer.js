@@ -1,7 +1,14 @@
 import { Col, Row } from "antd";
+import { usePathname, useRouter } from "next/navigation";
 import { Container } from "react-bootstrap";
 
 export default function CustomFooter() {
+
+  const pathname = usePathname();
+
+  if (pathname.includes('/courses/lessons/')) {
+    return null; 
+  }
   return (
     <footer
       className="bg-dark text-light"

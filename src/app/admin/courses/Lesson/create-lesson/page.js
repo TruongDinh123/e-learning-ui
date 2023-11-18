@@ -64,8 +64,16 @@ export default function CreateLesson(props) {
   return (
     <>
       {contextHolder}
-      <Button type="primary" onClick={showModal} className="me-3">
-        Create Lesson
+      <Button
+        type="primary"
+        onClick={showModal}
+        className="me-3"
+        style={{
+          color: "#fff",
+          backgroundColor: "#1890ff",
+        }}
+      >
+        Create
       </Button>
       <Modal
         title="Edit Course"

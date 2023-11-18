@@ -82,7 +82,12 @@ export default function AddStudentToCourse(props) {
   return (
     <>
       {contextHolder}
-      <Button type="primary" onClick={showModal} className="me-3">
+      <Button
+        type="primary"
+        onClick={showModal}
+        className="me-3"
+        style={{ color: "#fff", backgroundColor: "#1890ff" }}
+      >
         invite
       </Button>
       <Modal

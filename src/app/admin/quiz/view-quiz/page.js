@@ -223,7 +223,11 @@ export default function ViewQuiz() {
                   ))}
                 </Select>
               </div>
-              <Button type="primary" onClick={handleViewQuiz}>
+              <Button
+                type="primary"
+                onClick={handleViewQuiz}
+                style={{ color: "#fff", backgroundColor: "#1890ff" }}
+              >
                 View Quiz
               </Button>
             </div>

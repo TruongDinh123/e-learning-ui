@@ -86,7 +86,7 @@ export default function EditCourses(props) {
         type="primary"
         onClick={showModal}
         className="me-3"
-        style={{ width: "100%" }}
+        style={{ width: "100%", color: "#fff", backgroundColor: "#1890ff" }}
       >
         Edit
       </Button>
@@ -95,6 +95,23 @@ export default function EditCourses(props) {
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
+        footer={[
+          <Button
+            key="cancel"
+            onClick={handleCancel}
+            style={{ marginRight: 8 }}
+          >
+            Cancel
+          </Button>,
+          <Button
+            key="ok"
+            type="primary"
+            onClick={handleOk}
+            style={{ backgroundColor: "#1890ff", color: "white" }}
+          >
+            OK
+          </Button>,
+        ]}
       >
         <div>
           <label htmlFor="course" className="fs-6 fw-bold">

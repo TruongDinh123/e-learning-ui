@@ -24,7 +24,7 @@ export default function ViewStudentsCourse() {
     const lessons = selectedCourseDetails?.lessons;
 
     const lessonScores = await Promise.all(
-      lessons.map((lesson) => {
+      lessons?.map((lesson) => {
         const quizId = lesson.quiz;
 
         return dispatch(getScoreByUserId({ userId: studentId, quizId }))
@@ -148,6 +148,7 @@ export default function ViewStudentsCourse() {
             type="primary"
             onClick={() => showModal(userId)}
             className="me-3"
+            style={{color: "#fff", backgroundColor: "#1890ff" }}
           >
             View Score
           </Button>
@@ -317,7 +318,12 @@ export default function ViewStudentsCourse() {
             </Option>
           ))}
         </Select>
-        <Button type="primary" onClick={handleViewCourse} className="me-3">
+        <Button
+          type="primary"
+          onClick={handleViewCourse}
+          className="me-3"
+          style={{color: "#fff", backgroundColor: "#1890ff" }}
+        >
           View
         </Button>
       </div>

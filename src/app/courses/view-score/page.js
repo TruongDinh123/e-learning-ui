@@ -85,6 +85,7 @@ const ScoreManagement = () => {
           <Button
             type="primary"
             onClick={() => showModal(index)}
+            style={{ color: "#fff", backgroundColor: "#1890ff" }}
             className="me-3"
             key={index}
           >

@@ -5,9 +5,10 @@ import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as yup from "yup";
-import { message } from "antd";
+import { Button, Modal, message } from "antd";
 import { useRouter } from "next/navigation";
 import { createCourse } from "@/features/Courses/courseSlice";
+import { useState } from "react";
 
 const CourseSchema = yup.object({
   title: yup.string().min(6).required("Title is required"),
@@ -17,7 +18,22 @@ const CourseSchema = yup.object({
 export default function AddCourse() {
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+    formik.handleSubmit();
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    formik.handleSubmit();
+  };
 
   const formik = useFormik({
     validationSchema: CourseSchema,
@@ -50,47 +66,76 @@ export default function AddCourse() {
     },
   });
   return (
-    <main className="bg-white p-4 rounded-3">
+    <div>
       {contextHolder}
-      <h4>Add Course</h4>
-      <div className="row">
-        <div className="col-lg-3 col-md-6 col-sm-12">
-          <form action="" className="pb-5">
-            <div className="mt-3 w-auto">
-              <label htmlFor="course" className="fs-6 fw-bold">
-                Course Title
-              </label>
-              <CustomInput
-                id="course"
-                placeholder="Add course title"
-                onChange={formik.handleChange("title")}
-                onBlur={formik.handleBlur("title")}
-                value={formik.values.title}
-                error={formik.touched.title && formik.errors.title}
-              />
-            </div>
-            <div className="mt-3">
-              <label htmlFor="course" className="fs-6 fw-bold">
-                Course Name
-              </label>
-              <CustomInput
-                id="course"
-                placeholder="Add course name"
-                onChange={formik.handleChange("name")}
-                onBlur={formik.handleBlur("name")}
-                value={formik.values.name}
-                error={formik.touched.name && formik.errors.name}
-              />
-            </div>
-            <CustomButton
+      <Button
+        type="primary"
+        onClick={showModal}
+        className="me-3"
+        style={{
+          color: "#fff",
+          backgroundColor: "#1890ff",
+        }}
+      >
+        Create
+      </Button>
+      <Modal
+        title="Create lesson"
+        open={isModalOpen}
+        width={50 + "%"}
+        height={50 + "%"}
+        footer={
+          <>
+            <Button
+              key="back"
               type="primary"
-              className="mt-5"
-              title="Add Course"
-              onClick={() => formik.handleSubmit()}
-            />
-          </form>
+              onClick={handleOk}
+              style={{
+                color: "#fff",
+                backgroundColor: "#1890ff",
+              }}
+            >
+              Save
+            </Button>
+            <Button key="back" onClick={handleCancel}>
+              Cancel
+            </Button>
+          </>
+        }
+      >
+        <div className="row">
+          <div className="col-lg-3 col-md-6 col-sm-12">
+            <form action="" className="pb-5">
+              <div className="mt-3 w-auto">
+                <label htmlFor="course" className="fs-6 fw-bold">
+                  Course Title
+                </label>
+                <CustomInput
+                  id="course"
+                  placeholder="Add course title"
+                  onChange={formik.handleChange("title")}
+                  onBlur={formik.handleBlur("title")}
+                  value={formik.values.title}
+                  error={formik.touched.title && formik.errors.title}
+                />
+              </div>
+              <div className="mt-3">
+                <label htmlFor="course" className="fs-6 fw-bold">
+                  Course Name
+                </label>
+                <CustomInput
+                  id="course"
+                  placeholder="Add course name"
+                  onChange={formik.handleChange("name")}
+                  onBlur={formik.handleBlur("name")}
+                  value={formik.values.name}
+                  error={formik.touched.name && formik.errors.name}
+                />
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
-    </main>
+      </Modal>
+    </div>
   );
 }

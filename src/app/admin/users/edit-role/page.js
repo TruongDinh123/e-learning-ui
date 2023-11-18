@@ -64,7 +64,7 @@ export default function EditRole(props) {
         type="primary"
         onClick={showModal}
         className="me-3"
-        style={{ width: "100%" }}
+        style={{ width: "100%", color: "#fff", backgroundColor: "#1890ff" }}
       >
         Edit
       </Button>

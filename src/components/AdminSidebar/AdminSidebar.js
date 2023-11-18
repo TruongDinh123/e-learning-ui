@@ -62,11 +62,6 @@ export default function AdminSidebar(props) {
             label: "Course",
             children: [
               {
-                key: "courses/add-course",
-                icon: <UserOutlined />,
-                label: "Add Course",
-              },
-              {
                 key: "courses/view-courses",
                 icon: <UserOutlined />,
                 label: "Table Course",

@@ -142,7 +142,11 @@ export const resetState = createAction("Reset_all");
 const userSlice = createSlice({
   name: "login",
   initialState,
-  reducers: {},
+  reducers: {
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state, action) => {
@@ -230,5 +234,7 @@ const userSlice = createSlice({
       .addCase(resetState, () => initialState);
   },
 });
+
+export const { setUser } = userSlice.actions;
 
 export default userSlice.reducer;

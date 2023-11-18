@@ -127,10 +127,7 @@ export default function Login() {
               type={showPassword ? "text" : "password"}
             />
             <div className="pt-3 pb-2">
-              <Link
-                href="#"
-                className="text-decoration-none my-3 text-end"
-              >
+              <Link href="#" className="text-decoration-none my-3 text-end">
                 Forgot Password ?
               </Link>
             </div>
@@ -138,6 +135,7 @@ export default function Login() {
               title="login"
               type="primary"
               className="w-100 d-block mb-3"
+              style={{ color: "#fff", backgroundColor: "#1890ff" }}
               onClick={() => formik.handleSubmit()}
             />
             <div className="my-3">

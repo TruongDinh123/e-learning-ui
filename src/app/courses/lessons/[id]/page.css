@@ -17,3 +17,25 @@
   .button-container .anticon {
     margin-right: 5px;
   }
+
+  .sidebar {
+    border-right: 1px solid #000; /* Đặt border cho sidebar */
+    height: 100vh; /* Chiều dài full màn hình */
+    overflow-y: auto; /* Thêm thanh cuộn nếu nội dung vượt quá chiều dài màn hình */
+  }
+
+  .video-column {
+    overflow-y: auto; /* Thêm thanh cuộn nếu nội dung vượt quá chiều cao */
+    height: 100vh; /* Chiều cao full màn hình */
+  }
+
+  .sidebar-visible {
+    position: fixed;
+    left: 0;
+    width: 20rem;
+    transition: left 0.5s ease-in-out; 
+  }
+  
+  .blur {
+    filter: blur(8px);
+  }
