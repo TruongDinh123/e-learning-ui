@@ -9,13 +9,13 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { resetState, setUser } from "@/features/User/userSlice";
 import { Image, Tooltip } from "antd";
+import "../Header/header.css";
 import {
   LogoutOutlined,
   LoginOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
 import { useCallback } from "react";
-import "../Header/Header.css";
 
 const logo = "/images/logo.jpg";
 
