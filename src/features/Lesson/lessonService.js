@@ -56,6 +56,12 @@ const deleteVdLesson = async (data) => {
   return res;
 };
 
+const completeLesson = async (data) =>
+  await axiosInstance({
+    url: `/e-learning/complete-lesson/${data.lessonId}`,
+    method: "PUT",
+  });
+
 export const lessonService = {
   createLesson,
   createVdLesson,
@@ -63,4 +69,5 @@ export const lessonService = {
   viewAlesson,
   deleteLesson,
   deleteVdLesson,
+  completeLesson,
 };

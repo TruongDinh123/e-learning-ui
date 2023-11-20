@@ -1,28 +1,10 @@
 "use client";
-import { LikeOutlined, MessageOutlined, StarOutlined } from "@ant-design/icons";
-import {
-  Avatar,
-  List,
-  Space,
-  Spin,
-  Popconfirm,
-  Button,
-  Breadcrumb,
-  Row,
-  Col,
-  Card,
-} from "antd";
+import { Spin, Popconfirm, Button, Breadcrumb, Row, Col, Card } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import {
-  deleteLesson,
-  viewALesson,
-  viewLesson,
-} from "@/features/Lesson/lessonSlice";
-import { useRouter } from "next/navigation";
+import { deleteLesson, viewLesson } from "@/features/Lesson/lessonSlice";
 import { useMediaQuery } from "react-responsive";
 import { unwrapResult } from "@reduxjs/toolkit";
-import EditCourses from "../../edit-course/Page";
 import VideoLesson from "../view-lesson-video/[id]/page";
 import CreateLesson from "../create-lesson/page";
 import Link from "next/link";
@@ -93,35 +75,46 @@ export default function Lesson({ params }) {
         {isLoading ? (
           <Spin />
         ) : (
-          <Row gutter={16} className="mt-3">
-            {lesson.map((item) =>
-              item.lessons.map((i, subIndex) => (
-                <Col span={8} key={subIndex._id}>
-                  <Card title={i.name}>
-                    <p>Content: {i.content} Nội dung ở đây sẽ miêu tả các nội dung của khóa học chi tiết nó sẽ giúp cho việc hiểu rõ hơn về lesson đang mô tả tóm tắt nội dung của lesson đó.</p>
-                    <div className="flex mt-3">
-                      <Popconfirm
-                        title="Delete the Lesson"
-                        description="Are you sure to delete this Lesson?"
-                        okText="Yes"
-                        cancelText="No"
-                        className="me-3"
-                        onConfirm={() =>
-                          handleDeleteLesson({
-                            courseId: params?.id,
-                            lessonId: i?._id,
-                          })
-                        }
-                      >
-                        <Button danger>Delete</Button>
-                      </Popconfirm>
-                      <VideoLesson lessonId={i?._id} />
-                    </div>
-                  </Card>
-                </Col>
-              ))
-            )}
-          </Row>
+          <>
+            <Row gutter={16} className="mt-3">
+              <CreateLesson
+                courseId={params?.id}
+                refresh={() => setUpdateLesson(updateLesson + 1)}
+              />
+
+              {lesson.map((item) =>
+                item.lessons.map((i, subIndex) => (
+                  <Col span={8} key={subIndex._id}>
+                    <Card title={i.name}>
+                      <p>
+                        Content: {i.content} Nội dung ở đây sẽ miêu tả các nội
+                        dung của khóa học chi tiết nó sẽ giúp cho việc hiểu rõ
+                        hơn về lesson đang mô tả tóm tắt nội dung của lesson đó.
+                      </p>
+                      <div className="flex mt-3">
+                        <Popconfirm
+                          title="Delete the Lesson"
+                          description="Are you sure to delete this Lesson?"
+                          okText="Yes"
+                          cancelText="No"
+                          className="me-3"
+                          onConfirm={() =>
+                            handleDeleteLesson({
+                              courseId: params?.id,
+                              lessonId: i?._id,
+                            })
+                          }
+                        >
+                          <Button danger>Delete</Button>
+                        </Popconfirm>
+                        <VideoLesson lessonId={i?._id} />
+                      </div>
+                    </Card>
+                  </Col>
+                ))
+              )}
+            </Row>
+          </>
         )}
       </div>
     </div>

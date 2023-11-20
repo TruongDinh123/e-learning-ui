@@ -80,6 +80,19 @@ export default function CreateLesson(props) {
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
+        footer={
+          <Button
+            key="back"
+            type="primary"
+            onClick={handleOk}
+            style={{
+              color: "#fff",
+              backgroundColor: "#1890ff",
+            }}
+          >
+            Save
+          </Button>
+        }
       >
         <div>
           <label htmlFor="course" className="fs-6 fw-bold">

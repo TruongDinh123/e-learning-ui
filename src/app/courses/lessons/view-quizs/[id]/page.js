@@ -129,7 +129,11 @@ export default function Quizs({ params }) {
                   })}
                 </Card>
                 <div style={{ padding: "1rem" }}>
-                  <Button type="primary" onClick={handleSubmit}>
+                  <Button
+                    type="primary"
+                    onClick={handleSubmit}
+                    className="button-container me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  >
                     Submit
                   </Button>
                 </div>

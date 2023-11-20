@@ -71,7 +71,19 @@ export const deleteVdLesson = createAsyncThunk(
       return rejectWithValue(error);
     }
   }
-)
+);
+
+export const completeLesson = createAsyncThunk(
+  "/e-learning/complete-lesson/",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await lessonService.completeLesson(data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
 const initialState = {
   lesson: "",

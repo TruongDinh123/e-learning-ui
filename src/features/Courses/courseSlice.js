@@ -97,6 +97,18 @@ export const getStudentCourses = createAsyncThunk(
   }
 );
 
+export const getCourseCompletion = createAsyncThunk(
+  "/e-learning/get-complete-course/",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await courseService.getCourseCompletion(data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 const initialState = {
   course: "",
   isError: false,

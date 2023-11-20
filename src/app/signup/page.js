@@ -54,10 +54,11 @@ export default function SignUp() {
       {contextHolder}
       <div className="row py-5">
         <div className="col-4 mx-auto py-5">
+          <h1 className="text-3xl font-bold p-2">Sign up and start learning</h1>
           <form
             action=""
             onSubmit={formik.handleSubmit}
-            className="form-wrapper p-4"
+            className="form-wrapper p-4 border rounded"
           >
             <CustomInput
               prefix={<AiOutlineMail />}
@@ -85,6 +86,13 @@ export default function SignUp() {
               value={formik.values.password}
               error={formik.touched.password && formik.errors.password}
             />
+            <CustomButton
+              title="register"
+              type="primary"
+              className="w-100 d-block mb-3 mt-3"
+              style={{ color: "#fff", backgroundColor: "#1890ff" }}
+              onClick={() => formik.handleSubmit()}
+            />
             <div className="mt-2 mb-2">
               <Link
                 href="/login"
@@ -92,20 +100,12 @@ export default function SignUp() {
                 style={{
                   fontSize: "16px",
                   fontWeight: "bold",
-                  color: "#fff",
-                  backgroundColor: "#1890ff",
+                  color: "black",
                 }}
               >
-                Login
+                Already have an account? <b>Register</b>
               </Link>
             </div>
-            <CustomButton
-              title="register"
-              type="primary"
-              className="w-100 d-block mb-3"
-              style={{ color: "#fff", backgroundColor: "#1890ff" }}
-              onClick={() => formik.handleSubmit()}
-            />
           </form>
         </div>
       </div>

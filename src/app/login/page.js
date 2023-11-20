@@ -9,7 +9,7 @@ import { useFormik } from "formik";
 import { login } from "@/features/User/userSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as yup from "yup";
-import { message } from "antd";
+import { Spin, message } from "antd";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
@@ -28,6 +28,7 @@ export default function Login() {
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
   const formik = useFormik({
     validationSchema: loginSchema,
@@ -36,6 +37,7 @@ export default function Login() {
       password: "",
     },
     onSubmit: (values) => {
+      setIsLoading(true);
       dispatch(login(values))
         .then(unwrapResult)
         .then((res) => {
@@ -44,9 +46,7 @@ export default function Login() {
               .open({
                 type: "success",
                 content: "Action in progress...",
-                duration: 2.5,
               })
-              .then(() => message.success(res.message, 2.5))
               .then(() =>
                 message.info(
                   `Redirecting to ${
@@ -77,7 +77,10 @@ export default function Login() {
           }
         })
         .catch((error) => {
-          message.error(error.response.data.message, 3.5);
+          message.error(error.response?.data?.message, 3.5);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     },
   });
@@ -87,10 +90,11 @@ export default function Login() {
       {contextHolder}
       <div className="row py-5">
         <div className="col-lg-4 col-md-6 col-sm-8 mx-auto py-5">
+          <h1 className="text-3xl font-bold p-2">Login</h1>
           <form
             action=""
             onSubmit={formik.handleSubmit}
-            className="form-wrapper p-4"
+            className="form-wrapper p-4 border rounded"
           >
             <CustomInput
               prefix={<AiOutlineMail />}
@@ -98,7 +102,13 @@ export default function Login() {
               onChange={formik.handleChange("email")}
               onBlur={formik.handleBlur("email")}
               value={formik.values.email}
-              error={formik.touched.email && formik.errors.email}
+              error={
+                formik.submitCount > 0 &&
+                formik.touched.email &&
+                formik.errors.email
+                  ? formik.errors.email
+                  : null
+              }
             />
             <CustomInput
               prefix={<RiLockPasswordLine />}
@@ -123,7 +133,13 @@ export default function Login() {
               }}
               onBlur={formik.handleBlur("password")}
               value={passwordValue}
-              error={formik.touched.password && formik.errors.password}
+              error={
+                formik.submitCount > 0 &&
+                formik.touched.password &&
+                formik.errors.password
+                  ? formik.errors.password
+                  : null
+              }
               type={showPassword ? "text" : "password"}
             />
             <div className="pt-3 pb-2">
@@ -131,13 +147,16 @@ export default function Login() {
                 Forgot Password ?
               </Link>
             </div>
-            <CustomButton
-              title="login"
-              type="primary"
-              className="w-100 d-block mb-3"
-              style={{ color: "#fff", backgroundColor: "#1890ff" }}
-              onClick={() => formik.handleSubmit()}
-            />
+            <Spin spinning={isLoading}>
+              <CustomButton
+                title="login"
+                type="primary"
+                className="w-100 d-block mb-3"
+                style={{ color: "#fff", backgroundColor: "#1890ff" }}
+                onClick={() => formik.handleSubmit()}
+                disabled={isLoading}
+              />
+            </Spin>
             <div className="my-3">
               <Link
                 href="/signup"

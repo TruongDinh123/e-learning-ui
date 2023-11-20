@@ -1,6 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Col, Menu, Row, Spin, Layout, Breadcrumb } from "antd";
+import {
+  Button,
+  Col,
+  Menu,
+  Row,
+  Spin,
+  Layout,
+  Breadcrumb,
+  Progress,
+} from "antd";
 import { useDispatch } from "react-redux";
 import { viewALesson, viewLesson } from "@/features/Lesson/lessonSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -9,20 +18,21 @@ import { useMediaQuery } from "react-responsive";
 import "../[id]/page.css";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { getCourseCompletion } from "@/features/Courses/courseSlice";
+import CompleteLesson from "@/components/complete-lesson";
 
 export default function Lesson({ params }) {
   const dispatch = useDispatch();
   const [lesson, setLesson] = useState([]);
-  const [videoLesson, setvideoLesson] = useState([]);
+  const [updateProgress, setUpdateProgress] = useState(0);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [selectedLessonContent, setSelectedLessonContent] = useState(null);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
-  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1224px)" });
   const isBigScreen = useMediaQuery({ query: "(min-width: 1225px)" });
+  const [completeCourse, setCompleteCourse] = useState([]);
 
   const { Sider } = Layout;
 
@@ -46,7 +56,17 @@ export default function Lesson({ params }) {
         console.log(error);
         setIsLoading(false);
       });
-  }, []);
+    dispatch(getCourseCompletion({ courseId: params.id }))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setCompleteCourse(res.metadata);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [updateProgress]);
 
   const handleSelectLesson = (item) => {
     setIsLoading(true);
@@ -56,7 +76,6 @@ export default function Lesson({ params }) {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setvideoLesson(res.metadata.videos);
           setSelectedVideo(res.metadata.videos[0]);
         }
         setIsLoading(false);
@@ -66,6 +85,16 @@ export default function Lesson({ params }) {
         setIsLoading(false);
       });
   };
+
+  let isCompleted = false;
+  if (completeCourse && completeCourse.userLessonInfo) {
+    const currentLesson = completeCourse.userLessonInfo.find(
+      (lesson) => lesson.lesson === selectedLesson
+    );
+    if (currentLesson) {
+      isCompleted = currentLesson.completed;
+    }
+  }
 
   return (
     <>
@@ -78,7 +107,8 @@ export default function Lesson({ params }) {
         </Breadcrumb.Item>
         <Breadcrumb.Item>
           <Link href={`/admin/courses/Lesson/${params?.id}`}>
-          {lesson[0]?.name.slice(0, 20)}{lesson[0]?.name.length > 20 ? '...' : ''}
+            {lesson[0]?.name.slice(0, 20)}
+            {lesson[0]?.name.length > 20 ? "..." : ""}
           </Link>
         </Breadcrumb.Item>
       </Breadcrumb>
@@ -90,7 +120,24 @@ export default function Lesson({ params }) {
               collapsed={collapsed}
               onCollapse={onCollapse}
               collapsedWidth={0}
+              theme="dark"
             >
+              <Menu theme="light" defaultSelectedKeys={["1"]} mode="inline">
+                {completeCourse && completeCourse.completionPercentage && (
+                  <div className="p-8 bg-gray-100">
+                    <Progress
+                      percent={parseFloat(
+                        completeCourse.completionPercentage.toFixed(2)
+                      )}
+                      status="active"
+                      showInfo={false}
+                    />
+                    <p className="font-medium mt-2 text-emerald-700 text-sm">
+                      {completeCourse.completionPercentage.toFixed(2)}% Complete
+                    </p>
+                  </div>
+                )}
+              </Menu>
               <div className="logo" />
               <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
                 {lesson.map((i) =>
@@ -129,16 +176,32 @@ export default function Lesson({ params }) {
                         Your browser does not support the video tag.
                       </video>
                     )}
+
                     {selectedLessonContent && (
-                      <div className="lesson-content mt-4">
-                        <h2 className="text-2xl font-bold mb-2">
-                          Lesson Content
-                        </h2>
-                        <p className="text-lg">{selectedLessonContent}</p>
+                      <div className="pt-8">
+                        <div className="md:flex-row border rounded-md p-6 flex flex-col lg:flex-row items-center justify-between">
+                          <h2 className="text-2xl font-semibold mb-2">
+                            {selectedLessonContent}
+                          </h2>
+                          {completeCourse && (
+                            <CompleteLesson
+                              lessonId={selectedLesson}
+                              isCompleted={isCompleted}
+                              refresh={() =>
+                                setUpdateProgress(updateProgress + 1)
+                              }
+                            />
+                          )}
+                        </div>
+                        <div className="lesson-content mt-4 border rounded-md p-6">
+                          <h2 className="text-2xl font-bold mb-2">
+                            Lesson Content
+                          </h2>
+                          <p className="text-lg">{selectedLessonContent}</p>
+                        </div>
                       </div>
                     )}
 
-                    {/* Hiển thị button quiz cho lesson đang được chọn */}
                     {selectedLesson && (
                       <div className="mt-4">
                         <Button

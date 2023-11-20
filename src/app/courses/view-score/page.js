@@ -8,6 +8,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 const ScoreManagement = () => {
   const dispatch = useDispatch();
   const [score, setScore] = useState([]);
+  console.log("🚀 ~ score:", score);
   const [isModalOpen, setIsModalOpen] = useState(
     Array(score.length).fill(false)
   );
