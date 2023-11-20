@@ -76,12 +76,11 @@ export default function Lesson({ params }) {
           <Spin />
         ) : (
           <>
+            <CreateLesson
+              courseId={params?.id}
+              refresh={() => setUpdateLesson(updateLesson + 1)}
+            />
             <Row gutter={16} className="mt-3">
-              <CreateLesson
-                courseId={params?.id}
-                refresh={() => setUpdateLesson(updateLesson + 1)}
-              />
-
               {lesson.map((item) =>
                 item.lessons.map((i, subIndex) => (
                   <Col span={8} key={subIndex._id}>
