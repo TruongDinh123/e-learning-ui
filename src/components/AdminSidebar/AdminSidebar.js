@@ -93,17 +93,17 @@ export default function AdminSidebar(props) {
               {
                 key: "users/view-users",
                 icon: <UserOutlined />,
-                label: "Table User",
+                label: "Manager User",
               },
               {
                 key: "users/score-trainee",
                 icon: <UserOutlined />,
-                label: "Table Score User",
+                label: "User Course",
               },
               {
                 key: "users/view-role",
                 icon: <UserOutlined />,
-                label: "Table Role",
+                label: "Manager Role",
               },
             ],
           },

@@ -8,10 +8,15 @@ import { Button } from "antd";
 import CustomInput from "@/components/comman/CustomInput";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { updateRole, updateUser } from "@/features/User/userSlice";
+import { getAUser, updateRole, updateUser } from "@/features/User/userSlice";
 
 const Userchema = yup.object({
-  lastName: yup.string().min(6).required("name is required"),
+  lastName: yup
+    .string()
+    .required("Name is required")
+    .trim("Name must not start or end with whitespace")
+    .min(3, "Name must be at least 3 characters long")
+    .matches(/^\S*$/, "Name must not contain whitespace"),
   email: yup.string().email().required("email is required"),
 });
 
@@ -30,8 +35,29 @@ export default function EditUser(props) {
   };
 
   const handleOk = () => {
-    setIsModalOpen(false);
-    formik.handleSubmit();
+    formik.submitForm();
+    if (formik.isValid && !formik.isSubmitting && formik.submitCount > 0) {
+      setIsModalOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    getAUsereData();
+  }, []);
+
+  const getAUsereData = () => {
+    dispatch(getAUser(id))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setData(res.data.metadata);
+        } else {
+          messageApi.error(res.message);  
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const formik = useFormik({
@@ -42,15 +68,19 @@ export default function EditUser(props) {
       email: data?.email,
     },
     onSubmit: (values) => {
+      values.lastName = values.lastName.trim();
       dispatch(updateUser({ id: id, values }))
         .then(unwrapResult)
         .then((res) => {
-          if (res.status) {
-            setData(res.metadata);
-          } else {
-            messageApi.error(res.message);
-          }
-          refresh();
+          messageApi
+            .open({
+              type: "success",
+              content: "Action in progress...",
+              duration: 2.5,
+            })
+            .then(() => {
+              refresh();
+            });
         })
         .catch((error) => {
           console.log(error);
@@ -72,8 +102,21 @@ export default function EditUser(props) {
       <Modal
         title="Edit Role"
         open={isModalOpen}
-        onCancel={handleCancel}
-        onOk={handleOk}
+        footer={
+          <>
+            <Button key="cancle" type="default" onClick={handleCancel}>
+              Cancle
+            </Button>
+            <Button
+              key="ok"
+              type="primary"
+              onClick={handleOk}
+              style={{ backgroundColor: "#1890ff", color: "white" }}
+            >
+              OK
+            </Button>
+          </>
+        }
       >
         <div>
           <label htmlFor="role" className="fs-6 fw-bold">
@@ -84,7 +127,13 @@ export default function EditUser(props) {
             onChange={formik.handleChange("lastName")}
             onBlur={formik.handleBlur("lastName")}
             value={formik.values.lastName}
-            error={formik.touched.lastName && formik.errors.lastName}
+            error={
+              formik.submitCount > 0 &&
+              formik.touched.lastName &&
+              formik.errors.lastName
+                ? formik.errors.lastName
+                : null
+            }
           />
         </div>
         <div>
@@ -96,7 +145,13 @@ export default function EditUser(props) {
             onChange={formik.handleChange("email")}
             onBlur={formik.handleBlur("email")}
             value={formik.values.email}
-            error={formik.touched.email && formik.errors.email}
+            error={
+              formik.submitCount > 0 &&
+              formik.touched.email &&
+              formik.errors.email
+                ? formik.errors.email
+                : null
+            }
           />
         </div>
       </Modal>

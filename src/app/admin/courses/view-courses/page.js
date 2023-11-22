@@ -1,7 +1,12 @@
 "use client";
-import { deleteCourse, viewCourses } from "@/features/Courses/courseSlice";
+import {
+  buttonPriavteourse,
+  buttonPublicCourse,
+  deleteCourse,
+  viewCourses,
+} from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Space, Menu, Dropdown, Spin, Image } from "antd";
+import { Menu, Dropdown, Spin, Image, Space } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button, Popconfirm } from "antd";
@@ -10,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
 import { BookOutlined } from "@ant-design/icons";
 import AddCourse from "../add-course/page";
+import { Col } from "react-bootstrap";
 
 export default function Courses() {
   const dispatch = useDispatch();
@@ -25,7 +31,6 @@ export default function Courses() {
     dispatch(viewCourses())
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           setCourse(res.data.metadata);
         }
@@ -48,6 +53,7 @@ export default function Courses() {
       _id: i?._id,
       name: i?.name,
       lessons: i?.lessons,
+      showCourse: i?.showCourse,
     });
   });
 
@@ -68,15 +74,47 @@ export default function Courses() {
       });
   };
 
+  const handleCoursePublic = (courseId) => {
+    setIsLoading(true);
+    dispatch(buttonPublicCourse(courseId))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setUpdateCourse(updateCourse + 1);
+        }
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  };
+
+  const handleCoursePrivate = (courseId) => {
+    setIsLoading(true);
+    dispatch(buttonPriavteourse(courseId))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setUpdateCourse(updateCourse + 1);
+        }
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  };
+
   return (
     <>
       {isLoading ? (
         <Spin />
       ) : (
-        <>
+        <div className="max-w-screen-2xl mx-auto">
           <h1>View Course</h1>
           <AddCourse />
-          <div>
+          <div className="p-6 space-y-4">
             <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3">
               {data.map((item) => {
                 const menu = (
@@ -112,6 +150,14 @@ export default function Courses() {
                         </Button>
                       </Popconfirm>
                     </Menu.Item>
+                    <Menu.Item>
+                      <Button
+                        onClick={() => handleCoursePublic(item?._id)}
+                        style={{ width: "100%" }}
+                      >
+                        {item.showCourse ? "Make Private" : "Make Public"}
+                      </Button>
+                    </Menu.Item>
                   </Menu>
                 );
                 return (
@@ -146,32 +192,60 @@ export default function Courses() {
                             </Button>
                           </Dropdown>
                         ) : (
-                          <Space size="middle">
-                            <EditCourses
-                              id={item?._id}
-                              refresh={() => setUpdateCourse(updateCourse + 1)}
-                            />
-                            <Button
-                              className="me-3"
-                              courseId={item?._id}
-                              onClick={() =>
-                                router.push(
-                                  `/admin/courses/Lesson/${item?._id}`
-                                )
-                              }
+                          <Col lg="12">
+                            <Space
+                              size="large"
+                              direction="vertical"
+                              className="lg:flex lg:flex-row lg:space-x-4 flex-wrap justify-between"
                             >
-                              View details
-                            </Button>
-                            <Popconfirm
-                              title="Delete the Course"
-                              description="Are you sure to delete this Course?"
-                              okText="Yes"
-                              cancelText="No"
-                              onConfirm={() => handleDeleteCourse(item?._id)}
-                            >
-                              <Button danger>Delete</Button>
-                            </Popconfirm>
-                          </Space>
+                              <Space wrap>
+                                <EditCourses
+                                  id={item?._id}
+                                  refresh={() =>
+                                    setUpdateCourse(updateCourse + 1)
+                                  }
+                                />
+                                <Button
+                                  courseId={item?._id}
+                                  onClick={() =>
+                                    router.push(
+                                      `/admin/courses/Lesson/${item?._id}`
+                                    )
+                                  }
+                                >
+                                  View details
+                                </Button>
+                                <Button
+                                  onClick={() =>
+                                    item.showCourse
+                                      ? handleCoursePrivate(item._id)
+                                      : handleCoursePublic(item._id)
+                                  }
+                                >
+                                  {item.showCourse
+                                    ? "Make Private"
+                                    : "Make Public"}
+                                </Button>
+                                <Popconfirm
+                                  title="Delete the Course"
+                                  description="Are you sure to delete this Course?"
+                                  okText="Yes"
+                                  cancelText="No"
+                                  okButtonProps={{
+                                    style: { backgroundColor: "red" },
+                                  }}
+                                  onConfirm={() =>
+                                    handleDeleteCourse(item?._id)
+                                  }
+                                  style={{ margin: 0 }}
+                                >
+                                  <Button danger style={{ margin: 0 }}>
+                                    Delete
+                                  </Button>
+                                </Popconfirm>
+                              </Space>
+                            </Space>
+                          </Col>
                         )}
                       </div>
                     </div>
@@ -185,7 +259,7 @@ export default function Courses() {
               </div>
             )}
           </div>
-        </>
+        </div>
       )}
     </>
   );

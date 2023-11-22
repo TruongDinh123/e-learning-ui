@@ -10,7 +10,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 const CourseSchema = yup.object({
-  title: yup.string().min(6).required("Title is required"),
+  title: yup.string().min(2).required("Title is required"),
   name: yup.string().min(6).required("name is required"),
 });
 

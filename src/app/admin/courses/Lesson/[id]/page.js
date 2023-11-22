@@ -1,5 +1,5 @@
 "use client";
-import { Spin, Popconfirm, Button, Breadcrumb, Row, Col, Card } from "antd";
+import { Spin, Popconfirm, Button, Breadcrumb, Row, Col, Card, message } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteLesson, viewLesson } from "@/features/Lesson/lessonSlice";
@@ -28,7 +28,7 @@ export default function Lesson({ params }) {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        message.error(error.response?.data?.message, 3.5);
         setIsLoading(false);
       });
   }, [updateLesson, dispatch]);
@@ -60,9 +60,6 @@ export default function Lesson({ params }) {
     <div>
       <div className="p-3">
         <Breadcrumb>
-          <Breadcrumb.Item>
-            <Link href="/admin">Admin</Link>
-          </Breadcrumb.Item>
           <Breadcrumb.Item>
             <Link href="/admin/courses/view-courses">Courses</Link>
           </Breadcrumb.Item>
@@ -96,6 +93,7 @@ export default function Lesson({ params }) {
                           description="Are you sure to delete this Lesson?"
                           okText="Yes"
                           cancelText="No"
+                          okButtonProps={{ style: { backgroundColor: "red" } }}
                           className="me-3"
                           onConfirm={() =>
                             handleDeleteLesson({

@@ -11,7 +11,12 @@ import * as yup from "yup";
 import { updateRole } from "@/features/User/userSlice";
 
 const RoleSchema = yup.object({
-  name: yup.string().min(6).required("name is required"),
+  name: yup
+    .string()
+    .required("Name is required")
+    .trim("Name must not start or end with whitespace")
+    .min(6, "Name must be at least 6 characters long")
+    .matches(/^\S*$/, "Name must not contain whitespace"),
 });
 
 export default function EditRole(props) {
@@ -27,9 +32,11 @@ export default function EditRole(props) {
     setIsModalOpen(false);
   };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
-    formik.handleSubmit();
+  const handleOk = async () => {
+    await formik.submitForm();
+    if (formik.isValid && !formik.isSubmitting && formik.submitCount > 0) {
+      setIsModalOpen(false);
+    }
   };
 
   const formik = useFormik({
@@ -39,20 +46,26 @@ export default function EditRole(props) {
       name: "",
     },
     onSubmit: (values) => {
+      values.name = values.name.trim();
+
       dispatch(updateRole({ id: id, values }))
         .then(unwrapResult)
         .then((res) => {
-          messageApi
-            .open({
-              type: "success",
-              content: "Action in progress...",
-            })
-            .then(() => {
-              refresh();
-            });
+          if (res.status) {
+            messageApi
+              .open({
+                type: "success",
+                content: "Action in progress...",
+              })
+              .then(() => {
+                refresh();
+              });
+          } else {
+            message.error(res.message, 3.5);
+          }
         })
         .catch((error) => {
-          console.log(error);
+          message.error(error.response?.data?.message, 3.5);
         });
     },
   });
@@ -73,6 +86,24 @@ export default function EditRole(props) {
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
+        footer={
+          <>
+            <Button key="back" onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button
+              key="back"
+              type="primary"
+              onClick={handleOk}
+              style={{
+                color: "#fff",
+                backgroundColor: "#1890ff",
+              }}
+            >
+              Save
+            </Button>
+          </>
+        }
       >
         <div>
           <label htmlFor="role" className="fs-6 fw-bold">
@@ -83,7 +114,13 @@ export default function EditRole(props) {
             onChange={formik.handleChange("name")}
             onBlur={formik.handleBlur("name")}
             value={formik.values.name}
-            error={formik.touched.name && formik.errors.name}
+            error={
+              formik.submitCount > 0 &&
+              formik.touched.name &&
+              formik.errors.name
+                ? formik.errors.name
+                : null
+            }
           />
         </div>
       </Modal>

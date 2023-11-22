@@ -1,5 +1,4 @@
 "use client";
-import CustomButton from "@/components/comman/CustomBtn";
 import CustomInput from "@/components/comman/CustomInput";
 import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
@@ -11,8 +10,18 @@ import { createCourse } from "@/features/Courses/courseSlice";
 import { useState } from "react";
 
 const CourseSchema = yup.object({
-  title: yup.string().min(6).required("Title is required"),
-  name: yup.string().min(6).required("name is required"),
+  title: yup
+    .string()
+    .required("Title is required")
+    .trim("Title must not start or end with whitespace")
+    .min(6, "Title must be at least 6 characters long")
+    .matches(/^\S*$/, "Title must not contain whitespace"),
+  name: yup
+    .string()
+    .required("Name is required")
+    .trim("Name must not start or end with whitespace")
+    .min(6, "Name must be at least 6 characters long")
+    .matches(/^\S*$/, "Name must not contain whitespace"),
 });
 
 export default function AddCourse() {
@@ -26,13 +35,14 @@ export default function AddCourse() {
   };
 
   const handleOk = () => {
-    setIsModalOpen(false);
-    formik.handleSubmit();
+    formik.submitForm();
+    if (formik.isValid && !formik.isSubmitting && formik.submitCount > 0) {
+      setIsModalOpen(false);
+    }
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    formik.handleSubmit();
   };
 
   const formik = useFormik({
@@ -42,6 +52,9 @@ export default function AddCourse() {
       name: "",
     },
     onSubmit: (values) => {
+      values.name = values.name.trim();
+      values.title = values.title.trim();
+
       dispatch(createCourse(values))
         .then(unwrapResult)
         .then((res) => {
@@ -116,7 +129,13 @@ export default function AddCourse() {
                   onChange={formik.handleChange("title")}
                   onBlur={formik.handleBlur("title")}
                   value={formik.values.title}
-                  error={formik.touched.title && formik.errors.title}
+                  error={
+                    formik.submitCount > 0 &&
+                    formik.touched.title &&
+                    formik.errors.title
+                      ? formik.errors.title
+                      : null
+                  }
                 />
               </div>
               <div className="mt-3">
@@ -129,7 +148,13 @@ export default function AddCourse() {
                   onChange={formik.handleChange("name")}
                   onBlur={formik.handleBlur("name")}
                   value={formik.values.name}
-                  error={formik.touched.name && formik.errors.name}
+                  error={
+                    formik.submitCount > 0 &&
+                    formik.touched.name &&
+                    formik.errors.name
+                      ? formik.errors.name
+                      : null
+                  }
                 />
               </div>
             </form>

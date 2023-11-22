@@ -26,6 +26,14 @@ const getAllUser = async () => {
   return res;
 };
 
+const getAUser = async (data) => {
+  const res = await axiosInstance({
+    url: "/e-learning/user/" + data,
+    method: "GET",
+  });
+  return res;
+};
+
 const deleteUser = async (data) => {
   const res = await axiosInstance({
     url: "/e-learning/user/" + data,
@@ -98,4 +106,5 @@ export const authService = {
   deleteRole,
   updateRole,
   updateUser,
+  getAUser,
 };

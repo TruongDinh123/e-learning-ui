@@ -10,8 +10,16 @@ import * as yup from "yup";
 import { createLesson } from "@/features/Lesson/lessonSlice";
 
 const CreateLessonSchema = yup.object({
-  content: yup.string().min(6).required("Content is required"),
-  name: yup.string().min(6).required("Name is required"),
+  content: yup
+    .string()
+    .required("content is required")
+    .trim("content must not start or end with whitespace")
+    .min(6, "content must be at least 6 characters long"),
+  name: yup
+    .string()
+    .required("name is required")
+    .trim("name must not start or end with whitespace")
+    .min(6, "name must be at least 6 characters long"),
 });
 
 export default function CreateLesson(props) {
@@ -22,15 +30,16 @@ export default function CreateLesson(props) {
 
   const showModal = () => {
     setIsModalOpen(true);
-    formik.resetForm();
   };
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
   const handleOk = () => {
-    setIsModalOpen(false);
-    formik.handleSubmit();
+    formik.submitForm();
+    if (formik.isValid && !formik.isSubmitting && formik.submitCount > 0) {
+      setIsModalOpen(false);
+    }
   };
 
   const formik = useFormik({
@@ -41,6 +50,9 @@ export default function CreateLesson(props) {
       name: "",
     },
     onSubmit: (values) => {
+      values.content = values.content.trim();
+      values.name = values.name.trim();
+
       dispatch(createLesson({ courseId: courseId, values }))
         .then(unwrapResult)
         .then((res) => {
@@ -103,7 +115,13 @@ export default function CreateLesson(props) {
             onChange={formik.handleChange("name")}
             onBlur={formik.handleBlur("name")}
             value={formik.values.name}
-            error={formik.touched.name && formik.errors.name}
+            error={
+              formik.submitCount > 0 &&
+              formik.touched.name &&
+              formik.errors.name
+                ? formik.errors.name
+                : null
+            }
           />
 
           <label htmlFor="course" className="fs-6 fw-bold">
@@ -113,7 +131,13 @@ export default function CreateLesson(props) {
             onChange={formik.handleChange("content")}
             onBlur={formik.handleBlur("content")}
             value={formik.values.content}
-            error={formik.touched.content && formik.errors.content}
+            error={
+              formik.submitCount > 0 &&
+              formik.touched.content &&
+              formik.errors.content
+                ? formik.errors.content
+                : null
+            }
           />
         </div>
       </Modal>

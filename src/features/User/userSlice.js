@@ -61,6 +61,18 @@ export const updateUser = createAsyncThunk(
   }
 );
 
+export const getAUser = createAsyncThunk(
+  "/e-learning/user",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await authService.getAUser(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 //roles
 
 export const getAllRole = createAsyncThunk(
@@ -227,6 +239,32 @@ const userSlice = createSlice({
         state.isSuccess = true;
       })
       .addCase(updateUserRoles.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+      })
+      .addCase(updateRole.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(updateRole.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+      })
+      .addCase(updateRole.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+      })
+      .addCase(createRole.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(createRole.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+      })
+      .addCase(createRole.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

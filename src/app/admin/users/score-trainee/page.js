@@ -114,15 +114,15 @@ export default function ViewStudentsCourse() {
     {
       title: "Name",
       dataIndex: "lastName",
-      onFilter: (value, record) => record.lastName.indexOf(value) === 0,
-      sorter: (a, b) => a.lastName.length - b.lastName.length,
+      key: "lastName",
+      sorter: (a, b) => a.lastName.localeCompare(b.lastName),
       sortDirections: ["descend"],
     },
     {
       title: "Email",
       dataIndex: "email",
-      onFilter: (value, record) => record.email.indexOf(value) === 0,
-      sorter: (a, b) => a.email.length - b.email.length,
+      key: "email",
+      sorter: (a, b) => a.email.localeCompare(b.email),
       sortDirections: ["descend"],
     },
     {

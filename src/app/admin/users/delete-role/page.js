@@ -22,12 +22,10 @@ export default function DelRole(props) {
               duration: 2.5,
             })
             .then(() => message.success(res.message, 2.5), refresh());
-        } else {
-          messageApi.error(res.message);
         }
       })
       .catch((error) => {
-        console.log(error);
+        message.error(error.response?.data?.message, 3.5);
       });
   };
 
@@ -41,6 +39,7 @@ export default function DelRole(props) {
         cancelText="No"
         className="me-3"
         onConfirm={() => handleDeleteRole()}
+        style={{ color: "#fff", backgroundColor: "#1890ff" }}
       >
         <Button danger style={{ width: "100%" }}>
           Delete

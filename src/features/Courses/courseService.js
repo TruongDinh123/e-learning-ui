@@ -75,6 +75,30 @@ const getCourseCompletion = async (data) => {
   return res.data;
 };
 
+const getPublicCourse = async (data) => {
+  const res = await axiosInstance({
+    url: "/e-learning/public-course/",
+    method: "GET",
+  });
+  return res.data;
+};
+
+const buttonPublicCourse = async (data) => {
+  const res = await axiosInstance({
+    url: "/e-learning/public-course/" + data,
+    method: "POST",
+  });
+  return res;
+}
+
+const buttonPriavteCourse = async (data) => {
+  const res = await axiosInstance({
+    url: "/e-learning/priavte-course/" + data,
+    method: "POST",
+  });
+  return res;
+}
+
 export const courseService = {
   createCourse,
   viewCourse,
@@ -85,4 +109,7 @@ export const courseService = {
   removeStudentFromCourse,
   getStudentCourses,
   getCourseCompletion,
+  getPublicCourse,
+  buttonPublicCourse,
+  buttonPriavteCourse
 };

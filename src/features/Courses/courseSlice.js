@@ -109,6 +109,43 @@ export const getCourseCompletion = createAsyncThunk(
   }
 );
 
+export const getCoursePublic = createAsyncThunk(
+  "/e-learning/get-public-course/",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await courseService.getPublicCourse(data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const buttonPublicCourse = createAsyncThunk(
+  "/e-learning/get-public-course/",
+  async (data, { rejectWithValue }) => {
+    console.log("🚀 ~ data:", data);
+    try {
+      const response = await courseService.buttonPublicCourse(data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const buttonPriavteourse = createAsyncThunk(
+  "/e-learning/get-priavte-course/",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await courseService.buttonPriavteCourse(data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 const initialState = {
   course: "",
   isError: false,

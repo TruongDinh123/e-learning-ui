@@ -25,28 +25,28 @@ export default function ViewUsers() {
       title: "Last Name",
       dataIndex: "lastName",
       onFilter: (value, record) => record.lastName.indexOf(value) === 0,
-      sorter: (a, b) => a.lastName.length - b.lastName.length,
+      sorter: (a, b) => a.lastName.localeCompare(b.lastName),
       sortDirections: ["descend"],
     },
     {
       title: "Email",
       dataIndex: "email",
       onFilter: (value, record) => record.email.indexOf(value) === 0,
-      sorter: (a, b) => a.email.length - b.email.length,
+      sorter: (a, b) => a.email.localeCompare(b.email),
       sortDirections: ["descend"],
     },
     {
       title: "Status",
       dataIndex: "status",
       onFilter: (value, record) => record.status.indexOf(value) === 0,
-      sorter: (a, b) => a.status.length - b.status.length,
+      sorter: (a, b) => a.status.localeCompare(b.status),
       sortDirections: ["descend"],
     },
     {
       title: "Roles",
       dataIndex: "roles",
       onFilter: (value, record) => record.roles.indexOf(value) === 0,
-      sorter: (a, b) => a.roles.length - b.roles.length,
+      sorter: (a, b) => a.roles.join(", ").localeCompare(b.roles.join(", ")),
       sortDirections: ["descend"],
     },
     {
@@ -54,7 +54,6 @@ export default function ViewUsers() {
       dataIndex: "action",
     },
   ];
-
   //viewUsers api
   useEffect(() => {
     setIsLoading(true);
@@ -84,9 +83,10 @@ export default function ViewUsers() {
         </Menu.Item>
         <Menu.Item>
           <Popconfirm
-            title="Delete the Course"
-            description="Are you sure to delete this Course?"
+            title="Delete the user"
+            description="Are you sure to delete this user?"
             okText="Yes"
+            okButtonProps={{ style: { backgroundColor: 'red' } }}
             cancelText="No"
             onConfirm={() => handleDeleteUser(i?._id)}
           >
@@ -115,8 +115,9 @@ export default function ViewUsers() {
           <EditUser id={i?._id} refresh={() => setUpdateUser(updateUser + 1)} />
 
           <Popconfirm
-            title="Delete the Course"
-            description="Are you sure to delete this Course?"
+            title="Delete the user"
+            description="Are you sure to delete this user?"
+            okButtonProps={{ style: { backgroundColor: 'red' } }}
             okText="Yes"
             cancelText="No"
             onConfirm={() => handleDeleteUser(i?._id)}

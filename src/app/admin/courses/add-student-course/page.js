@@ -36,7 +36,7 @@ export default function AddStudentToCourse(props) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        message.error(error.response?.data?.message, 3.5);
       });
   };
 
@@ -74,7 +74,7 @@ export default function AddStudentToCourse(props) {
             });
         })
         .catch((error) => {
-          console.log(error);
+          message.error(error.response?.data?.message, 3.5);
         });
     },
   });
@@ -88,13 +88,23 @@ export default function AddStudentToCourse(props) {
         className="me-3"
         style={{ color: "#fff", backgroundColor: "#1890ff" }}
       >
-        invite
+        Invite Trainee
       </Button>
       <Modal
         title="Invite Email"
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
+        footer={
+          <Button
+            key="ok"
+            type="primary"
+            onClick={handleOk}
+            style={{ backgroundColor: "#1890ff", color: "white" }}
+          >
+            OK
+          </Button>
+        }
       >
         <div>
           <label htmlFor="course" className="fs-6 fw-bold">

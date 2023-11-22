@@ -27,6 +27,10 @@ export default function VideoLesson(propsComponent) {
     setIsModalOpen(true);
   };
 
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   const handleOk = () => {
     setIsModalOpen(false);
   };
@@ -135,11 +139,13 @@ export default function VideoLesson(propsComponent) {
             <Modal
               title="Video Lesson"
               open={isModalOpen}
+              onCancel={handleCancel}
+              onOk={handleOk}
               width={70 + "%"}
               height={70 + "%"}
               footer={
                 <>
-                  <Button key="back" onClick={handleOk}>
+                  <Button key="cancel" onClick={handleOk}>
                     Cancel
                   </Button>
                 </>
@@ -170,6 +176,7 @@ export default function VideoLesson(propsComponent) {
                       description="Are you sure to delete video?"
                       okText="Yes"
                       cancelText="No"
+                      okButtonProps={{ style: { backgroundColor: "red" } }}
                       onConfirm={() =>
                         handleDelVideoLesson({
                           videoLessonId: item?._id,
