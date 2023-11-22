@@ -24,7 +24,8 @@ const CourseSchema = yup.object({
     .matches(/^\S*$/, "Name must not contain whitespace"),
 });
 
-export default function AddCourse() {
+export default function AddCourse(props) {
+  const { refresh } = props;
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,7 +66,7 @@ export default function AddCourse() {
                 content: "Action in progress...",
                 duration: 2.5,
               })
-              .then(() => message.success(res.message, 2.5))
+              .then(() => message.success(res.message, 2.5), refresh())
               .then(() => {
                 router.push("/admin/courses/view-courses");
               });
