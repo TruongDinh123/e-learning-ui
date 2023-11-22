@@ -1,7 +1,7 @@
 "use client";
+import React, { useEffect, useState } from "react";
 import { Typography } from "@material-tailwind/react";
 import StatisticsCard from "@/components/Card/statistics-card";
-import React from "react";
 import {
   BanknotesIcon,
   ChartBarIcon,
@@ -9,56 +9,21 @@ import {
   UserPlusIcon,
   UsersIcon,
 } from "@heroicons/react/24/solid";
+import statisticsCardsData from "@/data/statistics-cards-data";
 import statisticsChartsData from "@/data/statistics-charts-data";
-import StatisticsChart from "@/components/Chart/statistics-chart";
+import dynamic from "next/dynamic";
+
+const StatisticsChartDynamic = dynamic(
+  () => import('@/components/Chart/statistics-chart'),
+  { ssr: false }
+)
 
 export default function Dashboard() {
-  const statisticsCardsData = [
-    {
-      color: "gray",
-      icon: BanknotesIcon,
-      title: "Today's Money",
-      value: "$53k",
-      footer: {
-        color: "text-green-500",
-        value: "+55%",
-        label: "than last week",
-      },
-    },
-    {
-      color: "gray",
-      icon: UsersIcon,
-      title: "Today's Users",
-      value: "2,300",
-      footer: {
-        color: "text-green-500",
-        value: "+3%",
-        label: "than last month",
-      },
-    },
-    {
-      color: "gray",
-      icon: UserPlusIcon,
-      title: "New Clients",
-      value: "3,462",
-      footer: {
-        color: "text-red-500",
-        value: "-2%",
-        label: "than yesterday",
-      },
-    },
-    {
-      color: "gray",
-      icon: ChartBarIcon,
-      title: "Sales",
-      value: "$103,430",
-      footer: {
-        color: "text-green-500",
-        value: "+5%",
-        label: "than yesterday",
-      },
-    },
-  ];
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <div className="mt-12">
@@ -81,8 +46,8 @@ export default function Dashboard() {
         ))}
       </div>
       <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
-        {statisticsChartsData.map((props) => (
-          <StatisticsChart
+        {isClient && statisticsChartsData.map((props) => (
+          <StatisticsChartDynamic
             key={props.title}
             {...props}
             footer={

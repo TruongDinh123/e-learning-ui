@@ -14,14 +14,12 @@ const CourseSchema = yup.object({
     .string()
     .required("Title is required")
     .trim("Title must not start or end with whitespace")
-    .min(6, "Title must be at least 6 characters long")
-    .matches(/^\S*$/, "Title must not contain whitespace"),
+    .min(6, "Title must be at least 6 characters long"),
   name: yup
     .string()
     .required("Name is required")
     .trim("Name must not start or end with whitespace")
     .min(6, "Name must be at least 6 characters long")
-    .matches(/^\S*$/, "Name must not contain whitespace"),
 });
 
 export default function AddCourse(props) {
