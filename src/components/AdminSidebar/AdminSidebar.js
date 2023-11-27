@@ -87,23 +87,6 @@ export default function AdminSidebar(props) {
           },
           {
             key: "3",
-            icon: <FileAddOutlined />,
-            label: "Assignment",
-            children: [
-              {
-                key: "assignment/create-assignment",
-                icon: <UserOutlined />,
-                label: "Assignment",
-              },
-              {
-                key: "assignment/view-assignment",
-                icon: <UserOutlined />,
-                label: "View Assignment",
-              }
-            ],
-          },
-          {
-            key: "4",
             icon: <UserOutlined />,
             label: "User",
             children: [

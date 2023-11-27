@@ -66,22 +66,17 @@ export default function UpdateQuiz(props) {
   return (
     <>
       {contextHolder}
-      <Button
-        type="primary"
-        onClick={showModal}
-        className="me-3"
-        style={{
-          color: "#fff",
-          backgroundColor: "#1890ff",
-        }}
-      >
+      <Button type="primary" onClick={showModal} className="me-3">
         update quiz
       </Button>
       <Modal
         title="Create Quiz"
         open={isModalOpen}
         onCancel={handleCancel}
-        footer={<></>}
+        footer={[
+          <>
+          </>
+        ]}
       >
         <Form
           form={form}
@@ -176,14 +171,7 @@ export default function UpdateQuiz(props) {
             )}
           </Form.List>
           <div className="pt-2 text-end">
-            <Button
-              type="primary"
-              htmlType="submit"
-              style={{
-                color: "#fff",
-                backgroundColor: "#1890ff",
-              }}
-            >
+            <Button type="primary" htmlType="submit">
               Save Quiz
             </Button>
           </div>

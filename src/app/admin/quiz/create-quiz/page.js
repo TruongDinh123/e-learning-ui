@@ -227,11 +227,7 @@ export default function QuizCreator() {
               )}
             </Form.List>
             <div className="pt-2 text-end">
-              <Button
-                type="primary"
-                htmlType="submit"
-                style={{ color: "#fff", backgroundColor: "#1890ff" }}
-              >
+              <Button type="primary" htmlType="submit">
                 Save Quiz
               </Button>
             </div>

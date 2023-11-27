@@ -27,7 +27,6 @@ export default function CreateLesson(props) {
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -37,11 +36,9 @@ export default function CreateLesson(props) {
   };
 
   const handleOk = () => {
-    setLoading(true);
     formik.submitForm();
     if (formik.isValid && !formik.isSubmitting && formik.submitCount > 0) {
       setIsModalOpen(false);
-      setLoading(false);
     }
   };
 
@@ -100,7 +97,6 @@ export default function CreateLesson(props) {
             key="back"
             type="primary"
             onClick={handleOk}
-            loading={loading}
             style={{
               color: "#fff",
               backgroundColor: "#1890ff",

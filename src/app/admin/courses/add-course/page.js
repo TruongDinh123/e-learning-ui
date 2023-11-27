@@ -4,11 +4,10 @@ import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as yup from "yup";
-import {  Modal, message } from "antd";
+import { Button, Modal, message } from "antd";
 import { useRouter } from "next/navigation";
 import { createCourse } from "@/features/Courses/courseSlice";
 import { useState } from "react";
-import { Button } from "@material-tailwind/react";
 
 const CourseSchema = yup.object({
   title: yup
@@ -29,18 +28,15 @@ export default function AddCourse(props) {
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
   const handleOk = () => {
-    setLoading(true);
     formik.submitForm();
     if (formik.isValid && !formik.isSubmitting && formik.submitCount > 0) {
       setIsModalOpen(false);
-      setLoading(false);
     }
   };
 
@@ -106,7 +102,6 @@ export default function AddCourse(props) {
               key="back"
               type="primary"
               onClick={handleOk}
-              loading={loading}
               style={{
                 color: "#fff",
                 backgroundColor: "#1890ff",

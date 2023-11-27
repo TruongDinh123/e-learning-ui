@@ -1,11 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Radio, Button, message, Row, Col, Breadcrumb } from "antd";
+import { Card, Radio, Button, message, Row, Col } from "antd";
 import { submitQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 export default function Quizs({ params }) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -14,7 +13,6 @@ export default function Quizs({ params }) {
   const [messageApi, contextHolder] = message.useMessage();
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
 
   const handleAnswer = (questionId, answer) => {
@@ -27,7 +25,6 @@ export default function Quizs({ params }) {
   const idQuiz = quiz.map((item) => item._id);
 
   const handleSubmit = () => {
-    setSubmitting(true); 
     const formattedAnswers = Object.entries(selectedAnswers).map(
       ([questionId, answer]) => ({
         [questionId]: answer,
@@ -45,6 +42,7 @@ export default function Quizs({ params }) {
             })
             .then(() => {
               setSubmitted(true);
+              router.push("/courses/view-course");
             })
             .then(() => message.success(res.message, 1.5));
         } else {
@@ -53,9 +51,6 @@ export default function Quizs({ params }) {
       })
       .catch((error) => {
         console.log(error);
-      })
-      .finally(() => {
-        setSubmitting(false);
       });
   };
 
@@ -137,7 +132,6 @@ export default function Quizs({ params }) {
                   <Button
                     type="primary"
                     onClick={handleSubmit}
-                    disabled={submitting}
                     className="button-container me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                   >
                     Submit
