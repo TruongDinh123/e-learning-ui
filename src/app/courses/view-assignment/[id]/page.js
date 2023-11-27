@@ -118,14 +118,14 @@ export default function Assignment({ params }) {
       });
   }, []);
 
-  useEffect(() => {
-    if (started && timeLeft > 0) {
-      const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timerId);
-    } else if (timeLeft === 0) {
-      handleSubmit();
-    }
-  }, [started, timeLeft]);
+  // useEffect(() => {
+  //   if (started && timeLeft > 0) {
+  //     const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+  //     return () => clearTimeout(timerId);
+  //   } else if (timeLeft === 0) {
+  //     handleSubmit();
+  //   }
+  // }, [started, timeLeft]);
 
   const currentScore = score.find((s) => s.assignment === assignmentId);
 
