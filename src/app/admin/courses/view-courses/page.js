@@ -22,11 +22,31 @@ export default function Courses() {
   const [course, setCourse] = useState([]);
   const [updateCourse, setUpdateCourse] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [shouldRefresh, setShouldRefresh] = useState(false);
   const router = useRouter();
 
   //viewCourses api
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   dispatch(viewCourses())
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       if (res.status) {
+  //         setCourse(res.data.metadata);
+  //       }
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       setIsLoading(false);
+  //     });
+  // }, [updateCourse]);
+
   useEffect(() => {
+    if (!shouldRefresh) {
+      return;
+    }
+
     setIsLoading(true);
     dispatch(viewCourses())
       .then(unwrapResult)
@@ -40,7 +60,10 @@ export default function Courses() {
         console.log(error);
         setIsLoading(false);
       });
-  }, [updateCourse]);
+
+    // Reset the refresh state after the API call
+    setShouldRefresh(false);
+  }, [shouldRefresh]);
 
   const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
 
@@ -64,7 +87,8 @@ export default function Courses() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setUpdateCourse(updateCourse + 1);
+          // setUpdateCourse(updateCourse + 1);
+          setShouldRefresh(true);
         }
         setIsLoading(false);
       })
@@ -80,7 +104,8 @@ export default function Courses() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setUpdateCourse(updateCourse + 1);
+          // setUpdateCourse(updateCourse + 1);
+          setShouldRefresh(true);
         }
         setIsLoading(false);
       })
@@ -96,7 +121,8 @@ export default function Courses() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setUpdateCourse(updateCourse + 1);
+          // setUpdateCourse(updateCourse + 1);
+          setShouldRefresh(true);
         }
         setIsLoading(false);
       })
