@@ -114,7 +114,7 @@ export default function Courses() {
         <div className="max-w-screen-2xl mx-auto">
           <h1>View Course</h1>
           <AddCourse refresh={() => setUpdateCourse(updateCourse + 1)} />
-          <div className="p-6 space-y-4">
+          <div className="p-6 space-y-4 pb-28">
             <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3">
               {data.map((item) => {
                 const menu = (

@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { viewCourses } from "../features/Courses/courseSlice";
 import {
   BanknotesIcon,
   UserPlusIcon,
@@ -11,15 +10,17 @@ import {
 } from "@heroicons/react/24/solid";
 import { Typography } from "@material-tailwind/react";
 import StatisticsCard from "@/app/admin/dashboard/Card/statistics-card";
+import { viewCourses } from "@/features/Courses/courseSlice";
 
 const StatisticsCardComponent = () => {
   const dispatch = useDispatch();
   const [courses, setCourses] = useState([]);
+  console.log("🚀 ~ courses:", courses);
   const [statisticsCardsData, setStatisticsCardsData] = useState([
     {
       color: "gray",
       icon: BanknotesIcon,
-      title: "Today's Money",
+      title: "Total Students",
       value: "$53k",
       footer: {
         color: "text-green-500",
@@ -30,7 +31,7 @@ const StatisticsCardComponent = () => {
     {
       color: "gray",
       icon: UsersIcon,
-      title: "Today's Users",
+      title: "Total Course",
       value: "2,300",
       footer: {
         color: "text-green-500",
@@ -41,7 +42,7 @@ const StatisticsCardComponent = () => {
     {
       color: "gray",
       icon: UserPlusIcon,
-      title: "New Clients",
+      title: "Public Course",
       value: "3,462",
       footer: {
         color: "text-red-500",
@@ -52,7 +53,7 @@ const StatisticsCardComponent = () => {
     {
       color: "gray",
       icon: ChartBarIcon,
-      title: "Sales",
+      title: "Private Course",
       value: "$103,430",
       footer: {
         color: "text-green-500",
@@ -68,16 +69,6 @@ const StatisticsCardComponent = () => {
       .then((res) => {
         if (res.status) {
           setCourses(res.data.metadata);
-          // Update statisticsCardsData here with the courses data
-          // For example, if you want to update the "Today's Users" card with the number of courses:
-          setStatisticsCardsData((prevData) =>
-            prevData.map((card) => {
-              if (card.title === "Today's Users") {
-                return { ...card, value: courses.length.toString() };
-              }
-              return card;
-            })
-          );
         } else {
           console.error(res.message);
         }
@@ -87,8 +78,41 @@ const StatisticsCardComponent = () => {
       });
   }, [dispatch]);
 
+  useEffect(() => {
+    const uniqueStudents = new Set();
+    const publicCourses = [];
+    const privateCourses = [];
+
+    courses.forEach((course) => {
+      course.students.forEach((student) => {
+        uniqueStudents.add(student._id);
+      });
+      if (course.showCourse) {
+        publicCourses.push(course);
+      } else {
+        privateCourses.push(course);
+      }
+    });
+    setStatisticsCardsData((prevData) =>
+      prevData.map((card) => {
+        switch (card.title) {
+          case "Total Students":
+            return { ...card, value: uniqueStudents.size.toString() };
+          case "Total Course":
+            return { ...card, value: courses.length.toString() };
+          case "Public Course":
+            return { ...card, value: publicCourses.length.toString() };
+          case "Private Course":
+            return { ...card, value: privateCourses.length.toString() };
+          default:
+            return card;
+        }
+      })
+    );
+  }, [courses]);
+
   return (
-    <div>
+    <>
       {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
         <StatisticsCard
           key={title}
@@ -105,7 +129,7 @@ const StatisticsCardComponent = () => {
           }
         />
       ))}
-    </div>
+    </>
   );
 };
 

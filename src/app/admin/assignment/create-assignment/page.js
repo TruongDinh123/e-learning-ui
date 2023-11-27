@@ -7,18 +7,18 @@ import { viewCourses } from "@/features/Courses/courseSlice";
 import { createQuiz } from "@/features/Quiz/quizSlice";
 import { CloseOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
+import { createAssignment } from "@/features/Assignment/assignmentSlice";
 
 const { Option } = Select;
 
-export default function QuizCreator() {
+export default function AssignmentCreate() {
   const [messageApi, contextHolder] = message.useMessage();
   const [selectedCourse, setSelectedCourse] = useState(null);
-  const [selectedLesson, setSelectedLesson] = useState(null);
   const [courses, setCourses] = useState([]); // Danh sách khóa học
-  const [selectedCourseLessons, setSelectedCourseLessons] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -26,12 +26,6 @@ export default function QuizCreator() {
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
     const selectedCourse = courses.find((course) => course._id === value);
-    setSelectedCourseLessons(selectedCourse?.lessons || []);
-  };
-
-  // Hàm xử lý khi chọn bài học
-  const handleLessonChange = (value) => {
-    setSelectedLesson(value);
   };
 
   const handleAddQuestion = () => {
@@ -47,16 +41,18 @@ export default function QuizCreator() {
     form.setFieldsValue({ questions: newQuestions });
   };
 
-  const handleSaveQuiz = (values) => {
+  const handleSaveAssigment = (values) => {
+    setLoading(true);
     const formattedValues = {
       ...values,
+      courseId: selectedCourse,
       questions: values.questions.map((question) => ({
         ...question,
         options: question.options.map((option) => option.option),
       })),
     };
 
-    dispatch(createQuiz({ lessonId: selectedLesson, formattedValues }))
+    dispatch(createAssignment({ formattedValues }))
       .then(unwrapResult)
       .then((res) => {
         messageApi
@@ -67,7 +63,8 @@ export default function QuizCreator() {
           })
           .then(() => {
             message.success(res.message, 1.5);
-            router.push("/admin/quiz/view-quiz");
+            // router.push("/admin/quiz/view-quiz");
+            setLoading(false);
           });
       })
       .catch((error) => {
@@ -83,7 +80,6 @@ export default function QuizCreator() {
       .then((res) => {
         if (res.status) {
           setCourses(res.data.metadata);
-          setSelectedCourseLessons(res.data.metadata[0]?.lessons || []);
         } else {
           messageApi.error(res.message);
         }
@@ -109,7 +105,7 @@ export default function QuizCreator() {
             initialValues={{
               questions: [{}],
             }}
-            onFinish={handleSaveQuiz}
+            onFinish={handleSaveAssigment}
           >
             <div style={{ display: "flex" }}>
               <Select
@@ -124,26 +120,35 @@ export default function QuizCreator() {
                   </Option>
                 ))}
               </Select>
-              <Select
-                placeholder="Select a lesson"
-                onChange={handleLessonChange}
-                value={selectedLesson}
-              >
-                {selectedCourseLessons.map((lesson) => (
-                  <Option key={lesson._id} value={lesson._id}>
-                    {lesson.name}
-                  </Option>
-                ))}
-              </Select>
             </div>
             <Form.Item
-              label="Quiz Name"
+              label="Assigment Name"
               name="name"
               rules={[
                 { required: true, message: "Please enter the quiz name" },
               ]}
             >
               <Input placeholder="Quiz Name" />
+            </Form.Item>
+            <Form.Item
+              label="Assigment Description"
+              name="description"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter the assignment description",
+                },
+              ]}
+            >
+              <Input placeholder="Assigment Name" />
+            </Form.Item>
+            <Form.Item label="Time Limit" name="timeLimit">
+              <Select placeholder="Select a time limit">
+                <Option value={15}>15 minutes</Option>
+                <Option value={30}>30 minutes</Option>
+                <Option value={45}>45 minutes</Option>
+                <Option value={null}>No limit</Option>
+              </Select>
             </Form.Item>
             <Form.List name="questions">
               {(fields, { add, remove }) => (
@@ -226,11 +231,15 @@ export default function QuizCreator() {
                 </div>
               )}
             </Form.List>
-            <div className="pt-2 text-end">
+            <div className="pt-6 text-end">
               <Button
                 type="primary"
                 htmlType="submit"
-                style={{ color: "#fff", backgroundColor: "#1890ff" }}
+                loading={loading}
+                style={{
+                  color: "#fff",
+                  backgroundColor: "#1890ff",
+                }}
               >
                 Save Quiz
               </Button>
