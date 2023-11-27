@@ -24,6 +24,7 @@ export default function Assignment({ params }) {
   const [score, setScore] = useState([]);
   console.log("🚀 ~ score:", score);
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAnswer = (questionId, answer) => {
     setSelectedAnswers((prevAnswers) => ({
@@ -60,6 +61,7 @@ export default function Assignment({ params }) {
             })
             .then(() => {
               setSubmitted(true);
+              setIsSubmitting(false);
               router.push("/courses/view-course");
             })
             .then(() => message.success(res.message, 1.5));
@@ -122,10 +124,11 @@ export default function Assignment({ params }) {
     if (started && timeLeft > 0) {
       const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timerId);
-    } else if (timeLeft === 0) {
+    } else if (timeLeft === 0 && !isSubmitting) {
+      setIsSubmitting(true);
       handleSubmit();
     }
-  }, [started, timeLeft]);
+  }, [started, timeLeft, isSubmitting]);
 
   const currentScore = score.find((s) => s.assignment === assignmentId);
 
