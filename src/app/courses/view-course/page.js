@@ -8,7 +8,7 @@ import {
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Image, Spin } from "antd";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GrView } from "react-icons/gr";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -18,7 +18,6 @@ export default function Course() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   //viewCourses api
   useEffect(() => {
@@ -47,9 +46,9 @@ export default function Course() {
           <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3">
             {course &&
               course.map((item, index) => (
-                <>
+                <React.Fragment key={index}>
                   <div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 h-full">
-                    <Link href={`/courses/lessons/${item?._id}`} key={"view"}>
+                    <Link href={`/courses/lessons/${item?._id}`}>
                       <div className="relative w-full aspect-video rounded-md overflow-hidden">
                         <Image
                           fill
@@ -77,14 +76,13 @@ export default function Course() {
                       <Link
                         className="button-container me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                         href={`/courses/view-assignment/${item?._id}`}
-                        key={"view"}
                       >
                         <FolderOpenOutlined />
                         Assignment
                       </Link>
                     </div>
                   </div>
-                </>
+                </React.Fragment>
               ))}
           </div>
         )}

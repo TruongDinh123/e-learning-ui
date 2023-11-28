@@ -16,7 +16,6 @@ export const createAssignment = createAsyncThunk(
 export const viewAssignmentByCourseId = createAsyncThunk(
   "/e-learning/view-assignment-by-course-id",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data);
     try {
       const response = await AssignmentService.viewAssignmentByCourseId(data);
       return response;
