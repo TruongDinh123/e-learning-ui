@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import AddStudentToCourse from "../add-student-course/page";
 import { getScoreByUserId } from "@/features/Quiz/quizSlice";
+import React from "react";
 
 export default function ViewStudentsCourse(props) {
   const { id, refresh } = props;
@@ -117,12 +118,12 @@ export default function ViewStudentsCourse(props) {
   });
 
   return (
-    <>
+    <React.Fragment>
       {contextHolder}
       <AddStudentToCourse courseId={id} refresh={() => setUpdate(update + 1)}>
         Invite Student
       </AddStudentToCourse>
       <Table columns={columns} dataSource={data} />
-    </>
+    </React.Fragment>
   );
 }

@@ -37,6 +37,30 @@ export const submitAssignment = createAsyncThunk(
   }
 );
 
+export const updateAssignment = createAsyncThunk(
+  "/e-learning/update-assignment",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await AssignmentService.updateAssignment(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const deleteQuizAssignment = createAsyncThunk(
+  "/e-learning/delete-assignment",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await AssignmentService.deleteQuizAssignment(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 const initialState = {
   quiz: "",
   isError: false,

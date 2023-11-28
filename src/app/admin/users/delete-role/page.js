@@ -3,6 +3,7 @@ import { deleteRole } from "@/features/User/userSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Popconfirm, message } from "antd";
 import { Button } from "antd";
+import React from "react";
 import { useDispatch } from "react-redux";
 
 export default function DelRole(props) {
@@ -30,7 +31,7 @@ export default function DelRole(props) {
   };
 
   return (
-    <>
+    <React.Fragment>
       {contextHolder}
       <Popconfirm
         title="Delete the Role"
@@ -45,6 +46,6 @@ export default function DelRole(props) {
           Delete
         </Button>
       </Popconfirm>
-    </>
+    </React.Fragment>
   );
 }

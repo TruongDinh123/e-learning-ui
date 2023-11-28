@@ -94,7 +94,7 @@ const ScoreManagement = () => {
         name: i?.quiz?.name ? i.quiz.name : i.assignment.name,
         score: i?.score,
         action: (
-          <>
+          <React.Fragment>
             <Button
               type="primary"
               onClick={() => showModal(index)}
@@ -138,7 +138,7 @@ const ScoreManagement = () => {
                 )}
               </Collapse>
             </Modal>
-          </>
+          </React.Fragment>
         ),
       });
     }
@@ -149,7 +149,7 @@ const ScoreManagement = () => {
       {isLoading ? (
         <Spin />
       ) : (
-        <>
+        <React.Fragment>
           <h1>My Scoce</h1>
           <Select
             defaultValue="all"
@@ -161,7 +161,7 @@ const ScoreManagement = () => {
             <Option value="assignment">Assignment</Option>
           </Select>
           <Table columns={columns} dataSource={data} />
-        </>
+        </React.Fragment>
       )}
     </div>
   );

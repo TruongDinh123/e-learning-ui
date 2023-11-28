@@ -97,7 +97,7 @@ export default function Lesson({ params }) {
   }
 
   return (
-    <>
+    <React.Fragment>
       <Breadcrumb className="pt-3 pl-5">
         <Breadcrumb.Item>
           <Link href="/">Home</Link>
@@ -165,7 +165,7 @@ export default function Lesson({ params }) {
                 {isLoading ? (
                   <Spin />
                 ) : (
-                  <>
+                  <React.Fragment>
                     {selectedVideo && (
                       <video
                         width="100%"
@@ -217,13 +217,13 @@ export default function Lesson({ params }) {
                         </Button>
                       </div>
                     )}
-                  </>
+                  </React.Fragment>
                 )}
               </Col>
             </Layout>
           </Layout>
         </Row>
       </div>
-    </>
+    </React.Fragment>
   );
 }

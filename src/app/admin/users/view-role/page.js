@@ -2,7 +2,7 @@
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { Button, Dropdown, Menu, Space, Spin, Table, message } from "antd";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getAllRole } from "@/features/User/userSlice";
 import EditRole from "../edit-role/page";
 import DelRole from "../delete-role/page";
@@ -100,10 +100,10 @@ export default function ViewRoles() {
       {isLoading ? (
         <Spin />
       ) : (
-        <>
+        <React.Fragment>
           <CreateRole refresh={() => setUpdateRole(updateRole + 1)} />
           <Table columns={columns} dataSource={data} className="pt-3" />
-        </>
+        </React.Fragment>
       )}
     </div>
   );

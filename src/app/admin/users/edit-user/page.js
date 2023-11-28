@@ -9,6 +9,7 @@ import CustomInput from "@/components/comman/CustomInput";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { getAUser, updateRole, updateUser } from "@/features/User/userSlice";
+import React from "react";
 
 const Userchema = yup.object({
   lastName: yup
@@ -89,7 +90,7 @@ export default function EditUser(props) {
   });
 
   return (
-    <>
+    <React.Fragment>
       {contextHolder}
       <Button
         type="primary"
@@ -103,7 +104,7 @@ export default function EditUser(props) {
         title="Edit Role"
         open={isModalOpen}
         footer={
-          <>
+          <React.Fragment>
             <Button key="cancle" type="default" onClick={handleCancel}>
               Cancle
             </Button>
@@ -115,7 +116,7 @@ export default function EditUser(props) {
             >
               OK
             </Button>
-          </>
+          </React.Fragment>
         }
       >
         <div>
@@ -155,6 +156,6 @@ export default function EditUser(props) {
           />
         </div>
       </Modal>
-    </>
+    </React.Fragment>
   );
 }

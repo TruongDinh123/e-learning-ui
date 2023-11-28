@@ -1,6 +1,6 @@
 "use client";
 import { Spin, Popconfirm, Button, Breadcrumb, Row, Col, Card, message } from "antd";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteLesson, viewLesson } from "@/features/Lesson/lessonSlice";
 import { useMediaQuery } from "react-responsive";
@@ -72,7 +72,7 @@ export default function Lesson({ params }) {
         {isLoading ? (
           <Spin />
         ) : (
-          <>
+          <React.Fragment>
             <CreateLesson
               courseId={params?.id}
               refresh={() => setUpdateLesson(updateLesson + 1)}
@@ -111,7 +111,7 @@ export default function Lesson({ params }) {
                 ))
               )}
             </Row>
-          </>
+          </React.Fragment>
         )}
       </div>
     </div>

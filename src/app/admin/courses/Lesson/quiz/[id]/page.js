@@ -167,17 +167,17 @@ export default function QuizCreator({ params }) {
       key: index + 1,
       name: i?.name,
       questions: (
-        <>
+        <div>
           <Collapse accordion>{questions}</Collapse>
-        </>
+        </div>
       ),
       action: (
-        <>
+        <div>
           <UpdateQuiz
             quizId={i?._id}
             refresh={() => setUpdateQuiz(updateQuiz + 1)}
           />
-        </>
+        </div>
       ),
     });
   });

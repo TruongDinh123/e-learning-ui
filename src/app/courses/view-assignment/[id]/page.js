@@ -131,8 +131,7 @@ export default function Assignment({ params }) {
         }}
       >
         <Col xs={24} md={16}>
-          {/* {
-            score?.some(
+          {score?.some(
             (s) => s?.assignment?._id === assignmentId && s?.isComplete
           ) ? (
             <div className="flex items-center justify-center">
@@ -164,17 +163,15 @@ export default function Assignment({ params }) {
                   Bạn đã hoàn thành với điểm là: {currentScore?.score}
                 </p>
                 <div>
-                  <Link
-                    href="/"
-                    className="mx-auto mt-10 block rounded-xl border-4 border-transparent bg-orange-400 px-6 py-3 text-center text-base font-medium text-orange-100 outline-8 hover:outline hover:duration-300"
-                  >
-                    Home
+                  <Link href="/">
+                    <div className="mx-auto mt-10 block rounded-xl border-4 border-transparent bg-orange-400 px-6 py-3 text-center text-base font-medium text-orange-100 outline-8 hover:outline hover:duration-300">
+                      Home
+                    </div>
                   </Link>
                 </div>
               </div>
             </div>
-          ) : 
-          started ? (
+          ) : started ? (
             assignment.map((item, index) => (
               <React.Fragment key={item._id}>
                 <Card title={item.name}>
@@ -250,64 +247,7 @@ export default function Assignment({ params }) {
                 </Button>
               </div>
             </div>
-          )} */}
-          {assignment.map((item, index) => (
-            <React.Fragment key={item._id}>
-              <Card title={item.name}>
-                <Statistic.Countdown
-                  value={startTime + timeLeft * 1000}
-                  onFinish={handleSubmit}
-                  format="mm:ss"
-                />
-                {item.questions.map((question, questionIndex) => {
-                  const isCorrectAnswer =
-                    selectedAnswers[question._id] === question.answer;
-                  const showAnswer = submitted && isCorrectAnswer;
-                  const showWrongAnswer = submitted && !isCorrectAnswer;
-                  return (
-                    <div key={question._id}>
-                      <h4
-                        style={{
-                          marginBottom: "10px",
-                          color: showAnswer
-                            ? "green"
-                            : showWrongAnswer
-                            ? "red"
-                            : "black",
-                        }}
-                      >
-                        Question {index + 1}.{questionIndex + 1}:{" "}
-                        {question.question}
-                        {showAnswer && " ✔️"}
-                        {showWrongAnswer && "❌"}
-                      </h4>
-                      <Radio.Group
-                        onChange={(e) =>
-                          handleAnswer(question._id, e.target.value)
-                        }
-                        disabled={submitted}
-                      >
-                        {question.options.map((option) => (
-                          <div key={option}>
-                            <Radio value={option}>{option}</Radio>
-                          </div>
-                        ))}
-                      </Radio.Group>
-                    </div>
-                  );
-                })}
-              </Card>
-              <div style={{ padding: "1rem" }}>
-                <Button
-                  type="primary"
-                  onClick={handleSubmit}
-                  className="button-container me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                >
-                  Submit
-                </Button>
-              </div>
-            </React.Fragment>
-          ))}
+          )}
         </Col>
       </Row>
     </div>

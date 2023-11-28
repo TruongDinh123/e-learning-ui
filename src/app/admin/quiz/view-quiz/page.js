@@ -15,6 +15,7 @@ import { deleteQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { viewCourses } from "@/features/Courses/courseSlice";
 import UpdateQuiz from "../../courses/Lesson/edit-quiz/page";
+import React from "react";
 
 const { Option } = Select;
 
@@ -155,18 +156,12 @@ export default function ViewQuiz() {
     data.push({
       key: index + 1,
       name: i?.name,
-      questions: (
-        <>
-          <Collapse accordion>{questions}</Collapse>
-        </>
-      ),
+      questions: <Collapse accordion>{questions}</Collapse>,
       action: (
-        <>
-          <UpdateQuiz
-            quizId={i?._id}
-            refresh={() => setUpdateQuiz(updateQuiz + 1)}
-          />
-        </>
+        <UpdateQuiz
+          quizId={i?._id}
+          refresh={() => setUpdateQuiz(updateQuiz + 1)}
+        />
       ),
     });
   });
@@ -190,52 +185,50 @@ export default function ViewQuiz() {
 
   return (
     <div className="">
-      <>
-        {isLoading ? (
-          <Spin />
-        ) : (
-          <>
-            <div className="pb-3">
-              <div style={{ display: "flex", paddingBottom: "20px" }}>
-                <Select
-                  placeholder="Select a course"
-                  onChange={handleCourseChange}
-                  value={selectedCourse}
-                  className="me-3"
-                >
-                  {courses.map((course) => (
-                    <Option key={course._id} value={course._id}>
-                      {course.name}
-                    </Option>
-                  ))}
-                </Select>
-
-                <Select
-                  placeholder="Select a lesson"
-                  onChange={handleLessonChange}
-                  value={selectedLesson}
-                  className="me-3"
-                >
-                  {selectedCourseLessons.map((lesson) => (
-                    <Option key={lesson._id} value={lesson._id}>
-                      {lesson.name}
-                    </Option>
-                  ))}
-                </Select>
-              </div>
-              <Button
-                type="primary"
-                onClick={handleViewQuiz}
-                style={{ color: "#fff", backgroundColor: "#1890ff" }}
+      {isLoading ? (
+        <Spin />
+      ) : (
+        <React.Fragment>
+          <div className="pb-3">
+            <div style={{ display: "flex", paddingBottom: "20px" }}>
+              <Select
+                placeholder="Select a course"
+                onChange={handleCourseChange}
+                value={selectedCourse}
+                className="me-3"
               >
-                View Quiz
-              </Button>
+                {courses.map((course) => (
+                  <Option key={course._id} value={course._id}>
+                    {course.name}
+                  </Option>
+                ))}
+              </Select>
+
+              <Select
+                placeholder="Select a lesson"
+                onChange={handleLessonChange}
+                value={selectedLesson}
+                className="me-3"
+              >
+                {selectedCourseLessons.map((lesson) => (
+                  <Option key={lesson._id} value={lesson._id}>
+                    {lesson.name}
+                  </Option>
+                ))}
+              </Select>
             </div>
-            <h3>Table Quiz</h3>
-            <Table columns={columns} dataSource={data} />
-          </>
-        )}
-      </>
+            <Button
+              type="primary"
+              onClick={handleViewQuiz}
+              style={{ color: "#fff", backgroundColor: "#1890ff" }}
+            >
+              View Quiz
+            </Button>
+          </div>
+          <h3>Table Quiz</h3>
+          <Table columns={columns} dataSource={data} />
+        </React.Fragment>
+      )}
     </div>
   );
 }

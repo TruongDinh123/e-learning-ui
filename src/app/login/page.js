@@ -143,8 +143,10 @@ export default function Login() {
               type={showPassword ? "text" : "password"}
             />
             <div className="pt-3 pb-2">
-              <Link href="#" className="text-decoration-none my-3 text-end">
-                Forgot Password ?
+              <Link href="#">
+                <span className="text-decoration-none my-3 text-end">
+                  Forgot Password ?
+                </span>
               </Link>
             </div>
             <Spin spinning={isLoading}>
@@ -158,11 +160,10 @@ export default function Login() {
               />
             </Spin>
             <div className="my-3">
-              <Link
-                href="/signup"
-                className="text-dark text-decoration-none text-center"
-              >
-                Do you have an Account? <b>Register</b>
+              <Link href="/signup">
+                <span className="text-dark text-decoration-none text-center">
+                  Do you have an Account? <b>Register</b>
+                </span>
               </Link>
             </div>
           </form>

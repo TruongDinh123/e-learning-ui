@@ -86,9 +86,9 @@ export default function Quizs({ params }) {
         {loading ? (
           <div>Loading...</div>
         ) : (
-          <>
+          <React.Fragment>
             {quiz.map((item, index) => (
-              <>
+              <React.Fragment key={index}>
                 <Card key={item._id} title={item.name}>
                   {item.questions.map((question, questionIndex) => {
                     const isCorrectAnswer =
@@ -137,9 +137,9 @@ export default function Quizs({ params }) {
                     Submit
                   </Button>
                 </div>
-              </>
+              </React.Fragment>
             ))}
-          </>
+          </React.Fragment>
         )}
       </Col>
     </Row>

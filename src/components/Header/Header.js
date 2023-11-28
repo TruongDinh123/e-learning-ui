@@ -15,31 +15,28 @@ import {
   LoginOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 
 const logo = "/images/logo.jpg";
 
 const UserLinks = () => (
-  <>
-    <Link
-      className="fs-6 text-dark text-decoration-none me-4 nav-link"
-      href="/courses/view-course"
-    >
-      My Course
+  <React.Fragment>
+    <Link href="/courses/view-course">
+      <span className="fs-6 text-dark text-decoration-none me-4 nav-link">
+        My Course
+      </span>
     </Link>
-    <Link
-      className="fs-6 text-dark text-decoration-none me-4 nav-link"
-      href="/courses/view-score"
-    >
-      Score Quiz
+    <Link href="/courses/view-score">
+      <span className="fs-6 text-dark text-decoration-none me-4 nav-link">
+        Score Quizs
+      </span>
     </Link>
-    <Link
-      className="fs-6 text-dark text-decoration-none me-4 nav-link"
-      href="/web-rtc/lobby"
-    >
-      Create Room
+    <Link href="/web-rtc/lobby">
+      <span className="fs-6 text-dark text-decoration-none me-4 nav-link">
+        Create Room
+      </span>
     </Link>
-  </>
+  </React.Fragment>
 );
 
 export default function Header() {
@@ -51,7 +48,7 @@ export default function Header() {
     localStorage.clear();
     Cookies.remove("Bearer");
     dispatch(resetState());
-    dispatch(setUser(null)); 
+    dispatch(setUser(null));
     router.push("/login");
   }, [dispatch, router]);
 
@@ -63,25 +60,26 @@ export default function Header() {
       variant="light"
     >
       <Container fluid>
-        <Navbar.Brand href="#home" className="d-flex align-items-center hover:text-blue-500 transition-colors duration-200">
+        <Navbar.Brand
+          href="#home"
+          className="d-flex align-items-center hover:text-blue-500 transition-colors duration-200"
+        >
           <div style={{ maxWidth: "100px", height: "auto" }}>
             <Image src={logo} alt="Logo" layout="responsive" />
           </div>
-          <Link
-            className="fs-bold fs-3 text-dark text-decoration-none me-4 nav-link header-link hover:text-blue-500 transition-colors duration-200"
-            href="/"
-          >
-            95 E-learning
+          <Link href="/">
+            <span className="fs-bold fs-3 text-dark text-decoration-none me-4 nav-link header-link hover:text-blue-500 transition-colors duration-200">
+              95 E-learning
+            </span>
           </Link>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
-            <Link
-              className="fs-6 text-dark text-decoration-none me-4 nav-link selection:hover:text-blue-500"
-              href="/"
-            >
-              Home
+            <Link href="/">
+              <span className="fs-6 text-dark text-decoration-none me-4 nav-link selection:hover:text-blue-500">
+                Home
+              </span>
             </Link>
             {userState && <UserLinks />}
           </Nav>
@@ -119,25 +117,20 @@ export default function Header() {
               </Tooltip>
             ) : (
               <Tooltip title="Login">
-                <Link
-                  className="fs-6 text-dark text-decoration-none me-4"
-                  href="/login"
-                  icon={<LoginOutlined />}
-                >
-                  Login
+                <Link href="/login" icon={<LoginOutlined />}>
+                  <span className="fs-6 text-dark text-decoration-none me-4">
+                    Login
+                  </span>
                 </Link>
               </Tooltip>
             )}
 
             {userState === null && (
               <Tooltip title="Sign up">
-                <Link
-                  className="fs-6 text-dark text-decoration-none me-4"
-                  eventKey={2}
-                  href="/signup"
-                  icon={<UserAddOutlined />}
-                >
-                  Sign up
+                <Link eventKey={2} href="/signup" icon={<UserAddOutlined />}>
+                  <span className="fs-6 text-dark text-decoration-none me-4">
+                    Sign up
+                  </span>
                 </Link>
               </Tooltip>
             )}

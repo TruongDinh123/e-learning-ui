@@ -1,7 +1,7 @@
 "use client";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Modal, Spin, Table, Upload, message } from "antd";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button, Popconfirm } from "antd";
 import {
@@ -123,85 +123,83 @@ export default function VideoLesson(propsComponent) {
       {isLoading ? (
         <Spin />
       ) : (
-        <>
-          <>
-            <Button
-              type="primary"
-              onClick={showModal}
-              className="me-3"
-              style={{
-                color: "#fff",
-                backgroundColor: "#1890ff",
-              }}
-            >
-              video
-            </Button>
-            <Modal
-              title="Video Lesson"
-              open={isModalOpen}
-              onCancel={handleCancel}
-              onOk={handleOk}
-              width={70 + "%"}
-              height={70 + "%"}
-              footer={
-                <>
-                  <Button key="cancel" onClick={handleOk}>
-                    Cancel
-                  </Button>
-                </>
-              }
-            >
-              <>
-                <Upload {...props}>
-                  <Button icon={<UploadOutlined />} disabled={!isVideoEmpty}>
-                    Select File
-                  </Button>
-                </Upload>
-                <Button
-                  type="primary"
-                  onClick={handleSave}
-                  className="mt-2 mb-2 me-3"
-                  style={{
-                    color: "#fff",
-                    backgroundColor: isVideoEmpty && file ? "#1890ff" : "#ccc",
-                  }}
-                  disabled={!isVideoEmpty || !file}
-                >
-                  save
+        <React.Fragment>
+          <Button
+            type="primary"
+            onClick={showModal}
+            className="me-3"
+            style={{
+              color: "#fff",
+              backgroundColor: "#1890ff",
+            }}
+          >
+            video
+          </Button>
+          <Modal
+            title="Video Lesson"
+            open={isModalOpen}
+            onCancel={handleCancel}
+            onOk={handleOk}
+            width={70 + "%"}
+            height={70 + "%"}
+            footer={
+              <React.Fragment>
+                <Button key="cancel" onClick={handleOk}>
+                  Cancel
                 </Button>
-                {data.map((item) => (
-                  <>
-                    <Popconfirm
-                      title="Delete video"
-                      description="Are you sure to delete video?"
-                      okText="Yes"
-                      cancelText="No"
-                      okButtonProps={{ style: { backgroundColor: "red" } }}
-                      onConfirm={() =>
-                        handleDelVideoLesson({
-                          videoLessonId: item?._id,
-                          lessonId: lessonId,
-                        })
-                      }
-                    >
-                      <Button danger>Delete</Button>
-                    </Popconfirm>
-                  </>
-                ))}
-              </>
-              {data.map((videoId) => (
-                <>
-                  <div>
-                    <video width="100%" height="auto" controls>
-                      <source src={videoId?.url} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                  </div>
-                </>
+              </React.Fragment>
+            }
+          >
+            <React.Fragment>
+              <Upload {...props}>
+                <Button icon={<UploadOutlined />} disabled={!isVideoEmpty}>
+                  Select File
+                </Button>
+              </Upload>
+              <Button
+                type="primary"
+                onClick={handleSave}
+                className="mt-2 mb-2 me-3"
+                style={{
+                  color: "#fff",
+                  backgroundColor: isVideoEmpty && file ? "#1890ff" : "#ccc",
+                }}
+                disabled={!isVideoEmpty || !file}
+              >
+                save
+              </Button>
+              {data.map((item, itemIndex) => (
+                <React.Fragment key={itemIndex}>
+                  <Popconfirm
+                    title="Delete video"
+                    description="Are you sure to delete video?"
+                    okText="Yes"
+                    cancelText="No"
+                    okButtonProps={{ style: { backgroundColor: "red" } }}
+                    onConfirm={() =>
+                      handleDelVideoLesson({
+                        videoLessonId: item?._id,
+                        lessonId: lessonId,
+                      })
+                    }
+                  >
+                    <Button danger>Delete</Button>
+                  </Popconfirm>
+                </React.Fragment>
               ))}
-            </Modal>
-          </>
-        </>
+            </React.Fragment>
+            {data.map((videoId, videoIndex) => (
+              <React.Fragment key={videoIndex}>
+                <div>
+                  <video width="100%" height="auto" controls>
+                    <source src={videoId?.url} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              </React.Fragment>
+            ))}
+          </Modal>
+        </React.Fragment>
       )}
     </div>
   );

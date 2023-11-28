@@ -2,7 +2,7 @@
 import { getACourse, viewCourses } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Button, Modal, Select, Table, message } from "antd";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import AddStudentToCourse from "../../courses/add-student-course/page";
 import { getScoreByUserId } from "@/features/Quiz/quizSlice";
@@ -143,12 +143,12 @@ export default function ViewStudentsCourse() {
       lastName: student?.lastName,
       email: student?.email,
       action: (
-        <>
+        <React.Fragment>
           <Button
             type="primary"
             onClick={() => showModal(userId)}
             className="me-3"
-            style={{color: "#fff", backgroundColor: "#1890ff" }}
+            style={{ color: "#fff", backgroundColor: "#1890ff" }}
           >
             View Score
           </Button>
@@ -157,11 +157,9 @@ export default function ViewStudentsCourse() {
             open={isStudentModalOpen}
             onOk={handleOk}
             footer={[
-              <>
-                <Button key="back" onClick={handleOk}>
-                  OK
-                </Button>
-              </>,
+              <Button key="back" onClick={handleOk}>
+                OK
+              </Button>,
             ]}
           >
             {/* {studentScores?.map((score, index) => {
@@ -297,13 +295,13 @@ export default function ViewStudentsCourse() {
               );
             })()}
           </Modal>
-        </>
+        </React.Fragment>
       ),
     });
   });
 
   return (
-    <>
+    <React.Fragment>
       {contextHolder}
       <div className="pb-3">
         <Select
@@ -322,7 +320,7 @@ export default function ViewStudentsCourse() {
           type="primary"
           onClick={handleViewCourse}
           className="me-3"
-          style={{color: "#fff", backgroundColor: "#1890ff" }}
+          style={{ color: "#fff", backgroundColor: "#1890ff" }}
         >
           View
         </Button>
@@ -334,6 +332,6 @@ export default function ViewStudentsCourse() {
         Invite Student
       </AddStudentToCourse>
       <Table columns={columns} dataSource={data} className="pt-3" />
-    </>
+    </React.Fragment>
   );
 }

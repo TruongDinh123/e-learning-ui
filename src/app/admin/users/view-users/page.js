@@ -2,7 +2,7 @@
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { Dropdown, Menu, Space, Spin, Table, message } from "antd";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Popconfirm } from "antd";
 import { deleteUser, getAllUser } from "@/features/User/userSlice";
 import EditUser from "../edit-user/page";
@@ -157,10 +157,10 @@ export default function ViewUsers() {
       {isLoading ? (
         <Spin />
       ) : (
-        <>
+        <React.Fragment>
           <h1>Table User</h1>
           <Table columns={columns} dataSource={data} />
-        </>
+        </React.Fragment>
       )}
     </div>
   );

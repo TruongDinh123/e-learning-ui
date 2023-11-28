@@ -26,8 +26,27 @@ const submitAssignment = async (data) => {
   return res.data;
 };
 
+const updateAssignment = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/assignment/${data.assignmentId}`,
+    method: "PUT",
+    data: data.formattedValues,
+  });
+  return res.data;
+};
+
+const deleteQuizAssignment = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/assignment/${data.assignmentId}/question/${data.questionId}`,
+    method: "DELETE",
+  });
+  return res.data;
+};
+
 export const AssignmentService = {
   createAssignment,
   viewAssignmentByCourseId,
   submitAssignment,
+  updateAssignment,
+  deleteQuizAssignment,
 };

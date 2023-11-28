@@ -1,7 +1,7 @@
 "use client";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Modal, message } from "antd";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button } from "antd";
 import CustomInput from "@/components/comman/CustomInput";
@@ -74,7 +74,7 @@ export default function CreateLesson(props) {
   });
 
   return (
-    <>
+    <React.Fragment>
       {contextHolder}
       <Button
         type="primary"
@@ -141,6 +141,6 @@ export default function CreateLesson(props) {
           />
         </div>
       </Modal>
-    </>
+    </React.Fragment>
   );
 }

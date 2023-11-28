@@ -94,16 +94,17 @@ export default function SignUp() {
               onClick={() => formik.handleSubmit()}
             />
             <div className="mt-2 mb-2">
-              <Link
-                href="/login"
-                className="text-decoration-none my-3 text-end"
-                style={{
-                  fontSize: "16px",
-                  fontWeight: "bold",
-                  color: "black",
-                }}
-              >
-                Already have an account? <b>Register</b>
+              <Link href="/login">
+                <span
+                  className="text-decoration-none my-3 text-end"
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                    color: "black",
+                  }}
+                >
+                  Already have an account? <b>Register</b>
+                </span>
               </Link>
             </div>
           </form>

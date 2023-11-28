@@ -2,7 +2,7 @@
 import { getACourse } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Button, Modal, Table, message } from "antd";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getScoreByUserId } from "@/features/Quiz/quizSlice";
 
@@ -114,7 +114,7 @@ export default function ViewScoreDetail(props) {
   });
 
   return (
-    <>
+    <React.Fragment>
       {contextHolder}
       <Button type="primary" onClick={showModal} className="me-3">
         View Score
@@ -128,6 +128,6 @@ export default function ViewScoreDetail(props) {
       >
         <Table columns={columns} dataSource={data} />
       </Modal>
-    </>
+    </React.Fragment>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Card, Form, Input, Modal, message, Button, Space } from "antd";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { updateQuiz } from "@/features/Quiz/quizSlice";
 import { CloseOutlined } from "@ant-design/icons";
@@ -64,7 +64,7 @@ export default function UpdateQuiz(props) {
   };
 
   return (
-    <>
+    <React.Fragment>
       {contextHolder}
       <Button type="primary" onClick={showModal} className="me-3">
         update quiz
@@ -177,6 +177,6 @@ export default function UpdateQuiz(props) {
           </div>
         </Form>
       </Modal>
-    </>
+    </React.Fragment>
   );
 }

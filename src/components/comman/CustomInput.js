@@ -1,6 +1,7 @@
 "use client";
 
 import { Input } from "antd";
+import React from "react";
 
 export default function CustomInput(props) {
   const {
@@ -15,7 +16,7 @@ export default function CustomInput(props) {
     type,
   } = props;
   return (
-    <>
+    <React.Fragment>
       <Input
         size="large"
         placeholder={placeholder}
@@ -29,6 +30,6 @@ export default function CustomInput(props) {
         type={type}
       />
       {error && <p className="ms-2 mb-0 mt-1 text-danger">{error}</p>}
-    </>
+    </React.Fragment>
   );
 }

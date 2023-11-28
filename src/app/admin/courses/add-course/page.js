@@ -97,7 +97,7 @@ export default function AddCourse(props) {
         width={50 + "%"}
         height={50 + "%"}
         footer={
-          <>
+          <div>
             <Button
               key="back"
               type="primary"
@@ -112,7 +112,7 @@ export default function AddCourse(props) {
             <Button key="back" onClick={handleCancel}>
               Cancel
             </Button>
-          </>
+          </div>
         }
       >
         <div className="row">

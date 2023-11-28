@@ -39,11 +39,10 @@ export default function AdminSidebar(props) {
               }}
             />
           ) : (
-            <Link
-              className="fs-6 text-dark text-decoration-none me-4"
-              href="/login"
-            >
-              Login
+            <Link href="/login">
+              <span className="fs-6 text-dark text-decoration-none me-4">
+                Login
+              </span>
             </Link>
           )}
         </Nav>
