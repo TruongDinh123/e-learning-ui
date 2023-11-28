@@ -15,17 +15,13 @@ import { Button } from "@material-tailwind/react";
 export default function Assignment({ params }) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [assignment, setAssigment] = useState([]);
-  console.log("🚀 ~ assignment:", assignment);
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [submitted, setSubmitted] = useState(false);
   const [started, setStarted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(null);
   const [score, setScore] = useState([]);
-  console.log("🚀 ~ score:", score);
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [shouldSubmit, setShouldSubmit] = useState(false);
 
   const handleAnswer = (questionId, answer) => {
     setSelectedAnswers((prevAnswers) => ({
@@ -61,7 +57,6 @@ export default function Assignment({ params }) {
             })
             .then(() => {
               setSubmitted(true);
-              setIsSubmitting(false);
               router.push("/courses/view-course");
             })
             .then(() => message.success(res.message, 1.5));
@@ -120,21 +115,14 @@ export default function Assignment({ params }) {
       });
   }, []);
 
-  useEffect(() => {
-    if (started && timeLeft > 0) {
-      const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timerId);
-    } else if (timeLeft === 0 && !isSubmitting) {
-      setShouldSubmit(true);
-    }
-  }, [started, timeLeft, isSubmitting]);
-
-  useEffect(() => {
-    if (shouldSubmit && !isSubmitting) {
-      setIsSubmitting(true);
-      handleSubmit();
-    }
-  }, [shouldSubmit, isSubmitting]);
+  // useEffect(() => {
+  //   if (started && timeLeft > 0) {
+  //     const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+  //     return () => clearTimeout(timerId);
+  //   } else if (timeLeft === 0) {
+  //     handleSubmit();
+  //   }
+  // }, [started, timeLeft]);
 
   const currentScore = score.find((s) => s.assignment === assignmentId);
 
