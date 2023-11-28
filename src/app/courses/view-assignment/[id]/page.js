@@ -115,16 +115,16 @@ export default function Assignment({ params }) {
       });
   }, []);
 
-  // useEffect(() => {
-  //   if (started && timeLeft > 0) {
-  //     const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-  //     return () => clearTimeout(timerId);
-  //   } else if (timeLeft === 0) {
-  //     handleSubmit();
-  //   }
-  // }, [started, timeLeft]);
+  useEffect(() => {
+    if (started && timeLeft > 0) {
+      const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timerId);
+    } else if (timeLeft === 0) {
+      handleSubmit();
+    }
+  }, [started, timeLeft]);
 
-  const currentScore = score.find((s) => s.assignment === assignmentId);
+  const currentScore = score.find((s) => s.assignment?._id === assignmentId);
 
   return (
     <div>
@@ -138,7 +138,7 @@ export default function Assignment({ params }) {
       >
         {contextHolder}
         <Col xs={24} md={16}>
-          {score.some((s) => s.assignment === assignmentId && s.isComplete) ? (
+          {score.some((s) => s.assignment?._id === assignmentId && s.isComplete) ? (
             <div className="flex items-center justify-center">
               <div className="rounded-lg bg-gray-50 px-16 py-14">
                 <div className="flex justify-center">

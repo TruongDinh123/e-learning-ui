@@ -122,6 +122,17 @@ export default function Lesson({ params }) {
               collapsedWidth={0}
               theme="dark"
             >
+              <div className="flex items-center gap-x-1 text-slate-500">
+                <Button
+                  className="button-container me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={() =>
+                    router.replace(`/courses/view-assignment/${params?.id}`)
+                  }
+                >
+                  <FolderOpenOutlined />
+                  Assignment
+                </Button>
+              </div>
               <Menu theme="light" defaultSelectedKeys={["1"]} mode="inline">
                 {completeCourse && completeCourse.completionPercentage && (
                   <div className="p-8 bg-gray-100">
