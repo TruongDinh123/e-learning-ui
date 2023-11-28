@@ -25,6 +25,7 @@ export default function Assignment({ params }) {
   console.log("🚀 ~ score:", score);
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [shouldSubmit, setShouldSubmit] = useState(false);
 
   const handleAnswer = (questionId, answer) => {
     setSelectedAnswers((prevAnswers) => ({
@@ -35,7 +36,6 @@ export default function Assignment({ params }) {
 
   // const assignmentId = assignment.map((item) => item._id);
   const assignmentId = assignment[0]?._id;
-  console.log("🚀 ~ assignmentId:", assignmentId);
 
   const handleSubmit = () => {
     const formattedAnswers = Object.entries(selectedAnswers).map(
@@ -125,10 +125,16 @@ export default function Assignment({ params }) {
       const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timerId);
     } else if (timeLeft === 0 && !isSubmitting) {
+      setShouldSubmit(true);
+    }
+  }, [started, timeLeft, isSubmitting]);
+
+  useEffect(() => {
+    if (shouldSubmit && !isSubmitting) {
       setIsSubmitting(true);
       handleSubmit();
     }
-  }, [started, timeLeft, isSubmitting]);
+  }, [shouldSubmit, isSubmitting]);
 
   const currentScore = score.find((s) => s.assignment === assignmentId);
 
