@@ -13,9 +13,9 @@ import Link from "next/link";
 import { Button } from "@material-tailwind/react";
 
 export default function Assignment({ params }) {
+  const dispatch = useDispatch();
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [assignment, setAssigment] = useState([]);
-  const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [submitted, setSubmitted] = useState(false);
   const [started, setStarted] = useState(false);
@@ -31,23 +31,31 @@ export default function Assignment({ params }) {
     }));
   };
 
-  const assignmentId = assignment[0]?._id;
+  useEffect(() => {
+    dispatch(viewAssignmentByCourseId({ courseId: params?.id }))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setAssigment(res.metadata);
+        } else {
+          messageApi.error(res.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
-  // useEffect(() => {
-  //   dispatch(viewAssignmentByCourseId({ courseId: params?.id }))
-  //     .then(unwrapResult)
-  //     .then((res) => {
-  //       if (res.status) {
-  //         setAssigment(res.metadata);
-  //         setTimeLeft(res.metadata[0].timeLimit * 60);
-  //       } else {
-  //         messageApi.error(res.message);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, []);
+    dispatch(getScore())
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setScore(res.metadata);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   const handleStart = () => {
     setStarted(true);
@@ -108,23 +116,13 @@ export default function Assignment({ params }) {
       });
   };
 
-  // useEffect(() => {
-  //   dispatch(getScore())
-  //     .then(unwrapResult)
-  //     .then((res) => {
-  //       if (res.status) {
-  //         setScore(res.metadata);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, []);
+  const assignmentId = assignment[0]?._id;
 
   const currentScore = score.find((s) => s.assignment?._id === assignmentId);
 
   return (
     <div>
+      {contextHolder}
       <Row
         style={{
           paddingBottom: "200px",
@@ -133,10 +131,9 @@ export default function Assignment({ params }) {
           justifyContent: "center",
         }}
       >
-        {contextHolder}
         <Col xs={24} md={16}>
-          {score?.some(
-            (s) => s?.assignment?._id === assignmentId && s?.isComplete
+          {score.some(
+            (s) => s.assignment?._id === assignmentId && s.isComplete
           ) ? (
             <div className="flex items-center justify-center">
               <div className="rounded-lg bg-gray-50 px-16 py-14">
