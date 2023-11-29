@@ -163,7 +163,9 @@ export default function Lesson({ params }) {
                 className="overflow-y-auto h-screen pb-20 scrollbar scrollbar-thin"
               >
                 {isLoading ? (
-                  <Spin />
+                  <div className="flex justify-center items-center h-screen">
+                    <Spin />
+                  </div>
                 ) : (
                   <React.Fragment>
                     {selectedVideo && (

@@ -16,7 +16,6 @@ import { useMediaQuery } from "react-responsive";
 import { BookOutlined } from "@ant-design/icons";
 import AddCourse from "../add-course/page";
 import { Col } from "react-bootstrap";
-import React from "react";
 
 export default function Courses() {
   const dispatch = useDispatch();
@@ -26,28 +25,8 @@ export default function Courses() {
   const [shouldRefresh, setShouldRefresh] = useState(false);
   const router = useRouter();
 
-  //viewCourses api
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   dispatch(viewCourses())
-  //     .then(unwrapResult)
-  //     .then((res) => {
-  //       if (res.status) {
-  //         setCourse(res.data.metadata);
-  //       }
-  //       setIsLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       setIsLoading(false);
-  //     });
-  // }, [updateCourse]);
-
+  // viewCourses api
   useEffect(() => {
-    if (!shouldRefresh) {
-      return;
-    }
-
     setIsLoading(true);
     dispatch(viewCourses())
       .then(unwrapResult)
@@ -61,10 +40,30 @@ export default function Courses() {
         console.log(error);
         setIsLoading(false);
       });
+  }, [updateCourse]);
 
-    // Reset the refresh state after the API call
-    setShouldRefresh(false);
-  }, [shouldRefresh]);
+  // useEffect(() => {
+  //   if (!shouldRefresh) {
+  //     return;
+  //   }
+
+  //   setIsLoading(true);
+  //   dispatch(viewCourses())
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       if (res.status) {
+  //         setCourse(res.data.metadata);
+  //       }
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       setIsLoading(false);
+  //     });
+
+  //   // Reset the refresh state after the API call
+  //   setShouldRefresh(false);
+  // }, [shouldRefresh]);
 
   const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
 
@@ -88,8 +87,7 @@ export default function Courses() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          // setUpdateCourse(updateCourse + 1);
-          setShouldRefresh(true);
+          setUpdateCourse(updateCourse + 1);
         }
         setIsLoading(false);
       })
@@ -105,8 +103,7 @@ export default function Courses() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          // setUpdateCourse(updateCourse + 1);
-          setShouldRefresh(true);
+          setUpdateCourse(updateCourse + 1);
         }
         setIsLoading(false);
       })
@@ -122,8 +119,7 @@ export default function Courses() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          // setUpdateCourse(updateCourse + 1);
-          setShouldRefresh(true);
+          setUpdateCourse(updateCourse + 1);
         }
         setIsLoading(false);
       })
@@ -134,16 +130,18 @@ export default function Courses() {
   };
 
   return (
-    <React.Fragment>
+    <>
       {isLoading ? (
-        <Spin />
+        <div className="flex justify-center items-center h-screen">
+          <Spin />
+        </div>
       ) : (
         <div className="max-w-screen-2xl mx-auto">
           <h1>View Course</h1>
           <AddCourse refresh={() => setUpdateCourse(updateCourse + 1)} />
-          <div className="p-6 space-y-4">
+          <div className="p-6 space-y-4 pb-28">
             <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3">
-              {data.map((item, itemIndex) => {
+              {data.map((item) => {
                 const menu = (
                   <Menu>
                     <Menu.Item>
@@ -188,7 +186,7 @@ export default function Courses() {
                   </Menu>
                 );
                 return (
-                  <React.Fragment key={itemIndex}>
+                  <>
                     <div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 h-full">
                       <div className="relative w-full aspect-video rounded-md overflow-hidden">
                         <Image
@@ -276,7 +274,7 @@ export default function Courses() {
                         )}
                       </div>
                     </div>
-                  </React.Fragment>
+                  </>
                 );
               })}
             </div>
@@ -288,6 +286,6 @@ export default function Courses() {
           </div>
         </div>
       )}
-    </React.Fragment>
+    </>
   );
 }

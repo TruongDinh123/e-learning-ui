@@ -15,6 +15,7 @@ export default function QuizCreator() {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [courses, setCourses] = useState([]); // Danh sách khóa học
+  console.log("🚀 ~ courses:", courses);
   const [selectedCourseLessons, setSelectedCourseLessons] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
@@ -71,7 +72,7 @@ export default function QuizCreator() {
           });
       })
       .catch((error) => {
-        console.log(error);
+        message.error(error.response?.data?.message, 3.5);
       });
   };
 
@@ -98,10 +99,12 @@ export default function QuizCreator() {
   return (
     <div>
       {contextHolder}
-      <div className="me-3" style={{ paddingBottom: "100px" }}>
+      <div className="overflow-y-auto h-screen pb-28 scrollbar-thin">
         <h1>Create Quizs</h1>
         {isLoading ? (
-          <Spin />
+          <div className="flex justify-center items-center h-screen">
+            <Spin />
+          </div>
         ) : (
           <Form
             form={form}
@@ -227,7 +230,11 @@ export default function QuizCreator() {
               )}
             </Form.List>
             <div className="pt-2 text-end">
-              <Button type="primary" htmlType="submit">
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ color: "#fff", backgroundColor: "#1890ff" }}
+              >
                 Save Quiz
               </Button>
             </div>

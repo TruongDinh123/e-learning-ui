@@ -37,6 +37,18 @@ export const updateQuiz = createAsyncThunk(
   }
 );
 
+export const deleteQuizQuestion = createAsyncThunk(
+  "/e-learning/delete-quiz",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await QuizService.deleteQuizQuestion(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 export const deleteQuiz = createAsyncThunk(
   "/e-learning/delete-quiz",
   async (data, { rejectWithValue }) => {

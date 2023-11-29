@@ -42,7 +42,6 @@ export default function Quizs({ params }) {
             })
             .then(() => {
               setSubmitted(true);
-              router.push("/courses/view-course");
             })
             .then(() => message.success(res.message, 1.5));
         } else {

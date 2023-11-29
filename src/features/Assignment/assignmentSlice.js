@@ -61,6 +61,18 @@ export const deleteQuizAssignment = createAsyncThunk(
   }
 );
 
+export const deleteAssignment = createAsyncThunk(
+  "/e-learning/delete-assignment",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await AssignmentService.deleteAssignment(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 const initialState = {
   quiz: "",
   isError: false,

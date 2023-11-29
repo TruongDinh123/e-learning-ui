@@ -91,7 +91,7 @@ const ScoreManagement = () => {
     ) {
       data.push({
         key: index + 1,
-        name: i?.quiz?.name ? i.quiz.name : i.assignment.name,
+        name: i?.quiz?.name ? i.quiz?.name : i.assignment?.name,
         score: i?.score,
         action: (
           <React.Fragment>
@@ -111,7 +111,7 @@ const ScoreManagement = () => {
               onCancel={() => handleCancel(index)}
             >
               <Collapse accordion>
-                {(i?.quiz?.questions || i?.assignment?.questions).map(
+                {(i?.quiz?.questions || i?.assignment?.questions)?.map(
                   (question, idxQuestion) => {
                     const answerObj = i?.answers.find(
                       (answer) => Object.keys(answer)[0] === question._id
@@ -147,7 +147,9 @@ const ScoreManagement = () => {
   return (
     <div className="p-5">
       {isLoading ? (
-        <Spin />
+        <div className="flex justify-center items-center h-screen">
+          <Spin />
+        </div>
       ) : (
         <React.Fragment>
           <h1>My Scoce</h1>

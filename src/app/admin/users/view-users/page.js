@@ -86,7 +86,7 @@ export default function ViewUsers() {
             title="Delete the user"
             description="Are you sure to delete this user?"
             okText="Yes"
-            okButtonProps={{ style: { backgroundColor: 'red' } }}
+            okButtonProps={{ style: { backgroundColor: "red" } }}
             cancelText="No"
             onConfirm={() => handleDeleteUser(i?._id)}
           >
@@ -117,7 +117,7 @@ export default function ViewUsers() {
           <Popconfirm
             title="Delete the user"
             description="Are you sure to delete this user?"
-            okButtonProps={{ style: { backgroundColor: 'red' } }}
+            okButtonProps={{ style: { backgroundColor: "red" } }}
             okText="Yes"
             cancelText="No"
             onConfirm={() => handleDeleteUser(i?._id)}
@@ -155,7 +155,9 @@ export default function ViewUsers() {
     <div>
       {contextHolder}
       {isLoading ? (
-        <Spin />
+        <div className="flex justify-center items-center h-screen">
+          <Spin />
+        </div>
       ) : (
         <React.Fragment>
           <h1>Table User</h1>

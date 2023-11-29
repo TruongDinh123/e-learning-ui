@@ -40,7 +40,9 @@ export default function Course() {
   return (
     <div className="flex">
       {isLoading ? (
-        <Spin />
+        <div className="flex justify-center items-center h-screen">
+          <Spin />
+        </div>
       ) : (
         <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3">
           {course &&

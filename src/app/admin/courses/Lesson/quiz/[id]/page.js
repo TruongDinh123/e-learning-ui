@@ -15,7 +15,7 @@ import {
 import { CloseOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { createQuiz, deleteQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
+import { createQuiz, deleteQuizQuestion, viewQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Modal } from "antd";
 import UpdateQuiz from "../../edit-quiz/page";
@@ -183,7 +183,7 @@ export default function QuizCreator({ params }) {
   });
 
   const handleDeleteQuiz = ({ quizId, questionId }) => {
-    dispatch(deleteQuiz({ quizId, questionId }))
+    dispatch(deleteQuizQuestion({ quizId, questionId }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {

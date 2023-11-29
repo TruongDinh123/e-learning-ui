@@ -121,7 +121,9 @@ export default function VideoLesson(propsComponent) {
   return (
     <div>
       {isLoading ? (
-        <Spin />
+        <div className="flex justify-center items-center h-screen">
+          <Spin />
+        </div>
       ) : (
         <React.Fragment>
           <Button

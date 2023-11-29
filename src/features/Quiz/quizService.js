@@ -26,9 +26,17 @@ const updateQuiz = async (data) => {
   return res.data;
 };
 
-const deleteQuiz = async (data) => {
+const deleteQuizQuestion = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}/question/${data.questionId}`,
+    method: "DELETE",
+  });
+  return res.data;
+};
+
+const deleteQuiz = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/quiz/${data.quizId}`,
     method: "DELETE",
   });
   return res.data;
@@ -72,6 +80,7 @@ const getScoreByUserId = async (data) => {
 export const QuizService = {
   createQuiz,
   viewQuiz,
+  deleteQuizQuestion,
   deleteQuiz,
   updateQuiz,
   getQuizsByLesson,

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Radio, message, Row, Col, Statistic } from "antd";
+import { Card, Radio, message, Row, Col, Statistic, Spin } from "antd";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -22,6 +22,8 @@ export default function Assignment({ params }) {
   const [timeLeft, setTimeLeft] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [score, setScore] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
 
   const handleAnswer = (questionId, answer) => {
@@ -31,31 +33,69 @@ export default function Assignment({ params }) {
     }));
   };
 
-  useEffect(() => {
-    dispatch(viewAssignmentByCourseId({ courseId: params?.id }))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setAssigment(res.metadata);
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   dispatch(viewAssignmentByCourseId({ courseId: params?.id }))
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       if (res.status) {
+  //         setAssigment(res.metadata);
+  //       } else {
+  //         messageApi.error(res.message);
+  //       }
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       setIsLoading(false);
+  //     });
 
-    dispatch(getScore())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setScore(res.metadata);
+  //   dispatch(getScore())
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       if (res.status) {
+  //         setScore(res.metadata);
+  //       }
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       setIsLoading(false);
+  //       console.log(error);
+  //     });
+  // }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+  
+    Promise.all([
+      dispatch(viewAssignmentByCourseId({ courseId: params?.id })),
+      dispatch(getScore())
+    ])
+      .then(([assignmentRes, scoreRes]) => {
+        const assignmentResult = assignmentRes.payload;
+        const scoreResult = scoreRes.payload;
+  
+        if (assignmentResult.status) {
+          setAssigment(assignmentResult.metadata);
+          setTimeLeft(assignmentResult.metadata[0]?.timeLimit * 60);
+        } else {
+          messageApi.error(assignmentResult.message);
         }
+  
+        if (scoreResult.status) {
+          setScore(scoreResult.metadata);
+        } else {
+          messageApi.error(scoreResult.message);
+        }
+  
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
-  }, []);
+  }, [dispatch, params?.id, messageApi]);
+  
 
   const handleStart = () => {
     setStarted(true);
@@ -122,134 +162,140 @@ export default function Assignment({ params }) {
   return (
     <div>
       {contextHolder}
-      <Row
-        style={{
-          paddingBottom: "200px",
-          overflow: "auto",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Col xs={24} md={16}>
-          {score?.some(
-            (s) => s?.assignment?._id === assignmentId && s?.isComplete
-          ) ? (
-            <div className="flex items-center justify-center">
-              <div className="rounded-lg bg-gray-50 px-16 py-14">
-                <div className="flex justify-center">
-                  <div className="rounded-full bg-green-200 p-6">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-500 p-4">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        className="h-8 w-8 text-white"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M4.5 12.75l6 6 9-13.5"
-                        />
-                      </svg>
+      {isLoading ? (
+        <div className="flex justify-center items-center h-screen">
+          <Spin />
+        </div>
+      ) : (
+        <Row
+          style={{
+            paddingBottom: "200px",
+            overflow: "auto",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Col xs={24} md={16}>
+            {score?.some(
+              (s) => s?.assignment?._id === assignmentId && s?.isComplete
+            ) ? (
+              <div className="flex items-center justify-center">
+                <div className="rounded-lg bg-gray-50 px-16 py-14">
+                  <div className="flex justify-center">
+                    <div className="rounded-full bg-green-200 p-6">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-500 p-4">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          className="h-8 w-8 text-white"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M4.5 12.75l6 6 9-13.5"
+                          />
+                        </svg>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <h3 className="my-4 text-center text-3xl font-semibold text-gray-700">
-                  Hoàn thành!!!
-                </h3>
-                <p className="w-[230px] text-center font-normal text-gray-600">
-                  Bạn đã hoàn thành với điểm là: {currentScore?.score}
-                </p>
-                <div>
-                  <Link href="/">
-                    <div className="mx-auto mt-10 block rounded-xl border-4 border-transparent bg-orange-400 px-6 py-3 text-center text-base font-medium text-orange-100 outline-8 hover:outline hover:duration-300">
-                      Home
-                    </div>
-                  </Link>
+                  <h3 className="my-4 text-center text-3xl font-semibold text-gray-700">
+                    Complete!!!
+                  </h3>
+                  <p className="w-[230px] text-center font-normal text-gray-600">
+                    You finished with a score: {currentScore?.score}
+                  </p>
+                  <div>
+                    <Link href="/courses/view-course">
+                      <div className="mx-auto mt-10 block rounded-xl border-4 border-transparent bg-orange-400 px-6 py-3 text-center text-base font-medium text-orange-100 outline-8 hover:outline hover:duration-300">
+                        Home
+                      </div>
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          ) : started ? (
-            assignment.map((item, index) => (
-              <React.Fragment key={item._id}>
-                <Card title={item.name}>
-                  <Statistic.Countdown
-                    value={startTime + timeLeft * 1000}
-                    onFinish={handleSubmit}
-                    format="mm:ss"
-                  />
-                  {item.questions.map((question, questionIndex) => {
-                    const isCorrectAnswer =
-                      selectedAnswers[question._id] === question.answer;
-                    const showAnswer = submitted && isCorrectAnswer;
-                    const showWrongAnswer = submitted && !isCorrectAnswer;
-                    return (
-                      <div key={question._id}>
-                        <h4
-                          style={{
-                            marginBottom: "10px",
-                            color: showAnswer
-                              ? "green"
-                              : showWrongAnswer
-                              ? "red"
-                              : "black",
-                          }}
-                        >
-                          Question {index + 1}.{questionIndex + 1}:{" "}
-                          {question.question}
-                          {showAnswer && " ✔️"}
-                          {showWrongAnswer && "❌"}
-                        </h4>
-                        <Radio.Group
-                          onChange={(e) =>
-                            handleAnswer(question._id, e.target.value)
-                          }
-                          disabled={submitted}
-                        >
-                          {question.options.map((option) => (
-                            <div key={option}>
-                              <Radio value={option}>{option}</Radio>
-                            </div>
-                          ))}
-                        </Radio.Group>
-                      </div>
-                    );
-                  })}
-                </Card>
-                <div style={{ padding: "1rem" }}>
+            ) : started ? (
+              assignment.map((item, index) => (
+                <React.Fragment key={item._id}>
+                  <Card title={item.name}>
+                    <Statistic.Countdown
+                      value={startTime + timeLeft * 1000}
+                      onFinish={handleSubmit}
+                      format="mm:ss"
+                    />
+                    {item.questions.map((question, questionIndex) => {
+                      const isCorrectAnswer =
+                        selectedAnswers[question._id] === question.answer;
+                      const showAnswer = submitted && isCorrectAnswer;
+                      const showWrongAnswer = submitted && !isCorrectAnswer;
+                      return (
+                        <div key={question._id}>
+                          <h4
+                            style={{
+                              marginBottom: "10px",
+                              color: showAnswer
+                                ? "green"
+                                : showWrongAnswer
+                                ? "red"
+                                : "black",
+                            }}
+                          >
+                            Question {index + 1}.{questionIndex + 1}:{" "}
+                            {question.question}
+                            {showAnswer && " ✔️"}
+                            {showWrongAnswer && "❌"}
+                          </h4>
+                          <Radio.Group
+                            onChange={(e) =>
+                              handleAnswer(question._id, e.target.value)
+                            }
+                            disabled={submitted}
+                          >
+                            {question.options.map((option) => (
+                              <div key={option}>
+                                <Radio value={option}>{option}</Radio>
+                              </div>
+                            ))}
+                          </Radio.Group>
+                        </div>
+                      );
+                    })}
+                  </Card>
+                  <div style={{ padding: "1rem" }}>
+                    <Button
+                      type="primary"
+                      onClick={handleSubmit}
+                      className="button-container me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                </React.Fragment>
+              ))
+            ) : (
+              <div className="flex items-center justify-center">
+                <div className="rounded-lg bg-gray-50 px-16 py-14 items-center justify-center">
+                  <h3 className="my-4 text-center text-3xl font-semibold text-gray-700">
+                    Test!!!
+                  </h3>
+                  <p className="w-[230px] text-center font-bold text-red-600">
+                    Please do not exit at the beginning of the test!!!
+                  </p>
                   <Button
                     type="primary"
-                    onClick={handleSubmit}
-                    className="button-container me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={handleStart}
+                    className="mx-auto mt-10 block rounded-xl border-4 border-transparent bg-orange-400 px-6 py-3 text-center text-base font-medium text-orange-100 outline-8 hover:outline hover:duration-300"
                   >
-                    Submit
+                    Start
                   </Button>
                 </div>
-              </React.Fragment>
-            ))
-          ) : (
-            <div className="flex items-center justify-center">
-              <div className="rounded-lg bg-gray-50 px-16 py-14 items-center justify-center">
-                <h3 className="my-4 text-center text-3xl font-semibold text-gray-700">
-                  Kiểm tra!!!
-                </h3>
-                <p className="w-[230px] text-center font-normal text-gray-600">
-                  Vui lòng không thoát ra khi bắt đầu làm bài
-                </p>
-                <Button
-                  type="primary"
-                  onClick={handleStart}
-                  className="mx-auto mt-10 block rounded-xl border-4 border-transparent bg-orange-400 px-6 py-3 text-center text-base font-medium text-orange-100 outline-8 hover:outline hover:duration-300"
-                >
-                  Start
-                </Button>
               </div>
-            </div>
-          )}
-        </Col>
-      </Row>
+            )}
+          </Col>
+        </Row>
+      )}
     </div>
   );
 }

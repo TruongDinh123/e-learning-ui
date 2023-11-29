@@ -127,7 +127,7 @@ export default function Header() {
 
             {userState === null && (
               <Tooltip title="Sign up">
-                <Link eventKey={2} href="/signup" icon={<UserAddOutlined />}>
+                <Link href="/signup" icon={<UserAddOutlined />}>
                   <span className="fs-6 text-dark text-decoration-none me-4">
                     Sign up
                   </span>

@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
                     collapsed={collapsed}
                   />
                 )}
-                <div className={pathname.includes("/admin") && "p-3"}>
+                <div className={pathname.includes("/admin") ? "p-3" : undefined}>
                   {children}
                 </div>
                 {shouldRenderFooter &&

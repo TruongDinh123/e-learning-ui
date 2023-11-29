@@ -63,12 +63,13 @@ export default function AssignmentCreate() {
           })
           .then(() => {
             message.success(res.message, 1.5);
-            // router.push("/admin/quiz/view-quiz");
+            router.push("/admin/assignment/view-assignment");
             setLoading(false);
           });
       })
       .catch((error) => {
-        console.log(error);
+        message.error(error.response?.data?.message, 3.5);
+        setLoading(false);
       });
   };
 
@@ -95,9 +96,11 @@ export default function AssignmentCreate() {
     <div>
       {contextHolder}
       <div className="me-3" style={{ paddingBottom: "100px" }}>
-        <h1>Create Quizs</h1>
+        <h1>Create Assignment</h1>
         {isLoading ? (
-          <Spin />
+          <div className="flex justify-center items-center h-screen">
+            <Spin />
+          </div>
         ) : (
           <Form
             form={form}
@@ -125,10 +128,10 @@ export default function AssignmentCreate() {
               label="Assigment Name"
               name="name"
               rules={[
-                { required: true, message: "Please enter the quiz name" },
+                { required: true, message: "Please enter the assignment name" },
               ]}
             >
-              <Input placeholder="Quiz Name" />
+              <Input placeholder="Assignment Name" />
             </Form.Item>
             <Form.Item
               label="Assigment Description"

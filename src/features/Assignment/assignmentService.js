@@ -43,10 +43,19 @@ const deleteQuizAssignment = async (data) => {
   return res.data;
 };
 
+const deleteAssignment = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/assignment/${data.assignmentId}`,
+    method: "DELETE",
+  });
+  return res.data;
+};
+
 export const AssignmentService = {
   createAssignment,
   viewAssignmentByCourseId,
   submitAssignment,
   updateAssignment,
   deleteQuizAssignment,
+  deleteAssignment,
 };

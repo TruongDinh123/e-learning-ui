@@ -98,7 +98,9 @@ export default function ViewRoles() {
     <div>
       <h1>Table Role</h1>
       {isLoading ? (
-        <Spin />
+        <div className="flex justify-center items-center h-screen">
+          <Spin />
+        </div>
       ) : (
         <React.Fragment>
           <CreateRole refresh={() => setUpdateRole(updateRole + 1)} />

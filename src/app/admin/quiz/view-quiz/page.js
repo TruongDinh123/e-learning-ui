@@ -8,14 +8,20 @@ import {
   Popconfirm,
   Select,
   Spin,
+  Breadcrumb,
 } from "antd";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { deleteQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
+import {
+  deleteQuiz,
+  deleteQuizQuestion,
+  viewQuiz,
+} from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { viewCourses } from "@/features/Courses/courseSlice";
 import UpdateQuiz from "../../courses/Lesson/edit-quiz/page";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 const { Option } = Select;
 
@@ -31,6 +37,7 @@ export default function ViewQuiz() {
 
   const { Text } = Typography;
   const { Panel } = Collapse;
+  const router = useRouter();
 
   // Hàm xử lý khi chọn khóa học
   const handleCourseChange = (value) => {
@@ -156,20 +163,50 @@ export default function ViewQuiz() {
     data.push({
       key: index + 1,
       name: i?.name,
-      questions: <Collapse accordion>{questions}</Collapse>,
+      // questions: <Collapse accordion>{questions}</Collapse>,
+      questions: (
+        <Button
+          className="me-3"
+          style={{ width: "100%" }}
+          lessonId={selectedLesson}
+          onClick={() =>
+            router.push(`/admin/quiz/view-list-question/${selectedLesson}`)
+          }
+        >
+          View details
+        </Button>
+      ),
       action: (
-        <UpdateQuiz
-          quizId={i?._id}
-          refresh={() => setUpdateQuiz(updateQuiz + 1)}
-        />
+        <div>
+          <UpdateQuiz
+            quizId={i?._id}
+            refresh={() => setUpdateQuiz(updateQuiz + 1)}
+          />
+          <Popconfirm
+            title="Delete the quiz"
+            description="Are you sure to delete this Quiz?"
+            okText="Yes"
+            cancelText="No"
+            okButtonProps={{
+              style: { backgroundColor: "red" },
+            }}
+            onConfirm={() =>
+              handleDeleteQuiz({
+                quizId: i?._id,
+              })
+            }
+          >
+            <Button danger>Delete</Button>
+          </Popconfirm>
+        </div>
       ),
     });
   });
 
-  const handleDeleteQuiz = ({ quizId, questionId }) => {
+  const handleDeleteQuiz = ({ quizId }) => {
     setIsLoading(true);
 
-    dispatch(deleteQuiz({ quizId, questionId }))
+    dispatch(deleteQuiz({ quizId }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
@@ -180,13 +217,16 @@ export default function ViewQuiz() {
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   };
 
   return (
     <div className="">
       {isLoading ? (
-        <Spin />
+        <div className="flex justify-center items-center h-screen">
+          <Spin />
+        </div>
       ) : (
         <React.Fragment>
           <div className="pb-3">

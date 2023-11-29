@@ -12,14 +12,16 @@ import {
 } from "antd";
 import { useDispatch } from "react-redux";
 import React, { useEffect, useState } from "react";
-import { deleteQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
+import { deleteQuizQuestion, viewQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { viewCourses } from "@/features/Courses/courseSlice";
 import UpdateQuiz from "../../courses/Lesson/edit-quiz/page";
 import {
+  deleteAssignment,
   deleteQuizAssignment,
   viewAssignmentByCourseId,
 } from "@/features/Assignment/assignmentSlice";
+import { useRouter } from "next/navigation";
 
 const { Option } = Select;
 
@@ -32,6 +34,7 @@ export default function ViewAssignment() {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentQuestions, setCurrentQuestions] = useState([]);
+  const router = useRouter();
 
   const showModal = (questions) => {
     setCurrentQuestions(questions);
@@ -162,67 +165,80 @@ export default function ViewAssignment() {
     // </div>
     //   </Panel>
     // ));
-    const questions = i.questions.map((question, questionIndex) => (
-      <div key={question._id} className="mb-4">
-        <h2 className="text-xl font-bold">Question {questionIndex + 1}</h2>
-        <p>{question.question}</p>
-        <ul className="list-disc ml-5">
-          {question.options.map((option, optionIndex) => (
-            <li key={optionIndex}>{option}</li>
-          ))}
-        </ul>
-        <p>
-          <strong>Answer:</strong> {question.answer}
-        </p>
-        <div className="mt-3">
-          <Popconfirm
-            title="Delete the quiz"
-            description="Are you sure to delete this Quiz?"
-            okText="Yes"
-            cancelText="No"
-            onConfirm={() =>
-              handleDeleteQuiz({
-                quizId: i?._id,
-                questionId: question?._id,
-              })
-            }
-          >
-            <Button danger>Delete</Button>
-          </Popconfirm>
-        </div>
-      </div>
-    ));
+    // const questions = i.questions.map((question, questionIndex) => (
+    //   <div key={question._id} className="mb-4">
+    //     <h2 className="text-xl font-bold">Question {questionIndex + 1}</h2>
+    //     <p>{question.question}</p>
+    //     <ul className="list-disc ml-5">
+    //       {question.options.map((option, optionIndex) => (
+    //         <li key={optionIndex}>{option}</li>
+    //       ))}
+    //     </ul>
+    //     <p>
+    //       <strong>Answer:</strong> {question.answer}
+    //     </p>
+    //     <div className="mt-3">
+    //       <Popconfirm
+    //         title="Delete the quiz"
+    //         description="Are you sure to delete this Quiz?"
+    //         okText="Yes"
+    //         cancelText="No"
+    //         onConfirm={() =>
+    //           handleDeleteQuiz({
+    //             quizId: i?._id,
+    //             questionId: question?._id,
+    //           })
+    //         }
+    //       >
+    //         <Button danger>Delete</Button>
+    //       </Popconfirm>
+    //     </div>
+    //   </div>
+    // ));
 
     data.push({
       key: index + 1,
       name: i?.name,
       questions: (
         //   <Collapse accordion>{questions}</Collapse>
-        <React.Fragment>
+        // <React.Fragment>
+        //   <Button
+        //     type="primary"
+        //     style={{ color: "#fff", backgroundColor: "#1890ff" }}
+        //     onClick={() => showModal(i.questions)}
+        //   >
+        //     View Questions
+        //   </Button>
+        //   <Modal
+        //     title="Questions"
+        //     visible={isModalVisible}
+        //     onCancel={handleCancel}
+        //     style={{ overflow: "auto", maxHeight: "60vh" }}
+        //     footer={
+        //       <React.Fragment>
+        //         <div></div>
+        //         <Button key="back" onClick={handleCancel}>
+        //           Cancel
+        //         </Button>
+        //       </React.Fragment>
+        //     }
+        //   >
+        //     {questions}
+        //   </Modal>
+        // </React.Fragment>
+        <div>
           <Button
-            type="primary"
-            style={{ color: "#fff", backgroundColor: "#1890ff" }}
-            onClick={() => showModal(i.questions)}
-          >
-            View Questions
-          </Button>
-          <Modal
-            title="Questions"
-            visible={isModalVisible}
-            onCancel={handleCancel}
-            style={{ overflow: "auto", maxHeight: "60vh" }}
-            footer={
-              <React.Fragment>
-                <div></div>
-                <Button key="back" onClick={handleCancel}>
-                  Cancel
-                </Button>
-              </React.Fragment>
+            className="me-3"
+            style={{ width: "100%" }}
+            onClick={() =>
+              router.push(
+                `/admin/assignment/view-list-assignment/${selectedCourse}`
+              )
             }
           >
-            {questions}
-          </Modal>
-        </React.Fragment>
+            View details
+          </Button>
+        </div>
       ),
       action: (
         <React.Fragment>
@@ -230,15 +246,31 @@ export default function ViewAssignment() {
             assignmentId={i?._id}
             refresh={() => setUpdateAssignment(updateQuiz + 1)}
           />
+          <Popconfirm
+            title="Delete the assignment"
+            description="Are you sure to delete this assignment?"
+            okText="Yes"
+            cancelText="No"
+            okButtonProps={{
+              style: { backgroundColor: "red" },
+            }}
+            onConfirm={() =>
+              handleDeleteAssignment({
+                assignmentId: i?._id,
+              })
+            }
+          >
+            <Button danger>Delete</Button>
+          </Popconfirm>
         </React.Fragment>
       ),
     });
   });
 
-  const handleDeleteQuiz = ({ assignmentId, questionId }) => {
+  const handleDeleteAssignment = ({ assignmentId }) => {
     setIsLoading(true);
 
-    dispatch(deleteQuizAssignment({ assignmentId, questionId }))
+    dispatch(deleteAssignment({ assignmentId }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
@@ -255,7 +287,9 @@ export default function ViewAssignment() {
   return (
     <div className="">
       {isLoading ? (
-        <Spin />
+        <div className="flex justify-center items-center h-screen">
+          <Spin />
+        </div>
       ) : (
         <React.Fragment>
           <div className="pb-3">

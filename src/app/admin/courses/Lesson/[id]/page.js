@@ -1,5 +1,14 @@
 "use client";
-import { Spin, Popconfirm, Button, Breadcrumb, Row, Col, Card, message } from "antd";
+import {
+  Spin,
+  Popconfirm,
+  Button,
+  Breadcrumb,
+  Row,
+  Col,
+  Card,
+  message,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteLesson, viewLesson } from "@/features/Lesson/lessonSlice";
@@ -70,7 +79,9 @@ export default function Lesson({ params }) {
           </Breadcrumb.Item>
         </Breadcrumb>
         {isLoading ? (
-          <Spin />
+          <div className="flex justify-center items-center h-screen">
+            <Spin />
+          </div>
         ) : (
           <React.Fragment>
             <CreateLesson
