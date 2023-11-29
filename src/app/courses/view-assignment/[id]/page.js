@@ -33,61 +33,30 @@ export default function Assignment({ params }) {
     }));
   };
 
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   dispatch(viewAssignmentByCourseId({ courseId: params?.id }))
-  //     .then(unwrapResult)
-  //     .then((res) => {
-  //       if (res.status) {
-  //         setAssigment(res.metadata);
-  //       } else {
-  //         messageApi.error(res.message);
-  //       }
-  //       setIsLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       setIsLoading(false);
-  //     });
-
-  //   dispatch(getScore())
-  //     .then(unwrapResult)
-  //     .then((res) => {
-  //       if (res.status) {
-  //         setScore(res.metadata);
-  //       }
-  //       setIsLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       setIsLoading(false);
-  //       console.log(error);
-  //     });
-  // }, []);
-
   useEffect(() => {
     setIsLoading(true);
-  
+
     Promise.all([
       dispatch(viewAssignmentByCourseId({ courseId: params?.id })),
-      dispatch(getScore())
+      dispatch(getScore()),
     ])
       .then(([assignmentRes, scoreRes]) => {
         const assignmentResult = assignmentRes.payload;
         const scoreResult = scoreRes.payload;
-  
+
         if (assignmentResult.status) {
           setAssigment(assignmentResult.metadata);
           setTimeLeft(assignmentResult.metadata[0]?.timeLimit * 60);
         } else {
           messageApi.error(assignmentResult.message);
         }
-  
+
         if (scoreResult.status) {
           setScore(scoreResult.metadata);
         } else {
           messageApi.error(scoreResult.message);
         }
-  
+
         setIsLoading(false);
       })
       .catch((error) => {
@@ -95,7 +64,12 @@ export default function Assignment({ params }) {
         setIsLoading(false);
       });
   }, [dispatch, params?.id, messageApi]);
-  
+
+  const handleCountdownFinish = () => {
+    if (!submitted) {
+      handleSubmit();
+    }
+  };
 
   const handleStart = () => {
     setStarted(true);
@@ -221,8 +195,10 @@ export default function Assignment({ params }) {
                 <React.Fragment key={item._id}>
                   <Card title={item.name}>
                     <Statistic.Countdown
-                      value={startTime + timeLeft * 1000}
-                      onFinish={handleSubmit}
+                      value={
+                        startTime + (timeLeft !== null ? timeLeft * 1000 : 0)
+                      }
+                      onFinish={handleCountdownFinish}
                       format="mm:ss"
                     />
                     {item.questions.map((question, questionIndex) => {
