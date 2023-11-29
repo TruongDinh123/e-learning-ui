@@ -209,6 +209,20 @@ const quizSlice = createSlice({
         state.isSuccess = false;
         state.message = "Something went wrong!";
       })
+      .addCase(getScore.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getScore.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+      })
+      .addCase(getScore.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
       .addCase(resetState, () => initialState);
   },
 });

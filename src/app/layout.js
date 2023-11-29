@@ -8,15 +8,20 @@ import AdminFooter from "@/components/AdminFooter/AdminFooter";
 import AdminHeader from "@/components/AdminHeaeder/AdminHeader";
 import AdminSidebar from "@/components/AdminSidebar/AdminSidebar";
 import { Layout } from "antd";
-import { Suspense, useState } from "react";
-import { Providers } from "@/Provider";
+import React, { Suspense, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+// import { Providers } from "@/Provider";
+
+const Providers = dynamic(() => import("@/Provider"), { ssr: false });
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+
   const shouldRenderFooter = !pathname.includes("/web-rtc/room");
+
   return (
-    <html lang="en">
+    <html>
       <body>
         <Providers>
           <Suspense fallback={<p>Loading..</p>}>
@@ -35,7 +40,9 @@ export default function RootLayout({ children }) {
                     collapsed={collapsed}
                   />
                 )}
-                <div className={pathname.includes("/admin") ? "p-3" : undefined}>
+                <div
+                  className={pathname.includes("/admin") ? "p-3" : undefined}
+                >
                   {children}
                 </div>
                 {shouldRenderFooter &&

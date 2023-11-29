@@ -71,7 +71,7 @@ export default function Assignment({ params }) {
     }
   };
 
-  const handleStart = () => {
+  const handleStart = async () => {
     setStarted(true);
     setStartTime(Date.now());
     dispatch(viewAssignmentByCourseId({ courseId: params?.id }))
@@ -89,7 +89,7 @@ export default function Assignment({ params }) {
       });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const expectedEndTime = startTime + timeLeft * 1000;
     const actualEndTime = Date.now();
     const endTime = Math.min(expectedEndTime, actualEndTime); // Use the earlier of the two times
@@ -162,13 +162,13 @@ export default function Assignment({ params }) {
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
                           viewBox="0 0 24 24"
-                          stroke-width="1.5"
+                          strokeWidth="1.5"
                           stroke="currentColor"
                           className="h-8 w-8 text-white"
                         >
                           <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                             d="M4.5 12.75l6 6 9-13.5"
                           />
                         </svg>
