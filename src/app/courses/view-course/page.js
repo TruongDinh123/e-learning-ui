@@ -1,18 +1,11 @@
 "use client";
 import { getStudentCourses } from "@/features/Courses/courseSlice";
-import {
-  BookOutlined,
-  FolderOpenOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { BookOutlined, FolderOpenOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Image, Spin } from "antd";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { GrView } from "react-icons/gr";
 import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
-import { Button } from "@material-tailwind/react";
 
 export default function Course() {
   const dispatch = useDispatch();
@@ -22,7 +15,6 @@ export default function Course() {
   //viewCourses api
   useEffect(() => {
     setIsLoading(true);
-
     dispatch(getStudentCourses())
       .then(unwrapResult)
       .then((res) => {
@@ -35,7 +27,7 @@ export default function Course() {
         console.log(error);
         setIsLoading(false);
       });
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="flex">
