@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Card, Radio, message, Row, Col, Statistic, Spin } from "antd";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
@@ -26,12 +26,19 @@ export default function Assignment({ params }) {
 
   const router = useRouter();
 
-  const handleAnswer = (questionId, answer) => {
+  // const handleAnswer = (questionId, answer) => {
+  //   setSelectedAnswers((prevAnswers) => ({
+  //     ...prevAnswers,
+  //     [questionId]: answer,
+  //   }));
+  // };
+
+  const handleAnswer = useCallback((questionId, answer) => {
     setSelectedAnswers((prevAnswers) => ({
       ...prevAnswers,
       [questionId]: answer,
     }));
-  };
+  }, []);
 
   useEffect(() => {
     setIsLoading(true);
