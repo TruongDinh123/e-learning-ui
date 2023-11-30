@@ -1,8 +1,9 @@
 "use client";
 import { viewAssignmentByCourseId } from "@/features/Assignment/assignmentSlice";
 import { getScore } from "@/features/Quiz/quizSlice";
+import { Button } from "@material-tailwind/react";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Spin } from "antd";
+import {  Spin } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -60,7 +61,7 @@ export default function HandleStart({ params }) {
 
   const assignmentId = useMemo(() => assignment[0]?._id, [assignment]);
   const currentScore = useMemo(
-    () => score.find((s) => s.assignment._id === assignmentId),
+    () => score.find((s) => s.assignment?._id === assignmentId),
     [score, assignmentId]
   );
   return (
@@ -121,7 +122,7 @@ export default function HandleStart({ params }) {
             <Button
               type="primary"
               onClick={handleStart}
-              className="mx-auto mt-10 block rounded-xl border-4 border-transparent bg-orange-400 px-6 py-3 text-center text-base font-medium text-orange-100 outline-8 hover:outline hover:duration-300"
+              className="mx-auto mt-10 block rounded-xl border-4 border-transparent bg-orange-400 px-6 text-center text-base font-medium text-orange-100 outline-8 hover:outline hover:duration-300"
             >
               Start
             </Button>
