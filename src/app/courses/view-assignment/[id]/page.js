@@ -56,14 +56,14 @@ export default function HandleStart({ params }) {
       });
   }, []);
 
-  // const assignmentId = assignment[0]?._id;
-  // const currentScore = score.find((s) => s.assignment?._id === assignmentId);
+  const assignmentId = assignment[0]?._id;
+  const currentScore = score.find((s) => s.assignment?._id === assignmentId);
 
-  const assignmentId = useMemo(() => assignment[0]?._id, [assignment]);
-  const currentScore = useMemo(
-    () => score.find((s) => s.assignment?._id === assignmentId),
-    [score, assignmentId]
-  );
+  // const assignmentId = useMemo(() => assignment[0]?._id, [assignment]);
+  // const currentScore = useMemo(
+  //   () => score.find((s) => s.assignment?._id === assignmentId),
+  //   [score, assignmentId]
+  // );
   return (
     <div>
       {isLoading ? (
