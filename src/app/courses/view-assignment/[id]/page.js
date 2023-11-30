@@ -3,10 +3,10 @@ import { viewAssignmentByCourseId } from "@/features/Assignment/assignmentSlice"
 import { getScore } from "@/features/Quiz/quizSlice";
 import { Button } from "@material-tailwind/react";
 import { unwrapResult } from "@reduxjs/toolkit";
-import {  Spin } from "antd";
+import { Spin } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 export default function HandleStart({ params }) {
@@ -59,18 +59,15 @@ export default function HandleStart({ params }) {
   const assignmentId = assignment[0]?._id;
   const currentScore = score.find((s) => s.assignment?._id === assignmentId);
 
-  // const assignmentId = useMemo(() => assignment[0]?._id, [assignment]);
-  // const currentScore = useMemo(
-  //   () => score.find((s) => s.assignment?._id === assignmentId),
-  //   [score, assignmentId]
-  // );
   return (
     <div>
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />
         </div>
-      ) : score?.some(
+      ) : (
+        {
+          /* score?.some(
           (s) => s?.assignment?._id === assignmentId && s?.isComplete
         ) ? (
         <div className="flex items-center justify-center">
@@ -110,24 +107,26 @@ export default function HandleStart({ params }) {
             </div>
           </div>
         </div>
-      ) : (
-        <div className="flex items-center justify-center">
-          <div className="rounded-lg bg-gray-50 px-16 py-14 items-center justify-center">
-            <h3 className="my-4 text-center text-3xl font-semibold text-gray-700">
-              Test!!!
-            </h3>
-            <p className="w-[230px] text-center font-bold text-red-600">
-              Please do not exit at the beginning of the test!!!
-            </p>
-            <Button
-              type="primary"
-              onClick={handleStart}
-              className="mx-auto mt-10 block rounded-xl border-4 border-transparent bg-orange-400 px-6 text-center text-base font-medium text-orange-100 outline-8 hover:outline hover:duration-300"
-            >
-              Start
-            </Button>
+      ) :  */
+        }(
+          <div className="flex items-center justify-center">
+            <div className="rounded-lg bg-gray-50 px-16 py-14 items-center justify-center">
+              <h3 className="my-4 text-center text-3xl font-semibold text-gray-700">
+                Test!!!
+              </h3>
+              <p className="w-[230px] text-center font-bold text-red-600">
+                Please do not exit at the beginning of the test!!!
+              </p>
+              <Button
+                type="primary"
+                onClick={handleStart}
+                className="mx-auto mt-10 block rounded-xl border-4 border-transparent bg-orange-400 px-6 text-center text-base font-medium text-orange-100 outline-8 hover:outline hover:duration-300"
+              >
+                Start
+              </Button>
+            </div>
           </div>
-        </div>
+        )
       )}
     </div>
   );
