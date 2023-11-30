@@ -2,37 +2,39 @@
 import Link from "next/link";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import CustomButton from "../comman/CustomBtn";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { resetState, setUser } from "@/features/User/userSlice";
-import { Image, Tooltip } from "antd";
+import { Button, Tooltip } from "antd";
 import "../Header/header.css";
 import {
   LogoutOutlined,
   LoginOutlined,
   UserAddOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import React, { useCallback } from "react";
+import { Image, Navbar } from "react-bootstrap";
 
 const logo = "/images/logo.jpg";
+const logo2 = "/images/logo-svg.svg";
 
 const UserLinks = () => (
   <React.Fragment>
     <Link href="/courses/view-course">
-      <span className="fs-6 text-dark text-decoration-none me-4 nav-link">
+      <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
         My Course
       </span>
     </Link>
     <Link href="/courses/view-score">
-      <span className="fs-6 text-dark text-decoration-none me-4 nav-link">
+      <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
         Score Quizs
       </span>
     </Link>
     <Link href="/web-rtc/lobby">
-      <span className="fs-6 text-dark text-decoration-none me-4 nav-link">
+      <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
         Create Room
       </span>
     </Link>
@@ -56,28 +58,38 @@ export default function Header() {
     <Navbar
       collapseOnSelect
       expand="lg"
-      className="bg-gray-200 hover:bg-body-primary transition-colors duration-200"
+      // className="bg-gray-200 hover:bg-body-primary transition-colors duration-200"
       variant="light"
+      className="flex items-center justify-between flex-wrap bg-white shadow border-solid border-t-2 border-blue-700"
     >
       <Container fluid>
+        <div class="mr-auto md:w-36 flex-shrink-0">
+          <Image src={logo2} alt="Logo" class="h-6 md:h-10" />
+        </div>
         <Navbar.Brand
-          href="#home"
-          className="d-flex align-items-center hover:text-blue-500 transition-colors duration-200"
+          href="/"
+          // className="flex items-center flex-shrink-0 text-gray-800 mr-16"
+          className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl"
         >
-          <div style={{ maxWidth: "100px", height: "auto" }}>
-            <Image src={logo} alt="Logo" layout="responsive" />
-          </div>
           <Link href="/">
-            <span className="fs-bold fs-3 text-dark text-decoration-none me-4 nav-link header-link hover:text-blue-500 transition-colors duration-200">
-              95 E-learning
+            <span className="flex items-center flex-shrink-0 text-gray-800 mr-16">
+              <span class="font-semibold text-xl tracking-tight"></span>
             </span>
           </Link>
+
+          <Navbar.Toggle
+            aria-controls="responsive-navbar-nav"
+            className="flex items-center px-3 py-2 border-2 rounded text-blue-700 border-blue-700 hover:text-blue-700 hover:border-blue-700"
+          />
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="me-auto">
+
+        <Navbar.Collapse
+          id="responsive-navbar-nav"
+          className="menu w-full lg:block flex-grow lg:flex lg:items-center lg:w-auto lg:px-3 px-8"
+        >
+          <Nav className="text-md font-bold text-blue-700 lg:flex-grow">
             <Link href="/">
-              <span className="fs-6 text-dark text-decoration-none me-4 nav-link selection:hover:text-blue-500">
+              <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
                 Home
               </span>
             </Link>
@@ -92,14 +104,14 @@ export default function Header() {
           >
             {userState ? (
               <span
-                className="fs-6 text-dark text-decoration-none me-4 nav-link header-link"
+                className="block text-md px-4 py-2 rounded text-blue-700 ml-2 font-bold hover:text-white mt-4 hover:bg-blue-700 lg:mt-0"
                 style={{ textAlign: "center" }}
               >
                 {userState.metadata?.account?.lastName}
               </span>
             ) : (
               <span
-                className="fs-6 text-dark text-decoration-none me-4 nav-link header-link"
+                className="block text-md px-4 py-2 rounded text-blue-700 ml-2 font-bold hover:text-white mt-4 hover:bg-blue-700 lg:mt-0"
                 style={{ textAlign: "center" }}
               >
                 Guest
@@ -107,18 +119,19 @@ export default function Header() {
             )}
             {userState !== null ? (
               <Tooltip title="Logout">
-                <CustomButton
+                <span
                   title="Logout"
-                  type="link"
-                  className="text-dark"
                   onClick={logout}
                   icon={<LogoutOutlined />}
-                />
+                  className="block text-md px-4 py-2 rounded text-blue-700 ml-2 font-bold hover:text-white mt-4 hover:bg-blue-700 lg:mt-0"
+                >
+                  Logout
+                </span>
               </Tooltip>
             ) : (
               <Tooltip title="Login">
                 <Link href="/login" icon={<LoginOutlined />}>
-                  <span className="fs-6 text-dark text-decoration-none me-4">
+                  <span className="block text-md px-4 ml-2 py-2 rounded text-blue-700 font-bold hover:text-white mt-4 hover:bg-blue-700 lg:mt-0">
                     Login
                   </span>
                 </Link>
@@ -128,7 +141,7 @@ export default function Header() {
             {userState === null && (
               <Tooltip title="Sign up">
                 <Link href="/signup" icon={<UserAddOutlined />}>
-                  <span className="fs-6 text-dark text-decoration-none me-4">
+                  <span className="block text-md px-4 py-2 rounded text-blue-700 ml-2 font-bold hover:text-white mt-4 hover:bg-blue-700 lg:mt-0">
                     Sign up
                   </span>
                 </Link>

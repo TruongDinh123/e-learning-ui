@@ -15,7 +15,6 @@ export default function QuizCreator() {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [courses, setCourses] = useState([]); // Danh sách khóa học
-  console.log("🚀 ~ courses:", courses);
   const [selectedCourseLessons, setSelectedCourseLessons] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
@@ -234,6 +233,7 @@ export default function QuizCreator() {
                 type="primary"
                 htmlType="submit"
                 style={{ color: "#fff", backgroundColor: "#1890ff" }}
+                loading={isLoading}
               >
                 Save Quiz
               </Button>

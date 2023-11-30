@@ -161,7 +161,7 @@ export default function ViewUsers() {
       ) : (
         <React.Fragment>
           <h1>Table User</h1>
-          <Table columns={columns} dataSource={data} />
+          <Table columns={columns} dataSource={data}  pagination={{ pageSize: 5 }} />
         </React.Fragment>
       )}
     </div>

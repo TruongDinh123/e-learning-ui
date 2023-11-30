@@ -104,7 +104,7 @@ export default function ViewRoles() {
       ) : (
         <React.Fragment>
           <CreateRole refresh={() => setUpdateRole(updateRole + 1)} />
-          <Table columns={columns} dataSource={data} className="pt-3" />
+          <Table columns={columns} dataSource={data}  pagination={{ pageSize: 5 }} className="pt-3" />
         </React.Fragment>
       )}
     </div>

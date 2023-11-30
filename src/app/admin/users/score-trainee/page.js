@@ -331,7 +331,7 @@ export default function ViewStudentsCourse() {
       >
         Invite Student
       </AddStudentToCourse>
-      <Table columns={columns} dataSource={data} className="pt-3" />
+      <Table columns={columns} dataSource={data} pagination={{ pageSize: 5 }} className="pt-3" />
     </React.Fragment>
   );
 }

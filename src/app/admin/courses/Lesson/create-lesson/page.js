@@ -27,6 +27,7 @@ export default function CreateLesson(props) {
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -52,7 +53,7 @@ export default function CreateLesson(props) {
     onSubmit: (values) => {
       values.content = values.content.trim();
       values.name = values.name.trim();
-
+      setIsLoading(true);
       dispatch(createLesson({ courseId: courseId, values }))
         .then(unwrapResult)
         .then((res) => {
@@ -79,7 +80,7 @@ export default function CreateLesson(props) {
       <Button
         type="primary"
         onClick={showModal}
-        className="me-3"
+        className="me-3 mt-2"
         style={{
           color: "#fff",
           backgroundColor: "#1890ff",
@@ -97,6 +98,7 @@ export default function CreateLesson(props) {
             key="back"
             type="primary"
             onClick={handleOk}
+            loading={isLoading}
             style={{
               color: "#fff",
               backgroundColor: "#1890ff",

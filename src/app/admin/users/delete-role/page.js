@@ -40,7 +40,9 @@ export default function DelRole(props) {
         cancelText="No"
         className="me-3"
         onConfirm={() => handleDeleteRole()}
-        style={{ color: "#fff", backgroundColor: "#1890ff" }}
+        okButtonProps={{
+          style: { backgroundColor: "red" },
+        }}
       >
         <Button danger style={{ width: "100%" }}>
           Delete

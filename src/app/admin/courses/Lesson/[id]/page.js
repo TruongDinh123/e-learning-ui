@@ -94,9 +94,7 @@ export default function Lesson({ params }) {
                   <Col span={8} key={subIndex._id}>
                     <Card title={i.name}>
                       <p>
-                        Content: {i.content} Nội dung ở đây sẽ miêu tả các nội
-                        dung của khóa học chi tiết nó sẽ giúp cho việc hiểu rõ
-                        hơn về lesson đang mô tả tóm tắt nội dung của lesson đó.
+                        Content: {i.content}
                       </p>
                       <div className="flex mt-3">
                         <Popconfirm

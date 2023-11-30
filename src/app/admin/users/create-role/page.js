@@ -15,7 +15,6 @@ const RoleSchema = yup.object({
     .string()
     .required("Name is required")
     .trim("Name must not start or end with whitespace")
-    .min(6, "Name must be at least 6 characters long")
     .matches(/^\S*$/, "Name must not contain whitespace"),
 });
 

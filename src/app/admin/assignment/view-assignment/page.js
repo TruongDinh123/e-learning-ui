@@ -113,7 +113,7 @@ export default function ViewAssignment() {
       dataIndex: "key",
     },
     {
-      title: "Name Quiz",
+      title: "Name Assignment",
       dataIndex: "name",
       onFilter: (value, record) => record.name.indexOf(value) === 0,
       sorter: (a, b) => a.name.length - b.name.length,
@@ -275,12 +275,14 @@ export default function ViewAssignment() {
       .then((res) => {
         if (res.status) {
           setUpdateAssignment(updateQuiz + 1);
+          setIsLoading(false);
         } else {
+          setIsLoading(false);
         }
-        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   };
 

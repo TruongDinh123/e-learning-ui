@@ -13,13 +13,11 @@ const CourseSchema = yup.object({
   title: yup
     .string()
     .required("Title is required")
-    .trim("Title must not start or end with whitespace")
-    .min(6, "Title must be at least 6 characters long"),
+    .trim("Title must not start or end with whitespace"),
   name: yup
     .string()
     .required("Name is required")
-    .trim("Name must not start or end with whitespace")
-    .min(6, "Name must be at least 6 characters long")
+    .trim("Name must not start or end with whitespace"),
 });
 
 export default function AddCourse(props) {
@@ -27,6 +25,7 @@ export default function AddCourse(props) {
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   const showModal = () => {
@@ -53,6 +52,7 @@ export default function AddCourse(props) {
     onSubmit: (values) => {
       values.name = values.name.trim();
       values.title = values.title.trim();
+      setIsLoading(true);
 
       dispatch(createCourse(values))
         .then(unwrapResult)
@@ -106,6 +106,7 @@ export default function AddCourse(props) {
                 color: "#fff",
                 backgroundColor: "#1890ff",
               }}
+              loading={isLoading}
             >
               Save
             </Button>

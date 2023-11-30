@@ -72,7 +72,7 @@ export default function UpdateQuiz(props) {
         className="me-3"
         style={{ color: "#fff", backgroundColor: "#1890ff" }}
       >
-        updat quiz
+        update quiz
       </Button>
       <Modal
         title="Update Quiz"

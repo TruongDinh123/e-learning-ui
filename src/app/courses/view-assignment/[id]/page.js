@@ -34,43 +34,46 @@ export default function Assignment({ params }) {
   // };
 
   const handleAnswer = useCallback((questionId, answer) => {
+    console.log("handleAnswer function has started");
     setSelectedAnswers((prevAnswers) => ({
       ...prevAnswers,
       [questionId]: answer,
     }));
+    console.log("handleAnswer function has finished");
   }, []);
 
-  useEffect(() => {
-    setIsLoading(true);
+  // useEffect(() => {
+  //   console.log("useEffect has started");
+  //   setIsLoading(true);
+  //   Promise.all([
+  //     dispatch(viewAssignmentByCourseId({ courseId: params?.id })),
+  //     dispatch(getScore()),
+  //   ])
+  //     .then(([assignmentRes, scoreRes]) => {
+  //       const assignmentResult = assignmentRes.payload;
+  //       const scoreResult = scoreRes.payload;
 
-    Promise.all([
-      dispatch(viewAssignmentByCourseId({ courseId: params?.id })),
-      dispatch(getScore()),
-    ])
-      .then(([assignmentRes, scoreRes]) => {
-        const assignmentResult = assignmentRes.payload;
-        const scoreResult = scoreRes.payload;
+  //       if (assignmentResult.status) {
+  //         setAssigment(assignmentResult.metadata);
+  //         setTimeLeft(assignmentResult.metadata[0]?.timeLimit * 60);
+  //       } else {
+  //         messageApi.error(assignmentResult.message);
+  //       }
 
-        if (assignmentResult.status) {
-          setAssigment(assignmentResult.metadata);
-          setTimeLeft(assignmentResult.metadata[0]?.timeLimit * 60);
-        } else {
-          messageApi.error(assignmentResult.message);
-        }
+  //       if (scoreResult.status) {
+  //         setScore(scoreResult.metadata);
+  //       } else {
+  //         messageApi.error(scoreResult.message);
+  //       }
 
-        if (scoreResult.status) {
-          setScore(scoreResult.metadata);
-        } else {
-          messageApi.error(scoreResult.message);
-        }
-
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setIsLoading(false);
-      });
-  }, [dispatch, params?.id, messageApi]);
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       setIsLoading(false);
+  //     });
+  //   console.log("useEffect has finished");
+  // }, [dispatch, params?.id, messageApi]);
 
   const handleCountdownFinish = () => {
     if (!submitted) {
@@ -79,6 +82,7 @@ export default function Assignment({ params }) {
   };
 
   const handleStart = async () => {
+    console.log("handleStart function has started");
     setStarted(true);
     setStartTime(Date.now());
     dispatch(viewAssignmentByCourseId({ courseId: params?.id }))
@@ -94,6 +98,7 @@ export default function Assignment({ params }) {
       .catch((error) => {
         console.log(error);
       });
+    console.log("handleStart function has finished");
   };
 
   const handleSubmit = async () => {
@@ -116,6 +121,7 @@ export default function Assignment({ params }) {
     )
       .then(unwrapResult)
       .then((res) => {
+        console.log("submitAssignment response received");
         if (res.status) {
           messageApi
             .open({
@@ -133,7 +139,7 @@ export default function Assignment({ params }) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.log("submitAssignment error:", error);
       });
   };
 
@@ -198,7 +204,7 @@ export default function Assignment({ params }) {
                 </div>
               </div>
             ) : started ? (
-              assignment.map((item, index) => (
+              assignment?.map((item, index) => (
                 <React.Fragment key={item._id}>
                   <Card title={item.name}>
                     <Statistic.Countdown
@@ -208,7 +214,7 @@ export default function Assignment({ params }) {
                       onFinish={handleCountdownFinish}
                       format="mm:ss"
                     />
-                    {item.questions.map((question, questionIndex) => {
+                    {item?.questions?.map((question, questionIndex) => {
                       const isCorrectAnswer =
                         selectedAnswers[question._id] === question.answer;
                       const showAnswer = submitted && isCorrectAnswer;

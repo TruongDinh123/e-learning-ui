@@ -92,7 +92,7 @@ export default function AdminSidebar(props) {
               {
                 key: "assignment/create-assignment",
                 icon: <UserOutlined />,
-                label: "Assignment",
+                label: "Create Assignment",
               },
               {
                 key: "assignment/view-assignment",
