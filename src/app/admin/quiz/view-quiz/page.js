@@ -180,6 +180,7 @@ export default function ViewQuiz() {
         <div>
           <UpdateQuiz
             quizId={i?._id}
+            lessonId={selectedLesson}
             refresh={() => setUpdateQuiz(updateQuiz + 1)}
           />
           <Popconfirm

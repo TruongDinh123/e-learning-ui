@@ -3,15 +3,14 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { Card, Form, Input, Modal, message, Button, Space } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { updateQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
 import { CloseOutlined } from "@ant-design/icons";
+import { updateAssignment, viewAssignmentByCourseId } from "@/features/Assignment/assignmentSlice";
 
-export default function UpdateQuiz(props) {
-  const { quizId, lessonId, refresh } = props;
+export default function UpdateAssignment(props) {
+  const { assignmentId, courseId, refresh } = props;
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quiz, setquiz] = useState([]);
-  console.log("🚀 ~ quiz:", quiz);
 
   const dispatch = useDispatch();
   const [form] = Form.useForm();
@@ -45,7 +44,7 @@ export default function UpdateQuiz(props) {
       })),
     };
 
-    dispatch(updateQuiz({ quizId: quizId, formattedValues }))
+    dispatch(updateAssignment({ assignmentId: assignmentId, formattedValues }))
       .then(unwrapResult)
       .then((res) => {
         messageApi
@@ -80,7 +79,7 @@ export default function UpdateQuiz(props) {
   }, [quiz]);
 
   useEffect(() => {
-    dispatch(viewQuiz({ lessonId: lessonId }))
+    dispatch(viewAssignmentByCourseId({ courseId: courseId }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
@@ -102,28 +101,28 @@ export default function UpdateQuiz(props) {
         className="me-3"
         style={{ color: "#fff", backgroundColor: "#1890ff" }}
       >
-        update quiz
+        Update Assignment
       </Button>
       <Modal
-        title="Update Quiz"
+        title="Update Assignment"
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[<></>]}
       >
         <Form
           form={form}
-          name="quiz_form"
+          name="assignment_form"
           initialValues={{
             questions: [{}],
           }}
           onFinish={handleUpdateQuiz}
         >
           <Form.Item
-            label="Quiz Name"
+            label="Assignment Name"
             name="name"
-            rules={[{ required: true, message: "Please enter the quiz name" }]}
+            rules={[{ required: true, message: "Please enter the assignment name" }]}
           >
-            <Input placeholder="Quiz Name" />
+            <Input placeholder="Assignment Name" />
           </Form.Item>
           <Form.List name="questions">
             {(fields, { add, remove }) => (
@@ -208,7 +207,7 @@ export default function UpdateQuiz(props) {
               htmlType="submit"
               style={{ color: "#fff", backgroundColor: "#1890ff" }}
             >
-              Save Quiz
+              Save Assignment
             </Button>
           </div>
         </Form>

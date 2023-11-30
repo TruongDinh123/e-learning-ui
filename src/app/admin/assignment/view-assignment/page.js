@@ -12,7 +12,6 @@ import {
 } from "antd";
 import { useDispatch } from "react-redux";
 import React, { useEffect, useState } from "react";
-import { deleteQuizQuestion, viewQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { viewCourses } from "@/features/Courses/courseSlice";
 import UpdateQuiz from "../../courses/Lesson/edit-quiz/page";
@@ -22,6 +21,7 @@ import {
   viewAssignmentByCourseId,
 } from "@/features/Assignment/assignmentSlice";
 import { useRouter } from "next/navigation";
+import UpdateAssignment from "../update-assignment/page";
 
 const { Option } = Select;
 
@@ -242,8 +242,9 @@ export default function ViewAssignment() {
       ),
       action: (
         <React.Fragment>
-          <UpdateQuiz
+          <UpdateAssignment
             assignmentId={i?._id}
+            courseId={selectedCourse}
             refresh={() => setUpdateAssignment(updateQuiz + 1)}
           />
           <Popconfirm
