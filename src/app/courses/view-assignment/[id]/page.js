@@ -52,30 +52,54 @@ export default function HandleStart({ params }) {
   //   fetchData();
   // }, [dispatch, params?.id]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const assignmentPromise = dispatch(
-          viewAssignmentByCourseId({ courseId: params?.id })
-        ).then(unwrapResult);
-        const scorePromise = dispatch(getScore()).then(unwrapResult);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const assignmentPromise = dispatch(
+  //         viewAssignmentByCourseId({ courseId: params?.id })
+  //       ).then(unwrapResult);
+  //       const scorePromise = dispatch(getScore()).then(unwrapResult);
 
-        const res = await assignmentPromise;
-        if (res.status) {
-          setAssigment(res.metadata);
-        }
+  //       const res = await assignmentPromise;
+  //       if (res.status) {
+  //         setAssigment(res.metadata);
+  //       }
 
-        const scoreRes = await scorePromise;
-        if (scoreRes.status) {
-          setScore(scoreRes.metadata);
-        }
-      } catch (error) {
-        console.error(error);
+  //       const scoreRes = await scorePromise;
+  //       if (scoreRes.status) {
+  //         setScore(scoreRes.metadata);
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [params?.id]);
+
+
+  const fetchData = async () => {
+    try {
+      const assignmentPromise = dispatch(
+        viewAssignmentByCourseId({ courseId: params?.id })
+      ).then(unwrapResult);
+      const scorePromise = dispatch(getScore()).then(unwrapResult);
+
+      const res = await assignmentPromise;
+      if (res.status) {
+        setAssigment(res.metadata);
       }
-    };
 
-    fetchData();
-  }, [params?.id]);
+      const scoreRes = await scorePromise;
+      if (scoreRes.status) {
+        setScore(scoreRes.metadata);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchData();
 
   const assignmentId = assignment[0]?._id;
   const currentScore = score.find((s) => s.assignment?._id === assignmentId);
