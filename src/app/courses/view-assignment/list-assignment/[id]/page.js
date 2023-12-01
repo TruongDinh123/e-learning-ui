@@ -9,6 +9,7 @@ import {
   viewAssignmentByCourseId,
 } from "@/features/Assignment/assignmentSlice";
 import { Button } from "@material-tailwind/react";
+import HandleSubmit from "../handle-submit/page";
 
 export default function ListAssignment({ params }) {
   const dispatch = useDispatch();
@@ -18,7 +19,6 @@ export default function ListAssignment({ params }) {
   const [submitted, setSubmitted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(null);
   const [startTime, setStartTime] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
@@ -31,9 +31,8 @@ export default function ListAssignment({ params }) {
     console.log("handleAnswer function has finished");
   }, []);
 
-  useEffect(() =>  {
+  useEffect(() => {
     console.log("useEffect has started");
-    setIsLoading(true);
     setStartTime(Date.now());
 
     const fetchData = async () => {
@@ -51,8 +50,6 @@ export default function ListAssignment({ params }) {
         }
       } catch (error) {
         console.log(error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -61,55 +58,55 @@ export default function ListAssignment({ params }) {
     console.log("useEffect has finished");
   }, []);
 
-  const handleCountdownFinish = () => {
-    if (!submitted) {
-      handleSubmit();
-    }
-  };
+  // const handleCountdownFinish = () => {
+  //   if (!submitted) {
+  //     handleSubmit();
+  //   }
+  // };
 
   const assignmentId = assignment[0]?._id;
 
-  const handleSubmit = async () => {
-    const expectedEndTime = startTime + timeLeft * 1000;
-    const actualEndTime = Date.now();
-    const endTime = Math.min(expectedEndTime, actualEndTime); // Use the earlier of the two times
-    const timeTaken = Math.floor((endTime - startTime) / 1000); // in milliseconds
+  // const handleSubmit = async () => {
+  //   const expectedEndTime = startTime + timeLeft * 1000;
+  //   const actualEndTime = Date.now();
+  //   const endTime = Math.min(expectedEndTime, actualEndTime); // Use the earlier of the two times
+  //   const timeTaken = Math.floor((endTime - startTime) / 1000); // in milliseconds
 
-    const formattedAnswers = Object.entries(selectedAnswers).map(
-      ([questionId, answer]) => ({
-        [questionId]: answer,
-      })
-    );
-    dispatch(
-      submitAssignment({
-        assignmentId: assignmentId,
-        answer: formattedAnswers,
-        timeLimit: timeTaken,
-      })
-    )
-      .then(unwrapResult)
-      .then((res) => {
-        console.log("submitAssignment response received");
-        if (res.status) {
-          messageApi
-            .open({
-              type: "success",
-              content: "Action in progress...",
-              duration: 2.5,
-            })
-            .then(() => {
-              setSubmitted(true);
-              router.push("/courses/view-course");
-            })
-            .then(() => message.success(res.message, 1.5));
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {
-        console.log("submitAssignment error:", error);
-      });
-  };
+  //   const formattedAnswers = Object.entries(selectedAnswers).map(
+  //     ([questionId, answer]) => ({
+  //       [questionId]: answer,
+  //     })
+  //   );
+  //   dispatch(
+  //     submitAssignment({
+  //       assignmentId: assignmentId,
+  //       answer: formattedAnswers,
+  //       timeLimit: timeTaken,
+  //     })
+  //   )
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       console.log("submitAssignment response received");
+  //       if (res.status) {
+  //         messageApi
+  //           .open({
+  //             type: "success",
+  //             content: "Action in progress...",
+  //             duration: 2.5,
+  //           })
+  //           .then(() => {
+  //             setSubmitted(true);
+  //             router.push("/courses/view-course");
+  //           })
+  //           .then(() => message.success(res.message, 1.5));
+  //       } else {
+  //         messageApi.error(res.message);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log("submitAssignment error:", error);
+  //     });
+  // };
 
   return (
     <div>
@@ -128,7 +125,6 @@ export default function ListAssignment({ params }) {
               <Card title={item.name}>
                 <Statistic.Countdown
                   value={startTime + (timeLeft !== null ? timeLeft * 1000 : 0)}
-                  onFinish={handleCountdownFinish}
                   format="mm:ss"
                 />
                 {item?.questions?.map((question, questionIndex) => {
@@ -170,13 +166,12 @@ export default function ListAssignment({ params }) {
                 })}
               </Card>
               <div style={{ padding: "1rem" }}>
-                <Button
-                  type="primary"
-                  onClick={handleSubmit}
-                  className="button-container me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                >
-                  Submit
-                </Button>
+                <HandleSubmit
+                  assignmentId={assignmentId}
+                  selectedAnswers={selectedAnswers}
+                  startTime={startTime}
+                  timeLeft={timeLeft}
+                />
               </div>
             </React.Fragment>
           ))}
