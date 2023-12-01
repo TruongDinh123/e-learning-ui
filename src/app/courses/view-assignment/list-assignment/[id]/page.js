@@ -11,6 +11,44 @@ import {
 import { Button } from "@material-tailwind/react";
 import HandleSubmit from "../handle-submit/page";
 
+function Question({
+  question,
+  index,
+  questionIndex,
+  handleAnswer,
+  submitted,
+  selectedAnswers,
+}) {
+  const isCorrectAnswer = selectedAnswers[question._id] === question.answer;
+  const showAnswer = submitted && isCorrectAnswer;
+  const showWrongAnswer = submitted && !isCorrectAnswer;
+
+  return (
+    <div key={question._id}>
+      <h4
+        style={{
+          marginBottom: "10px",
+          color: showAnswer ? "green" : showWrongAnswer ? "red" : "black",
+        }}
+      >
+        Question {index + 1}.{questionIndex + 1}: {question.question}
+        {showAnswer && " ✔️"}
+        {showWrongAnswer && "❌"}
+      </h4>
+      <Radio.Group
+        onChange={(e) => handleAnswer(question._id, e.target.value)}
+        disabled={submitted}
+      >
+        {question.options.map((option) => (
+          <div key={option}>
+            <Radio value={option}>{option}</Radio>
+          </div>
+        ))}
+      </Radio.Group>
+    </div>
+  );
+}
+
 export default function ListAssignment({ params }) {
   const dispatch = useDispatch();
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -58,55 +96,7 @@ export default function ListAssignment({ params }) {
     console.log("useEffect has finished");
   }, []);
 
-  // const handleCountdownFinish = () => {
-  //   if (!submitted) {
-  //     handleSubmit();
-  //   }
-  // };
-
   const assignmentId = assignment[0]?._id;
-
-  // const handleSubmit = async () => {
-  //   const expectedEndTime = startTime + timeLeft * 1000;
-  //   const actualEndTime = Date.now();
-  //   const endTime = Math.min(expectedEndTime, actualEndTime); // Use the earlier of the two times
-  //   const timeTaken = Math.floor((endTime - startTime) / 1000); // in milliseconds
-
-  //   const formattedAnswers = Object.entries(selectedAnswers).map(
-  //     ([questionId, answer]) => ({
-  //       [questionId]: answer,
-  //     })
-  //   );
-  //   dispatch(
-  //     submitAssignment({
-  //       assignmentId: assignmentId,
-  //       answer: formattedAnswers,
-  //       timeLimit: timeTaken,
-  //     })
-  //   )
-  //     .then(unwrapResult)
-  //     .then((res) => {
-  //       console.log("submitAssignment response received");
-  //       if (res.status) {
-  //         messageApi
-  //           .open({
-  //             type: "success",
-  //             content: "Action in progress...",
-  //             duration: 2.5,
-  //           })
-  //           .then(() => {
-  //             setSubmitted(true);
-  //             router.push("/courses/view-course");
-  //           })
-  //           .then(() => message.success(res.message, 1.5));
-  //       } else {
-  //         messageApi.error(res.message);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log("submitAssignment error:", error);
-  //     });
-  // };
 
   return (
     <div>
@@ -127,43 +117,17 @@ export default function ListAssignment({ params }) {
                   value={startTime + (timeLeft !== null ? timeLeft * 1000 : 0)}
                   format="mm:ss"
                 />
-                {item?.questions?.map((question, questionIndex) => {
-                  const isCorrectAnswer =
-                    selectedAnswers[question._id] === question.answer;
-                  const showAnswer = submitted && isCorrectAnswer;
-                  const showWrongAnswer = submitted && !isCorrectAnswer;
-                  return (
-                    <div key={question._id}>
-                      <h4
-                        style={{
-                          marginBottom: "10px",
-                          color: showAnswer
-                            ? "green"
-                            : showWrongAnswer
-                            ? "red"
-                            : "black",
-                        }}
-                      >
-                        Question {index + 1}.{questionIndex + 1}:{" "}
-                        {question.question}
-                        {showAnswer && " ✔️"}
-                        {showWrongAnswer && "❌"}
-                      </h4>
-                      <Radio.Group
-                        onChange={(e) =>
-                          handleAnswer(question._id, e.target.value)
-                        }
-                        disabled={submitted}
-                      >
-                        {question.options.map((option) => (
-                          <div key={option}>
-                            <Radio value={option}>{option}</Radio>
-                          </div>
-                        ))}
-                      </Radio.Group>
-                    </div>
-                  );
-                })}
+                {item?.questions?.map((question, questionIndex) => (
+                  <Question
+                    key={question._id}
+                    question={question}
+                    index={index}
+                    questionIndex={questionIndex}
+                    handleAnswer={handleAnswer}
+                    submitted={submitted}
+                    selectedAnswers={selectedAnswers}
+                  />
+                ))}
               </Card>
               <div style={{ padding: "1rem" }}>
                 <HandleSubmit
