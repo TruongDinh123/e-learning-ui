@@ -31,28 +31,28 @@ export default function ListAssignment({ params }) {
     console.log("handleAnswer function has finished");
   }, []);
 
-  useEffect(() => {
-    console.log("useEffect has started");
-    setIsLoading(true);
-    setStartTime(Date.now());
-    dispatch(viewAssignmentByCourseId({ courseId: params?.id }))
-      .then(unwrapResult)
-      .then((res) => {
-        console.log("🚀 ~ res:", res);
-        if (res.status) {
-          setAssigment(res.metadata);
-          setTimeLeft(res.metadata[0]?.timeLimit * 60);
-        } else {
-          messageApi.error(res.message);
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setIsLoading(false);
-      });
-    console.log("useEffect has finished");
-  }, [dispatch, params?.id, messageApi]);
+  // useEffect(() => {
+  //   console.log("useEffect has started");
+  //   setIsLoading(true);
+  //   setStartTime(Date.now());
+  //   dispatch(viewAssignmentByCourseId({ courseId: params?.id }))
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       console.log("🚀 ~ res:", res);
+  //       if (res.status) {
+  //         setAssigment(res.metadata);
+  //         setTimeLeft(res.metadata[0]?.timeLimit * 60);
+  //       } else {
+  //         messageApi.error(res.message);
+  //       }
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       setIsLoading(false);
+  //     });
+  //   console.log("useEffect has finished");
+  // }, [dispatch, params?.id, messageApi]);
 
   const handleCountdownFinish = () => {
     if (!submitted) {
@@ -107,82 +107,75 @@ export default function ListAssignment({ params }) {
   return (
     <div>
       {contextHolder}
-      {isLoading ? (
-        <div className="flex justify-center items-center h-screen">
-          <Spin />
-        </div>
-      ) : (
-        <Row
-          style={{
-            paddingBottom: "200px",
-            overflow: "auto",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Col xs={24} md={16}>
-            {assignment?.map((item, index) => (
-              <React.Fragment key={item._id}>
-                <Card title={item.name}>
-                  <Statistic.Countdown
-                    value={
-                      startTime + (timeLeft !== null ? timeLeft * 1000 : 0)
-                    }
-                    onFinish={handleCountdownFinish}
-                    format="mm:ss"
-                  />
-                  {item?.questions?.map((question, questionIndex) => {
-                    const isCorrectAnswer =
-                      selectedAnswers[question._id] === question.answer;
-                    const showAnswer = submitted && isCorrectAnswer;
-                    const showWrongAnswer = submitted && !isCorrectAnswer;
-                    return (
-                      <div key={question._id}>
-                        <h4
-                          style={{
-                            marginBottom: "10px",
-                            color: showAnswer
-                              ? "green"
-                              : showWrongAnswer
-                              ? "red"
-                              : "black",
-                          }}
-                        >
-                          Question {index + 1}.{questionIndex + 1}:{" "}
-                          {question.question}
-                          {showAnswer && " ✔️"}
-                          {showWrongAnswer && "❌"}
-                        </h4>
-                        <Radio.Group
-                          onChange={(e) =>
-                            handleAnswer(question._id, e.target.value)
-                          }
-                          disabled={submitted}
-                        >
-                          {question.options.map((option) => (
-                            <div key={option}>
-                              <Radio value={option}>{option}</Radio>
-                            </div>
-                          ))}
-                        </Radio.Group>
-                      </div>
-                    );
-                  })}
-                </Card>
-                <div style={{ padding: "1rem" }}>
-                  <Button
-                    type="primary"
-                    onClick={handleSubmit}
-                    className="button-container me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </React.Fragment>
-            ))}
-          </Col>
-        </Row>
-      )}
+      <Row
+        style={{
+          paddingBottom: "200px",
+          overflow: "auto",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Col xs={24} md={16}>
+          {assignment?.map((item, index) => (
+            <React.Fragment key={item._id}>
+              <Card title={item.name}>
+                <Statistic.Countdown
+                  value={startTime + (timeLeft !== null ? timeLeft * 1000 : 0)}
+                  onFinish={handleCountdownFinish}
+                  format="mm:ss"
+                />
+                {item?.questions?.map((question, questionIndex) => {
+                  const isCorrectAnswer =
+                    selectedAnswers[question._id] === question.answer;
+                  const showAnswer = submitted && isCorrectAnswer;
+                  const showWrongAnswer = submitted && !isCorrectAnswer;
+                  return (
+                    <div key={question._id}>
+                      <h4
+                        style={{
+                          marginBottom: "10px",
+                          color: showAnswer
+                            ? "green"
+                            : showWrongAnswer
+                            ? "red"
+                            : "black",
+                        }}
+                      >
+                        Question {index + 1}.{questionIndex + 1}:{" "}
+                        {question.question}
+                        {showAnswer && " ✔️"}
+                        {showWrongAnswer && "❌"}
+                      </h4>
+                      <Radio.Group
+                        onChange={(e) =>
+                          handleAnswer(question._id, e.target.value)
+                        }
+                        disabled={submitted}
+                      >
+                        {question.options.map((option) => (
+                          <div key={option}>
+                            <Radio value={option}>{option}</Radio>
+                          </div>
+                        ))}
+                      </Radio.Group>
+                    </div>
+                  );
+                })}
+              </Card>
+              <div style={{ padding: "1rem" }}>
+                <Button
+                  type="primary"
+                  onClick={handleSubmit}
+                  className="button-container me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
+                  Submit
+                </Button>
+              </div>
+            </React.Fragment>
+          ))}
+        </Col>
+      </Row>
+      <h1>hi</h1>
     </div>
   );
 }
