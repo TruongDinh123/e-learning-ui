@@ -31,28 +31,35 @@ export default function ListAssignment({ params }) {
     console.log("handleAnswer function has finished");
   }, []);
 
-  // useEffect(() => {
-  //   console.log("useEffect has started");
-  //   setIsLoading(true);
-  //   setStartTime(Date.now());
-  //   dispatch(viewAssignmentByCourseId({ courseId: params?.id }))
-  //     .then(unwrapResult)
-  //     .then((res) => {
-  //       console.log("🚀 ~ res:", res);
-  //       if (res.status) {
-  //         setAssigment(res.metadata);
-  //         setTimeLeft(res.metadata[0]?.timeLimit * 60);
-  //       } else {
-  //         messageApi.error(res.message);
-  //       }
-  //       setIsLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       setIsLoading(false);
-  //     });
-  //   console.log("useEffect has finished");
-  // }, [dispatch, params?.id, messageApi]);
+  useEffect(() =>  {
+    console.log("useEffect has started");
+    setIsLoading(true);
+    setStartTime(Date.now());
+
+    const fetchData = async () => {
+      try {
+        const resultAction = await dispatch(
+          viewAssignmentByCourseId({ courseId: params?.id })
+        );
+        const res = unwrapResult(resultAction);
+        console.log("🚀 ~ res:", res);
+        if (res.status) {
+          setAssigment(res.metadata);
+          setTimeLeft(res.metadata[0]?.timeLimit * 60);
+        } else {
+          messageApi.error(res.message);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+
+    console.log("useEffect has finished");
+  }, []);
 
   const handleCountdownFinish = () => {
     if (!submitted) {
