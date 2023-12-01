@@ -9,23 +9,23 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 export default function HandleStart({ params }) {
-  // const [assignment, setAssigment] = useState([]);
-  // const [score, setScore] = useState([]);
-  // const dispatch = useDispatch();
-  // const router = useRouter();
+  const [assignment, setAssigment] = useState([]);
+  const [score, setScore] = useState([]);
+  const dispatch = useDispatch();
+  const router = useRouter();
 
-  // const handleStart = async () => {
-  //   try {
-  //     const res = await dispatch(
-  //       viewAssignmentByCourseId({ courseId: params?.id })
-  //     ).then(unwrapResult);
-  //     if (res.status) {
-  //       router.push(`/courses/view-assignment/list-assignment/${params?.id}`);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const handleStart = async () => {
+    try {
+      const res = await dispatch(
+        viewAssignmentByCourseId({ courseId: params?.id })
+      ).then(unwrapResult);
+      if (res.status) {
+        router.push(`/courses/view-assignment/list-assignment/${params?.id}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -54,33 +54,33 @@ export default function HandleStart({ params }) {
   //   fetchData();
   // }, [dispatch, params?.id]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const assignmentPromise = dispatch(
-  //         viewAssignmentByCourseId({ courseId: params?.id })
-  //       ).then(unwrapResult);
-  //       const scorePromise = dispatch(getScore()).then(unwrapResult);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const assignmentPromise = dispatch(
+          viewAssignmentByCourseId({ courseId: params?.id })
+        ).then(unwrapResult);
+        const scorePromise = dispatch(getScore()).then(unwrapResult);
 
-  //       const res = await assignmentPromise;
-  //       if (res.status) {
-  //         setAssigment(res.metadata);
-  //       }
+        const res = await assignmentPromise;
+        if (res.status) {
+          setAssigment(res.metadata);
+        }
 
-  //       const scoreRes = await scorePromise;
-  //       if (scoreRes.status) {
-  //         setScore(scoreRes.metadata);
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
+        const scoreRes = await scorePromise;
+        if (scoreRes.status) {
+          setScore(scoreRes.metadata);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-  //   fetchData();
-  // }, [dispatch, params?.id]);
+    fetchData();
+  }, [dispatch, params?.id]);
 
-  // const assignmentId = assignment[0]?._id;
-  // const currentScore = score.find((s) => s.assignment?._id === assignmentId);
+  const assignmentId = assignment[0]?._id;
+  const currentScore = score.find((s) => s.assignment?._id === assignmentId);
 
   return score?.some(
     (s) => s?.assignment?._id === assignmentId && s?.isComplete
