@@ -178,11 +178,6 @@ export default function ViewQuiz() {
       ),
       action: (
         <div>
-          <UpdateQuiz
-            quizId={i?._id}
-            lessonId={selectedLesson}
-            refresh={() => setUpdateQuiz(updateQuiz + 1)}
-          />
           <Popconfirm
             title="Delete the quiz"
             description="Are you sure to delete this Quiz?"

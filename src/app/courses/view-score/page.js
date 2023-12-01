@@ -1,6 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Collapse, Modal, Select, Spin, Table, message } from "antd";
+import {
+  Button,
+  Collapse,
+  Drawer,
+  List,
+  Modal,
+  Select,
+  Spin,
+  Table,
+  message,
+} from "antd";
 import { useDispatch } from "react-redux";
 import { getScore } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -8,26 +18,25 @@ import { unwrapResult } from "@reduxjs/toolkit";
 const ScoreManagement = () => {
   const dispatch = useDispatch();
   const [score, setScore] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(
-    Array(score.length).fill(false)
-  );
   const [isLoading, setIsLoading] = useState(false);
   const [filter, setFilter] = useState("all");
-
   const { Option } = Select;
 
-  const showModal = (index) => {
-    const updatedIsModalOpen = [...isModalOpen];
-    updatedIsModalOpen[index] = true;
-    setIsModalOpen(updatedIsModalOpen);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(
+    Array(score.length).fill(false)
+  );
+
+  const showDrawer = (index) => {
+    const updatedIsDrawerOpen = [...isDrawerOpen];
+    updatedIsDrawerOpen[index] = true;
+    setIsDrawerOpen(updatedIsDrawerOpen);
   };
 
-  const handleCancel = (index) => {
-    const updatedIsModalOpen = [...isModalOpen];
-    updatedIsModalOpen[index] = false;
-    setIsModalOpen(updatedIsModalOpen);
+  const onClose = (index) => {
+    const updatedIsDrawerOpen = [...isDrawerOpen];
+    updatedIsDrawerOpen[index] = false;
+    setIsDrawerOpen(updatedIsDrawerOpen);
   };
-
   const handleOk = (index) => {
     const updatedIsModalOpen = [...isModalOpen];
     updatedIsModalOpen[index] = false;
@@ -97,47 +106,54 @@ const ScoreManagement = () => {
           <React.Fragment>
             <Button
               type="primary"
-              onClick={() => showModal(index)}
+              onClick={() => showDrawer(index)}
               style={{ color: "#fff", backgroundColor: "#1890ff" }}
               className="me-3"
               key={index}
             >
               Details
             </Button>
-            <Modal
-              key={index}
+            <Drawer
               title="Details Score"
-              open={isModalOpen[index]}
-              onCancel={() => handleCancel(index)}
+              open={isDrawerOpen[index]}
+              onClose={() => onClose(index)}
+              width={720}
             >
               <Collapse accordion>
-                {(i?.quiz?.questions || i?.assignment?.questions)?.map(
-                  (question, idxQuestion) => {
+                <List
+                  dataSource={i?.quiz?.questions || i?.assignment?.questions}
+                  renderItem={(question, idxQuestion) => {
                     const answerObj = i?.answers.find(
                       (answer) => Object.keys(answer)[0] === question._id
                     );
                     const answer = answerObj ? Object.values(answerObj)[0] : "";
                     return (
-                      <Collapse.Panel
-                        header={`Question ${idxQuestion + 1}`}
-                        key={idxQuestion}
-                      >
-                        <p>{question.question}</p>
-                        {question.options.map((option, idxOption) => (
-                          <p key={idxOption}>
-                            {idxOption + 1}: {option}
+                      <List.Item>
+                        <div className="p-3">
+                          <h3 className="font-bold">{`Question ${
+                            idxQuestion + 1
+                          }`}</h3>
+                          <h3 className="font-semibold py-3">
+                            {idxQuestion + 1}.
+                            {question.question}
+                          </h3>
+                          {question.options.map((option, idxOption) => (
+                            <p key={idxOption}>
+                              {idxOption + 1}: {option}
+                            </p>
+                          ))}
+                          <p className="pt-3 text-green-500 font-bold">
+                            <span style={{ color: "red" }}>Your answer:</span>{" "}
+                            {answer}
                           </p>
-                        ))}
-                        <p>
-                          <span style={{ color: "red" }}>Your answer:</span>{" "}
-                          {answer}
-                        </p>
-                      </Collapse.Panel>
+                        </div>
+                      </List.Item>
                     );
-                  }
-                )}
+                  }}
+                  style={{ maxHeight: "400px", overflow: "auto" }}
+                />
               </Collapse>
-            </Modal>
+            </Drawer>
           </React.Fragment>
         ),
       });

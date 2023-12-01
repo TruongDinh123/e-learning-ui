@@ -8,6 +8,7 @@ import {
   viewAssignmentByCourseId,
 } from "@/features/Assignment/assignmentSlice";
 import Link from "next/link";
+import UpdateAssignment from "../../update-assignment/page";
 
 export default function ViewAssignment({ params }) {
   const dispatch = useDispatch();
@@ -57,7 +58,7 @@ export default function ViewAssignment({ params }) {
           {assignment.map((assignment, assignmentIndex) => {
             return (
               <React.Fragment key={assignmentIndex}>
-                <Breadcrumb>
+                <Breadcrumb className="pb-2">
                   <Breadcrumb.Item>
                     <Link href="/admin/assignment/view-assignment">
                       assignment
@@ -71,6 +72,11 @@ export default function ViewAssignment({ params }) {
                     </Link>
                   </Breadcrumb.Item>
                 </Breadcrumb>
+                <UpdateAssignment
+                  assignmentId={assignment?._id}
+                  courseId={params?.id}
+                  refresh={() => setUpdateAssignment(updateQuiz + 1)}
+                />
                 <div
                   className="flex flex-col items-center justify-center min-h-screen bg-gray-100"
                   key={assignmentIndex}
@@ -99,6 +105,14 @@ export default function ViewAssignment({ params }) {
                               Anwser: {question.answer}
                             </span>
                             <div className="mt-3">
+                              <UpdateAssignment
+                                assignmentId={assignment?._id}
+                                questionId={question?._id}
+                                courseId={params?.id}
+                                refresh={() =>
+                                  setUpdateAssignment(updateQuiz + 1)
+                                }
+                              />
                               <Popconfirm
                                 title="Delete the assignment"
                                 description="Are you sure to delete this Assignment?"

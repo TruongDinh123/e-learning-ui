@@ -4,13 +4,10 @@ import { Card, Form, Input, Modal, message, Button, Space } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { CloseOutlined } from "@ant-design/icons";
-import {
-  updateAssignment,
-  viewAssignmentByCourseId,
-} from "@/features/Assignment/assignmentSlice";
+import { updateQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
 
-export default function UpdateAssignment(props) {
-  const { assignmentId, courseId, questionId, refresh } = props;
+export default function UpdateQuiz(props) {
+  const { quizId, lessonId, questionId, refresh } = props;
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quiz, setquiz] = useState([]);
@@ -52,8 +49,7 @@ export default function UpdateAssignment(props) {
         return question;
       }),
     };
-    console.log("🚀 ~ formattedValues:", formattedValues);
-    dispatch(updateAssignment({ assignmentId: assignmentId, formattedValues }))
+    dispatch(updateQuiz({ quizId: quizId, formattedValues }))
       .then(unwrapResult)
       .then((res) => {
         messageApi
@@ -91,7 +87,7 @@ export default function UpdateAssignment(props) {
   }, [quiz]);
 
   useEffect(() => {
-    dispatch(viewAssignmentByCourseId({ courseId: courseId }))
+    dispatch(viewQuiz({ lessonId: lessonId }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
@@ -118,27 +114,27 @@ export default function UpdateAssignment(props) {
         Update
       </Button>
       <Modal
-        title="Update Assignment"
+        title="Update Quiz"
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[<></>]}
       >
         <Form
           form={form}
-          name="assignment_form"
+          name="quiz_form"
           initialValues={{
             questions: [{}],
           }}
           onFinish={handleUpdateQuiz}
         >
           <Form.Item
-            label="Assignment Name"
+            label="Quiz Name"
             name="name"
             rules={[
-              { required: true, message: "Please enter the assignment name" },
+              { required: true, message: "Please enter the quiz name" },
             ]}
           >
-            <Input placeholder="Assignment Name" />
+            <Input placeholder="Quiz Name" />
           </Form.Item>
           <Form.List name="questions">
             {(fields, { add, remove }) => (
@@ -223,7 +219,7 @@ export default function UpdateAssignment(props) {
               htmlType="submit"
               style={{ color: "#fff", backgroundColor: "#1890ff" }}
             >
-              Save Assignment
+              Save
             </Button>
           </div>
         </Form>

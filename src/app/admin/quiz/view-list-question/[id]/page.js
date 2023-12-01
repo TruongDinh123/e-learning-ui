@@ -1,23 +1,12 @@
 "use client";
-import {
-  Button,
-  Table,
-  Typography,
-  List,
-  Collapse,
-  Popconfirm,
-  Select,
-  Spin,
-  Breadcrumb,
-} from "antd";
+import { Button, Popconfirm, Spin, Breadcrumb } from "antd";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { deleteQuizQuestion, viewQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { viewCourses } from "@/features/Courses/courseSlice";
-import UpdateQuiz from "../../../courses/Lesson/edit-quiz/page";
 import React from "react";
 import Link from "next/link";
+import UpdateQuiz from "../../update-quiz/page";
 
 export default function ViewListQuestion({ params }) {
   const dispatch = useDispatch();
@@ -76,6 +65,11 @@ export default function ViewListQuestion({ params }) {
                     </Link>
                   </Breadcrumb.Item>
                 </Breadcrumb>
+                <UpdateQuiz
+                  lessonId={params?.id}
+                  quizId={quiz?._id}
+                  refresh={() => setUpdateQuiz(updateQuiz + 1)}
+                />
                 <div
                   className="flex flex-col items-center justify-center min-h-screen bg-gray-100"
                   key={quizIndex}
@@ -104,6 +98,12 @@ export default function ViewListQuestion({ params }) {
                               Anwser: {question.answer}
                             </span>
                             <div className="mt-3">
+                              <UpdateQuiz
+                                lessonId={params?.id}
+                                quizId={quiz?._id}
+                                questionId={question?._id}
+                                refresh={() => setUpdateQuiz(updateQuiz + 1)}
+                              />
                               <Popconfirm
                                 title="Delete the quiz"
                                 description="Are you sure to delete this Quiz?"
