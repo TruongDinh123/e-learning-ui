@@ -1,10 +1,8 @@
 "use client";
 import { viewAssignmentByCourseId } from "@/features/Assignment/assignmentSlice";
 import { getScore } from "@/features/Quiz/quizSlice";
-import { Button } from "@material-tailwind/react";
 import { unwrapResult } from "@reduxjs/toolkit";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import ButtonStart from "../handle-start/page";
@@ -13,7 +11,6 @@ export default function HandleStart({ params }) {
   const [assignment, setAssigment] = useState([]);
   const [score, setScore] = useState([]);
   const dispatch = useDispatch();
-  const router = useRouter();
 
   // const handleStart = async () => {
   //   try {
@@ -55,35 +52,37 @@ export default function HandleStart({ params }) {
   //   fetchData();
   // }, [dispatch, params?.id]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const assignmentPromise = dispatch(
-  //         viewAssignmentByCourseId({ courseId: params?.id })
-  //       ).then(unwrapResult);
-  //       const scorePromise = dispatch(getScore()).then(unwrapResult);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const assignmentPromise = dispatch(
+          viewAssignmentByCourseId({ courseId: params?.id })
+        ).then(unwrapResult);
+        const scorePromise = dispatch(getScore()).then(unwrapResult);
 
-  //       const res = await assignmentPromise;
-  //       if (res.status) {
-  //         setAssigment(res.metadata);
-  //       }
+        const res = await assignmentPromise;
+        if (res.status) {
+          setAssigment(res.metadata);
+        }
 
-  //       const scoreRes = await scorePromise;
-  //       if (scoreRes.status) {
-  //         setScore(scoreRes.metadata);
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
+        const scoreRes = await scorePromise;
+        if (scoreRes.status) {
+          setScore(scoreRes.metadata);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-  //   fetchData();
-  // }, [params?.id]);
+    fetchData();
+  }, [params?.id]);
 
   const assignmentId = assignment[0]?._id;
   const currentScore = score.find((s) => s.assignment?._id === assignmentId);
 
-  return (
+  return score?.some(
+    (s) => s?.assignment?._id === assignmentId && s?.isComplete
+  ) ? (
     <div className="flex items-center justify-center">
       <div className="rounded-lg bg-gray-50 px-16 py-14">
         <div className="flex justify-center">
@@ -121,5 +120,7 @@ export default function HandleStart({ params }) {
         </div>
       </div>
     </div>
+  ) : (
+    <ButtonStart courseId={params?.id} />
   );
 }
