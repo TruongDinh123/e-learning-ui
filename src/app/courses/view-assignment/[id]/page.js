@@ -1,8 +1,8 @@
 "use client";
 import { viewAssignmentByCourseId } from "@/features/Assignment/assignmentSlice";
 import { getScore } from "@/features/Quiz/quizSlice";
+import { Button } from "@material-tailwind/react";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Spin } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
