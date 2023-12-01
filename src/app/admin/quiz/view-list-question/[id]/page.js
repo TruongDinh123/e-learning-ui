@@ -65,11 +65,6 @@ export default function ViewListQuestion({ params }) {
                     </Link>
                   </Breadcrumb.Item>
                 </Breadcrumb>
-                <UpdateQuiz
-                  lessonId={params?.id}
-                  quizId={quiz?._id}
-                  refresh={() => setUpdateQuiz(updateQuiz + 1)}
-                />
                 <div
                   className="flex flex-col items-center justify-center min-h-screen bg-gray-100"
                   key={quizIndex}

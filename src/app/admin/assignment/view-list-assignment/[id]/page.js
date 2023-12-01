@@ -72,11 +72,6 @@ export default function ViewAssignment({ params }) {
                     </Link>
                   </Breadcrumb.Item>
                 </Breadcrumb>
-                <UpdateAssignment
-                  assignmentId={assignment?._id}
-                  courseId={params?.id}
-                  refresh={() => setUpdateAssignment(updateQuiz + 1)}
-                />
                 <div
                   className="flex flex-col items-center justify-center min-h-screen bg-gray-100"
                   key={assignmentIndex}

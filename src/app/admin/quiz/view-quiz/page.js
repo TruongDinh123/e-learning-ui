@@ -19,9 +19,9 @@ import {
 } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { viewCourses } from "@/features/Courses/courseSlice";
-import UpdateQuiz from "../../courses/Lesson/edit-quiz/page";
 import React from "react";
 import { useRouter } from "next/navigation";
+import UpdateQuiz from "../update-quiz/page";
 
 const { Option } = Select;
 
@@ -178,6 +178,11 @@ export default function ViewQuiz() {
       ),
       action: (
         <div>
+          <UpdateQuiz
+            lessonId={selectedLesson}
+            quizId={i?._id}
+            refresh={() => setUpdateQuiz(updateQuiz + 1)}
+          />
           <Popconfirm
             title="Delete the quiz"
             description="Are you sure to delete this Quiz?"

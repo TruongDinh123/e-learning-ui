@@ -8,13 +8,15 @@ import {
   updateAssignment,
   viewAssignmentByCourseId,
 } from "@/features/Assignment/assignmentSlice";
+import { useRouter } from "next/navigation";
 
 export default function UpdateAssignment(props) {
   const { assignmentId, courseId, questionId, refresh } = props;
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quiz, setquiz] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const dispatch = useDispatch();
   const [form] = Form.useForm();
 
@@ -39,6 +41,7 @@ export default function UpdateAssignment(props) {
   };
 
   const handleUpdateQuiz = (values) => {
+    setIsLoading(true);
     const formattedValues = {
       ...values,
       questions: values.questions.map((question) => {
@@ -52,7 +55,6 @@ export default function UpdateAssignment(props) {
         return question;
       }),
     };
-    console.log("🚀 ~ formattedValues:", formattedValues);
     dispatch(updateAssignment({ assignmentId: assignmentId, formattedValues }))
       .then(unwrapResult)
       .then((res) => {
@@ -65,11 +67,14 @@ export default function UpdateAssignment(props) {
           .then(() => {
             setIsModalOpen(false);
             message.success(res.message, 1.5);
+            router.push(`/admin/assignment/view-list-assignment/${courseId}`);
             refresh();
           });
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   };
 
@@ -96,8 +101,7 @@ export default function UpdateAssignment(props) {
       .then((res) => {
         if (res.status) {
           setquiz(res.metadata);
-        form.setFieldsValue({ name: res.metadata[0].name });
-
+          form.setFieldsValue({ name: res.metadata[0].name });
         } else {
         }
       })
@@ -222,6 +226,7 @@ export default function UpdateAssignment(props) {
               type="primary"
               htmlType="submit"
               style={{ color: "#fff", backgroundColor: "#1890ff" }}
+              loading={isLoading}
             >
               Save Assignment
             </Button>

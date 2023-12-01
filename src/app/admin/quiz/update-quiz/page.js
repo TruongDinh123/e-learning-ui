@@ -5,15 +5,18 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { CloseOutlined } from "@ant-design/icons";
 import { updateQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
+import { useRouter } from "next/navigation";
 
 export default function UpdateQuiz(props) {
   const { quizId, lessonId, questionId, refresh } = props;
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quiz, setquiz] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
   const [form] = Form.useForm();
+  const router = useRouter();
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -36,6 +39,7 @@ export default function UpdateQuiz(props) {
   };
 
   const handleUpdateQuiz = (values) => {
+    setIsLoading(true);
     const formattedValues = {
       ...values,
       questions: values.questions.map((question) => {
@@ -61,11 +65,14 @@ export default function UpdateQuiz(props) {
           .then(() => {
             setIsModalOpen(false);
             message.success(res.message, 1.5);
+            router.push(`/admin/quiz/view-list-question/${lessonId}`);
             refresh();
           });
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsLoading(false);
       });
   };
 
@@ -92,8 +99,7 @@ export default function UpdateQuiz(props) {
       .then((res) => {
         if (res.status) {
           setquiz(res.metadata);
-        form.setFieldsValue({ name: res.metadata[0].name });
-
+          form.setFieldsValue({ name: res.metadata[0].name });
         } else {
         }
       })
@@ -130,9 +136,7 @@ export default function UpdateQuiz(props) {
           <Form.Item
             label="Quiz Name"
             name="name"
-            rules={[
-              { required: true, message: "Please enter the quiz name" },
-            ]}
+            rules={[{ required: true, message: "Please enter the quiz name" }]}
           >
             <Input placeholder="Quiz Name" />
           </Form.Item>
@@ -218,6 +222,7 @@ export default function UpdateQuiz(props) {
               type="primary"
               htmlType="submit"
               style={{ color: "#fff", backgroundColor: "#1890ff" }}
+              loading={isLoading}
             >
               Save
             </Button>

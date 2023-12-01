@@ -242,11 +242,11 @@ export default function ViewAssignment() {
       ),
       action: (
         <React.Fragment>
-          {/* <UpdateAssignment
+          <UpdateAssignment
             assignmentId={i?._id}
             courseId={selectedCourse}
             refresh={() => setUpdateAssignment(updateQuiz + 1)}
-          /> */}
+          />
           <Popconfirm
             title="Delete the assignment"
             description="Are you sure to delete this assignment?"
