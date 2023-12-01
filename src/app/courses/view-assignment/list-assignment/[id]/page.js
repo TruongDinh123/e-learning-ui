@@ -64,7 +64,61 @@ export default function ListAssignment({ params }) {
         }}
       >
         <Col xs={24} md={16}>
-          <h1>hi</h1>
+          {assignment?.map((item, index) => (
+            <React.Fragment key={item._id}>
+              <Card title={item.name}>
+                <Statistic.Countdown
+                  value={startTime + (timeLeft !== null ? timeLeft * 1000 : 0)}
+                  format="mm:ss"
+                />
+                {item?.questions?.map((question, questionIndex) => {
+                  const isCorrectAnswer =
+                    selectedAnswers[question._id] === question.answer;
+                  const showAnswer = submitted && isCorrectAnswer;
+                  const showWrongAnswer = submitted && !isCorrectAnswer;
+                  return (
+                    <div key={question._id}>
+                      <h4
+                        style={{
+                          marginBottom: "10px",
+                          color: showAnswer
+                            ? "green"
+                            : showWrongAnswer
+                            ? "red"
+                            : "black",
+                        }}
+                      >
+                        Question {index + 1}.{questionIndex + 1}:{" "}
+                        {question.question}
+                        {showAnswer && " ✔️"}
+                        {showWrongAnswer && "❌"}
+                      </h4>
+                      <Radio.Group
+                        onChange={(e) =>
+                          handleAnswer(question._id, e.target.value)
+                        }
+                        disabled={submitted}
+                      >
+                        {question.options.map((option) => (
+                          <div key={option}>
+                            <Radio value={option}>{option}</Radio>
+                          </div>
+                        ))}
+                      </Radio.Group>
+                    </div>
+                  );
+                })}
+              </Card>
+              <div style={{ padding: "1rem" }}>
+                <HandleSubmit
+                  assignmentId={assignment[0]?._id}
+                  selectedAnswers={selectedAnswers}
+                  startTime={startTime}
+                  timeLeft={timeLeft}
+                />
+              </div>
+            </React.Fragment>
+          ))}
         </Col>
       </Row>
     </div>
