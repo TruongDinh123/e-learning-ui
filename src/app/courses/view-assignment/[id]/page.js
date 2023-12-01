@@ -28,32 +28,32 @@ export default function HandleStart({ params }) {
   //   }
   // };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const [res, scoreRes] = await Promise.all([
-          dispatch(viewAssignmentByCourseId({ courseId: params?.id })).then(
-            unwrapResult
-          ),
-          dispatch(getScore()).then(unwrapResult),
-        ]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setIsLoading(true);
+  //     try {
+  //       const [res, scoreRes] = await Promise.all([
+  //         dispatch(viewAssignmentByCourseId({ courseId: params?.id })).then(
+  //           unwrapResult
+  //         ),
+  //         dispatch(getScore()).then(unwrapResult),
+  //       ]);
 
-        if (res.status) {
-          setAssigment(res.metadata);
-        }
-        if (scoreRes.status) {
-          setScore(scoreRes.metadata);
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  //       if (res.status) {
+  //         setAssigment(res.metadata);
+  //       }
+  //       if (scoreRes.status) {
+  //         setScore(scoreRes.metadata);
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
 
-    fetchData();
-  }, [dispatch, params?.id]);
+  //   fetchData();
+  // }, [dispatch, params?.id]);
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -83,9 +83,7 @@ export default function HandleStart({ params }) {
   const assignmentId = assignment[0]?._id;
   const currentScore = score.find((s) => s.assignment?._id === assignmentId);
 
-  return score?.some(
-    (s) => s?.assignment?._id === assignmentId && s?.isComplete
-  ) ? (
+  return (
     <div className="flex items-center justify-center">
       <div className="rounded-lg bg-gray-50 px-16 py-14">
         <div className="flex justify-center">
@@ -123,7 +121,5 @@ export default function HandleStart({ params }) {
         </div>
       </div>
     </div>
-  ) : (
-    <ButtonStart courseId={params?.id} />
   );
 }
