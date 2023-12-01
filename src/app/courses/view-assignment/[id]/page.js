@@ -77,7 +77,7 @@ export default function HandleStart({ params }) {
     };
 
     fetchData();
-  }, [dispatch, params?.id]);
+  }, [params?.id]);
 
   const assignmentId = assignment[0]?._id;
   const currentScore = score.find((s) => s.assignment?._id === assignmentId);
