@@ -2,7 +2,7 @@ const { default: axiosInstance } = require("@/config/axios");
 
 const createQuiz = async (data) => {
   const res = await axiosInstance({
-    url: `/e-learning/lesson/${data.lessonId}/quiz`,
+    url: `/e-learning/quiz`,
     method: "POST",
     data: data.formattedValues,
   });
@@ -11,7 +11,23 @@ const createQuiz = async (data) => {
 
 const viewQuiz = async (data) => {
   const res = await axiosInstance({
-    url: `/e-learning/lesson/${data.lessonId}/quizs`,
+    url: `/e-learning/course/${data.courseIds}/quizzes`,
+    method: "GET",
+  });
+  return res.data;
+};
+
+const getQuizzesByStudentAndCourse = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/course/${data.courseId}/list-quizzes`,
+    method: "GET",
+  });
+  return res.data;
+};
+
+const viewAQuiz = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/quiz/${data.quizId}`,
     method: "GET",
   });
   return res.data;
@@ -42,9 +58,9 @@ const deleteQuiz = async (data) => {
   return res.data;
 };
 
-const getQuizsByLesson = async (data) => {
+const getQuizsByCourse = async (data) => {
   const res = await axiosInstance({
-    url: `/e-learning/lesson/${data.lessonId}/quizs`,
+    url: `/e-learning/course/${data.courseId}/quizzes`,
     method: "GET",
   });
   return res.data;
@@ -83,8 +99,10 @@ export const QuizService = {
   deleteQuizQuestion,
   deleteQuiz,
   updateQuiz,
-  getQuizsByLesson,
+  getQuizsByCourse,
   submitQuiz,
   getScore,
   getScoreByUserId,
+  viewAQuiz,
+  getQuizzesByStudentAndCourse,
 };

@@ -25,6 +25,30 @@ export const viewQuiz = createAsyncThunk(
   }
 );
 
+export const getQuizzesByStudentAndCourse = createAsyncThunk(
+  "/e-learning/view-quiz-by-student-and-course",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await QuizService.getQuizzesByStudentAndCourse(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const viewAQuiz = createAsyncThunk(
+  "/e-learning/view-a-quiz",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await QuizService.viewAQuiz(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 export const updateQuiz = createAsyncThunk(
   "/e-learning/update-quiz",
   async (data, { rejectWithValue }) => {
@@ -61,11 +85,11 @@ export const deleteQuiz = createAsyncThunk(
   }
 );
 
-export const getQuizsByLesson = createAsyncThunk(
-  "/e-learning/get-quizs-by-lesson",
+export const getQuizsByCourse = createAsyncThunk(
+  "/e-learning/get-quizs-by-course",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await QuizService.getQuizsByLesson(data);
+      const response = await QuizService.getQuizsByCourse(data);
       return response;
     } catch (err) {
       return rejectWithValue(err);
@@ -167,15 +191,15 @@ const quizSlice = createSlice({
         state.isSuccess = false;
         state.message = "Something went wrong!";
       })
-      .addCase(getQuizsByLesson.pending, (state, action) => {
+      .addCase(getQuizsByCourse.pending, (state, action) => {
         state.isLoading = true;
       })
-      .addCase(getQuizsByLesson.fulfilled, (state, action) => {
+      .addCase(getQuizsByCourse.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
       })
-      .addCase(getQuizsByLesson.rejected, (state, action) => {
+      .addCase(getQuizsByCourse.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

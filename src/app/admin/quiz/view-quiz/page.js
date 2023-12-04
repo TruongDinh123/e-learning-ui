@@ -28,6 +28,7 @@ const { Option } = Select;
 export default function ViewQuiz() {
   const dispatch = useDispatch();
   const [quiz, setquiz] = useState([]);
+  console.log("🚀 ~ quiz:", quiz);
   const [updateQuiz, setUpdateQuiz] = useState(0);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedLesson, setSelectedLesson] = useState(null);
@@ -70,7 +71,7 @@ export default function ViewQuiz() {
   }, []);
 
   useEffect(() => {
-    dispatch(viewQuiz({ lessonId: selectedLesson }))
+    dispatch(viewQuiz({ courseIds: selectedCourse }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
@@ -85,7 +86,7 @@ export default function ViewQuiz() {
 
   const handleViewQuiz = () => {
     setIsLoading(true);
-    dispatch(viewQuiz({ lessonId: selectedLesson }))
+    dispatch(viewQuiz({ courseIds: selectedCourse }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
@@ -128,49 +129,16 @@ export default function ViewQuiz() {
 
   let data = [];
   quiz?.forEach((i, index) => {
-    const questions = i.questions.map((question) => (
-      <Panel header={question.question} key={question._id}>
-        <List
-          dataSource={question.options}
-          renderItem={(option, optionIndex) => (
-            <List.Item>
-              <Text>
-                {optionIndex + 1}: {option}
-              </Text>
-            </List.Item>
-          )}
-        />
-        <Text strong>Answer: {question.answer}</Text>
-        <div className="mt-3">
-          <Popconfirm
-            title="Delete the quiz"
-            description="Are you sure to delete this Quiz?"
-            okText="Yes"
-            cancelText="No"
-            onConfirm={() =>
-              handleDeleteQuiz({
-                quizId: i?._id,
-                questionId: question?._id,
-              })
-            }
-          >
-            <Button danger>Delete</Button>
-          </Popconfirm>
-        </div>
-      </Panel>
-    ));
-
     data.push({
       key: index + 1,
       name: i?.name,
-      // questions: <Collapse accordion>{questions}</Collapse>,
       questions: (
         <Button
           className="me-3"
           style={{ width: "100%" }}
           lessonId={selectedLesson}
           onClick={() =>
-            router.push(`/admin/quiz/view-list-question/${selectedLesson}`)
+            router.push(`/admin/quiz/view-list-question/${i?._id}`)
           }
         >
           View details

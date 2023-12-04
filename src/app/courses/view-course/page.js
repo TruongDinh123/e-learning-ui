@@ -66,10 +66,10 @@ export default function Course() {
                     </div>
                   </Link>
                   <div className="flex items-center gap-x-1 text-slate-500">
-                    <Link href={`/courses/view-assignment/${item?._id}`}>
+                    <Link href={`/courses/view-details/${item?._id}`}>
                       <div className="button-container me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                         <FolderOpenOutlined />
-                        Assignment
+                        Danh sách bài tập
                       </div>
                     </Link>
                   </div>

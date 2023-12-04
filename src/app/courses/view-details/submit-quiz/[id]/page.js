@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Card, Radio, Button, message, Row, Col } from "antd";
-import { submitQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
+import { submitQuiz, viewAQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -54,7 +54,7 @@ export default function Quizs({ params }) {
   };
 
   useEffect(() => {
-    dispatch(viewQuiz({ lessonId: params?.id }))
+    dispatch(viewAQuiz({ quizId: params?.id }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
