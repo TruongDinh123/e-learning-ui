@@ -23,14 +23,17 @@ import {
   UploadOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import dynamic from "next/dynamic";
+
 const { Option } = Select;
+
+const ReactQuill = dynamic(import('react-quill'), { ssr: false });
 
 export default function QuizCreator() {
   const [messageApi, contextHolder] = message.useMessage();
   const [selectedCourse, setSelectedCourse] = useState([]);
-  const [courses, setCourses] = useState([]); // Danh sách khóa học
+  const [courses, setCourses] = useState([]);
   const [studentsByCourse, setStudentsByCourse] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -91,42 +94,6 @@ export default function QuizCreator() {
     form.setFieldsValue({ questions: newQuestions });
   };
 
-  // const handleSaveQuiz = (values) => {
-  //   const formattedValues = {
-  //     ...values,
-  //     submissionTime: values.submissionTime.toISOString(),
-  //     courseIds: selectedCourse,
-  //     studentIds: selectedStudents,
-  //     questions: values.questions.map((question) => ({
-  //       ...question,
-  //       options: question.options.map((option) => option.option),
-  //     })),
-  //   };
-  //   console.log("🚀 ~ formattedValues:", formattedValues);
-
-  //   dispatch(
-  //     createQuiz({
-  //       formattedValues,
-  //     })
-  //   )
-  //     .then(unwrapResult)
-  //     .then((res) => {
-  //       messageApi
-  //         .open({
-  //           type: "success",
-  //           content: "Action in progress...",
-  //           duration: 2.5,
-  //         })
-  //         .then(() => {
-  //           message.success(res.message, 1.5);
-  //           router.push("/admin/quiz/view-quiz");
-  //         });
-  //     })
-  //     .catch((error) => {
-  //       message.error(error.response?.data?.message, 3.5);
-  //     });
-  // };
-
   const handleSaveQuiz = (values) => {
     let formattedValues;
     if (quizType === "multiple_choice") {
@@ -156,8 +123,6 @@ export default function QuizCreator() {
         },
       };
     }
-  
-    console.log("🚀 ~ formattedValues:", formattedValues);
   
     dispatch(
       createQuiz({
@@ -385,7 +350,6 @@ export default function QuizCreator() {
                 </div>
               </>
             ) : (
-              // Render giao diện cho quiz tự luận
               <>
                 <Form.Item
                   label="Essay Title"
