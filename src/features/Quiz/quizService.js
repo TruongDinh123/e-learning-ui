@@ -25,6 +25,20 @@ const getQuizzesByStudentAndCourse = async (data) => {
   return res.data;
 };
 
+const uploadFileQuiz = async (data) => {
+  const formData = new FormData();
+  formData.append("filename", data.filename);
+  const res = await axiosInstance({
+    url: `/e-learning/quiz/${data.quizId}/upload-file`,
+    method: "POST",
+    data: formData,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res.data;
+};
+
 const viewAQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}`,
@@ -66,9 +80,26 @@ const getQuizsByCourse = async (data) => {
   return res.data;
 };
 
+const getScoreByQuizId = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/quiz/${data.quizId}/all-score`,
+    method: "GET",
+  });
+  return res.data;
+};
+
 const submitQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}/submit`,
+    method: "POST",
+    data: data,
+  });
+  return res.data;
+};
+
+const submitQuizEssay = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/quiz/${data.quizId}/submit-essay`,
     method: "POST",
     data: data,
   });
@@ -105,4 +136,7 @@ export const QuizService = {
   getScoreByUserId,
   viewAQuiz,
   getQuizzesByStudentAndCourse,
+  uploadFileQuiz,
+  submitQuizEssay,
+  getScoreByQuizId,
 };

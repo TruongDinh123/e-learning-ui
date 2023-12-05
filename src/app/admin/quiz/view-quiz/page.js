@@ -115,6 +115,13 @@ export default function ViewQuiz() {
       sortDirections: ["descend"],
     },
     {
+      title: "Loại hình thức",
+      dataIndex: "type",
+      onFilter: (value, record) => record.type.indexOf(value) === 0,
+      sorter: (a, b) => a.type.length - b.type.length,
+      sortDirections: ["descend"],
+    },
+    {
       title: "Questions",
       dataIndex: "questions",
       onFilter: (value, record) => record.questions.indexOf(value) === 0,
@@ -132,10 +139,11 @@ export default function ViewQuiz() {
     data.push({
       key: index + 1,
       name: i?.name,
+      type: i?.type,
       questions: (
         <Button
           className="me-3"
-          style={{ width: "100%" }}
+          style={{ width: "100%" }} 
           lessonId={selectedLesson}
           onClick={() =>
             router.push(`/admin/quiz/view-list-question/${i?._id}`)
@@ -235,7 +243,7 @@ export default function ViewQuiz() {
             </Button>
           </div>
           <h3>Table Quiz</h3>
-          <Table columns={columns} dataSource={data} />
+          <Table columns={columns} dataSource={data} pagination={{ pageSize: 5 }} />
         </React.Fragment>
       )}
     </div>

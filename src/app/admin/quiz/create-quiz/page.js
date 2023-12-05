@@ -16,7 +16,7 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { viewCourses } from "@/features/Courses/courseSlice";
-import { createQuiz } from "@/features/Quiz/quizSlice";
+import { createQuiz, uploadFileQuiz } from "@/features/Quiz/quizSlice";
 import {
   CloseOutlined,
   InfoCircleOutlined,
@@ -25,10 +25,14 @@ import {
 import { useRouter } from "next/navigation";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
+import UploadFileQuiz from "../upload-file/page";
 
 const { Option } = Select;
 
-const ReactQuill = dynamic(import('react-quill'), { ssr: false });
+const ReactQuill = dynamic(
+  () => import("react-quill").then((mod) => mod.default),
+  { ssr: false }
+);
 
 export default function QuizCreator() {
   const [messageApi, contextHolder] = message.useMessage();
@@ -36,6 +40,7 @@ export default function QuizCreator() {
   const [courses, setCourses] = useState([]);
   const [studentsByCourse, setStudentsByCourse] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
+  const [quizId, setQuizId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [quizType, setQuizType] = useState("multiple_choice");
   const [file, setFile] = useState(null);
@@ -70,17 +75,6 @@ export default function QuizCreator() {
     setSelectedStudents(value);
   };
 
-  const props = {
-    onRemove: () => {
-      setFile(null);
-    },
-    beforeUpload: (file) => {
-      setFile(file);
-      return false;
-    },
-    fileList: file ? [file] : [],
-  };
-
   const handleAddQuestion = () => {
     const questions = form.getFieldValue("questions") || [];
     const newQuestions = [...questions, {}];
@@ -92,6 +86,17 @@ export default function QuizCreator() {
     const newQuestions = [...questions];
     newQuestions.splice(index, 1);
     form.setFieldsValue({ questions: newQuestions });
+  };
+
+  const props = {
+    onRemove: () => {
+      setFile(null);
+    },
+    beforeUpload: (file) => {
+      setFile(file);
+      return false;
+    },
+    fileList: file ? [file] : [],
   };
 
   const handleSaveQuiz = (values) => {
@@ -118,12 +123,10 @@ export default function QuizCreator() {
         essay: {
           title: values.essayTitle,
           content: values.essayContent,
-          // Điền đường dẫn tệp vào đây nếu có
-          attachment: file ? file.path : null,
         },
       };
     }
-  
+
     dispatch(
       createQuiz({
         formattedValues,
@@ -131,21 +134,39 @@ export default function QuizCreator() {
     )
       .then(unwrapResult)
       .then((res) => {
-        messageApi
-          .open({
-            type: "success",
-            content: "Action in progress...",
-            duration: 2.5,
-          })
-          .then(() => {
-            message.success(res.message, 1.5);
-            router.push("/admin/quiz/view-quiz");
-          });
-      })
-      .catch((error) => {
-        message.error(error.response?.data?.message, 3.5);
+        console.log("🚀 ~ res:", res);
+        const quizId = res.metadata?._id;
+        console.log("🚀 ~ quizId:", quizId);
+
+
+        if (file) {
+          dispatch(uploadFileQuiz({ quizId: quizId, filename: file }))
+            .then((res) => {
+              if (res.status) {
+
+                setFile(null);
+              }
+              setIsLoading(false);
+            })
+
+            messageApi
+            .open({
+              type: "success",
+              content: "Action in progress...",
+              duration: 2.5,
+            }).then(() => {
+              router.push("/admin/quiz/view-quiz");
+              message.success(res.message, 1.5);
+            })
+            .catch((error) => {
+              console.log(error);
+              setIsLoading(false);
+              message.error(error.response?.data?.message, 3.5);
+            });
+        }
       });
   };
+
   useEffect(() => {
     setIsLoading(true);
 
@@ -374,9 +395,23 @@ export default function QuizCreator() {
                   <ReactQuill theme="snow" />
                 </Form.Item>
 
+                <Form.Item
+                  label="Submission Time"
+                  name="submissionTime"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select the submission time",
+                    },
+                  ]}
+                >
+                  <DatePicker showTime />
+                </Form.Item>
+
                 <Upload {...props}>
                   <Button icon={<UploadOutlined />}>Select File</Button>
                 </Upload>
+
                 <div className="pt-2 text-end">
                   <Button
                     type="primary"

@@ -2,11 +2,14 @@
 import { Button, Table, Spin } from "antd";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { getQuizzesByStudentAndCourse, getScore, viewQuiz } from "@/features/Quiz/quizSlice";
+import {
+  getQuizzesByStudentAndCourse,
+  getScore,
+} from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 
 export default function ViewQuiz({ params }) {
   const dispatch = useDispatch();
@@ -79,6 +82,13 @@ export default function ViewQuiz({ params }) {
       sortDirections: ["descend"],
     },
     {
+      title: "Hình thức",
+      dataIndex: "type",
+      onFilter: (value, record) => record.type.indexOf(value) === 0,
+      sorter: (a, b) => a.type.length - b.type.length,
+      sortDirections: ["descend"],
+    },
+    {
       title: "Questions",
       dataIndex: "questions",
       onFilter: (value, record) => record.questions.indexOf(value) === 0,
@@ -89,24 +99,34 @@ export default function ViewQuiz({ params }) {
 
   let data = [];
   quiz?.forEach((i, index) => {
-    const correspondingScore = score.find(s => s.quiz._id === i._id);
+    const correspondingScore = score.find((s) => s.quiz?._id === i?._id);
 
     data.push({
       key: index + 1,
       name: i?.name,
-      submissionTime: format(new Date(i?.submissionTime), 'dd/MM/yyyy HH:mm:ss'),
-      createdAt: format(new Date(i?.createdAt), 'dd/MM/yyyy HH:mm:ss'),
-      isComplete: correspondingScore ? (correspondingScore.isComplete ? 'Đã hoàn thành' : 'Chưa hoàn thành') : 'Chưa hoàn thành',
+      submissionTime: format(
+        new Date(i?.submissionTime),
+        "dd/MM/yyyy HH:mm:ss"
+      ),
+      createdAt: format(new Date(i?.createdAt), "dd/MM/yyyy HH:mm:ss"),
+      isComplete: correspondingScore
+        ? correspondingScore.isComplete
+          ? "Đã hoàn thành"
+          : "Chưa hoàn thành"
+        : "Chưa hoàn thành",
+      type: i?.type,
       questions: (
         <Button
-          className="me-3"
-          style={{ width: "100%" }}
-          onClick={() =>
-            router.push(`/courses/view-details/submit-quiz/${i?._id}`)
-          }
-        >
-          Xem chi tiết
-        </Button>
+        className="me-3"
+        style={{ width: "100%" }}
+        onClick={() =>
+          i?.type === "multiple_choice"
+            ? router.push(`/courses/view-details/submit-quiz/${i?._id}`)
+            : router.push(`/courses/view-details/handle-submit-essay/${i?._id}`)
+        }
+      >
+        Xem chi tiết
+      </Button>
       ),
     });
   });
