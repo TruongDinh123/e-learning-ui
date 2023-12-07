@@ -49,6 +49,19 @@ export const uploadFileQuiz = createAsyncThunk(
   }
 );
 
+export const uploadFileUserSubmit = createAsyncThunk(
+  "/e-learning/upload-file-user-submit",
+  async (data, { rejectWithValue }) => {
+    console.log("🚀 ~ data:", data);
+    try {
+      const response = await QuizService.uploadFileUserSubmit(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 export const getQuizzesByStudentAndCourse = createAsyncThunk(
   "/e-learning/view-quiz-by-student-and-course",
   async (data, { rejectWithValue }) => {
@@ -136,7 +149,6 @@ export const submitQuiz = createAsyncThunk(
 export const submitQuizEsay = createAsyncThunk(
   "/e-learning/submit-quiz-essay",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data);
     try {
       const response = await QuizService.submitQuizEssay(data);
       return response;
@@ -163,6 +175,18 @@ export const getScoreByUserId = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await QuizService.getScoreByUserId(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const updateScore = createAsyncThunk(
+  "/e-learning/update-score",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await QuizService.updateScore(data);
       return response;
     } catch (err) {
       return rejectWithValue(err);

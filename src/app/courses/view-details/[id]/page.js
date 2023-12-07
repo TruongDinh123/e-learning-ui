@@ -61,13 +61,6 @@ export default function ViewQuiz({ params }) {
       sortDirections: ["descend"],
     },
     {
-      title: "Thời gian nộp",
-      dataIndex: "createdAt",
-      onFilter: (value, record) => record.createdAt.indexOf(value) === 0,
-      sorter: (a, b) => a.createdAt.length - b.createdAt.length,
-      sortDirections: ["descend"],
-    },
-    {
       title: "Hạn nộp bài",
       dataIndex: "submissionTime",
       onFilter: (value, record) => record.submissionTime.indexOf(value) === 0,
@@ -108,7 +101,6 @@ export default function ViewQuiz({ params }) {
         new Date(i?.submissionTime),
         "dd/MM/yyyy HH:mm:ss"
       ),
-      createdAt: format(new Date(i?.createdAt), "dd/MM/yyyy HH:mm:ss"),
       isComplete: correspondingScore
         ? correspondingScore.isComplete
           ? "Đã hoàn thành"
@@ -117,16 +109,18 @@ export default function ViewQuiz({ params }) {
       type: i?.type,
       questions: (
         <Button
-        className="me-3"
-        style={{ width: "100%" }}
-        onClick={() =>
-          i?.type === "multiple_choice"
-            ? router.push(`/courses/view-details/submit-quiz/${i?._id}`)
-            : router.push(`/courses/view-details/handle-submit-essay/${i?._id}`)
-        }
-      >
-        Xem chi tiết
-      </Button>
+          className="me-3"
+          style={{ width: "100%" }}
+          onClick={() =>
+            i?.type === "multiple_choice"
+              ? router.push(`/courses/view-details/submit-quiz/${i?._id}`)
+              : router.push(
+                  `/courses/view-details/handle-submit-essay/${i?._id}`
+                )
+          }
+        >
+          Xem chi tiết
+        </Button>
       ),
     });
   });
@@ -139,7 +133,11 @@ export default function ViewQuiz({ params }) {
         </div>
       ) : (
         <React.Fragment>
-          <Table columns={columns} dataSource={data} />
+          <Table
+            columns={columns}
+            dataSource={data}
+            pagination={{ pageSize: 5 }}
+          />
         </React.Fragment>
       )}
     </div>

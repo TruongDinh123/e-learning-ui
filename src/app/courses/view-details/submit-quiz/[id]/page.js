@@ -5,10 +5,12 @@ import { submitQuiz, viewAQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
+import { format } from "date-fns";
 
 export default function Quizs({ params }) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [quiz, setquiz] = useState([]);
+  console.log("🚀 ~ quiz:", quiz);
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [submitted, setSubmitted] = useState(false);
@@ -78,8 +80,28 @@ export default function Quizs({ params }) {
       });
   }, []);
 
+  let submissionTime;
+  if (quiz[0] && quiz[0].submissionTime) {
+    submissionTime = new Date(quiz[0].submissionTime);
+  }
+  console.log("🚀 ~ submissionTime:", submissionTime);
+  
+  const currentTime = new Date();
+  console.log("🚀 ~ currentTime:", currentTime);
+  
+  const isTimeExceeded = currentTime > submissionTime;
+
   return (
-    <Row style={{ paddingBottom: "200px", overflow: "auto" }}>
+    <Row
+      style={{
+        paddingTop: "100px",
+        paddingBottom: "200px",
+        overflow: "auto",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "ButtonShadow",
+      }}
+    >
       {contextHolder}
       <Col xs={24} md={16}>
         {loading ? (
@@ -131,10 +153,12 @@ export default function Quizs({ params }) {
                   <Button
                     type="primary"
                     onClick={handleSubmit}
+                    disabled={isTimeExceeded}
                     className="button-container me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                   >
                     Submit
                   </Button>
+                  {isTimeExceeded && <div>Thời gian làm bài đã hết</div>}
                 </div>
               </React.Fragment>
             ))}

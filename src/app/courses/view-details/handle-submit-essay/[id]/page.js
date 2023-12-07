@@ -4,7 +4,12 @@ import { Row, Col, Spin, Upload, Tabs, Button, message } from "antd";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { UploadOutlined } from "@ant-design/icons";
-import { getScore, submitQuizEsay, viewAQuiz } from "@/features/Quiz/quizSlice";
+import {
+  getScore,
+  submitQuizEsay,
+  uploadFileUserSubmit,
+  viewAQuiz,
+} from "@/features/Quiz/quizSlice";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 
@@ -16,7 +21,6 @@ const ReactQuill = dynamic(
 export default function HandleSubmitEssay({ params }) {
   const [quiz, setquiz] = useState([]);
   const [score, setScore] = useState([]);
-  console.log("🚀 ~ score:", score);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState(null);
@@ -54,6 +58,16 @@ export default function HandleSubmitEssay({ params }) {
     dispatch(submitQuizEsay({ quizId: idQuiz, essayAnswer: essayContent }))
       .then(unwrapResult)
       .then((res) => {
+        if (file) {
+          dispatch(
+            uploadFileUserSubmit({ quizId: idQuiz, filename: file })
+          ).then((res) => {
+            if (res.status) {
+              setFile(null);
+            }
+            setIsLoading(false);
+          });
+        }
         messageApi
           .open({
             type: "success",
@@ -63,6 +77,11 @@ export default function HandleSubmitEssay({ params }) {
           .then(() => {
             setUpdate(update + 1);
             message.success(res.message, 1.5);
+          })
+          .catch((error) => {
+            console.log(error);
+            setIsLoading(false);
+            message.error(error.response?.data?.message, 3.5);
           });
       });
   };
@@ -85,8 +104,18 @@ export default function HandleSubmitEssay({ params }) {
       });
   }, []);
 
+  let submissionTime;
+  if (quiz[0] && quiz[0].submissionTime) {
+    submissionTime = new Date(quiz[0].submissionTime);
+  }
+  console.log("🚀 ~ submissionTime:", submissionTime);
+
+  const currentTime = new Date();
+
+  const isTimeExceeded = currentTime > submissionTime;
+
   return (
-    <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-10 overflow-auto pb-28">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 overflow-auto pb-28">
       {contextHolder}
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
@@ -96,12 +125,11 @@ export default function HandleSubmitEssay({ params }) {
         <React.Fragment>
           {quiz?.map((quiz, quizIndex) => {
             const currentScore = score.find((s) => s.quiz?._id === quiz?._id);
-            console.log("🚀 ~ currentScore:", currentScore);
 
             return (
               <>
-                <Row className="flex justify-between items-stretch">
-                  <Col flex={2} className="mx-3">
+                <div className="flex justify-between items-stretch">
+                  <div className="flex-2 mx-3">
                     <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6">
                       <div className="border-2 border-gray-300 p-4 rounded-md">
                         <div className="flex items-center">
@@ -138,14 +166,14 @@ export default function HandleSubmitEssay({ params }) {
                         </div>
                       )}
                     </div>
-                  </Col>
-                  <Col flex={3} className="mx-3">
+                  </div>
+                  <div className="flex-3 mx-3">
                     <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6">
                       <div className="border-2 border-gray-300 p-4 rounded-md">
-                        <div className="flex items-center">
+                        <div className="items-center">
                           <div>
                             <h1 className="text-3xl font-bold mb-5">
-                              Nội dung làm bài của bạn:{" "}
+                              Nội dung làm bài của bạn:
                             </h1>
                             <div
                               className="mb-5"
@@ -154,11 +182,40 @@ export default function HandleSubmitEssay({ params }) {
                               }}
                             />
                           </div>
+                          {currentScore?.filename && (
+                            <div>
+                              <h3 className="text-lg font-bold mb-2">
+                                File đã nộp:
+                              </h3>
+                              <a
+                                href={currentScore?.filename}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-500 underline hover:text-blue-700"
+                              >
+                                Download File
+                              </a>
+                            </div>
+                          )}
                         </div>
                       </div>
+                      <div>
+                        <h4 className="text-2xl font-bold mb-5">
+                          Điểm của bạn: {currentScore?.score}
+                        </h4>
+                        {currentScore?.score ? (
+                          <div className="text-green-500">
+                            Tốt lắm! Tiếp tục cố gắng!
+                          </div>
+                        ) : (
+                          <div className="text-red-500">
+                            Giáo viên chưa chấp điểm.
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </Col>
-                </Row>
+                  </div>
+                </div>
                 <div className="pt-10">
                   <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6">
                     <h1 className="text-3xl font-bold mb-5">Giao bài: </h1>
@@ -173,9 +230,14 @@ export default function HandleSubmitEssay({ params }) {
                           Upload File
                         </Button>
                       </Upload>
-                      <Button color="blue" onClick={handleSubmitEssay}>
+                      <Button
+                        color="blue"
+                        onClick={handleSubmitEssay}
+                        disabled={isTimeExceeded}
+                      >
                         Nộp bài
                       </Button>
+                      {isTimeExceeded && <div>Thời gian làm bài đã hết</div>}
                     </div>
                   </div>
                 </div>

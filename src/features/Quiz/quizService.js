@@ -39,6 +39,20 @@ const uploadFileQuiz = async (data) => {
   return res.data;
 };
 
+const uploadFileUserSubmit = async (data) => {
+  const formData = new FormData();
+  formData.append("filename", data.filename);
+  const res = await axiosInstance({
+    url: `/e-learning/quiz/${data.quizId}/upload-file-user`,
+    method: "POST",
+    data: formData,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res.data;
+};
+
 const viewAQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}`,
@@ -124,6 +138,15 @@ const getScoreByUserId = async (data) => {
   return res.data;
 };
 
+const updateScore = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/score/update`,
+    method: "PUT",
+    data: data,
+  });
+  return res.data;
+};
+
 export const QuizService = {
   createQuiz,
   viewQuiz,
@@ -139,4 +162,6 @@ export const QuizService = {
   uploadFileQuiz,
   submitQuizEssay,
   getScoreByQuizId,
+  updateScore,
+  uploadFileUserSubmit,
 };

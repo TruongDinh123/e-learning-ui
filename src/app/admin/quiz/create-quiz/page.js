@@ -2,10 +2,12 @@
 import {
   Button,
   Card,
+  Col,
   DatePicker,
   Form,
   Input,
   message,
+  Row,
   Select,
   Space,
   Spin,
@@ -40,7 +42,6 @@ export default function QuizCreator() {
   const [courses, setCourses] = useState([]);
   const [studentsByCourse, setStudentsByCourse] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
-  const [quizId, setQuizId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [quizType, setQuizType] = useState("multiple_choice");
   const [file, setFile] = useState(null);
@@ -72,7 +73,11 @@ export default function QuizCreator() {
 
   // Hàm xử lý khi chọn học viên
   const handleStudentChange = (value) => {
-    setSelectedStudents(value);
+    if (value.includes("all")) {
+      setSelectedStudents(studentsByCourse.map((student) => student._id));
+    } else {
+      setSelectedStudents(value);
+    }
   };
 
   const handleAddQuestion = () => {
@@ -100,6 +105,8 @@ export default function QuizCreator() {
   };
 
   const handleSaveQuiz = (values) => {
+    setIsLoading(true);
+
     let formattedValues;
     if (quizType === "multiple_choice") {
       formattedValues = {
@@ -134,36 +141,32 @@ export default function QuizCreator() {
     )
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         const quizId = res.metadata?._id;
-        console.log("🚀 ~ quizId:", quizId);
-
-
         if (file) {
-          dispatch(uploadFileQuiz({ quizId: quizId, filename: file }))
-            .then((res) => {
+          dispatch(uploadFileQuiz({ quizId: quizId, filename: file })).then(
+            (res) => {
               if (res.status) {
-
                 setFile(null);
               }
               setIsLoading(false);
-            })
-
-            messageApi
-            .open({
-              type: "success",
-              content: "Action in progress...",
-              duration: 2.5,
-            }).then(() => {
-              router.push("/admin/quiz/view-quiz");
-              message.success(res.message, 1.5);
-            })
-            .catch((error) => {
-              console.log(error);
-              setIsLoading(false);
-              message.error(error.response?.data?.message, 3.5);
-            });
+            }
+          );
         }
+        messageApi
+          .open({
+            type: "success",
+            content: "Action in progress...",
+            duration: 2.5,
+          })
+          .then(() => {
+            router.push("/admin/quiz/view-quiz");
+            message.success(res.message, 1.5);
+          })
+          .catch((error) => {
+            console.log(error);
+            setIsLoading(false);
+            message.error(error.response?.data?.message, 3.5);
+          });
       });
   };
 
@@ -205,39 +208,51 @@ export default function QuizCreator() {
             }}
             onFinish={handleSaveQuiz}
           >
-            <div style={{ display: "flex" }}>
-              <Select
-                mode="multiple"
-                placeholder="Select courses"
-                onChange={handleCourseChange}
-                value={selectedCourse}
-                style={{ marginRight: "10px" }}
-              >
-                {courses.map((course) => (
-                  <Option key={course._id} value={course._id}>
-                    {course.name}
+            <Row gutter={16}>
+              <Col xs={24} sm={12} md={8} lg={6}>
+                <Select
+                  mode="multiple"
+                  placeholder="Select courses"
+                  onChange={handleCourseChange}
+                  value={selectedCourse}
+                  style={{ width: "100%" }}
+                >
+                  {courses.map((course) => (
+                    <Option key={course._id} value={course._id}>
+                      {course.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Col>
+              <Col xs={24} sm={12} md={8} lg={6}>
+                <Select
+                  mode="multiple"
+                  placeholder="Select students"
+                  onChange={handleStudentChange}
+                  value={selectedStudents}
+                  disabled={selectedCourse.length > 1}
+                  style={{ width: "100%" }}
+                >
+                  <Option key="all" value="all">
+                    Select All
                   </Option>
-                ))}
-              </Select>
-              <Select
-                mode="multiple"
-                placeholder="Select students"
-                onChange={handleStudentChange}
-                value={selectedStudents}
-                disabled={selectedCourse.length > 1}
-              >
-                {studentsByCourse.map((student) => (
-                  <Option key={student._id} value={student._id}>
-                    {student.lastName}
-                  </Option>
-                ))}
-              </Select>
-              {selectedCourse.length > 1 && (
-                <Tooltip title="Bài tập trên nhiều khóa học với bắt buộc chia sẻ với tất cả học viên">
-                  <InfoCircleOutlined style={{ color: "red" }} />
-                </Tooltip>
-              )}
-            </div>
+                  {studentsByCourse.map((student) => (
+                    <Option key={student._id} value={student._id}>
+                      {selectedStudents.includes("all")
+                        ? "Select All"
+                        : student.lastName}
+                    </Option>
+                  ))}
+                </Select>
+              </Col>
+              <Col xs={24} sm={24} md={8} lg={6}>
+                {selectedCourse.length > 1 && (
+                  <Tooltip title="Bài tập trên nhiều khóa học với bắt buộc chia sẻ với tất cả học viên">
+                    <InfoCircleOutlined style={{ color: "red" }} />
+                  </Tooltip>
+                )}
+              </Col>
+            </Row>
 
             <Form.Item
               label="Quiz Type"
