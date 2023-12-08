@@ -28,7 +28,7 @@ import { useRouter } from "next/navigation";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 import "./page.css";
-import moment from "moment";
+import moment from "moment/moment";
 
 const { Option } = Select;
 
