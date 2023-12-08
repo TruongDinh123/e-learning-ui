@@ -1,17 +1,17 @@
 "use client";
-import { Typography } from "antd";
+import { Empty, Typography } from "antd";
 import React from "react";
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 export default function StudentWork({ student }) {
   // Thay đổi nội dung này để hiển thị nội dung làm bài của học viên
-  const { quiz, essayAnswer, answers, filename } = student;
+  const { quiz, essayAnswer, filename } = student;
 
   if (quiz && quiz.type === "essay") {
     // Bài tập tự luận
     return (
       <div style={{ overflow: "scroll", maxHeight: "300px" }}>
-        <Title level={3}>{quiz.name}</Title>
+        <Title level={3}>{quiz?.name}</Title>
         <div dangerouslySetInnerHTML={{ __html: essayAnswer }} />
         <div>
           <h3 className="text-lg font-bold mb-2">File đã nộp:</h3>
@@ -30,7 +30,7 @@ export default function StudentWork({ student }) {
     // Bài tập trắc nghiệm
     return (
       <div style={{ overflow: "scroll", maxHeight: "300px" }}>
-        <Title level={3}>{quiz.name}</Title>
+        <Title level={3}>{quiz?.name}</Title>
         {quiz.questions.map((question, index) => (
           <div key={question._id}>
             <strong>Câu {index + 1}:</strong> {question.question}
@@ -44,6 +44,14 @@ export default function StudentWork({ student }) {
       </div>
     );
   } else {
-    return <div>No quiz information available</div>;
+    return (
+      <Empty
+        description={
+          <span>
+            Không có thông tin bài kiểm tra
+          </span>
+        }
+      />
+    );
   }
 }

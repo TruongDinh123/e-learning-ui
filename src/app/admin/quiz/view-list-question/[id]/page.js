@@ -1,5 +1,5 @@
 "use client";
-import { Button, Popconfirm, Spin, Breadcrumb, Tabs } from "antd";
+import { Button, Popconfirm, Spin, Breadcrumb, Tabs, Empty } from "antd";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import {
@@ -17,7 +17,6 @@ export default function ViewListQuestion({ params }) {
   const dispatch = useDispatch();
   const [quiz, setquiz] = useState([]);
   const [score, setScore] = useState([]);
-  console.log("🚀 ~ score:", score);
   const [updateQuiz, setUpdateQuiz] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 

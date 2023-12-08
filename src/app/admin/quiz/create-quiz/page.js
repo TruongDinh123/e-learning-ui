@@ -27,7 +27,8 @@ import {
 import { useRouter } from "next/navigation";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
-import UploadFileQuiz from "../upload-file/page";
+import "./page.css";
+import moment from "moment";
 
 const { Option } = Select;
 
@@ -58,23 +59,23 @@ export default function QuizCreator() {
   // Hàm xử lý khi chọn khóa học
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
-    if (value.length === 1) {
-      const selectedCourse = courses.find((course) => course._id === value[0]);
-      setStudentsByCourse(selectedCourse?.students || []);
-    } else {
+    if (value.length > 1) {
       const allStudents = value.flatMap((courseId) => {
         const course = courses.find((course) => course._id === courseId);
         return course?.students || [];
       });
       setStudentsByCourse(allStudents);
-      setSelectedStudents(allStudents.map((student) => student._id));
+      setSelectedStudents(["all"]);
+    } else if (value.length === 1) {
+      const selectedCourse = courses.find((course) => course._id === value[0]);
+      setStudentsByCourse(selectedCourse?.students || []);
     }
   };
 
   // Hàm xử lý khi chọn học viên
   const handleStudentChange = (value) => {
     if (value.includes("all")) {
-      setSelectedStudents(studentsByCourse.map((student) => student._id));
+      setSelectedStudents(["all"]);
     } else {
       setSelectedStudents(value);
     }
@@ -108,13 +109,18 @@ export default function QuizCreator() {
     setIsLoading(true);
 
     let formattedValues;
+    let studentIds = selectedStudents;
+    if (selectedStudents.includes("all")) {
+      studentIds = studentsByCourse.map((student) => student._id);
+    }
+
     if (quizType === "multiple_choice") {
       formattedValues = {
         ...values,
         type: quizType,
         submissionTime: values.submissionTime.toISOString(),
         courseIds: selectedCourse,
-        studentIds: selectedStudents,
+        studentIds: studentIds,
         questions: values.questions.map((question) => ({
           ...question,
           options: question.options.map((option) => option.option),
@@ -125,7 +131,7 @@ export default function QuizCreator() {
         type: quizType,
         name: values.essayTitle,
         courseIds: selectedCourse,
-        studentIds: selectedStudents,
+        studentIds: studentIds,
         submissionTime: values.submissionTime.toISOString(),
         essay: {
           title: values.essayTitle,
@@ -159,8 +165,9 @@ export default function QuizCreator() {
             duration: 2.5,
           })
           .then(() => {
-            router.push("/admin/quiz/view-quiz");
+            router.push(`/admin/quiz/view-list-question/${quizId}`);
             message.success(res.message, 1.5);
+            setIsLoading(false);
           })
           .catch((error) => {
             console.log(error);
@@ -171,8 +178,6 @@ export default function QuizCreator() {
   };
 
   useEffect(() => {
-    setIsLoading(true);
-
     dispatch(viewCourses())
       .then(unwrapResult)
       .then((res) => {
@@ -182,19 +187,17 @@ export default function QuizCreator() {
         } else {
           messageApi.error(res.message);
         }
-        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
-        setIsLoading(false);
       });
   }, []);
 
   return (
     <div>
       {contextHolder}
-      <div className="overflow-y-auto h-screen pb-28 scrollbar-thin">
-        <h1>Create Quizs</h1>
+      <div className="overflow-y-auto h-screen pb-28 scrollbar-thin justify-center items-center ">
+        <h1 className="text-2xl">Create Quizs</h1>
         {isLoading ? (
           <div className="flex justify-center items-center h-screen">
             <Spin />
@@ -208,8 +211,9 @@ export default function QuizCreator() {
             }}
             onFinish={handleSaveQuiz}
           >
-            <Row gutter={16}>
+            <Row gutter={16} className="py-4">
               <Col xs={24} sm={12} md={8} lg={6}>
+                <span>Chọn khóa học của bạn:</span>
                 <Select
                   mode="multiple"
                   placeholder="Select courses"
@@ -225,6 +229,7 @@ export default function QuizCreator() {
                 </Select>
               </Col>
               <Col xs={24} sm={12} md={8} lg={6}>
+                <span>Chọn học viên muốn chọn:</span>
                 <Select
                   mode="multiple"
                   placeholder="Select students"
@@ -233,16 +238,22 @@ export default function QuizCreator() {
                   disabled={selectedCourse.length > 1}
                   style={{ width: "100%" }}
                 >
-                  <Option key="all" value="all">
-                    Select All
-                  </Option>
-                  {studentsByCourse.map((student) => (
-                    <Option key={student._id} value={student._id}>
-                      {selectedStudents.includes("all")
-                        ? "Select All"
-                        : student.lastName}
+                  {selectedCourse.length > 1 ? (
+                    <Option key="all" value="all">
+                      Thêm tất cả
                     </Option>
-                  ))}
+                  ) : (
+                    <>
+                      <Option key="all" value="all">
+                        Select All
+                      </Option>
+                      {studentsByCourse.map((student) => (
+                        <Option key={student._id} value={student._id}>
+                          {student.lastName}
+                        </Option>
+                      ))}
+                    </>
+                  )}
                 </Select>
               </Col>
               <Col xs={24} sm={24} md={8} lg={6}>
@@ -254,122 +265,151 @@ export default function QuizCreator() {
               </Col>
             </Row>
 
-            <Form.Item
-              label="Quiz Type"
-              name="type"
-              rules={[
-                { required: true, message: "Please select the quiz type" },
-              ]}
-            >
-              <Select
-                placeholder="Select quiz type"
-                onChange={handleQuizTypeChange}
+            <Col xs={24} sm={12} md={8} lg={6}>
+              <Form.Item
+                label="loại bài tập"
+                name="type"
+                rules={[
+                  { required: true, message: "Vui lòng chọn bài kiểm tra" },
+                ]}
               >
-                <Option value="multiple_choice">Multiple Choice</Option>
-                <Option value="essay">Essay</Option>
-              </Select>
-            </Form.Item>
-
+                <Select
+                  placeholder="chọn loại bài tập"
+                  onChange={handleQuizTypeChange}
+                  className="w-full"
+                >
+                  <Option value="multiple_choice">Trắc nghiệm</Option>
+                  <Option value="essay">Tự luận</Option>
+                </Select>
+              </Form.Item>
+            </Col>
             {quizType === "multiple_choice" ? (
               <>
-                <Form.Item
-                  label="Quiz Name"
-                  name="name"
-                  rules={[
-                    { required: true, message: "Please enter the quiz name" },
-                  ]}
-                >
-                  <Input placeholder="Quiz Name" />
-                </Form.Item>
-                <Form.Item
-                  label="Submission Time"
-                  name="submissionTime"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please select the submission time",
-                    },
-                  ]}
-                >
-                  <DatePicker showTime />
-                </Form.Item>
+                <Row gutter={8}>
+                  <Col xs={24} sm={12} md={8} lg={6}>
+                    <Form.Item
+                      label="Tên bài tập"
+                      name="name"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Vui lòng nhập tên bài tập.",
+                        },
+                      ]}
+                      className="w-full"
+                    >
+                      <Input placeholder="Tên bài" className="w-full" />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={12} md={8} lg={6}>
+                    <Form.Item
+                      label="Thời hạn nộp"
+                      name="submissionTime"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Vui lòng chọn thời gian nộp bài.",
+                        },
+                      ]}
+                    >
+                      <DatePicker
+                        showTime
+                        disabledDate={(current) => {
+                          return current && current < moment().endOf("day");
+                        }}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
                 <Form.List name="questions">
                   {(fields, { add, remove }) => (
-                    <div>
+                    <div className="">
                       {fields.map((field, index) => (
-                        <Card
-                          key={field.key}
-                          title={`Question ${index + 1}`}
-                          extra={
-                            <Button onClick={() => handleRemoveQuestion(index)}>
-                              Remove
-                            </Button>
-                          }
-                        >
-                          <Form.Item
-                            label="Question"
-                            name={[field.name, "question"]}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please enter a question",
-                              },
-                            ]}
+                        <div key={field.key} className="pb-4">
+                          <Card
+                            key={field.key}
+                            title={`Question ${index + 1}`}
+                            extra={
+                              <Button
+                                danger
+                                onClick={() => handleRemoveQuestion(index)}
+                              >
+                                Xóa
+                              </Button>
+                            }
+                            className="bg-slate-300"
                           >
-                            <Input placeholder="Question" />
-                          </Form.Item>
-                          <Form.List name={[field.name, "options"]}>
-                            {(subFields, subMeta) => (
-                              <div>
-                                {subFields.map((subField, subIndex) => (
-                                  <Space key={subField.key}>
-                                    <Form.Item
-                                      noStyle
-                                      name={[subField.name, "option"]}
-                                      rules={[
-                                        {
-                                          required: true,
-                                          message: "Please enter an option",
-                                        },
-                                      ]}
+                            <Form.Item
+                              label="Câu hỏi"
+                              name={[field.name, "question"]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Vui lòng nhập câu hỏi.",
+                                },
+                              ]}
+                            >
+                              <Input placeholder="Câu hỏi" />
+                            </Form.Item>
+                            <Form.List name={[field.name, "options"]}>
+                              {(subFields, subMeta) => (
+                                <div>
+                                  {subFields.map((subField, subIndex) => (
+                                    <Space key={subField.key}>
+                                      <Form.Item
+                                        noStyle
+                                        name={[subField.name, "option"]}
+                                        rules={[
+                                          {
+                                            required: true,
+                                            message: "Please enter an option",
+                                          },
+                                        ]}
+                                      >
+                                        <div className="p-2">
+                                          <Input placeholder="Option" />
+                                        </div>
+                                      </Form.Item>
+                                      <CloseOutlined
+                                        onClick={() => subMeta.remove(subIndex)}
+                                      />
+                                    </Space>
+                                  ))}
+                                  <div className="py-4 w-full">
+                                    <Button
+                                      type="dashed"
+                                      onClick={() => subMeta.add()}
+                                      block
+                                      className="bg-slate-400"
                                     >
-                                      <Input placeholder="Option" />
-                                    </Form.Item>
-                                    <CloseOutlined
-                                      onClick={() => subMeta.remove(subIndex)}
-                                    />
-                                  </Space>
-                                ))}
-                                <Button
-                                  type="dashed"
-                                  onClick={() => subMeta.add()}
-                                  block
-                                >
-                                  + Add Option
-                                </Button>
-                              </div>
-                            )}
-                          </Form.List>
-                          <Form.Item
-                            label="Answer"
-                            name={[field.name, "answer"]}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please enter the answer",
-                              },
-                            ]}
-                          >
-                            <Input placeholder="Answer" />
-                          </Form.Item>
-                        </Card>
+                                      + Thêm lựa chọn
+                                    </Button>
+                                  </div>
+                                </div>
+                              )}
+                            </Form.List>
+                            <Form.Item
+                              label="Đáp án"
+                              name={[field.name, "answer"]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Vui lòng nhập đáp án",
+                                },
+                              ]}
+                            >
+                              <Input placeholder="Đáp án" />
+                            </Form.Item>
+                          </Card>
+                        </div>
                       ))}
                       <Button
                         type="dashed"
+                        className="bg-orange-200"
                         onClick={() => handleAddQuestion()}
                         block
                       >
-                        + Add Question
+                        + Thêm câu hỏi
                       </Button>
                     </div>
                   )}
@@ -381,46 +421,40 @@ export default function QuizCreator() {
                     style={{ color: "#fff", backgroundColor: "#1890ff" }}
                     loading={isLoading}
                   >
-                    Save Quiz
+                    Lưu
                   </Button>
                 </div>
               </>
             ) : (
               <>
                 <Form.Item
-                  label="Essay Title"
+                  label="Tiêu đề"
                   name="essayTitle"
-                  rules={[
-                    { required: true, message: "Please enter the essay title" },
-                  ]}
+                  rules={[{ required: true, message: "Vui lòng nhập tiêu đề" }]}
                 >
-                  <Input placeholder="Essay Title" />
+                  <Input placeholder="Tiêu đề" />
                 </Form.Item>
 
-                <Form.Item
-                  label="Essay Content"
-                  name="essayContent"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please enter the essay content",
-                    },
-                  ]}
-                >
+                <Form.Item>
                   <ReactQuill theme="snow" />
                 </Form.Item>
 
                 <Form.Item
-                  label="Submission Time"
+                  label="Thời hạn nộp"
                   name="submissionTime"
                   rules={[
                     {
                       required: true,
-                      message: "Please select the submission time",
+                      message: "Vui lòng nhập thời gian nộp bài",
                     },
                   ]}
                 >
-                  <DatePicker showTime />
+                  <DatePicker
+                    showTime
+                    disabledDate={(current) => {
+                      return current && current < moment().endOf("day");
+                    }}
+                  />
                 </Form.Item>
 
                 <Upload {...props}>
@@ -434,7 +468,7 @@ export default function QuizCreator() {
                     style={{ color: "#fff", backgroundColor: "#1890ff" }}
                     loading={isLoading}
                   >
-                    Save Quiz
+                    Lưu
                   </Button>
                 </div>
               </>

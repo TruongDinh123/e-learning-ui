@@ -1,22 +1,8 @@
 "use client";
-import {
-  Button,
-  Table,
-  Typography,
-  List,
-  Collapse,
-  Popconfirm,
-  Select,
-  Spin,
-  Breadcrumb,
-} from "antd";
+import { Button, Table, Popconfirm, Select, Spin } from "antd";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import {
-  deleteQuiz,
-  deleteQuizQuestion,
-  viewQuiz,
-} from "@/features/Quiz/quizSlice";
+import { deleteQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { viewCourses } from "@/features/Courses/courseSlice";
 import React from "react";
@@ -28,7 +14,6 @@ const { Option } = Select;
 export default function ViewQuiz() {
   const dispatch = useDispatch();
   const [quiz, setquiz] = useState([]);
-  console.log("🚀 ~ quiz:", quiz);
   const [updateQuiz, setUpdateQuiz] = useState(0);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedLesson, setSelectedLesson] = useState(null);
@@ -36,8 +21,6 @@ export default function ViewQuiz() {
   const [courses, setCourses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { Text } = Typography;
-  const { Panel } = Collapse;
   const router = useRouter();
 
   // Hàm xử lý khi chọn khóa học
@@ -108,7 +91,7 @@ export default function ViewQuiz() {
       dataIndex: "key",
     },
     {
-      title: "Name Quiz",
+      title: "Tên bài tập",
       dataIndex: "name",
       onFilter: (value, record) => record.name.indexOf(value) === 0,
       sorter: (a, b) => a.name.length - b.name.length,
@@ -118,18 +101,18 @@ export default function ViewQuiz() {
       title: "Loại hình thức",
       dataIndex: "type",
       onFilter: (value, record) => record.type.indexOf(value) === 0,
-      sorter: (a, b) => a.type.length - b.type.length,
+      sorter: (a, b) => a.type.localeCompare(b.type),
       sortDirections: ["descend"],
     },
     {
-      title: "Questions",
+      title: "Chi tiết câu hỏi",
       dataIndex: "questions",
       onFilter: (value, record) => record.questions.indexOf(value) === 0,
       sorter: (a, b) => a.questions.length - b.questions.length,
       sortDirections: ["descend"],
     },
     {
-      title: "Action",
+      title: "Chức năng",
       dataIndex: "action",
     },
   ];
@@ -143,7 +126,7 @@ export default function ViewQuiz() {
       questions: (
         <Button
           className="me-3"
-          style={{ width: "100%" }} 
+          style={{ width: "100%" }}
           lessonId={selectedLesson}
           onClick={() =>
             router.push(`/admin/quiz/view-list-question/${i?._id}`)
@@ -155,7 +138,7 @@ export default function ViewQuiz() {
       action: (
         <div>
           <UpdateQuiz
-            lessonId={selectedLesson}
+            courseIds={selectedCourse}
             quizId={i?._id}
             refresh={() => setUpdateQuiz(updateQuiz + 1)}
           />
@@ -243,7 +226,11 @@ export default function ViewQuiz() {
             </Button>
           </div>
           <h3>Table Quiz</h3>
-          <Table columns={columns} dataSource={data} pagination={{ pageSize: 5 }} />
+          <Table
+            columns={columns}
+            dataSource={data}
+            pagination={{ pageSize: 5 }}
+          />
         </React.Fragment>
       )}
     </div>

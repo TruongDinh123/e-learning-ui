@@ -8,7 +8,7 @@ import { updateQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
 import { useRouter } from "next/navigation";
 
 export default function UpdateQuiz(props) {
-  const { quizId, lessonId, questionId, refresh } = props;
+  const { quizId, courseIds, questionId, refresh } = props;
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quiz, setquiz] = useState([]);
@@ -65,7 +65,7 @@ export default function UpdateQuiz(props) {
           .then(() => {
             setIsModalOpen(false);
             message.success(res.message, 1.5);
-            router.push(`/admin/quiz/view-list-question/${lessonId}`);
+            router.push(`/admin/quiz/view-list-question/${quizId}`);
             refresh();
           });
         setIsLoading(false);
@@ -94,9 +94,10 @@ export default function UpdateQuiz(props) {
   }, [quiz]);
 
   useEffect(() => {
-    dispatch(viewQuiz({ lessonId: lessonId }))
+    dispatch(viewQuiz({ courseIds: courseIds }))
       .then(unwrapResult)
       .then((res) => {
+        console.log("🚀 ~ res:", res);
         if (res.status) {
           setquiz(res.metadata);
           form.setFieldsValue({ name: res.metadata[0].name });
