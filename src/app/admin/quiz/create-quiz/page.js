@@ -28,7 +28,6 @@ import { useRouter } from "next/navigation";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 import "./page.css";
-import moment from "moment/moment";
 
 const { Option } = Select;
 
@@ -315,7 +314,10 @@ export default function QuizCreator() {
                       <DatePicker
                         showTime
                         disabledDate={(current) => {
-                          return current && current < moment().endOf("day");
+                          // Không cho phép chọn ngày trước ngày hiện tại
+                          let currentDate = new Date();
+                          currentDate.setHours(0, 0, 0, 0); // Đặt thời gian về 00:00:00
+                          return current && current.toDate() < currentDate;
                         }}
                       />
                     </Form.Item>
@@ -452,7 +454,10 @@ export default function QuizCreator() {
                   <DatePicker
                     showTime
                     disabledDate={(current) => {
-                      return current && current < moment().endOf("day");
+                      // Không cho phép chọn ngày trước ngày hiện tại
+                      let currentDate = new Date();
+                      currentDate.setHours(0, 0, 0, 0); // Đặt thời gian về 00:00:00
+                      return current && current.toDate() < currentDate;
                     }}
                   />
                 </Form.Item>
