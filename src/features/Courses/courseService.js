@@ -51,6 +51,15 @@ const addStudentToCourse = async (data) => {
   return res.data;
 };
 
+const addTeacherToCourse = async (data) => {
+  const res = await axiosInstance({
+    url: "/e-learning/invite-teacher-course/" + data.courseId,
+    method: "POST",
+    data: data.values,
+  });
+  return res.data;
+};
+
 const removeStudentFromCourse = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/delete-user-course/user/${userId}/course/${courseId}`,
@@ -89,7 +98,7 @@ const buttonPublicCourse = async (data) => {
     method: "POST",
   });
   return res;
-}
+};
 
 const buttonPriavteCourse = async (data) => {
   const res = await axiosInstance({
@@ -97,7 +106,7 @@ const buttonPriavteCourse = async (data) => {
     method: "POST",
   });
   return res;
-}
+};
 
 export const courseService = {
   createCourse,
@@ -111,5 +120,6 @@ export const courseService = {
   getCourseCompletion,
   getPublicCourse,
   buttonPublicCourse,
-  buttonPriavteCourse
+  buttonPriavteCourse,
+  addTeacherToCourse,
 };

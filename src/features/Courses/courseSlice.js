@@ -73,6 +73,18 @@ export const addStudentToCourse = createAsyncThunk(
   }
 );
 
+export const addTeacherToCourse = createAsyncThunk(
+  "/e-learning/invite-teacher-course/",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await courseService.addTeacherToCourse(data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 export const removeStudentFromCourse = createAsyncThunk(
   "/e-learning/delete-user-course/",
   async (data, { rejectWithValue }) => {

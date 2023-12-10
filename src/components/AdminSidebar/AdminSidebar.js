@@ -21,6 +21,89 @@ export default function AdminSidebar(props) {
   const userState = useSelector((state) => state?.user?.user);
   const dispatch = useDispatch();
 
+  const userRole = userState?.metadata?.account?.roles[0];
+
+  const menuItems = [
+    {
+      key: "1",
+      icon: <VideoCameraOutlined />,
+      label: "Khóa học",
+      children: [
+        {
+          key: "courses/view-courses",
+          icon: <UserOutlined />,
+          label: "Bảng khóa học",
+        },
+      ],
+    },
+    {
+      key: "2",
+      icon: <FileAddOutlined />,
+      label: "Bài tập",
+      children: [
+        {
+          key: "quiz/create-quiz",
+          icon: <UserOutlined />,
+          label: "Tạo bài tập",
+        },
+        {
+          key: "quiz/view-quiz",
+          icon: <UserOutlined />,
+          label: "Xem bài tập",
+        },
+      ],
+    },
+    {
+      key: "3",
+      icon: <FileAddOutlined />,
+      label: "Bài kiểm tra",
+      children: [
+        {
+          key: "assignment/create-assignment",
+          icon: <UserOutlined />,
+          label: "Tạo bài kiểm tra",
+        },
+        {
+          key: "assignment/view-assignment",
+          icon: <UserOutlined />,
+          label: "Xem bài kiểm tra",
+        },
+      ],
+    },
+    {
+      key: "4",
+      icon: <UserOutlined />,
+      label: "Học viên",
+      children: [
+        {
+          key: "users/score-trainee",
+          icon: <UserOutlined />,
+          label: "Quản lí học viên",
+        },
+      ],
+    },
+  ];
+
+  if (userRole !== "Mentor") {
+    menuItems[3].children.push(
+      {
+        key: "users/view-users",
+        icon: <UserOutlined />,
+        label: "Quản lí người dùng",
+      },
+      {
+        key: "users/view-role",
+        icon: <UserOutlined />,
+        label: "Quản lý vai trò",
+      },
+      {
+        key: "users/view-teachers",
+        icon: <UserOutlined />,
+        label: "Quản lý giáo viên",
+      }
+    );
+  }
+
   return (
     <Sider trigger={null} collapsible collapsed={collapsed}>
       <div className="demo-logo-vertical d-flex justify-content-center align-items-center py-3">
@@ -54,76 +137,7 @@ export default function AdminSidebar(props) {
         onClick={({ key }) => {
           router.push(`/admin/${key}`);
         }}
-        items={[
-          {
-            key: "1",
-            icon: <VideoCameraOutlined />,
-            label: "Course",
-            children: [
-              {
-                key: "courses/view-courses",
-                icon: <UserOutlined />,
-                label: "Table Course",
-              },
-            ],
-          },
-          {
-            key: "2",
-            icon: <FileAddOutlined />,
-            label: "Quiz",
-            children: [
-              {
-                key: "quiz/create-quiz",
-                icon: <UserOutlined />,
-                label: "Create Quiz",
-              },
-              {
-                key: "quiz/view-quiz",
-                icon: <UserOutlined />,
-                label: "View Quiz",
-              },
-            ],
-          },
-          {
-            key: "3",
-            icon: <FileAddOutlined />,
-            label: "Assignment",
-            children: [
-              {
-                key: "assignment/create-assignment",
-                icon: <UserOutlined />,
-                label: "Create Assignment",
-              },
-              {
-                key: "assignment/view-assignment",
-                icon: <UserOutlined />,
-                label: "View Assignment",
-              },
-            ],
-          },
-          {
-            key: "4",
-            icon: <UserOutlined />,
-            label: "User",
-            children: [
-              {
-                key: "users/view-users",
-                icon: <UserOutlined />,
-                label: "Manager User",
-              },
-              {
-                key: "users/score-trainee",
-                icon: <UserOutlined />,
-                label: "User Course",
-              },
-              {
-                key: "users/view-role",
-                icon: <UserOutlined />,
-                label: "Manager Role",
-              },
-            ],
-          },
-        ]}
+        items={menuItems}
       />
     </Sider>
   );

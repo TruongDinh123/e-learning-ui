@@ -6,7 +6,7 @@ import {
   viewCourses,
 } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Menu, Dropdown, Spin, Image, Space } from "antd";
+import { Menu, Dropdown, Spin, Image, Space, Empty } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button, Popconfirm } from "antd";
@@ -20,6 +20,7 @@ import { Col } from "react-bootstrap";
 export default function Courses() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
+  console.log("🚀 ~ course:", course);
   const [updateCourse, setUpdateCourse] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -134,19 +135,19 @@ export default function Courses() {
                           router.push(`/admin/courses/Lesson/${item?._id}`)
                         }
                       >
-                        View details
+                        Xem chi tiết
                       </Button>
                     </Menu.Item>
                     <Menu.Item>
                       <Popconfirm
-                        title="Delete the Course"
-                        description="Are you sure to delete this Course?"
+                        title="Xóa khóa học"
+                        description="Bạn muốn chắc xóa khóa học?"
                         okText="Yes"
                         cancelText="No"
                         onConfirm={() => handleDeleteCourse(item?._id)}
                       >
                         <Button danger style={{ width: "100%" }}>
-                          Delete
+                          Xóa
                         </Button>
                       </Popconfirm>
                     </Menu.Item>
@@ -155,7 +156,9 @@ export default function Courses() {
                         onClick={() => handleCoursePublic(item?._id)}
                         style={{ width: "100%" }}
                       >
-                        {item.showCourse ? "Make Private" : "Make Public"}
+                        {item.showCourse
+                          ? "Chế độ riêng tư"
+                          : "Chế độ công khai"}
                       </Button>
                     </Menu.Item>
                   </Menu>
@@ -179,7 +182,7 @@ export default function Courses() {
                         <div className="my-3 flex items-center gap-x-2 text-sm md:text-xs">
                           <div className="flex items-center gap-x-1 text-slate-500">
                             <BookOutlined />
-                            <span>lessons: {item.lessons.length}</span>
+                            <span>bài học: {item.lessons.length}</span>
                           </div>
                         </div>
                         {isMobile ? (
@@ -188,7 +191,7 @@ export default function Courses() {
                               className="ant-dropdown-link text-center justify-self-center"
                               onClick={(e) => e.preventDefault()}
                             >
-                              Actions
+                              Chức năng
                             </Button>
                           </Dropdown>
                         ) : (
@@ -213,7 +216,7 @@ export default function Courses() {
                                     )
                                   }
                                 >
-                                  View details
+                                  Xem chi tiết
                                 </Button>
                                 <Button
                                   onClick={() =>
@@ -223,12 +226,12 @@ export default function Courses() {
                                   }
                                 >
                                   {item.showCourse
-                                    ? "Make Private"
-                                    : "Make Public"}
+                                    ? "Chế độ riêng tư"
+                                    : "Chế độ công khai"}
                                 </Button>
                                 <Popconfirm
-                                  title="Delete the Course"
-                                  description="Are you sure to delete this Course?"
+                                  title="Xóa khóa học"
+                                  description="Bạn có chắc xóa khóa học?"
                                   okText="Yes"
                                   cancelText="No"
                                   okButtonProps={{
@@ -240,7 +243,7 @@ export default function Courses() {
                                   style={{ margin: 0 }}
                                 >
                                   <Button danger style={{ margin: 0 }}>
-                                    Delete
+                                    Xóa
                                   </Button>
                                 </Popconfirm>
                               </Space>
@@ -254,9 +257,9 @@ export default function Courses() {
               })}
             </div>
             {data?.length === 0 && (
-              <div className="text-center text-sm text-muted-foreground mt-10">
-                No courses found
-              </div>
+              <Empty className="text-center text-sm text-muted-foreground mt-10">
+                Khóa học không tồn tại
+              </Empty>
             )}
           </div>
         </div>

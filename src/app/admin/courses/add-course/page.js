@@ -28,6 +28,13 @@ export default function AddCourse(props) {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const isAdmin =
+    user &&
+    user.metadata.account &&
+    user.metadata.account.roles.includes("Admin");
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -80,19 +87,21 @@ export default function AddCourse(props) {
   return (
     <div>
       {contextHolder}
-      <Button
-        type="primary"
-        onClick={showModal}
-        className="me-3"
-        style={{
-          color: "#fff",
-          backgroundColor: "#1890ff",
-        }}
-      >
-        Create Course
-      </Button>
+      {isAdmin && (
+        <Button
+          type="primary"
+          onClick={showModal}
+          className="me-3"
+          style={{
+            color: "#fff",
+            backgroundColor: "#1890ff",
+          }}
+        >
+          Tạo khóa học
+        </Button>
+      )}
       <Modal
-        title="Create lesson"
+        title="Tạo bài học"
         open={isModalOpen}
         width={50 + "%"}
         height={50 + "%"}
@@ -121,11 +130,11 @@ export default function AddCourse(props) {
             <form action="" className="pb-5">
               <div className="mt-3 w-auto">
                 <label htmlFor="course" className="fs-6 fw-bold">
-                  Course Title
+                  Chủ đề khóa học
                 </label>
                 <CustomInput
                   id="course"
-                  placeholder="Add course title"
+                  placeholder="Thêm chủ đề"
                   onChange={formik.handleChange("title")}
                   onBlur={formik.handleBlur("title")}
                   value={formik.values.title}
@@ -140,11 +149,11 @@ export default function AddCourse(props) {
               </div>
               <div className="mt-3">
                 <label htmlFor="course" className="fs-6 fw-bold">
-                  Course Name
+                  Tên khóa học
                 </label>
                 <CustomInput
                   id="course"
-                  placeholder="Add course name"
+                  placeholder="Thêm tên"
                   onChange={formik.handleChange("name")}
                   onBlur={formik.handleBlur("name")}
                   value={formik.values.name}

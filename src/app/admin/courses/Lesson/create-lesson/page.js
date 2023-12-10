@@ -86,7 +86,7 @@ export default function CreateLesson(props) {
           backgroundColor: "#1890ff",
         }}
       >
-        Create
+        Tạo
       </Button>
       <Modal
         title="Edit Course"

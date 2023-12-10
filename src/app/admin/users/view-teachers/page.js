@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import AddStudentToCourse from "../../courses/add-student-course/page";
 import { getScoreByUserId } from "@/features/Quiz/quizSlice";
+import AddTeacherToCourse from "../../courses/add-teacher-course/page";
 
 const { Option } = Select;
 
@@ -94,6 +95,7 @@ export default function ViewStudentsCourse() {
     return dispatch(getACourse(selectedCourse))
       .then(unwrapResult)
       .then((res) => {
+        console.log("🚀 ~ res:", res);
         if (res.status) {
           setData(res.metadata.students);
           setTeacher(res.metadata.teacher);
@@ -143,6 +145,7 @@ export default function ViewStudentsCourse() {
   let data = [];
   if (teacher) {
     data.push({
+      key: "Giáo viên",
       lastName: teacher?.lastName,
       email: teacher?.email,
       roles: teacher?.roles,
@@ -265,12 +268,13 @@ export default function ViewStudentsCourse() {
           View
         </Button>
       </div>
-      <AddStudentToCourse
+
+      <AddTeacherToCourse
         courseId={selectedCourse}
         refresh={() => setUpdate(update + 1)}
       >
-        Invite Student
-      </AddStudentToCourse>
+        Thêm giáo viên
+      </AddTeacherToCourse>
       <Table
         columns={columns}
         dataSource={data}
