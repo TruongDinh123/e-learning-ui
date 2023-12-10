@@ -160,7 +160,7 @@ export default function ViewAssignment() {
     //       })
     //     }
     //   >
-    //     <Button danger>Delete</Button>
+    //     <Button danger>Xóa</Button>
     //   </Popconfirm>
     // </div>
     //   </Panel>
@@ -190,7 +190,7 @@ export default function ViewAssignment() {
     //           })
     //         }
     //       >
-    //         <Button danger>Delete</Button>
+    //         <Button danger>Xóa</Button>
     //       </Popconfirm>
     //     </div>
     //   </div>
@@ -261,7 +261,7 @@ export default function ViewAssignment() {
               })
             }
           >
-            <Button danger>Delete</Button>
+            <Button danger>Xóa</Button>
           </Popconfirm>
         </React.Fragment>
       ),

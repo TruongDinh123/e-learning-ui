@@ -1,21 +1,22 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Radio, Button, message, Row, Col } from "antd";
-import { submitQuiz, viewAQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
+import { Card, Radio, Button, message } from "antd";
+import { getScore, submitQuiz, viewAQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
-import { format } from "date-fns";
+import Link from "next/link";
 
 export default function Quizs({ params }) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [quiz, setquiz] = useState([]);
-  console.log("🚀 ~ quiz:", quiz);
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [submitted, setSubmitted] = useState(false);
+  const [score, setScore] = useState([]);
+  const [isComplete, setIsComplete] = useState(false);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
+  const [studentAnswers, setStudentAnswers] = useState({});
+  console.log("🚀 ~ studentAnswers:", studentAnswers);
 
   const handleAnswer = (questionId, answer) => {
     setSelectedAnswers((prevAnswers) => ({
@@ -80,91 +81,134 @@ export default function Quizs({ params }) {
       });
   }, []);
 
+  useEffect(() => {
+    dispatch(getScore())
+      .then(unwrapResult)
+      .then((res) => {
+        console.log("🚀 ~ res:", res);
+        if (res.status) {
+          setScore(res.metadata);
+          const completedQuiz = res.metadata.find(
+            (quiz) => quiz.quiz?._id === params?.id
+          );
+          console.log("🚀 ~ completedQuiz:", completedQuiz);
+          if (completedQuiz) {
+            setIsComplete(completedQuiz.isComplete);
+            const answersObject = completedQuiz.answers.reduce((obj, item) => {
+              const [key, value] = Object.entries(item)[0];
+              obj[key] = value;
+              return obj;
+            }, {});
+            setStudentAnswers(answersObject);
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   let submissionTime;
   if (quiz[0] && quiz[0].submissionTime) {
     submissionTime = new Date(quiz[0].submissionTime);
   }
-  console.log("🚀 ~ submissionTime:", submissionTime);
-  
+
   const currentTime = new Date();
-  console.log("🚀 ~ currentTime:", currentTime);
-  
+
   const isTimeExceeded = currentTime > submissionTime;
 
   return (
-    <Row
-      style={{
-        paddingTop: "100px",
-        paddingBottom: "200px",
-        overflow: "auto",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "ButtonShadow",
-      }}
-    >
+    <div className="pt-24 pb-48 flex justify-center items-center overflow-auto bg-gray-200">
       {contextHolder}
-      <Col xs={24} md={16}>
+      <div className="w-full md:w-2/3">
         {loading ? (
           <div>Loading...</div>
         ) : (
           <React.Fragment>
             {quiz.map((item, index) => (
               <React.Fragment key={index}>
-                <Card key={item._id} title={item.name}>
+                <Card
+                  key={item._id}
+                  title={item.name}
+                  className="border-2 border-blue-500"
+                >
                   {item.questions.map((question, questionIndex) => {
-                    const isCorrectAnswer =
-                      selectedAnswers[question._id] === question.answer;
+                    const studentAnswer = isComplete
+                      ? studentAnswers[question._id]
+                      : selectedAnswers[question._id];
+                    const isCorrectAnswer = studentAnswer === question.answer;
                     const showAnswer = submitted && isCorrectAnswer;
                     const showWrongAnswer = submitted && !isCorrectAnswer;
                     return (
-                      <div key={question._id}>
-                        <h4
-                          style={{
-                            marginBottom: "10px",
-                            color: showAnswer
-                              ? "green"
-                              : showWrongAnswer
-                              ? "red"
-                              : "black",
-                          }}
-                        >
-                          Question {index + 1}.{questionIndex + 1}:{" "}
-                          {question.question}
-                          {showAnswer && " ✔️"}
-                          {showWrongAnswer && "❌"}
-                        </h4>
-                        <Radio.Group
-                          onChange={(e) =>
-                            handleAnswer(question._id, e.target.value)
-                          }
-                          disabled={submitted}
-                        >
-                          {question.options.map((option) => (
-                            <div key={option}>
-                              <Radio value={option}>{option}</Radio>
-                            </div>
-                          ))}
-                        </Radio.Group>
+                      <div key={questionIndex} className="border p-4 mb-4">
+                        <div key={question._id} className="mb-4 p-2">
+                          <h4
+                            className={`mb-2 ${
+                              showAnswer
+                                ? "text-green-500"
+                                : showWrongAnswer
+                                ? "text-red-500"
+                                : "text-black"
+                            }`}
+                          >
+                            Question {index + 1}.{questionIndex + 1}:{" "}
+                            {question.question}
+                            {showAnswer && " ✔️"}
+                            {showWrongAnswer && "❌"}
+                          </h4>
+                          <Radio.Group
+                            onChange={(e) =>
+                              handleAnswer(question._id, e.target.value)
+                            }
+                            disabled={submitted || isComplete}
+                            className="space-y-2"
+                          >
+                            {question.options.map((option) => (
+                              <div key={option} className="pl-4">
+                                <Radio
+                                  value={option}
+                                  checked={option === studentAnswer}
+                                >
+                                  {option}
+                                </Radio>
+                              </div>
+                            ))}
+                          </Radio.Group>
+                        </div>
+                        <span className="text-blue-500 text-lg px-2">
+                          Câu trả lời của bạn: {studentAnswer}
+                        </span>
                       </div>
                     );
                   })}
+                  <div className="p-4">
+                    <Button
+                      type="default"
+                      onClick={handleSubmit}
+                      disabled={isTimeExceeded || submitted || isComplete}
+                      className="mr-3 bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded"
+                    >
+                      Submit
+                    </Button>
+                    {isComplete && (
+                      <div>Bạn đã hoàn thành bài kiểm tra này</div>
+                    )}
+                    {isTimeExceeded && <div>Thời gian làm bài đã hết</div>}
+                  </div>
+                  {submitted && (
+                    <Link
+                      href="/courses/view-details"
+                      className="mr-3 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                      Trở về trang chủ
+                    </Link>
+                  )}
                 </Card>
-                <div style={{ padding: "1rem" }}>
-                  <Button
-                    type="primary"
-                    onClick={handleSubmit}
-                    disabled={isTimeExceeded}
-                    className="button-container me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  >
-                    Submit
-                  </Button>
-                  {isTimeExceeded && <div>Thời gian làm bài đã hết</div>}
-                </div>
               </React.Fragment>
             ))}
           </React.Fragment>
         )}
-      </Col>
-    </Row>
+      </div>
+    </div>
   );
 }

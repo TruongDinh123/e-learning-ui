@@ -186,7 +186,7 @@ export default function VideoLesson(propsComponent) {
                       })
                     }
                   >
-                    <Button danger>Delete</Button>
+                    <Button danger>Xóa</Button>
                   </Popconfirm>
                 </React.Fragment>
               ))}

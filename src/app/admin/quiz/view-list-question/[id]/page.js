@@ -141,7 +141,7 @@ export default function ViewListQuestion({ params }) {
                                       })
                                     }
                                   >
-                                    <Button danger>Delete</Button>
+                                    <Button danger>Xóa</Button>
                                   </Popconfirm>
                                 </div>
                               </li>

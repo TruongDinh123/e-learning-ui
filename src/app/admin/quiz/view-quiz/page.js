@@ -132,7 +132,7 @@ export default function ViewQuiz() {
             router.push(`/admin/quiz/view-list-question/${i?._id}`)
           }
         >
-          View details
+          Xem chi tiết
         </Button>
       ),
       action: (
@@ -143,8 +143,8 @@ export default function ViewQuiz() {
             refresh={() => setUpdateQuiz(updateQuiz + 1)}
           />
           <Popconfirm
-            title="Delete the quiz"
-            description="Are you sure to delete this Quiz?"
+            title="Xóa bài tập"
+            description="Bạn có muốn xóa bài tập?"
             okText="Yes"
             cancelText="No"
             okButtonProps={{
@@ -156,7 +156,7 @@ export default function ViewQuiz() {
               })
             }
           >
-            <Button danger>Delete</Button>
+            <Button danger>Xóa</Button>
           </Popconfirm>
         </div>
       ),
@@ -222,7 +222,7 @@ export default function ViewQuiz() {
               onClick={handleViewQuiz}
               style={{ color: "#fff", backgroundColor: "#1890ff" }}
             >
-              View Quiz
+              Xem
             </Button>
           </div>
           <h3>Table Quiz</h3>

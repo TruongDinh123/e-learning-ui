@@ -157,7 +157,7 @@ export default function QuizCreator({ params }) {
               })
             }
           >
-            <Button danger>Delete</Button>
+            <Button danger>Xóa</Button>
           </Popconfirm>
         </div>
       </Panel>

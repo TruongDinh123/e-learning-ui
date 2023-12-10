@@ -111,7 +111,7 @@ export default function Lesson({ params }) {
                             })
                           }
                         >
-                          <Button danger>Delete</Button>
+                          <Button danger>Xóa</Button>
                         </Popconfirm>
                         <VideoLesson lessonId={i?._id} />
                       </div>

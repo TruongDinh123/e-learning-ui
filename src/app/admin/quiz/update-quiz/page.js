@@ -118,7 +118,7 @@ export default function UpdateQuiz(props) {
         className="me-3"
         style={{ color: "#fff", backgroundColor: "#1890ff" }}
       >
-        Update
+        Cập nhật
       </Button>
       <Modal
         title="Update Quiz"

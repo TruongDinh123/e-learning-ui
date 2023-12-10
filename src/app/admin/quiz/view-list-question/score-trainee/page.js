@@ -81,6 +81,7 @@ export default function ViewListScore(props) {
     dispatch(getScoreByQuizId({ quizId: quizId }))
       .then(unwrapResult)
       .then((res) => {
+        console.log("🚀 ~ res:", res);
         if (res.status) {
           setScore(res.metadata);
         }

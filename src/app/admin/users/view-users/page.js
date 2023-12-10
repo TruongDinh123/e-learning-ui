@@ -90,7 +90,7 @@ export default function ViewUsers() {
             cancelText="No"
             onConfirm={() => handleDeleteUser(i?._id)}
           >
-            <Button danger>Delete</Button>
+            <Button danger>Xóa</Button>
           </Popconfirm>
         </Menu.Item>
       </Menu>
@@ -122,7 +122,7 @@ export default function ViewUsers() {
             cancelText="No"
             onConfirm={() => handleDeleteUser(i?._id)}
           >
-            <Button danger>Delete</Button>
+            <Button danger>Xóa</Button>
           </Popconfirm>
         </Space>
       ),

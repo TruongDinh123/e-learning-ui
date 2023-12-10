@@ -123,7 +123,7 @@ export default function ViewAssignment({ params }) {
                                   })
                                 }
                               >
-                                <Button danger>Delete</Button>
+                                <Button danger>Xóa</Button>
                               </Popconfirm>
                             </div>
                           </li>
