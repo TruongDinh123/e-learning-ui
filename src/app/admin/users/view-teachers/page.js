@@ -95,7 +95,6 @@ export default function ViewStudentsCourse() {
     return dispatch(getACourse(selectedCourse))
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           setData(res.metadata.students);
           setTeacher(res.metadata.teacher);
@@ -116,7 +115,7 @@ export default function ViewStudentsCourse() {
       dataIndex: "key",
     },
     {
-      title: "Name",
+      title: "Tên",
       dataIndex: "lastName",
       key: "lastName",
       sorter: (a, b) => a.lastName.localeCompare(b.lastName),
@@ -133,11 +132,11 @@ export default function ViewStudentsCourse() {
       title: "Vai trò",
       dataIndex: "roles",
       key: "roles",
-      sorter: (a, b) => a.roles.localeCompare(b.roles),
+      sorter: (a, b) => a.roles.join(',').localeCompare(b.roles.join(',')),
       sortDirections: ["descend"],
     },
     {
-      title: "Action",
+      title: "Chức năng",
       dataIndex: "action",
     },
   ];
@@ -157,7 +156,7 @@ export default function ViewStudentsCourse() {
     const isStudentModalOpen = isModalOpen[userId];
 
     data.push({
-      key: index,
+      key: index + 1,
       lastName: student?.lastName,
       email: student?.email,
       roles: student?.roles,
@@ -169,7 +168,7 @@ export default function ViewStudentsCourse() {
             className="me-3"
             style={{ color: "#fff", backgroundColor: "#1890ff" }}
           >
-            View Score
+            Xem điểm
           </Button>
           <Modal
             title=""
@@ -265,7 +264,7 @@ export default function ViewStudentsCourse() {
           className="me-3"
           style={{ color: "#fff", backgroundColor: "#1890ff" }}
         >
-          View
+          Xem
         </Button>
       </div>
 

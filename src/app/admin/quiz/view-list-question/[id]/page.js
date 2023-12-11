@@ -153,29 +153,29 @@ export default function ViewListQuestion({ params }) {
                   ) : (
                     <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6">
                       <div className="border-2 border-gray-300 p-4 rounded-md">
-                        <div className="flex items-center">
+                        <div className="flex items-center space-x-4">
                           <div>
-                            <h2 className="text-2xl font-bold mb-5">
+                            <h2 className="text-2xl font-bold mb-5 text-blue-600">
                               {quiz.essay.title}
                             </h2>
                             <div
-                              className="mb-5"
+                              className="mb-5 text-gray-700"
                               dangerouslySetInnerHTML={{
                                 __html: quiz.essay.content,
                               }}
                             />
                           </div>
-                          <div className="border-l-2 border-gray-300 pl-4">
-                            <span className="pr-4">
-                              Đã nộp: {score.filter((s) => s.isComplete).length}
-                            </span>
-                            <span className="px-4 border-l-2 border-gray-300">
-                              Chưa nộp:
-                            </span>
-                            <span className="pl-4">
-                              Đã giao: {quiz.studentIds.length}
-                            </span>
-                          </div>
+                        </div>
+                        <div className="border-l-2 border-gray-300 pl-4">
+                          <span className="pr-4 text-green-600">
+                            Đã nộp: {score.filter((s) => s.isComplete).length}
+                          </span>
+                          <span className="px-4 border-l-2 border-gray-300 text-yellow-600">
+                            Chưa nộp:
+                          </span>
+                          <span className="pl-4 text-red-600">
+                            Đã giao: {quiz.studentIds.length}
+                          </span>
                         </div>
                       </div>
                       {quiz.essay.attachment && (

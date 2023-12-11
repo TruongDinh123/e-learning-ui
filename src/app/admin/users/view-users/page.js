@@ -22,7 +22,7 @@ export default function ViewUsers() {
       dataIndex: "key",
     },
     {
-      title: "Last Name",
+      title: "Tên",
       dataIndex: "lastName",
       onFilter: (value, record) => record.lastName.indexOf(value) === 0,
       sorter: (a, b) => a.lastName.localeCompare(b.lastName),
@@ -36,21 +36,21 @@ export default function ViewUsers() {
       sortDirections: ["descend"],
     },
     {
-      title: "Status",
+      title: "Trạng thái",
       dataIndex: "status",
       onFilter: (value, record) => record.status.indexOf(value) === 0,
       sorter: (a, b) => a.status.localeCompare(b.status),
       sortDirections: ["descend"],
     },
     {
-      title: "Roles",
+      title: "Vai trò",
       dataIndex: "roles",
       onFilter: (value, record) => record.roles.indexOf(value) === 0,
       sorter: (a, b) => a.roles.join(", ").localeCompare(b.roles.join(", ")),
       sortDirections: ["descend"],
     },
     {
-      title: "Action",
+      title: "Chức năng",
       dataIndex: "action",
     },
   ];

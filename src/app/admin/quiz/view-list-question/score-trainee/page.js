@@ -67,6 +67,9 @@ export default function ViewListScore(props) {
           })
           .then(() => {
             setUpdate(update + 1);
+            //reset the checkboxes
+            setScore(score.map((student) => ({ ...student, selected: false })));
+            setSelectAll(false);
           });
         setIsLoading(false);
       })

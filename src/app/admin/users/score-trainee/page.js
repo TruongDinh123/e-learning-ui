@@ -114,7 +114,7 @@ export default function ViewStudentsCourse() {
       dataIndex: "key",
     },
     {
-      title: "Name",
+      title: "Tên",
       dataIndex: "lastName",
       key: "lastName",
       sorter: (a, b) => a.lastName.localeCompare(b.lastName),
@@ -131,11 +131,11 @@ export default function ViewStudentsCourse() {
       title: "Vai trò",
       dataIndex: "roles",
       key: "roles",
-      sorter: (a, b) => a.roles.localeCompare(b.roles),
+      sorter: (a, b) => a.roles.join(',').localeCompare(b.roles.join(',')),
       sortDirections: ["descend"],
     },
     {
-      title: "Action",
+      title: "Chức năng",
       dataIndex: "action",
     },
   ];
@@ -143,6 +143,7 @@ export default function ViewStudentsCourse() {
   let data = [];
   if (teacher) {
     data.push({
+      key: "Giáo viên",
       lastName: teacher?.lastName,
       email: teacher?.email,
       roles: teacher?.roles,
@@ -154,7 +155,7 @@ export default function ViewStudentsCourse() {
     const isStudentModalOpen = isModalOpen[userId];
 
     data.push({
-      key: index,
+      key: index + 1,
       lastName: student?.lastName,
       email: student?.email,
       roles: student?.roles,
@@ -166,7 +167,7 @@ export default function ViewStudentsCourse() {
             className="me-3"
             style={{ color: "#fff", backgroundColor: "#1890ff" }}
           >
-            View Score
+            Xem điểm
           </Button>
           <Modal
             title=""
@@ -245,7 +246,7 @@ export default function ViewStudentsCourse() {
       {contextHolder}
       <div className="pb-3">
         <Select
-          placeholder="Select a course"
+          placeholder="Chọn khóa học"
           onChange={handleCourseChange}
           value={selectedCourse}
           className="me-3"
@@ -262,14 +263,14 @@ export default function ViewStudentsCourse() {
           className="me-3"
           style={{ color: "#fff", backgroundColor: "#1890ff" }}
         >
-          View
+          Xem
         </Button>
       </div>
       <AddStudentToCourse
         courseId={selectedCourse}
         refresh={() => setUpdate(update + 1)}
       >
-        Invite Student
+        Thêm học viên
       </AddStudentToCourse>
       <Table
         columns={columns}

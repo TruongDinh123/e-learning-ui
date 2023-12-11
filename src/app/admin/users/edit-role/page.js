@@ -79,17 +79,17 @@ export default function EditRole(props) {
         className="me-3"
         style={{ width: "100%", color: "#fff", backgroundColor: "#1890ff" }}
       >
-        Edit
+        Chỉnh sửa
       </Button>
       <Modal
-        title="Edit Role"
+        title="Chỉnh sửa vai trò"
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
         footer={
           <React.Fragment>
             <Button key="back" onClick={handleCancel}>
-              Cancel
+              Hủy
             </Button>
             <Button
               key="back"
@@ -100,14 +100,14 @@ export default function EditRole(props) {
                 backgroundColor: "#1890ff",
               }}
             >
-              Save
+              Lưu
             </Button>
           </React.Fragment>
         }
       >
         <div>
           <label htmlFor="role" className="fs-6 fw-bold">
-            Name Role
+            Tên vai trò
           </label>
           <CustomInput
             className="mb-3"

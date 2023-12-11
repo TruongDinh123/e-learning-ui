@@ -215,7 +215,7 @@ export default function QuizCreator() {
                 <span>Chọn khóa học của bạn:</span>
                 <Select
                   mode="multiple"
-                  placeholder="Select courses"
+                  placeholder="Chọn khóa học"
                   onChange={handleCourseChange}
                   value={selectedCourse}
                   style={{ width: "100%" }}
@@ -231,7 +231,7 @@ export default function QuizCreator() {
                 <span>Chọn học viên muốn chọn:</span>
                 <Select
                   mode="multiple"
-                  placeholder="Select students"
+                  placeholder="Chọn học viên"
                   onChange={handleStudentChange}
                   value={selectedStudents}
                   disabled={selectedCourse.length > 1}
@@ -437,7 +437,7 @@ export default function QuizCreator() {
                   <Input placeholder="Tiêu đề" />
                 </Form.Item>
 
-                <Form.Item>
+                <Form.Item name="essayContent">
                   <ReactQuill theme="snow" />
                 </Form.Item>
 

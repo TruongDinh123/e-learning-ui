@@ -73,12 +73,12 @@ export default function AdminSidebar(props) {
     {
       key: "4",
       icon: <UserOutlined />,
-      label: "Học viên",
+      label: "Quản lý",
       children: [
         {
           key: "users/score-trainee",
           icon: <UserOutlined />,
-          label: "Quản lí học viên",
+          label: "Học viên",
         },
       ],
     },
@@ -89,17 +89,17 @@ export default function AdminSidebar(props) {
       {
         key: "users/view-users",
         icon: <UserOutlined />,
-        label: "Quản lí người dùng",
+        label: "Người dùng",
       },
       {
         key: "users/view-role",
         icon: <UserOutlined />,
-        label: "Quản lý vai trò",
+        label: "Vai trò",
       },
       {
         key: "users/view-teachers",
         icon: <UserOutlined />,
-        label: "Quản lý giáo viên",
+        label: "Giáo viên",
       }
     );
   }
@@ -111,7 +111,7 @@ export default function AdminSidebar(props) {
         <Nav>
           {userState !== null ? (
             <CustomButton
-              title="Logout"
+              title="Đăng xuất"
               type="link"
               className="text-white"
               onClick={() => {
@@ -124,7 +124,7 @@ export default function AdminSidebar(props) {
           ) : (
             <Link href="/login">
               <span className="fs-6 text-dark text-decoration-none me-4">
-                Login
+                Đăng nhập
               </span>
             </Link>
           )}

@@ -182,7 +182,7 @@ export default function ViewQuiz() {
   };
 
   return (
-    <div className="">
+    <div className="pb-28">
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />
@@ -192,7 +192,7 @@ export default function ViewQuiz() {
           <div className="pb-3">
             <div style={{ display: "flex", paddingBottom: "20px" }}>
               <Select
-                placeholder="Select a course"
+                placeholder="Chọn khóa học"
                 onChange={handleCourseChange}
                 value={selectedCourse}
                 className="me-3"
@@ -205,7 +205,7 @@ export default function ViewQuiz() {
               </Select>
 
               <Select
-                placeholder="Select a lesson"
+                placeholder="Chọn bài học"
                 onChange={handleLessonChange}
                 value={selectedLesson}
                 className="me-3"

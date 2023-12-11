@@ -21,14 +21,14 @@ export default function ViewRoles() {
       dataIndex: "key",
     },
     {
-      title: "Name Role",
+      title: "Tên vai trò",
       dataIndex: "name",
       onFilter: (value, record) => record.name.indexOf(value) === 0,
       sorter: (a, b) => a.name.length - b.name.length,
       sortDirections: ["descend"],
     },
     {
-      title: "Action",
+      title: "Chức năng",
       dataIndex: "action",
     },
   ];
@@ -104,7 +104,12 @@ export default function ViewRoles() {
       ) : (
         <React.Fragment>
           <CreateRole refresh={() => setUpdateRole(updateRole + 1)} />
-          <Table columns={columns} dataSource={data}  pagination={{ pageSize: 5 }} className="pt-3" />
+          <Table
+            columns={columns}
+            dataSource={data}
+            pagination={{ pageSize: 5 }}
+            className="pt-3"
+          />
         </React.Fragment>
       )}
     </div>

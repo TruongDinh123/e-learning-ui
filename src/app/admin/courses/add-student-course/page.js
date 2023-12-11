@@ -88,10 +88,10 @@ export default function AddStudentToCourse(props) {
         className="me-3"
         style={{ color: "#fff", backgroundColor: "#1890ff" }}
       >
-        Invite Trainee
+        Thêm học viên
       </Button>
       <Modal
-        title="Invite Email"
+        title="Thêm email"
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
@@ -108,7 +108,7 @@ export default function AddStudentToCourse(props) {
       >
         <div>
           <label htmlFor="course" className="fs-6 fw-bold">
-            Email
+            Email:
           </label>
           <CustomInput
             className="mb-3"
@@ -116,6 +116,7 @@ export default function AddStudentToCourse(props) {
             onBlur={formik.handleBlur("email")}
             value={formik.values.email}
             error={formik.touched.email && formik.errors.email}
+            placeholder="Email"
           />
         </div>
       </Modal>

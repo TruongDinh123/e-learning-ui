@@ -53,7 +53,7 @@ export default function EditUser(props) {
         if (res.status) {
           setData(res.data.metadata);
         } else {
-          messageApi.error(res.message);  
+          messageApi.error(res.message);
         }
       })
       .catch((error) => {
@@ -98,15 +98,15 @@ export default function EditUser(props) {
         className="me-3"
         style={{ width: "100%", color: "#fff", backgroundColor: "#1890ff" }}
       >
-        Edit
+        Chỉnh sửa
       </Button>
       <Modal
-        title="Edit Role"
+        title="Chỉnh sửa vài trò"
         open={isModalOpen}
         footer={
           <React.Fragment>
             <Button key="cancle" type="default" onClick={handleCancel}>
-              Cancle
+              Hủy
             </Button>
             <Button
               key="ok"
@@ -114,14 +114,14 @@ export default function EditUser(props) {
               onClick={handleOk}
               style={{ backgroundColor: "#1890ff", color: "white" }}
             >
-              OK
+              Lưu
             </Button>
           </React.Fragment>
         }
       >
         <div>
           <label htmlFor="role" className="fs-6 fw-bold">
-            Last Name
+            Tên
           </label>
           <CustomInput
             className="mb-3"
