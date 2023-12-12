@@ -20,7 +20,6 @@ import { Col } from "react-bootstrap";
 export default function Courses() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
-  console.log("🚀 ~ course:", course);
   const [updateCourse, setUpdateCourse] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();

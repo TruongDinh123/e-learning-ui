@@ -134,71 +134,69 @@ export default function ViewQuiz({ params }) {
         </div>
       ) : (
         <React.Fragment>
-          <div class="container mx-auto p-4">
-            <div class="bg-teal-500 p-4 text-white text-5xl mb-6 rounded shadow-lg">
+          <div className="container mx-auto p-4 sm:p-6 md:p-8">
+            <div className="bg-teal-500 p-4 text-white text-5xl mb-6 rounded shadow-lg">
               Khóa học
             </div>
 
-            <div class="flex mt-6 justify-center pb-40">
-              <div class="p-2 mt-2 border-4 mr-36">
-                <div class="bg-white p-4 rounded-lg card-shadow">
-                  <div class="flex items-center">
-                    <div class="ml-4">
-                      <p class="text-sm">Sắp đến hạn</p>
-                      <p class="text-xs text-gray-600">
+            <div className="flex mt-6 justify-center items-center pb-40">
+              <div className="p-2 mt-2 border-4 mr-36 hidden md:block">
+                <div className="bg-white p-4 rounded-lg card-shadow">
+                  <div className="flex items-center">
+                    <div className="ml-4">
+                      <p className="text-sm">Sắp đến hạn</p>
+                      <p className="text-xs text-gray-600">
                         Tuyệt vời, không có bài tập nào sắp đến hạn!
                       </p>
                     </div>
                   </div>
-                  <div class="mt-4">
-                    <a href="#" class="text-blue-500 text-sm">
+                  <div className="mt-4">
+                    <a href="#" className="text-blue-500 text-sm">
                       Xem tất cả
                     </a>
                   </div>
                 </div>
               </div>
 
-              <div class="flex flex-wrap -mx-2 mt-4">
-                <div class=" w-full p-2">
-                  <div class="bg-white flex p-4 rounded-lg card-shadow border-t border-b border-l border-r">
-                    <div class="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center">
-                      <i class="fas fa-book-open text-white"></i>
+              <div className="flex flex-wrap -mx-2 mt-4 md:mt-0">
+                <div className="w-full marker:sm:w-1/2 md:w-2/3 p-2">
+                  <div className="bg-white flex p-4 rounded-lg card-shadow border-t border-b border-l border-r">
+                    <div className="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center">
+                      <i className="fas fa-book-open text-white"></i>
                     </div>
                     <textarea
-                      class="w-full p-2 rounded border-gray-300"
+                      className="w-full p-2 rounded border-gray-300"
                       rows="4"
                       placeholder="Thông báo nội dung nào đó cho lớp học của bạn"
                     ></textarea>
                   </div>
                 </div>
 
-                <div class="w-full p-2">
+                <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-2">
                   {data.map((item, index) => (
-                    <>
-                      <div class="bg-white rounded-lg card-shadow border-t border-b border-l border-r border-gray-300 w-full">
-                        <div class="flex items-center justify-between p-4">
-                          <div class="flex items-center">
-                            <div class="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center">
-                              <i class="fas fa-book-open text-white"></i>
+                      <div key={index} className="bg-white rounded-lg card-shadow border-t border-b border-l border-r border-gray-300 w-full">
+                        <div className="flex items-center justify-between p-4">
+                          <div className="flex items-center">
+                            <div className="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center">
+                              <i className="fas fa-book-open text-white"></i>
                             </div>
-                            <div class="ml-4">
-                              <p class="text-sm">
+                            <div className="ml-4">
+                              <p className="text-sm">
                                 Giáo viên đã đăng một bài tập mới: {item.name}
                               </p>
-                              <p class="text-xs text-gray-600">
+                              <p className="text-xs text-gray-600">
                                 Hạn nộp bài: {item.submissionTime}
                               </p>
                             </div>
                           </div>
-                          <div class="text-gray-600">
-                            <i class="fas fa-ellipsis-v"></i>
+                          <div className="text-gray-600">
+                            <i className="fas fa-ellipsis-v"></i>
                           </div>
                         </div>
-                        <div class="mt-4 border-t pt-4 p-4">
+                        <div className="mt-4 border-t pt-4 p-4">
                           {item.questions}
                         </div>
                       </div>
-                    </>
                   ))}
                 </div>
               </div>

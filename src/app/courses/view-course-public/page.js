@@ -53,10 +53,13 @@ export default function CoursePublic() {
                     </div>
                     <div className="flex flex-col pt-2">
                       <div className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2">
+                        {item.name}
+                      </div>
+                      <div className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2">
                         {item.title}
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Teacher: {item.teacher.lastName}
+                        Teacher: {item.teacher?.lastName}
                       </p>
                       <div className="my-3 flex items-center gap-x-2 text-sm md:text-xs">
                         <div className="flex items-center gap-x-1 text-slate-500">

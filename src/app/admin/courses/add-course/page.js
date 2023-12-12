@@ -6,7 +6,11 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import * as yup from "yup";
 import { Button, Modal, message } from "antd";
 import { useRouter } from "next/navigation";
-import { createCourse } from "@/features/Courses/courseSlice";
+import {
+  buttonPriavteourse,
+  buttonPublicCourse,
+  createCourse,
+} from "@/features/Courses/courseSlice";
 import { useState } from "react";
 
 const CourseSchema = yup.object({
@@ -18,6 +22,7 @@ const CourseSchema = yup.object({
     .string()
     .required("Name is required")
     .trim("Name must not start or end with whitespace"),
+  isPublic: yup.boolean().required("Visibility is required"),
 });
 
 export default function AddCourse(props) {
@@ -55,6 +60,7 @@ export default function AddCourse(props) {
     initialValues: {
       title: "",
       name: "",
+      isPublic: true,
     },
     onSubmit: (values) => {
       values.name = values.name.trim();
@@ -64,7 +70,15 @@ export default function AddCourse(props) {
       dispatch(createCourse(values))
         .then(unwrapResult)
         .then((res) => {
+          const courseId = res.metadata?._id;
           if (res.status) {
+            if (values.isPublic) {
+              dispatch(buttonPublicCourse(courseId));
+              refresh();
+            } else {
+              dispatch(buttonPriavteourse(courseId));
+              refresh();
+            }
             messageApi
               .open({
                 type: "success",
@@ -84,6 +98,7 @@ export default function AddCourse(props) {
         });
     },
   });
+
   return (
     <div>
       {contextHolder}
@@ -103,8 +118,8 @@ export default function AddCourse(props) {
       <Modal
         title="Tạo bài học"
         open={isModalOpen}
-        width={50 + "%"}
-        height={50 + "%"}
+        onCancel={handleCancel}
+        onOk={handleOk}
         footer={
           <div>
             <Button
@@ -125,49 +140,63 @@ export default function AddCourse(props) {
           </div>
         }
       >
-        <div className="row">
-          <div className="col-lg-3 col-md-6 col-sm-12">
-            <form action="" className="pb-5">
-              <div className="mt-3 w-auto">
-                <label htmlFor="course" className="fs-6 fw-bold">
-                  Chủ đề khóa học
-                </label>
-                <CustomInput
-                  id="course"
-                  placeholder="Thêm chủ đề"
-                  onChange={formik.handleChange("title")}
-                  onBlur={formik.handleBlur("title")}
-                  value={formik.values.title}
-                  error={
-                    formik.submitCount > 0 &&
-                    formik.touched.title &&
-                    formik.errors.title
-                      ? formik.errors.title
-                      : null
-                  }
-                />
-              </div>
-              <div className="mt-3">
-                <label htmlFor="course" className="fs-6 fw-bold">
-                  Tên khóa học
-                </label>
-                <CustomInput
-                  id="course"
-                  placeholder="Thêm tên"
-                  onChange={formik.handleChange("name")}
-                  onBlur={formik.handleBlur("name")}
-                  value={formik.values.name}
-                  error={
-                    formik.submitCount > 0 &&
-                    formik.touched.name &&
-                    formik.errors.name
-                      ? formik.errors.name
-                      : null
-                  }
-                />
-              </div>
-            </form>
-          </div>
+        <div className="col-md-6 col-sm-12">
+          <form action="" className="pb-5">
+            <div className="mt-3 w-auto">
+              <label htmlFor="course" className="fs-6 fw-bold">
+                Mô tả khóa học
+              </label>
+              <CustomInput
+                id="course"
+                placeholder="Thêm mô tả"
+                onChange={formik.handleChange("title")}
+                onBlur={formik.handleBlur("title")}
+                value={formik.values.title}
+                error={
+                  formik.submitCount > 0 &&
+                  formik.touched.title &&
+                  formik.errors.title
+                    ? formik.errors.title
+                    : null
+                }
+              />
+            </div>
+            <div className="mt-3">
+              <label htmlFor="course" className="fs-6 fw-bold">
+                Tên khóa học
+              </label>
+              <CustomInput
+                id="course"
+                placeholder="Thêm tên"
+                onChange={formik.handleChange("name")}
+                onBlur={formik.handleBlur("name")}
+                value={formik.values.name}
+                error={
+                  formik.submitCount > 0 &&
+                  formik.touched.name &&
+                  formik.errors.name
+                    ? formik.errors.name
+                    : null
+                }
+              />
+            </div>
+            <div className="mt-3">
+              <label htmlFor="visibility" className="fs-6 fw-bold">
+                Tùy chọn:
+              </label>
+              <select
+                id="visibility"
+                onChange={(e) =>
+                  formik.setFieldValue("isPublic", e.target.value === "true")
+                }
+                onBlur={formik.handleBlur("isPublic")}
+                value={formik.values.isPublic}
+              >
+                <option value={true}>Public</option>
+                <option value={false}>Private</option>
+              </select>
+            </div>
+          </form>
         </div>
       </Modal>
     </div>

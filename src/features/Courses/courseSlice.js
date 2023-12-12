@@ -136,7 +136,6 @@ export const getCoursePublic = createAsyncThunk(
 export const buttonPublicCourse = createAsyncThunk(
   "/e-learning/get-public-course/",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data);
     try {
       const response = await courseService.buttonPublicCourse(data);
       return response;

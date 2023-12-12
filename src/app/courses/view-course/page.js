@@ -55,7 +55,7 @@ export default function Course() {
                         {item.title}
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Teacher: {item.teacher.lastName}
+                        Teacher: {item.teacher?.lastName}
                       </p>
                       <div className="my-3 flex items-center gap-x-2 text-sm md:text-xs">
                         <div className="flex items-center gap-x-1 text-slate-500">

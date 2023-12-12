@@ -79,6 +79,7 @@ const ScoreManagement = () => {
     dispatch(getScore())
       .then(unwrapResult)
       .then((res) => {
+        console.log("🚀 ~ res:", res);
         if (res.status) {
           setScore(res.metadata);
         }
@@ -93,6 +94,43 @@ const ScoreManagement = () => {
   //table data
   let data = [];
   score.forEach((i, index) => {
+    const QuestionItem = ({ question, idxQuestion, answer }) => (
+      <List.Item>
+        <div className="p-3">
+          <h3 className="font-bold">{`Question ${idxQuestion + 1}`}</h3>
+          <h3 className="font-semibold py-3">
+            {idxQuestion + 1}.{question.question}
+          </h3>
+          {question.options.map((option, idxOption) => (
+            <p key={idxOption}>
+              {idxOption + 1}: {option}
+            </p>
+          ))}
+          <p className="pt-3 text-green-500 font-bold">
+            <span style={{ color: "red" }}>Your answer: {answer}</span>
+          </p>
+        </div>
+      </List.Item>
+    );
+
+    const EssayAnswer = ({ essayAnswer, filename }) => (
+      <div className="p-3">
+        <h3 className="font-bold">Câu trả lời của bạn</h3>
+        <div dangerouslySetInnerHTML={{ __html: essayAnswer }} />
+        <div>
+          <h3 className="text-lg font-bold mb-2">File đã nộp:</h3>
+          <a
+            href={filename}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 underline hover:text-blue-700"
+          >
+            Download File
+          </a>
+        </div>
+      </div>
+    );
+
     if (
       filter === "all" ||
       (filter === "quiz" && i.quiz) ||
@@ -120,38 +158,47 @@ const ScoreManagement = () => {
               width={720}
             >
               <Collapse accordion>
-                <List
-                  dataSource={i?.quiz?.questions || i?.assignment?.questions}
-                  renderItem={(question, idxQuestion) => {
-                    const answerObj = i?.answers.find(
-                      (answer) => Object.keys(answer)[0] === question._id
-                    );
-                    const answer = answerObj ? Object.values(answerObj)[0] : "";
-                    return (
-                      <List.Item>
-                        <div className="p-3">
-                          <h3 className="font-bold">{`Question ${
-                            idxQuestion + 1
-                          }`}</h3>
-                          <h3 className="font-semibold py-3">
-                            {idxQuestion + 1}.
-                            {question.question}
-                          </h3>
-                          {question.options.map((option, idxOption) => (
-                            <p key={idxOption}>
-                              {idxOption + 1}: {option}
+                {i?.quiz?.type === "multiple_choice" && (
+                  <List
+                    dataSource={i?.quiz?.questions || i?.assignment?.questions}
+                    renderItem={(question, idxQuestion) => {
+                      const answerObj = i?.answers.find(
+                        (answer) => Object.keys(answer)[0] === question._id
+                      );
+                      const answer = answerObj
+                        ? Object.values(answerObj)[0]
+                        : "";
+                      return (
+                        <List.Item>
+                          <div className="p-3">
+                            <h3 className="font-bold">{`Question ${
+                              idxQuestion + 1
+                            }`}</h3>
+                            <h3 className="font-semibold py-3">
+                              {idxQuestion + 1}.{question.question}
+                            </h3>
+                            {question.options.map((option, idxOption) => (
+                              <p key={idxOption}>
+                                {idxOption + 1}: {option}
+                              </p>
+                            ))}
+                            <p className="pt-3 text-green-500 font-bold">
+                              <span style={{ color: "red" }}>Your answer:</span>{" "}
+                              {answer}
                             </p>
-                          ))}
-                          <p className="pt-3 text-green-500 font-bold">
-                            <span style={{ color: "red" }}>Your answer:</span>{" "}
-                            {answer}
-                          </p>
-                        </div>
-                      </List.Item>
-                    );
-                  }}
-                  style={{ maxHeight: "400px", overflow: "auto" }}
-                />
+                          </div>
+                        </List.Item>
+                      );
+                    }}
+                    style={{ maxHeight: "400px", overflow: "auto" }}
+                  />
+                )}
+                {i?.quiz?.type === "essay" && (
+                  <EssayAnswer
+                    essayAnswer={i?.essayAnswer}
+                    filename={i?.filename}
+                  />
+                )}
               </Collapse>
             </Drawer>
           </React.Fragment>

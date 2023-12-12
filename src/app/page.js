@@ -37,7 +37,7 @@ export default function Home() {
           <Spin />
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3">
+        <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 pb-28">
           {course &&
             course.map((item, index) => (
               <Link href={`/courses/lessons/${item?._id}`} key={index}>
@@ -52,10 +52,13 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col pt-2">
                     <div className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2">
-                      {item.title}
+                      {item.name}
+                    </div>
+                    <div className="text-lg md:text-sm font-semibold group-hover:text-sky-700 transition line-clamp-2">
+                      Mô tả: {item.title}
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Teacher: {item.teacher.lastName}
+                      Teacher: {item.teacher?.lastName}
                     </p>
                     <div className="my-3 flex items-center gap-x-2 text-sm md:text-xs">
                       <div className="flex items-center gap-x-1 text-slate-500">
