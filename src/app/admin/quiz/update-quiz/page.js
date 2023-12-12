@@ -23,7 +23,7 @@ import {
 import { useRouter } from "next/navigation";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
-import moment from "moment/moment";
+import dayjs from "dayjs";
 
 const ReactQuill = dynamic(
   () => import("react-quill").then((mod) => mod.default),
@@ -146,6 +146,7 @@ export default function UpdateQuiz(props) {
       })
       .catch((error) => {
         console.log(error);
+        message.error(error.response?.data?.message, 3.5);
         setIsLoading(false);
       });
   };
@@ -221,6 +222,7 @@ export default function UpdateQuiz(props) {
     dispatch(viewQuiz({ courseIds: courseIds }))
       .then(unwrapResult)
       .then((res) => {
+        console.log("🚀 ~ res:", res);
         if (res.status) {
           setquiz(res.metadata);
           const quizToUpdate = res.metadata.find((quiz) => quiz._id === quizId);
@@ -238,7 +240,7 @@ export default function UpdateQuiz(props) {
                 options: question.options.map((option) => ({ option: option })),
                 answer: question.answer,
               })),
-              submissionTime: moment(quizToUpdate.submissionTime),
+              submissionTime: dayjs(quizToUpdate.submissionTime),
             });
           }
           setIsLoading(false);
@@ -268,6 +270,7 @@ export default function UpdateQuiz(props) {
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[<></>]}
+        width={1000}
       >
         {isLoading ? (
           <div className="flex justify-center items-center h-screen">

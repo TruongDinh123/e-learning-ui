@@ -13,6 +13,7 @@ const nextConfig = {
     return config;
   },
   experimental: { esmExternals: true },
+  swcMinify: true,
 };
 
 module.exports = nextConfig;

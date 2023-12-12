@@ -7,7 +7,7 @@ import CustomButton from "../comman/CustomBtn";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { resetState, setUser } from "@/features/User/userSlice";
-import { Button, Tooltip } from "antd";
+import { Button, Col, Row, Tooltip } from "antd";
 import "../Header/header.css";
 import {
   LogoutOutlined,
@@ -20,6 +20,7 @@ import { Image, Navbar } from "react-bootstrap";
 
 const logo = "/images/logo.jpg";
 const logo2 = "/images/logo-svg.svg";
+const logo3 = "/images/logo3.png";
 
 const UserLinks = () => (
   <React.Fragment>
@@ -60,32 +61,28 @@ export default function Header() {
       expand="lg"
       // className="bg-gray-200 hover:bg-body-primary transition-colors duration-200"
       variant="light"
-      className="flex items-center justify-between flex-wrap bg-white shadow border-solid border-t-2 border-blue-700"
+      className="flex items-center justify-between flex-wrap bg-white shadow border-solid border-t-2 border-blue-700 p-4"
     >
       <Container fluid>
-        <div class="mr-auto md:w-36 flex-shrink-0">
-          <Image src={logo2} alt="Logo" class="h-6 md:h-10" />
-        </div>
-        <Navbar.Brand
-          href="/"
-          // className="flex items-center flex-shrink-0 text-gray-800 mr-16"
-          className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl"
-        >
-          <Link href="/">
-            <span className="flex items-center flex-shrink-0 text-gray-800 mr-16">
-              <span class="font-semibold text-xl tracking-tight"></span>
-            </span>
-          </Link>
-
-          <Navbar.Toggle
-            aria-controls="responsive-navbar-nav"
-            className="flex items-center px-3 py-2 border-2 rounded text-blue-700 border-blue-700 hover:text-blue-700 hover:border-blue-700"
-          />
-        </Navbar.Brand>
+        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+          <Col className="gutter-row" xs={24} sm={24} md={12} lg={8} xl={6}>
+            <div class="mr-auto md:w-36 flex-shrink-0 mt-4">
+              <Image src={logo3} alt="Logo" className=" hidden sm:block" />
+            </div>
+          </Col>
+          <Col className="gutter-row" xs={24} sm={24} md={12} lg={16} xl={18}>
+            <Navbar.Brand className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+              <Navbar.Toggle
+                aria-controls="responsive-navbar-nav"
+                className="flex items-center px-3 py-2 border-2 rounded text-blue-700 border-blue-700 hover:text-blue-700 hover:border-blue-700"
+              />
+            </Navbar.Brand>
+          </Col>
+        </Row>
 
         <Navbar.Collapse
           id="responsive-navbar-nav"
-          className="menu w-full lg:block flex-grow lg:flex lg:items-center lg:w-auto lg:px-3 px-8"
+          className="menu w-full lg:block flex-grow lg:items-center lg:w-auto lg:px-3 px-8"
         >
           <Nav className="text-md font-bold text-blue-700 lg:flex-grow">
             <Link href="/">

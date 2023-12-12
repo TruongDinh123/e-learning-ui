@@ -90,6 +90,7 @@ export default function HandleSubmitEssay({ params }) {
     dispatch(getScore())
       .then(unwrapResult)
       .then((res) => {
+        console.log("🚀 ~ res:", res);
         if (res.status) {
           setScore(res.metadata);
         }
@@ -97,7 +98,7 @@ export default function HandleSubmitEssay({ params }) {
       .catch((error) => {
         console.log(error);
       });
-  }, [update]);
+  }, []);
 
   const handleSubmitEssay = () => {
     dispatch(submitQuizEsay({ quizId: idQuiz, essayAnswer: essayContent }))
@@ -108,11 +109,15 @@ export default function HandleSubmitEssay({ params }) {
             uploadFileUserSubmit({ quizId: idQuiz, filename: file })
           ).then((res) => {
             if (res.status) {
-              setFile(null);
+              setUpdate(update + 1);
+              setIsLoading(false);
             }
-            setIsLoading(false);
           });
         }
+        // Reset state regardless of whether a file was uploaded
+        setFile(null);
+        setEssayContent("");
+
         messageApi
           .open({
             type: "success",
@@ -147,14 +152,12 @@ export default function HandleSubmitEssay({ params }) {
 
         console.log(error);
       });
-  }, []);
+  }, [update]);
 
   let submissionTime;
   if (quiz[0] && quiz[0].submissionTime) {
     submissionTime = new Date(quiz[0].submissionTime);
   }
-  console.log("🚀 ~ submissionTime:", submissionTime);
-
   const currentTime = new Date();
 
   const isTimeExceeded = currentTime > submissionTime;
@@ -171,7 +174,6 @@ export default function HandleSubmitEssay({ params }) {
           <React.Fragment>
             {quiz?.map((quiz, quizIndex) => {
               const currentScore = score.find((s) => s.quiz?._id === quiz?._id);
-
               return (
                 <Row gutter={16} key={quizIndex}>
                   <Col xs={24} md={16}>

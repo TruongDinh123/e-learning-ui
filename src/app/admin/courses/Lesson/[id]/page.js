@@ -31,6 +31,7 @@ export default function Lesson({ params }) {
     dispatch(viewLesson({ courseId: params?.id }))
       .then(unwrapResult)
       .then((res) => {
+        console.log("🚀 ~ res:", res);
         if (res.status) {
           setLesson(res.data.metadata);
         }
@@ -93,9 +94,7 @@ export default function Lesson({ params }) {
                 item.lessons.map((i, subIndex) => (
                   <Col span={8} key={subIndex._id}>
                     <Card title={i.name}>
-                      <p>
-                        Content: {i.content}
-                      </p>
+                      <p>Content: {i.content}</p>
                       <div className="flex mt-3">
                         <Popconfirm
                           title="Delete the Lesson"

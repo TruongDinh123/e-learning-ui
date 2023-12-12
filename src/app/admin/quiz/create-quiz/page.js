@@ -196,7 +196,7 @@ export default function QuizCreator() {
     <div>
       {contextHolder}
       <div className="overflow-y-auto h-screen pb-28 scrollbar-thin justify-center items-center ">
-        <h1 className="text-2xl">Tạo khóa học</h1>
+        <h1 className="text-2xl">Tạo bài tập</h1>
         {isLoading ? (
           <div className="flex justify-center items-center h-screen">
             <Spin />
@@ -301,16 +301,7 @@ export default function QuizCreator() {
                     </Form.Item>
                   </Col>
                   <Col xs={24} sm={12} md={8} lg={6}>
-                    <Form.Item
-                      label="Thời hạn nộp"
-                      name="submissionTime"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Vui lòng chọn thời gian nộp bài.",
-                        },
-                      ]}
-                    >
+                    <Form.Item label="Thời hạn nộp" name="submissionTime">
                       <DatePicker
                         showTime
                         disabledDate={(current) => {
@@ -441,16 +432,7 @@ export default function QuizCreator() {
                   <ReactQuill theme="snow" />
                 </Form.Item>
 
-                <Form.Item
-                  label="Thời hạn nộp"
-                  name="submissionTime"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Vui lòng nhập thời gian nộp bài",
-                    },
-                  ]}
-                >
+                <Form.Item label="Thời hạn nộp" name="submissionTime">
                   <DatePicker
                     showTime
                     disabledDate={(current) => {
