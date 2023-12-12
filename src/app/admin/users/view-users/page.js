@@ -49,10 +49,6 @@ export default function ViewUsers() {
       sorter: (a, b) => a.roles.join(", ").localeCompare(b.roles.join(", ")),
       sortDirections: ["descend"],
     },
-    {
-      title: "Chức năng",
-      dataIndex: "action",
-    },
   ];
   //viewUsers api
   useEffect(() => {
