@@ -128,27 +128,12 @@ export default function ViewStudentsCourse() {
       sortDirections: ["descend"],
     },
     {
-      title: "Vai trò",
-      dataIndex: "roles",
-      key: "roles",
-      sorter: (a, b) => a.roles.join(',').localeCompare(b.roles.join(',')),
-      sortDirections: ["descend"],
-    },
-    {
       title: "Chức năng",
       dataIndex: "action",
     },
   ];
 
   let data = [];
-  if (teacher) {
-    data.push({
-      key: "Giáo viên",
-      lastName: teacher?.lastName,
-      email: teacher?.email,
-      roles: teacher?.roles,
-    });
-  }
   dataStudent.forEach((student, index) => {
     const userId = student?._id;
     const studentScores = scores[userId];
@@ -158,7 +143,6 @@ export default function ViewStudentsCourse() {
       key: index + 1,
       lastName: student?.lastName,
       email: student?.email,
-      roles: student?.roles,
       action: (
         <React.Fragment>
           <Button
@@ -240,6 +224,7 @@ export default function ViewStudentsCourse() {
       ),
     });
   });
+  
 
   return (
     <React.Fragment>
@@ -266,12 +251,19 @@ export default function ViewStudentsCourse() {
           Xem
         </Button>
       </div>
+
       <AddStudentToCourse
         courseId={selectedCourse}
         refresh={() => setUpdate(update + 1)}
       >
         Thêm học viên
       </AddStudentToCourse>
+      {teacher && (
+        <div className="border p-4 rounded-md my-4">
+          <h2 className="font-bold text-lg">Giáo viên: {teacher?.lastName}</h2>
+          <p className="text-sm">Email: {teacher?.email}</p>
+        </div>
+      )}
       <Table
         columns={columns}
         dataSource={data}
