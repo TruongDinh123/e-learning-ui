@@ -90,7 +90,6 @@ export default function HandleSubmitEssay({ params }) {
     dispatch(getScore())
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           setScore(res.metadata);
         }
@@ -98,7 +97,7 @@ export default function HandleSubmitEssay({ params }) {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [update]);
 
   const handleSubmitEssay = () => {
     dispatch(submitQuizEsay({ quizId: idQuiz, essayAnswer: essayContent }))
@@ -114,10 +113,8 @@ export default function HandleSubmitEssay({ params }) {
             }
           });
         }
-        // Reset state regardless of whether a file was uploaded
         setFile(null);
         setEssayContent("");
-
         messageApi
           .open({
             type: "success",

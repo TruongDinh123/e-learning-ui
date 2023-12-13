@@ -22,25 +22,37 @@ const logo = "/images/logo.jpg";
 const logo2 = "/images/logo-svg.svg";
 const logo3 = "/images/logo3.png";
 
-const UserLinks = () => (
-  <React.Fragment>
-    <Link href="/courses/view-course">
-      <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
-        My Course
-      </span>
-    </Link>
-    <Link href="/courses/view-score">
-      <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
-        Score Quizs
-      </span>
-    </Link>
-    <Link href="/web-rtc/lobby">
-      <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
-        Create Room
-      </span>
-    </Link>
-  </React.Fragment>
-);
+const UserLinks = () => {
+  const userState = useSelector((state) => state?.user?.user);
+
+  return (
+    <React.Fragment>
+      <Link href="/courses/view-course">
+        <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
+          My Course
+        </span>
+      </Link>
+      <Link href="/courses/view-score">
+        <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
+          Score Quizs
+        </span>
+      </Link>
+      <Link href="/web-rtc/lobby">
+        <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
+          Create Room
+        </span>
+      </Link>
+      {(userState?.metadata?.account?.roles.includes("Admin") ||
+        userState?.metadata?.account?.roles.includes("Mentor")) && (
+        <Link href="/admin/courses/view-courses">
+          <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
+            Admin
+          </span>
+        </Link>
+      )}
+    </React.Fragment>
+  );
+};
 
 export default function Header() {
   const userState = useSelector((state) => state?.user?.user);

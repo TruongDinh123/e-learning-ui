@@ -18,6 +18,7 @@ import { CloseOutlined, UploadOutlined } from "@ant-design/icons";
 import {
   updateQuiz,
   uploadFileQuiz,
+  viewAQuiz,
   viewQuiz,
 } from "@/features/Quiz/quizSlice";
 import { useRouter } from "next/navigation";
@@ -218,40 +219,46 @@ export default function UpdateQuiz(props) {
   // };
 
   useEffect(() => {
-    setIsLoading(true);
-    dispatch(viewQuiz({ courseIds: courseIds }))
-      .then(unwrapResult)
-      .then((res) => {
-        console.log("🚀 ~ res:", res);
-        if (res.status) {
-          setquiz(res.metadata);
-          const quizToUpdate = res.metadata.find((quiz) => quiz._id === quizId);
-          if (quizToUpdate) {
-            form.setFieldsValue({
-              name: quizToUpdate.name,
-              type: quizToUpdate.type,
-              courseIds: quizToUpdate.courseIds,
-              studentIds: quizToUpdate.studentIds,
-              essayTitle: quizToUpdate.essay?.title,
-              essayContent: quizToUpdate.essay?.content,
-              attachment: quizToUpdate.essay?.attachment,
-              questions: quizToUpdate.questions.map((question) => ({
-                ...question,
-                options: question.options.map((option) => ({ option: option })),
-                answer: question.answer,
-              })),
-              submissionTime: dayjs(quizToUpdate.submissionTime),
-            });
+    if (isModalOpen) {
+      setIsLoading(true);
+      dispatch(viewAQuiz({ quizId: quizId }))
+        .then(unwrapResult)
+        .then((res) => {
+          console.log("🚀 ~ res update-quiz:", res);
+          if (res.status) {
+            setquiz(res.metadata);
+            const quizToUpdate = res.metadata.find(
+              (quiz) => quiz._id === quizId
+            );
+            if (quizToUpdate) {
+              form.setFieldsValue({
+                name: quizToUpdate.name,
+                type: quizToUpdate.type,
+                courseIds: quizToUpdate.courseIds,
+                studentIds: quizToUpdate.studentIds,
+                essayTitle: quizToUpdate.essay?.title,
+                essayContent: quizToUpdate.essay?.content,
+                attachment: quizToUpdate.essay?.attachment,
+                questions: quizToUpdate.questions.map((question) => ({
+                  ...question,
+                  options: question.options.map((option) => ({
+                    option: option,
+                  })),
+                  answer: question.answer,
+                })),
+                submissionTime: dayjs(quizToUpdate.submissionTime),
+              });
+            }
+            setIsLoading(false);
+          } else {
+            setIsLoading(false);
           }
-          setIsLoading(false);
-        } else {
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [courseIds, quizId]);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [courseIds, quizId, isModalOpen]); // Thêm isModalOpen vào mảng phụ thuộc
 
   return (
     <React.Fragment>
@@ -315,7 +322,7 @@ export default function UpdateQuiz(props) {
             {form.getFieldValue("type") === "multiple_choice" ? (
               <Form.List name="questions">
                 {(fields, { add, remove }) => (
-                  <div>
+                  <div className="max-h-80 overflow-auto scrollbar scrollbar-thin">
                     {fields.map((field, index) => (
                       <Card
                         key={field.key}
@@ -339,7 +346,7 @@ export default function UpdateQuiz(props) {
                           <Input placeholder="Câu hỏi" />
                         </Form.Item>
                         <Form.List name={[field.name, "options"]}>
-                          {(subFields, subMeta) => (
+                        {(subFields, subMeta) => (
                             <div>
                               {subFields.map((subField, subIndex) => (
                                 <Space key={subField.key}>

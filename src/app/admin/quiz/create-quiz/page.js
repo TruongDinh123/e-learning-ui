@@ -244,7 +244,7 @@ export default function QuizCreator() {
                   ) : (
                     <>
                       <Option key="all" value="all">
-                        Select All
+                        Chọn tất cả
                       </Option>
                       {studentsByCourse.map((student) => (
                         <Option key={student._id} value={student._id}>
@@ -266,14 +266,14 @@ export default function QuizCreator() {
 
             <Col xs={24} sm={12} md={8} lg={6}>
               <Form.Item
-                label="loại bài tập"
+                label="Loại bài tập"
                 name="type"
                 rules={[
                   { required: true, message: "Vui lòng chọn bài kiểm tra" },
                 ]}
               >
                 <Select
-                  placeholder="chọn loại bài tập"
+                  placeholder="chọn Loại bài tập"
                   onChange={handleQuizTypeChange}
                   className="w-full"
                 >
@@ -355,7 +355,7 @@ export default function QuizCreator() {
                                         rules={[
                                           {
                                             required: true,
-                                            message: "Please enter an option",
+                                            message: "Vui lòng chọn câu hỏi",
                                           },
                                         ]}
                                       >

@@ -156,7 +156,6 @@ export default function ViewUsers() {
         </div>
       ) : (
         <React.Fragment>
-          <h1>Table User</h1>
           <Table
             columns={columns}
             dataSource={data}

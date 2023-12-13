@@ -11,7 +11,7 @@ import * as yup from "yup";
 
 const CourseSchema = yup.object({
   title: yup.string().min(2).required("Title is required"),
-  name: yup.string().min(6).required("name is required"),
+  name: yup.string().min(2).required("name is required"),
 });
 
 export default function EditCourses(props) {
@@ -63,6 +63,7 @@ export default function EditCourses(props) {
       dispatch(editCourse({ id: props?.id, values }))
         .then(unwrapResult)
         .then((res) => {
+          console.log("🚀 ~ res:", res);
           messageApi
             .open({
               type: "success",
@@ -88,10 +89,10 @@ export default function EditCourses(props) {
         className="me-3"
         style={{ width: "100%", color: "#fff", backgroundColor: "#1890ff" }}
       >
-        Edit
+        Chỉnh sửa
       </Button>
       <Modal
-        title="Edit Course"
+        title="Chỉnh sửa khóa học"
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
@@ -101,7 +102,7 @@ export default function EditCourses(props) {
             onClick={handleCancel}
             style={{ marginRight: 8 }}
           >
-            Cancel
+            Hủy
           </Button>,
           <Button
             key="ok"
@@ -109,13 +110,23 @@ export default function EditCourses(props) {
             onClick={handleOk}
             style={{ backgroundColor: "#1890ff", color: "white" }}
           >
-            OK
+            Lưu
           </Button>,
         ]}
       >
         <div>
           <label htmlFor="course" className="fs-6 fw-bold">
-            Course Title
+            Tên
+          </label>
+          <CustomInput
+            onChange={formik.handleChange("name")}
+            onBlur={formik.handleBlur("name")}
+            value={formik.values.name}
+            error={formik.touched.name && formik.errors.name}
+          />
+
+          <label htmlFor="course" className="fs-6 fw-bold">
+            Chủ đề
           </label>
           <CustomInput
             className="mb-3"
@@ -123,16 +134,6 @@ export default function EditCourses(props) {
             onBlur={formik.handleBlur("title")}
             value={formik.values.title}
             error={formik.touched.title && formik.errors.title}
-          />
-
-          <label htmlFor="course" className="fs-6 fw-bold">
-            Course Name
-          </label>
-          <CustomInput
-            onChange={formik.handleChange("name")}
-            onBlur={formik.handleBlur("name")}
-            value={formik.values.name}
-            error={formik.touched.name && formik.errors.name}
           />
         </div>
       </Modal>

@@ -1,8 +1,9 @@
 "use client";
 import { Button, Table, Spin } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import {
+  getQuizsByCourse,
   getQuizzesByStudentAndCourse,
   getScore,
 } from "@/features/Quiz/quizSlice";
@@ -10,12 +11,13 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
+import { createNotification, getACourse } from "@/features/Courses/courseSlice";
 
 export default function ViewQuiz({ params }) {
   const dispatch = useDispatch();
   const [quiz, setquiz] = useState([]);
-  console.log("🚀 ~ quiz:", quiz);
   const [score, setScore] = useState([]);
+  const [dataCourse, setDataCourse] = useState([]);
   const [isLoading, setLoading] = useState([]);
   const router = useRouter();
 
@@ -48,6 +50,48 @@ export default function ViewQuiz({ params }) {
         console.log(error);
       });
   }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    dispatch(getACourse(params?.id))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setDataCourse(res?.metadata);
+          setLoading(false);
+        } else {
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  }, []);
+
+  const userState = useSelector((state) => state?.user?.user);
+
+  useEffect(() => {
+    if (
+      userState?.metadata?.account?.roles.includes("Admin") ||
+      userState?.metadata?.account?.roles.includes("Mentor")
+    ) {
+      setLoading(true);
+      dispatch(getQuizsByCourse({ courseId: params?.id }))
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            setquiz(res.metadata);
+          } else {
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+        });
+    }
+  }, [userState]);
 
   const columns = [
     {
@@ -90,6 +134,25 @@ export default function ViewQuiz({ params }) {
       sortDirections: ["descend"],
     },
   ];
+
+  const handleNoti = ({ message }) => {
+    dispatch(createNotification({ courseId: params?.id, message }))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setDataCourse(prevDataCourse => ({
+            ...prevDataCourse,
+            notifications: [...prevDataCourse.notifications, { message, date: new Date() }]
+          }));
+        } else {
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  };
 
   let data = [];
   quiz?.forEach((i, index) => {
@@ -138,9 +201,8 @@ export default function ViewQuiz({ params }) {
             <div className="bg-teal-500 p-4 text-white text-5xl mb-6 rounded shadow-lg">
               Khóa học
             </div>
-
             <div className="flex mt-6 justify-center items-center pb-40">
-              <div className="p-2 mt-2 border-4 mr-36 hidden md:block">
+              {/* <div className="p-2 mt-2 border-4 mr-36 hidden md:block">
                 <div className="bg-white p-4 rounded-lg card-shadow">
                   <div className="flex items-center">
                     <div className="ml-4">
@@ -156,10 +218,10 @@ export default function ViewQuiz({ params }) {
                     </a>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               <div className="flex flex-wrap -mx-2 mt-4 md:mt-0">
-                <div className="w-full marker:sm:w-1/2 md:w-2/3 p-2">
+                <div className="w-full p-2">
                   <div className="bg-white flex p-4 rounded-lg card-shadow border-t border-b border-l border-r">
                     <div className="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center">
                       <i className="fas fa-book-open text-white"></i>
@@ -168,35 +230,72 @@ export default function ViewQuiz({ params }) {
                       className="w-full p-2 rounded border-gray-300"
                       rows="4"
                       placeholder="Thông báo nội dung nào đó cho lớp học của bạn"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleNoti({ message: e.target.value });
+                          e.target.value = "";
+                        }
+                      }}
                     ></textarea>
+                  </div>
+                </div>
+                <div className="w-full  p-2">
+                  <div className="bg-white flex flex-col p-6 rounded-lg shadow-md border border-gray-200">
+                    <div className="flex items-center mb-4">
+                      <h2 className="text-lg font-semibold text-gray-700">
+                        Notifications
+                      </h2>
+                    </div>
+                    {dataCourse?.notifications?.map((noti, notiIndex) => (
+                      <div
+                        key={notiIndex}
+                        className="w-full p-4 mb-4 rounded border border-gray-300 bg-gray-50"
+                      >
+                        <div className="flex">
+                          <div className="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center mr-4 mb-2 ">
+                            <i className="fas fa-book-open text-white"></i>
+                          </div>
+                          <p className="mb-2 font-semibold text-gray-700">
+                            Giáo viên: {dataCourse?.teacher.lastName}
+                            <p className="text-sm text-gray-500">
+                              {format(new Date(noti?.date), "HH:mm:ss")}
+                            </p>
+                          </p>
+                        </div>
+
+                        <p className="text-gray-600">{noti?.message}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-2">
                   {data.map((item, index) => (
-                      <div key={index} className="bg-white rounded-lg card-shadow border-t border-b border-l border-r border-gray-300 w-full">
-                        <div className="flex items-center justify-between p-4">
-                          <div className="flex items-center">
-                            <div className="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center">
-                              <i className="fas fa-book-open text-white"></i>
-                            </div>
-                            <div className="ml-4">
-                              <p className="text-sm">
-                                Giáo viên đã đăng một bài tập mới: {item.name}
-                              </p>
-                              <p className="text-xs text-gray-600">
-                                Hạn nộp bài: {item.submissionTime}
-                              </p>
-                            </div>
+                    <div
+                      key={index}
+                      className="bg-white rounded-lg card-shadow border-t border-b border-l border-r border-gray-300 w-full"
+                    >
+                      <div className="flex items-center justify-between p-4">
+                        <div className="flex items-center">
+                          <div className="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center">
+                            <i className="fas fa-book-open text-white"></i>
                           </div>
-                          <div className="text-gray-600">
-                            <i className="fas fa-ellipsis-v"></i>
+                          <div className="ml-4">
+                            <p className="text-sm">Bài tập mới: {item.name}</p>
+                            <p className="text-xs text-gray-600">
+                              Hạn nộp bài: {item.submissionTime}
+                            </p>
                           </div>
                         </div>
-                        <div className="mt-4 border-t pt-4 p-4">
-                          {item.questions}
+                        <div className="text-gray-600">
+                          <i className="fas fa-ellipsis-v"></i>
                         </div>
                       </div>
+                      <div className="mt-4 border-t pt-4 p-4">
+                        {item.questions}
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>

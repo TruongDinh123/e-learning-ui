@@ -51,21 +51,21 @@ export default function ViewQuiz() {
         console.log(error);
         setIsLoading(false);
       });
-  }, []);
-
-  useEffect(() => {
-    dispatch(viewQuiz({ courseIds: selectedCourse }))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setquiz(res.metadata);
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   }, [updateQuiz]);
+
+  // useEffect(() => {
+  //   dispatch(viewQuiz({ courseIds: selectedCourse }))
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       if (res.status) {
+  //         setquiz(res.metadata);
+  //       } else {
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, [updateQuiz]);
 
   const handleViewQuiz = () => {
     setIsLoading(true);
@@ -225,7 +225,6 @@ export default function ViewQuiz() {
               Xem
             </Button>
           </div>
-          <h3>Table Quiz</h3>
           <Table
             columns={columns}
             dataSource={data}

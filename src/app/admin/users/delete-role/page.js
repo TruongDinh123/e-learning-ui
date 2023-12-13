@@ -45,7 +45,7 @@ export default function DelRole(props) {
         }}
       >
         <Button danger style={{ width: "100%" }}>
-          Delete
+          Xóa<acronym title=""></acronym>
         </Button>
       </Popconfirm>
     </React.Fragment>

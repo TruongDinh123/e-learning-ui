@@ -73,7 +73,7 @@ export default function CreateRole(props) {
         className="me-3"
         style={{ color: "#fff", backgroundColor: "#1890ff" }}
       >
-        Create
+        Tạo
       </Button>
       <Modal
         title="Create Role"
@@ -91,17 +91,17 @@ export default function CreateRole(props) {
                 backgroundColor: "#1890ff",
               }}
             >
-              Save
+              Lưu
             </Button>
             <Button key="back" onClick={handleCancel}>
-              Cancel
+              Hủy
             </Button>
           </React.Fragment>
         }
       >
         <div>
           <label htmlFor="role" className="fs-6 fw-bold">
-            Name Role
+            Tên vai trò
           </label>
           <CustomInput
             className="mb-3"

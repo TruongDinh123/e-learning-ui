@@ -1,7 +1,7 @@
 "use client";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import { Button, Dropdown, Menu, Space, Spin, Table, message } from "antd";
+import { Button, Dropdown, Menu, Space, Spin, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import { getAllRole } from "@/features/User/userSlice";
 import EditRole from "../edit-role/page";
@@ -79,7 +79,7 @@ export default function ViewRoles() {
             className="text-center justify-self-center"
             onClick={(e) => e.preventDefault()}
           >
-            Actions
+            Chức năng
           </Button>
         </Dropdown>
       ) : (
@@ -96,7 +96,6 @@ export default function ViewRoles() {
 
   return (
     <div>
-      <h1>Table Role</h1>
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />

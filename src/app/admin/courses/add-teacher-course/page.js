@@ -88,7 +88,7 @@ export default function AddTeacherToCourse(props) {
         className="me-3"
         style={{ color: "#fff", backgroundColor: "#1890ff" }}
       >
-        Thêm giảng viên
+        Thêm giáo viên
       </Button>
       <Modal
         title="Invite Email"

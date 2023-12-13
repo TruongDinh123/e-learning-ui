@@ -141,7 +141,7 @@ export default function ViewListScore(props) {
                     />
                     <div class="min-w-0 flex-1">
                       <p class="text-sm font-medium text-gray-900 truncate">
-                        {student?.lastName}
+                        {student?.user?.lastName}
                       </p>
                     </div>
                     <div class="ml-4 flex-shrink-0">

@@ -132,7 +132,7 @@ export default function ViewStudentsCourse() {
       title: "Vai trò",
       dataIndex: "roles",
       key: "roles",
-      sorter: (a, b) => a.roles.join(',').localeCompare(b.roles.join(',')),
+      sorter: (a, b) => a.roles.join(",").localeCompare(b.roles.join(",")),
       sortDirections: ["descend"],
     },
     {
@@ -247,7 +247,7 @@ export default function ViewStudentsCourse() {
       {contextHolder}
       <div className="pb-3">
         <Select
-          placeholder="Select a course"
+          placeholder="Chọn khóa học"
           onChange={handleCourseChange}
           value={selectedCourse}
           className="me-3"

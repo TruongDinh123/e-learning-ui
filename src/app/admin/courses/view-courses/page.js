@@ -175,7 +175,7 @@ export default function Courses() {
                       </div>
                       <div className="flex flex-col pt-2">
                         <div className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2">
-                          {item.title}
+                          {item.name}
                         </div>
                         <p className="text-xs text-muted-foreground"></p>
                         <div className="my-3 flex items-center gap-x-2 text-sm md:text-xs">
@@ -216,6 +216,16 @@ export default function Courses() {
                                   }
                                 >
                                   Xem chi tiết
+                                </Button>
+                                <Button
+                                  courseId={item?._id}
+                                  onClick={() =>
+                                    router.push(
+                                      `/courses/view-details/${item?._id}`
+                                    )
+                                  }
+                                >
+                                  Học viên
                                 </Button>
                                 <Button
                                   onClick={() =>

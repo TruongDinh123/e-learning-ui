@@ -40,6 +40,7 @@ export const deleteCourse = createAsyncThunk(
 export const editCourse = createAsyncThunk(
   "/e-learning/update-course/",
   async (data, { rejectWithValue }) => {
+    console.log("🚀 ~ data:", data);
     try {
       const response = await courseService.editCourse(data);
       return response;
@@ -150,6 +151,18 @@ export const buttonPriavteourse = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await courseService.buttonPriavteCourse(data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const createNotification = createAsyncThunk(
+  "/e-learning/course/notifications",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await courseService.createNotification(data);
       return response;
     } catch (error) {
       return rejectWithValue(error);

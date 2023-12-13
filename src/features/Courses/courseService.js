@@ -108,6 +108,15 @@ const buttonPriavteCourse = async (data) => {
   return res;
 };
 
+const createNotification = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/course/${data.courseId}/notifications`,
+    method: "POST",
+    data: data,
+  });
+  return res;
+};
+
 export const courseService = {
   createCourse,
   viewCourse,
@@ -122,4 +131,5 @@ export const courseService = {
   buttonPublicCourse,
   buttonPriavteCourse,
   addTeacherToCourse,
+  createNotification,
 };

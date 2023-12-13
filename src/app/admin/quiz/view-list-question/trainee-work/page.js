@@ -10,7 +10,7 @@ export default function StudentWork({ student }) {
   if (quiz && quiz.type === "essay") {
     // Bài tập tự luận
     return (
-      <div style={{ overflow: "scroll", maxHeight: "300px" }}>
+      <div className="overflow-hidden max-h-80">
         <Title level={3}>{quiz?.name}</Title>
         <div dangerouslySetInnerHTML={{ __html: essayAnswer }} />
         <div>
@@ -29,7 +29,7 @@ export default function StudentWork({ student }) {
   } else if (quiz && quiz.type === "multiple_choice") {
     // Bài tập trắc nghiệm
     return (
-      <div className="overflow-scroll max-h-75">
+      <div className="overflow-hidden max-h-75">
         <Title level={3} className="text-3xl">
           {quiz?.name}
         </Title>
