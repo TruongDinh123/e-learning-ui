@@ -23,7 +23,6 @@ export default function Lesson({ params }) {
   const [lesson, setLesson] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [updateLesson, setUpdateLesson] = useState(0);
-  const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
 
   //viewLesson api
   useEffect(() => {

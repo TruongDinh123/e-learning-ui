@@ -1,16 +1,19 @@
 "use client";
-import { getACourse, viewCourses } from "@/features/Courses/courseSlice";
+import {
+  getACourse,
+  removeStudentFromCourse,
+  viewCourses,
+} from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Modal, Select, Table, message } from "antd";
+import { Button, Modal, Popconfirm, Select, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import AddStudentToCourse from "../../courses/add-student-course/page";
 import { getScoreByUserId } from "@/features/Quiz/quizSlice";
 import AddTeacherToCourse from "../../courses/add-teacher-course/page";
 
 const { Option } = Select;
 
-export default function ViewStudentsCourse() {
+export default function ViewTeachersCourse() {
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [dataStudent, setData] = useState([]);
@@ -64,6 +67,21 @@ export default function ViewStudentsCourse() {
     getACourseData(value);
   };
 
+  const handleDeleteStudent = ({ courseId, userId }) => {
+    dispatch(removeStudentFromCourse({ courseId, userId }))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setUpdate(update + 1);
+        } else {
+          messageApi.error(res.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     dispatch(viewCourses())
       .then(unwrapResult)
@@ -99,7 +117,6 @@ export default function ViewStudentsCourse() {
           setData(res.metadata.students);
           setTeacher(res.metadata.teacher);
           setSelectedCourseDetails(res.metadata);
-          refresh();
         } else {
           messageApi.error(res.message);
         }
@@ -142,14 +159,6 @@ export default function ViewStudentsCourse() {
   ];
 
   let data = [];
-  if (teacher) {
-    data.push({
-      key: "Giáo viên",
-      lastName: teacher?.lastName,
-      email: teacher?.email,
-      roles: teacher?.roles,
-    });
-  }
   dataStudent.forEach((student, index) => {
     const userId = student?._id;
     const studentScores = scores[userId];
@@ -162,14 +171,31 @@ export default function ViewStudentsCourse() {
       roles: student?.roles,
       action: (
         <React.Fragment>
-          <Button
+          {/* <Button
             type="primary"
             onClick={() => showModal(userId)}
             className="me-3"
             style={{ color: "#fff", backgroundColor: "#1890ff" }}
           >
             Xem điểm
-          </Button>
+          </Button> */}
+          <Popconfirm
+            title="Xóa học viên"
+            description="Bạn có muốn xóa học viên?"
+            okText="Yes"
+            cancelText="No"
+            okButtonProps={{
+              style: { backgroundColor: "red" },
+            }}
+            onConfirm={() =>
+              handleDeleteStudent({
+                courseId: selectedCourse,
+                userId: userId,
+              })
+            }
+          >
+            <Button danger>Xóa</Button>
+          </Popconfirm>
           <Modal
             title=""
             open={isStudentModalOpen}
@@ -274,6 +300,12 @@ export default function ViewStudentsCourse() {
       >
         Thêm giáo viên
       </AddTeacherToCourse>
+      {teacher && (
+        <div className="border p-4 rounded-md my-4">
+          <h2 className="font-bold text-lg">Giáo viên: {teacher?.lastName}</h2>
+          <p className="text-sm">Email: {teacher?.email}</p>
+        </div>
+      )}
       <Table
         columns={columns}
         dataSource={data}

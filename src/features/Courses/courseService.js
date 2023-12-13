@@ -62,7 +62,7 @@ const addTeacherToCourse = async (data) => {
 
 const removeStudentFromCourse = async (data) => {
   const res = await axiosInstance({
-    url: `/e-learning/delete-user-course/user/${userId}/course/${courseId}`,
+    url: `/e-learning/delete-user-course/user/${data.userId}/course/${data.courseId}`,
     method: "DELETE",
   });
   return res;

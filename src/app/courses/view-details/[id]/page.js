@@ -284,7 +284,7 @@ export default function ViewQuiz({ params }) {
                           <div className="ml-4">
                             <p className="text-sm">Bài tập mới: {item.name}</p>
                             <p className="text-xs text-gray-600">
-                              Hạn nộp bài: {item.submissionTime}
+                              Hạn nộp bài: {item?.submissionTime}
                             </p>
                           </div>
                         </div>

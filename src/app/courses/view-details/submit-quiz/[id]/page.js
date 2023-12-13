@@ -109,8 +109,8 @@ export default function Quizs({ params }) {
   }, []);
 
   let submissionTime;
-  if (quiz[0] && quiz[0].submissionTime) {
-    submissionTime = new Date(quiz[0].submissionTime);
+  if (quiz[0] && quiz[0]?.submissionTime) {
+    submissionTime = new Date(quiz[0]?.submissionTime);
   }
 
   const currentTime = new Date();

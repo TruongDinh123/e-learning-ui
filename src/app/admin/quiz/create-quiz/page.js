@@ -117,7 +117,7 @@ export default function QuizCreator() {
       formattedValues = {
         ...values,
         type: quizType,
-        submissionTime: values.submissionTime.toISOString(),
+        submissionTime: values?.submissionTime?.toISOString(),
         courseIds: selectedCourse,
         studentIds: studentIds,
         questions: values.questions.map((question) => ({
@@ -131,7 +131,7 @@ export default function QuizCreator() {
         name: values.essayTitle,
         courseIds: selectedCourse,
         studentIds: studentIds,
-        submissionTime: values.submissionTime.toISOString(),
+        submissionTime: values?.submissionTime?.toISOString(),
         essay: {
           title: values.essayTitle,
           content: values.essayContent,

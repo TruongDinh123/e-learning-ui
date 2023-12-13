@@ -101,7 +101,8 @@ export default function UpdateQuiz(props) {
     if (quizToUpdate.type === "multiple_choice") {
       formattedValues = {
         ...values,
-        submissionTime: values.submissionTime.toISOString(),
+        submissionTime: values?.submissionTime?.toISOString(),
+
         questions: values.questions.map((question) => ({
           ...question,
           options: question.options.map((option) => option.option),
@@ -110,7 +111,8 @@ export default function UpdateQuiz(props) {
     } else if (quizToUpdate.type === "essay") {
       formattedValues = {
         ...values,
-        submissionTime: values.submissionTime.toISOString(),
+        submissionTime: values?.submissionTime?.toISOString(),
+
         essay: {
           title: values.essayTitle,
           content: values.essayContent,
@@ -246,7 +248,7 @@ export default function UpdateQuiz(props) {
                   })),
                   answer: question.answer,
                 })),
-                submissionTime: dayjs(quizToUpdate.submissionTime),
+                submissionTime: dayjs(quizToUpdate?.submissionTime),
               });
             }
             setIsLoading(false);
@@ -346,7 +348,7 @@ export default function UpdateQuiz(props) {
                           <Input placeholder="Câu hỏi" />
                         </Form.Item>
                         <Form.List name={[field.name, "options"]}>
-                        {(subFields, subMeta) => (
+                          {(subFields, subMeta) => (
                             <div>
                               {subFields.map((subField, subIndex) => (
                                 <Space key={subField.key}>

@@ -52,7 +52,7 @@ export default function Course() {
                     </div>
                     <div className="flex flex-col pt-2">
                       <div className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2">
-                        {item.title}
+                        {item.name}
                       </div>
                       <p className="text-xs text-muted-foreground">
                         Teacher: {item.teacher?.lastName}
