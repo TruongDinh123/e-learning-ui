@@ -17,6 +17,7 @@ export default function ViewListQuestion({ params }) {
   const dispatch = useDispatch();
   const [quiz, setquiz] = useState([]);
   const [score, setScore] = useState([]);
+  console.log("🚀 ~ score:", score);
   const [updateQuiz, setUpdateQuiz] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -86,14 +87,16 @@ export default function ViewListQuestion({ params }) {
                   {quiz.type === "multiple_choice" ? (
                     <>
                       <div className="flex justify-between items-center">
-                        <div className="flex justify-start font-semibold">
-                          <span className="pr-4 border-r border-gray-700">
+                        <div className="border-l-2 border-gray-300 pl-4">
+                          <span className="pr-4 text-green-600">
                             Đã nộp: {score.filter((s) => s.isComplete).length}
                           </span>
-                          <span className="px-4 border-r border-gray-700">
-                            Chưa nộp:
+                          <span className="px-4 border-l-2 border-gray-300 text-yellow-600">
+                            Chưa nộp:{" "}
+                            {quiz.studentIds.length -
+                              score.filter((s) => s.isComplete).length}
                           </span>
-                          <span className="pl-4">
+                          <span className="pl-4 text-red-600">
                             Đã giao: {quiz.studentIds.length}
                           </span>
                         </div>
@@ -171,7 +174,9 @@ export default function ViewListQuestion({ params }) {
                             Đã nộp: {score.filter((s) => s.isComplete).length}
                           </span>
                           <span className="px-4 border-l-2 border-gray-300 text-yellow-600">
-                            Chưa nộp:
+                            Chưa nộp:{" "}
+                            {quiz.studentIds.length -
+                              score.filter((s) => s.isComplete).length}
                           </span>
                           <span className="pl-4 text-red-600">
                             Đã giao: {quiz.studentIds.length}

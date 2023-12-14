@@ -10,6 +10,7 @@ import AdminSidebar from "@/components/AdminSidebar/AdminSidebar";
 import { Layout } from "antd";
 import React, { Suspense, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import Cookies from "js-cookie";
 // import { Providers } from "@/Provider";
 
 const Providers = dynamic(() => import("@/Provider"), { ssr: false });
@@ -19,6 +20,15 @@ export default function RootLayout({ children }) {
   const [collapsed, setCollapsed] = useState(false);
 
   const shouldRenderFooter = !pathname.includes("/web-rtc/room");
+
+  useEffect(() => {
+    // Check if the cookie exists
+    const token = Cookies.get('Bearer');
+    if (!token && pathname !== '/login') {
+      // If the cookie doesn't exist and the user is not on the login page, redirect to the login page
+      router.push('/login');
+    }
+  }, [pathname]);
 
   return (
     <html>

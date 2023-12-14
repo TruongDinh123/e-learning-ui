@@ -140,9 +140,12 @@ export default function ViewQuiz({ params }) {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setDataCourse(prevDataCourse => ({
+          setDataCourse((prevDataCourse) => ({
             ...prevDataCourse,
-            notifications: [...prevDataCourse.notifications, { message, date: new Date() }]
+            notifications: [
+              ...prevDataCourse.notifications,
+              { message, date: new Date() },
+            ],
           }));
         } else {
         }
@@ -161,10 +164,9 @@ export default function ViewQuiz({ params }) {
     data.push({
       key: index + 1,
       name: i?.name,
-      submissionTime: format(
-        new Date(i?.submissionTime),
-        "dd/MM/yyyy HH:mm:ss"
-      ),
+      submissionTime: i?.submissionTime
+        ? format(new Date(i?.submissionTime), "dd/MM/yyyy HH:mm:ss")
+        : "Không có hạn",
       isComplete: correspondingScore
         ? correspondingScore.isComplete
           ? "Đã hoàn thành"

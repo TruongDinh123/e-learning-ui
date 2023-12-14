@@ -5,7 +5,11 @@ import { Button, Modal, Select, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import AddStudentToCourse from "../../courses/add-student-course/page";
-import { getScoreByUserId } from "@/features/Quiz/quizSlice";
+import {
+  getScoreByQuizId,
+  getScoreByUserId,
+  viewQuiz,
+} from "@/features/Quiz/quizSlice";
 
 const { Option } = Select;
 
@@ -14,6 +18,8 @@ export default function ViewStudentsCourse() {
   const [messageApi, contextHolder] = message.useMessage();
   const [dataStudent, setData] = useState([]);
   const [teacher, setTeacher] = useState(null);
+  const [quizzes, setQuizzes] = useState([]);
+  console.log("🚀 ~ quizzes:", quizzes);
   const [update, setUpdate] = useState(0);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courses, setCourses] = useState([]);
@@ -90,6 +96,40 @@ export default function ViewStudentsCourse() {
     getACourseData();
   }, [update]);
 
+  useEffect(() => {
+    dispatch(viewQuiz({ courseIds: selectedCourse }))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setQuizzes(res.metadata);
+          const quizIds = res.metadata?.map((quiz) => quiz?._id);
+          dataStudent.forEach((student) => {
+            const userId = student._id;
+            quizIds.forEach((quizId) => {
+              dispatch(getScoreByQuizId({ quizId: quizId, userId: userId }))
+                .then(unwrapResult)
+                .then((res) => {
+                  if (res.status) {
+                    setScores((prevScores) => ({
+                      ...prevScores,
+                      [quizId]: res.metadata.map((item) => ({
+                        userId: item.user._id,
+                        score: item.score,
+                      })),
+                    }));
+                  } else {
+                    messageApi.error(res.message);
+                  }
+                });
+            });
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [selectedCourse, dispatch, dataStudent]);
+
   const getACourseData = () => {
     return dispatch(getACourse(selectedCourse))
       .then(unwrapResult)
@@ -98,7 +138,6 @@ export default function ViewStudentsCourse() {
           setData(res.metadata.students);
           setTeacher(res.metadata.teacher);
           setSelectedCourseDetails(res.metadata);
-          refresh();
         } else {
           messageApi.error(res.message);
         }
@@ -108,15 +147,31 @@ export default function ViewStudentsCourse() {
       });
   };
 
-  const columns = [
-    {
-      title: "SNo.",
-      dataIndex: "key",
+  const quizColumns = quizzes.map((quiz) => ({
+    title: quiz.name,
+    dataIndex: quiz._id,
+    key: quiz._id,
+    render: (text, record) => {
+      // Tìm điểm cho bài quiz này trong dữ liệu của học viên
+      const studentScore = scores[quiz._id]?.find(
+        (score) => score?.userId === record?.userId
+      );
+      const submissionTime = new Date(quiz?.submissionTime);
+      const now = new Date();
+      if (submissionTime < now) {
+        return "Hết hạn nộp";
+      }
+      return studentScore ? studentScore.score : "Chưa làm";
     },
+  }));
+
+  const columns = [
     {
       title: "Tên",
       dataIndex: "lastName",
       key: "lastName",
+      width: 100,
+      fixed: "left",
       sorter: (a, b) => a.lastName.localeCompare(b.lastName),
       sortDirections: ["descend"],
     },
@@ -124,107 +179,29 @@ export default function ViewStudentsCourse() {
       title: "Email",
       dataIndex: "email",
       key: "email",
+      fixed: "left",
       sorter: (a, b) => a.email.localeCompare(b.email),
       sortDirections: ["descend"],
     },
+    ...quizColumns,
     {
       title: "Chức năng",
       dataIndex: "action",
+      key: "operation",
+      fixed: "right",
+      width: 100,
     },
   ];
 
   let data = [];
   dataStudent.forEach((student, index) => {
-    const userId = student?._id;
-    const studentScores = scores[userId];
-    const isStudentModalOpen = isModalOpen[userId];
-
     data.push({
       key: index + 1,
+      userId: student?._id,
       lastName: student?.lastName,
       email: student?.email,
-      action: (
-        <React.Fragment>
-          <Button
-            type="primary"
-            onClick={() => showModal(userId)}
-            className="me-3"
-            style={{ color: "#fff", backgroundColor: "#1890ff" }}
-          >
-            Xem điểm
-          </Button>
-          <Modal
-            title=""
-            open={isStudentModalOpen}
-            onOk={handleOk}
-            footer={[
-              <Button key="back" onClick={handleOk}>
-                OK
-              </Button>,
-            ]}
-          >
-            {(() => {
-              let displayedCourseName = ""; // Biến để lưu trữ tên khóa học đã hiển thị
-              let dataSource = [];
-
-              studentScores?.forEach((score, index) => {
-                const course = courses.find(
-                  (course) => course._id === score.lesson?.courseId
-                );
-
-                if (course && course.name !== displayedCourseName) {
-                  displayedCourseName = course?.name; // Lưu trữ tên khóa học đã hiển thị
-                  score?.score.forEach((studentScore, studentIndex) => {
-                    dataSource.push({
-                      key: `${index}-${studentIndex}`,
-                      courseName: course?.name,
-                      lessonName: score?.lesson.name,
-                      score: studentScore?.score,
-                    });
-                  });
-                } else {
-                  score?.score.forEach((studentScore, studentIndex) => {
-                    dataSource.push({
-                      key: `${index}-${studentIndex}`,
-                      lessonName: score?.lesson.name,
-                      score: studentScore?.score,
-                    });
-                  });
-                }
-              });
-
-              const columns = [
-                {
-                  title: "Course Name",
-                  dataIndex: "courseName",
-                  key: "courseName",
-                },
-                {
-                  title: "Lesson Name",
-                  dataIndex: "lessonName",
-                  key: "lessonName",
-                },
-                {
-                  title: "Score",
-                  dataIndex: "score",
-                  key: "score",
-                },
-              ];
-
-              return (
-                <Table
-                  dataSource={dataSource}
-                  columns={columns}
-                  pagination={false}
-                />
-              );
-            })()}
-          </Modal>
-        </React.Fragment>
-      ),
     });
   });
-  
 
   return (
     <React.Fragment>
@@ -268,6 +245,9 @@ export default function ViewStudentsCourse() {
         columns={columns}
         dataSource={data}
         pagination={{ pageSize: 5 }}
+        scroll={{
+          x: 1300,
+        }}
         className="pt-3"
       />
     </React.Fragment>

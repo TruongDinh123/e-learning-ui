@@ -10,8 +10,9 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 const CourseSchema = yup.object({
-  title: yup.string().min(2).required("Title is required"),
-  name: yup.string().min(2).required("name is required"),
+  title: yup.string().min(2).required("Nhập tiêu đề"),
+
+  name: yup.string().min(2).required("Nhập tên"),
 });
 
 export default function EditCourses(props) {
@@ -63,7 +64,6 @@ export default function EditCourses(props) {
       dispatch(editCourse({ id: props?.id, values }))
         .then(unwrapResult)
         .then((res) => {
-          console.log("🚀 ~ res:", res);
           messageApi
             .open({
               type: "success",

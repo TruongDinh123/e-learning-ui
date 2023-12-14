@@ -12,7 +12,8 @@ import Link from "next/link";
 import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { resetState } from "@/features/User/userSlice";
+import { logOut, resetState } from "@/features/User/userSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const { Sider } = Layout;
 export default function AdminSidebar(props) {
@@ -104,6 +105,25 @@ export default function AdminSidebar(props) {
     );
   }
 
+  const handleLogOut = () => {
+    dispatch(logOut())
+      .then(unwrapResult)
+      .then((res) => {
+        console.log("🚀 ~ res:", res);
+        if (res.status) {
+          localStorage.clear();
+          Cookies.remove("Bearer");
+          dispatch(resetState());
+          router.push("/login");
+        } else {
+          message.error(res.message, 2.5);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <Sider trigger={null} collapsible collapsed={collapsed}>
       <div className="demo-logo-vertical d-flex justify-content-center align-items-center py-3">
@@ -114,12 +134,7 @@ export default function AdminSidebar(props) {
               title="Đăng xuất"
               type="link"
               className="text-white"
-              onClick={() => {
-                localStorage.clear();
-                Cookies.remove("Bearer");
-                dispatch(resetState());
-                router.push("/login");
-              }}
+              onClick={() => handleLogOut()}
             />
           ) : (
             <Link href="/login">

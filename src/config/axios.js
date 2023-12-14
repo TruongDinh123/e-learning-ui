@@ -23,7 +23,7 @@ axiosInstance.interceptors.request.use(
       config.headers["x-client-id"] = clientId;
     }
     return config;
-  },
+  }, 
   function (error) {
     // Do something with request error
     return Promise.reject(error);

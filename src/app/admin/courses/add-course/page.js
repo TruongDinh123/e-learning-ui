@@ -16,11 +16,11 @@ import { useState } from "react";
 const CourseSchema = yup.object({
   title: yup
     .string()
-    .required("Title is required")
+    .required("Nhập tiêu đề")
     .trim("Title must not start or end with whitespace"),
   name: yup
     .string()
-    .required("Name is required")
+    .required("Nhập tên")
     .trim("Name must not start or end with whitespace"),
   isPublic: yup.boolean().required("Visibility is required"),
 });

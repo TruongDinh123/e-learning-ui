@@ -51,6 +51,14 @@ const updateUser = async (data) => {
   return res;
 };
 
+const logOut = async (data) => {
+  const res = await axiosInstance({
+    url: "/e-learning/logout",
+    method: "POST",
+  });
+  return res;
+};
+
 ///roles///
 const getAllRole = async () => {
   const res = await axiosInstance({
@@ -107,4 +115,5 @@ export const authService = {
   updateRole,
   updateUser,
   getAUser,
+  logOut,
 };

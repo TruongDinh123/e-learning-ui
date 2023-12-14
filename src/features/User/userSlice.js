@@ -73,6 +73,18 @@ export const getAUser = createAsyncThunk(
   }
 );
 
+export const logOut = createAsyncThunk(
+  "/e-learning/log-out",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await authService.logOut(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 //roles
 
 export const getAllRole = createAsyncThunk(
