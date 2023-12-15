@@ -41,7 +41,7 @@ export default function ViewQuiz() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setCourses(res.data.metadata);
+          setCourses(res.metadata);
           setSelectedCourseLessons(res.data.metadata[0]?.lessons || []);
         } else {
         }

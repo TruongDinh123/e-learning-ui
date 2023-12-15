@@ -17,8 +17,8 @@ export const viewCourses = createAsyncThunk(
   "/e-learning/get-courses",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await courseService.viewCourse();
-      return response;
+      const response = await courseService.viewCourse(data);
+      return response.data;
     } catch (error) {
       return rejectWithValue(error);
     }

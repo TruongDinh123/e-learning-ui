@@ -12,7 +12,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteLesson, viewLesson } from "@/features/Lesson/lessonSlice";
-import { useMediaQuery } from "react-responsive";
 import { unwrapResult } from "@reduxjs/toolkit";
 import VideoLesson from "../view-lesson-video/[id]/page";
 import CreateLesson from "../create-lesson/page";
@@ -30,7 +29,6 @@ export default function Lesson({ params }) {
     dispatch(viewLesson({ courseId: params?.id }))
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           setLesson(res.data.metadata);
         }

@@ -94,7 +94,7 @@ export default function ViewTeachersCourse() {
               duration: 1.5,
             })
             .then(() => {
-              setCourses(res.data.metadata);
+              setCourses(res.metadata);
             });
         } else {
           messageApi.error(res.message);

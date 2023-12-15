@@ -9,10 +9,11 @@ const createCourse = async (data) => {
   return res.data;
 };
 
-const viewCourse = async () => {
+const viewCourse = async (data) => {
   const res = await axiosInstance({
     url: "/e-learning/get-courses",
     method: "GET",
+    data: data,
   });
   return res;
 };

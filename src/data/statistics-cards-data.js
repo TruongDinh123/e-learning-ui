@@ -67,7 +67,7 @@ const StatisticsCardComponent = () => {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setCourses(res.data.metadata);
+          setCourses(res.metadata);
           // Update statisticsCardsData here with the courses data
           // For example, if you want to update the "Today's Users" card with the number of courses:
           setStatisticsCardsData((prevData) =>

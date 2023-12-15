@@ -21,14 +21,14 @@ export default function RootLayout({ children }) {
 
   const shouldRenderFooter = !pathname.includes("/web-rtc/room");
 
-  useEffect(() => {
-    // Check if the cookie exists
-    const token = Cookies.get('Bearer');
-    if (!token && pathname !== '/login') {
-      // If the cookie doesn't exist and the user is not on the login page, redirect to the login page
-      router.push('/login');
-    }
-  }, [pathname]);
+  // useEffect(() => {
+  //   // Check if the cookie exists
+  //   const token = Cookies.get('Bearer');
+  //   if (!token && pathname !== '/login') {
+  //     // If the cookie doesn't exist and the user is not on the login page, redirect to the login page
+  //     router.push('/login');
+  //   }
+  // }, [pathname]);
 
   return (
     <html>

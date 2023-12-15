@@ -80,7 +80,7 @@ export default function AssignmentCreate() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setCourses(res.data.metadata);
+          setCourses(res.metadata);
         } else {
           messageApi.error(res.message);
         }

@@ -78,7 +78,7 @@ export const logOut = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await authService.logOut(data);
-      return response;
+      return response.data;
     } catch (err) {
       return rejectWithValue(err);
     }
