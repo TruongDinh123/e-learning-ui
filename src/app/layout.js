@@ -2,7 +2,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
 import Header from "@/components/Header/Header";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import CustomFooter from "@/components/Footer/footer";
 import AdminFooter from "@/components/AdminFooter/AdminFooter";
 import AdminHeader from "@/components/AdminHeaeder/AdminHeader";
@@ -17,18 +17,19 @@ const Providers = dynamic(() => import("@/Provider"), { ssr: false });
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
 
   const shouldRenderFooter = !pathname.includes("/web-rtc/room");
 
-  // useEffect(() => {
-  //   // Check if the cookie exists
-  //   const token = Cookies.get('Bearer');
-  //   if (!token && pathname !== '/login') {
-  //     // If the cookie doesn't exist and the user is not on the login page, redirect to the login page
-  //     router.push('/login');
-  //   }
-  // }, [pathname]);
+  useEffect(() => {
+    // Check if the cookie exists
+    const token = localStorage.getItem('authorization');
+    if (!token && pathname !== '/login') {
+      // If the cookie doesn't exist and the user is not on the login page, redirect to the login page
+      router.push('/login');
+    }
+  }, [pathname]);
 
   return (
     <html>

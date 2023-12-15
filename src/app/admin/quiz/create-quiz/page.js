@@ -18,7 +18,11 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { viewCourses } from "@/features/Courses/courseSlice";
-import { createQuiz, uploadFileQuiz } from "@/features/Quiz/quizSlice";
+import {
+  createQuiz,
+  uploadFileQuiz,
+  viewQuizTemplates,
+} from "@/features/Quiz/quizSlice";
 import {
   CloseOutlined,
   InfoCircleOutlined,
@@ -42,6 +46,9 @@ export default function QuizCreator() {
   const [courses, setCourses] = useState([]);
   const [studentsByCourse, setStudentsByCourse] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
+  const [quizTemplates, setQuizTemplates] = useState([]);
+  console.log("🚀 ~ quizTemplates:", quizTemplates);
+  const [selectedQuizTemplate, setSelectedQuizTemplate] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [quizType, setQuizType] = useState("multiple_choice");
   const [file, setFile] = useState(null);
@@ -113,30 +120,54 @@ export default function QuizCreator() {
       studentIds = studentsByCourse.map((student) => student._id);
     }
 
-    if (quizType === "multiple_choice") {
-      formattedValues = {
-        ...values,
-        type: quizType,
-        submissionTime: values?.submissionTime?.toISOString(),
-        courseIds: selectedCourse,
-        studentIds: studentIds,
-        questions: values.questions.map((question) => ({
+    if (selectedQuizTemplate) {
+      const quizTemplate = quizTemplates.find(
+        (template) => template._id === selectedQuizTemplate
+      );
+
+      const userQuestions = values.questions.map((question) => {
+        return {
           ...question,
           options: question.options.map((option) => option.option),
-        })),
-      };
-    } else {
+        };
+      });
+
+      const combinedQuestions = [...quizTemplate.questions, ...userQuestions];
+
       formattedValues = {
-        type: quizType,
-        name: values.essayTitle,
+        type: quizTemplate.type,
+        name: quizTemplate.name,
         courseIds: selectedCourse,
         studentIds: studentIds,
+        questions: combinedQuestions,
         submissionTime: values?.submissionTime?.toISOString(),
-        essay: {
-          title: values.essayTitle,
-          content: values.essayContent,
-        },
       };
+    } else {
+      if (quizType === "multiple_choice") {
+        formattedValues = {
+          ...values,
+          type: quizType,
+          submissionTime: values?.submissionTime?.toISOString(),
+          courseIds: selectedCourse,
+          studentIds: studentIds,
+          questions: values.questions.map((question) => ({
+            ...question,
+            options: question.options.map((option) => option.option),
+          })),
+        };
+      } else {
+        formattedValues = {
+          type: quizType,
+          name: values.essayTitle,
+          courseIds: selectedCourse,
+          studentIds: studentIds,
+          submissionTime: values?.submissionTime?.toISOString(),
+          essay: {
+            title: values.essayTitle,
+            content: values.essayContent,
+          },
+        };
+      }
     }
 
     dispatch(
@@ -191,6 +222,35 @@ export default function QuizCreator() {
         console.log(error);
       });
   }, []);
+
+  // Fetch quiz templates when the component mounts
+  useEffect(() => {
+    dispatch(viewQuizTemplates())
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setQuizTemplates(res.metadata);
+        } else {
+          messageApi.error(res.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  // Handle quiz template selection
+  const handleQuizTemplateChange = (value) => {
+    setSelectedQuizTemplate(value);
+    if (value) {
+      const selectedTemplate = quizTemplates.find((template) => template._id === value);
+      form.setFieldsValue({ type: selectedTemplate.type });
+      form.setFieldsValue({ name: selectedTemplate.name });
+    } else {
+      form.setFieldsValue({ type: "" });
+      form.setFieldsValue({ name: "" });
+    }
+  };
 
   return (
     <div>
@@ -263,6 +323,22 @@ export default function QuizCreator() {
                 )}
               </Col>
             </Row>
+           
+            <Col xs={24} sm={12} md={8} lg={6} className="pb-4">
+              <span>Chọn mẫu bài tập:</span>
+              <Select
+                placeholder="Chọn mẫu bài tập"
+                onChange={handleQuizTemplateChange}
+                style={{ width: "100%" }}
+              >
+                <Option value="">Không chọn</Option>
+                {quizTemplates.map((template) => (
+                  <Option key={template._id} value={template._id}>
+                    {template.name}
+                  </Option>
+                ))}
+              </Select>
+            </Col>
 
             <Col xs={24} sm={12} md={8} lg={6}>
               <Form.Item
@@ -282,6 +358,7 @@ export default function QuizCreator() {
                 </Select>
               </Form.Item>
             </Col>
+
             {quizType === "multiple_choice" ? (
               <>
                 <Row gutter={8}>

@@ -25,6 +25,18 @@ export const viewQuiz = createAsyncThunk(
   }
 );
 
+export const viewQuizTemplates = createAsyncThunk(
+  "/e-learning/view-quiz-templates",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await QuizService.viewQuizTemplates(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 export const getScoreByQuizId = createAsyncThunk(
   "/e-learning/get-score-by-quizId",
   async (data, { rejectWithValue }) => {

@@ -9,6 +9,15 @@ const createQuiz = async (data) => {
   return res.data;
 };
 
+const viewQuizTemplates = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/quiz/templates`,
+    method: "GET",
+    data: data,
+  });
+  return res.data;
+};
+
 const viewQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/course/${data.courseIds}/quizzes`,
@@ -164,4 +173,5 @@ export const QuizService = {
   getScoreByQuizId,
   updateScore,
   uploadFileUserSubmit,
+  viewQuizTemplates,
 };

@@ -2,14 +2,10 @@
 import { getACourse, viewCourses } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Button, Modal, Select, Table, message } from "antd";
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { batch, useDispatch } from "react-redux";
 import AddStudentToCourse from "../../courses/add-student-course/page";
-import {
-  getScoreByQuizId,
-  getScoreByUserId,
-  viewQuiz,
-} from "@/features/Quiz/quizSlice";
+import { getScoreByQuizId, viewQuiz } from "@/features/Quiz/quizSlice";
 
 const { Option } = Select;
 
@@ -19,55 +15,54 @@ export default function ViewStudentsCourse() {
   const [dataStudent, setData] = useState([]);
   const [teacher, setTeacher] = useState(null);
   const [quizzes, setQuizzes] = useState([]);
-  console.log("🚀 ~ quizzes:", quizzes);
   const [update, setUpdate] = useState(0);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courses, setCourses] = useState([]);
   const [scores, setScores] = useState({}); // Change to an object
-  const [selectedCourseDetails, setSelectedCourseDetails] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState({}); // Change to an object
+  // const [selectedCourseDetails, setSelectedCourseDetails] = useState(null);
+  // const [isModalOpen, setIsModalOpen] = useState({}); // Change to an object
 
-  const showModal = async (studentId) => {
-    const lessons = selectedCourseDetails?.lessons;
+  // const showModal = async (studentId) => {
+  //   const lessons = selectedCourseDetails?.lessons;
 
-    const lessonScores = await Promise.all(
-      lessons?.map((lesson) => {
-        const quizId = lesson.quiz;
+  //   const lessonScores = await Promise.all(
+  //     lessons?.map((lesson) => {
+  //       const quizId = lesson.quiz;
 
-        return dispatch(getScoreByUserId({ userId: studentId, quizId }))
-          .then(unwrapResult)
-          .then((result_1) => {
-            return {
-              lesson,
-              score: result_1.metadata,
-              userId: studentId,
-            };
-          });
-      })
-    );
-    setScores((prevScores) => ({
-      ...prevScores,
-      [studentId]: lessonScores,
-    }));
-    setIsModalOpen((prevIsModalOpen) => ({
-      ...prevIsModalOpen,
-      [studentId]: true,
-    }));
-  };
+  //       return dispatch(getScoreByUserId({ userId: studentId, quizId }))
+  //         .then(unwrapResult)
+  //         .then((result_1) => {
+  //           return {
+  //             lesson,
+  //             score: result_1.metadata,
+  //             userId: studentId,
+  //           };
+  //         });
+  //     })
+  //   );
+  //   setScores((prevScores) => ({
+  //     ...prevScores,
+  //     [studentId]: lessonScores,
+  //   }));
+  //   setIsModalOpen((prevIsModalOpen) => ({
+  //     ...prevIsModalOpen,
+  //     [studentId]: true,
+  //   }));
+  // };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
+  // const handleOk = () => {
+  //   setIsModalOpen(false);
+  // };
 
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
     const selectedCourse = courses.find((course) => course._id === value);
-    setSelectedCourseDetails(null); // Reset giá trị của selectedCourseDetails
+    // setSelectedCourseDetails(null); // Reset giá trị của selectedCourseDetails
   };
 
-  const handleViewCourse = (value) => {
-    getACourseData(value);
-  };
+  const handleViewCourse = useCallback(() => {
+    getACourseData(selectedCourse);
+  }, [selectedCourse]); // Sử dụng useCallback và thêm selectedCourse vào dependencies
 
   useEffect(() => {
     dispatch(viewCourses())
@@ -88,13 +83,13 @@ export default function ViewStudentsCourse() {
         }
       })
       .catch((error) => {
-        console.log(error);
+        messageApi.error(error);
       });
   }, []);
 
   useEffect(() => {
     getACourseData();
-  }, [update]);
+  }, [update, selectedCourse]);
 
   useEffect(() => {
     dispatch(viewQuiz({ courseIds: selectedCourse }))
@@ -137,7 +132,7 @@ export default function ViewStudentsCourse() {
         if (res.status) {
           setData(res.metadata.students);
           setTeacher(res.metadata.teacher);
-          setSelectedCourseDetails(res.metadata);
+          // setSelectedCourseDetails(res.metadata);
         } else {
           messageApi.error(res.message);
         }
@@ -147,23 +142,27 @@ export default function ViewStudentsCourse() {
       });
   };
 
-  const quizColumns = quizzes.map((quiz) => ({
-    title: quiz.name,
-    dataIndex: quiz._id,
-    key: quiz._id,
-    render: (text, record) => {
-      // Tìm điểm cho bài quiz này trong dữ liệu của học viên
-      const studentScore = scores[quiz._id]?.find(
-        (score) => score?.userId === record?.userId
-      );
-      const submissionTime = new Date(quiz?.submissionTime);
-      const now = new Date();
-      if (submissionTime < now) {
-        return "Hết hạn nộp";
-      }
-      return studentScore ? studentScore.score : "Chưa làm";
-    },
-  }));
+  const quizColumns = useMemo(
+    () =>
+      quizzes.map((quiz) => ({
+        title: quiz.name,
+        dataIndex: quiz._id,
+        key: quiz._id,
+        render: (text, record) => {
+          // Tìm điểm cho bài quiz này trong dữ liệu của học viên
+          const studentScore = scores[quiz._id]?.find(
+            (score) => score?.userId === record?.userId
+          );
+          const submissionTime = new Date(quiz?.submissionTime);
+          const now = new Date();
+          if (submissionTime < now) {
+            return "Hết hạn nộp";
+          }
+          return studentScore ? studentScore.score : "Chưa làm";
+        },
+      })),
+    [quizzes, scores]
+  );
 
   const columns = [
     {
@@ -193,15 +192,26 @@ export default function ViewStudentsCourse() {
     },
   ];
 
-  let data = [];
-  dataStudent.forEach((student, index) => {
-    data.push({
-      key: index + 1,
-      userId: student?._id,
-      lastName: student?.lastName,
-      email: student?.email,
-    });
-  });
+  // let data = [];
+  // dataStudent.forEach((student, index) => {
+  //   data.push({
+  //     key: index + 1,
+  //     userId: student?._id,
+  //     lastName: student?.lastName,
+  //     email: student?.email,
+  //   });
+  // });
+
+  const data = useMemo(
+    () =>
+      dataStudent.map((student, index) => ({
+        key: index + 1,
+        userId: student?._id,
+        lastName: student?.lastName,
+        email: student?.email,
+      })),
+    [dataStudent]
+  );
 
   return (
     <React.Fragment>

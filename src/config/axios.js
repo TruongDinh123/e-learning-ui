@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const axiosInstance = axios.create({
   // baseURL: process.env.API_URL,
@@ -31,11 +32,22 @@ axiosInstance.interceptors.request.use(
 );
 
 // Add a response interceptor
+// Add a response interceptor
 axiosInstance.interceptors.response.use(
   function (response) {
+    // If the response is successful, just return it
     return response;
   },
   function (error) {
+    // If the response has a status of 500 and the message is 'invalid signature'
+    if (error.response.status === 500 && error.response.data.message === 'invalid signature') {
+      // Remove the invalid token from localStorage
+      localStorage.removeItem('authorization');
+      localStorage.removeItem('x-client-id');
+      Cookies.remove("Bearer");
+
+    }
+
     return Promise.reject(error);
   }
 );

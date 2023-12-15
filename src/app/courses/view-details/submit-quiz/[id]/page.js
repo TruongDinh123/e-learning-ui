@@ -28,6 +28,13 @@ export default function Quizs({ params }) {
   const idQuiz = quiz.map((item) => item._id);
 
   const handleSubmit = () => {
+    const totalQuestions = quiz.reduce((totalQuestions, item) => totalQuestions + item.questions.length, 0);
+    if (Object.keys(selectedAnswers).length < totalQuestions) {
+      message.error('Vui lòng trả lời tất cả các câu hỏi trước khi nộp bài.');
+      return;
+    }
+
+
     const formattedAnswers = Object.entries(selectedAnswers).map(
       ([questionId, answer]) => ({
         [questionId]: answer,

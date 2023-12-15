@@ -1,6 +1,5 @@
 "use client";
 import {
-  UploadOutlined,
   UserOutlined,
   VideoCameraOutlined,
   FileAddOutlined,
@@ -31,7 +30,7 @@ export default function AdminSidebar(props) {
       label: "Khóa học",
       children: [
         {
-          key: "courses/view-coursess",
+          key: "courses/view-courses",
           icon: <UserOutlined />,
           label: "Bảng khóa học",
         },
@@ -46,11 +45,6 @@ export default function AdminSidebar(props) {
           key: "quiz/create-quiz",
           icon: <UserOutlined />,
           label: "Tạo bài tập",
-        },
-        {
-          key: "courses/view-courses",
-          icon: <UserOutlined />,
-          label: "Khóa học",
         },
         {
           key: "quiz/view-quiz",

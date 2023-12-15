@@ -295,13 +295,6 @@ export default function UpdateQuiz(props) {
             onFinish={handleUpdateQuiz}
           >
             <Form.Item
-              label="Tên bài tập"
-              name="name"
-              rules={[{ required: true, message: "Hãy nhập tên bài" }]}
-            >
-              <Input placeholder="Tên bài tập" />
-            </Form.Item>
-            <Form.Item
               label="Thời hạn nộp"
               name="submissionTime"
               rules={[
@@ -322,87 +315,96 @@ export default function UpdateQuiz(props) {
               />
             </Form.Item>
             {form.getFieldValue("type") === "multiple_choice" ? (
-              <Form.List name="questions">
-                {(fields, { add, remove }) => (
-                  <div className="max-h-80 overflow-auto scrollbar scrollbar-thin">
-                    {fields.map((field, index) => (
-                      <Card
-                        key={field.key}
-                        title={`Question ${index + 1}`}
-                        extra={
-                          <Button onClick={() => handleRemoveQuestion(index)}>
-                            Xóa
-                          </Button>
-                        }
+              <>
+                <Form.Item
+                  label="Tên bài tập"
+                  name="name"
+                  rules={[{ required: true, message: "Hãy nhập tên bài" }]}
+                >
+                  <Input placeholder="Tên bài tập" />
+                </Form.Item>
+                <Form.List name="questions">
+                  {(fields, { add, remove }) => (
+                    <div className="max-h-80 overflow-auto scrollbar scrollbar-thin">
+                      {fields.map((field, index) => (
+                        <Card
+                          key={field.key}
+                          title={`Question ${index + 1}`}
+                          extra={
+                            <Button onClick={() => handleRemoveQuestion(index)}>
+                              Xóa
+                            </Button>
+                          }
+                        >
+                          <Form.Item
+                            label="Câu hỏi"
+                            name={[field.name, "question"]}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Hãy nhập câu hỏi",
+                              },
+                            ]}
+                          >
+                            <Input placeholder="Câu hỏi" />
+                          </Form.Item>
+                          <Form.List name={[field.name, "options"]}>
+                            {(subFields, subMeta) => (
+                              <div>
+                                {subFields.map((subField, subIndex) => (
+                                  <Space key={subField.key}>
+                                    <Form.Item
+                                      noStyle
+                                      name={[subField.name, "option"]}
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Hãy chọn lựa chọn",
+                                        },
+                                      ]}
+                                    >
+                                      <Input placeholder="Thêm lựa chọn" />
+                                    </Form.Item>
+                                    <CloseOutlined
+                                      onClick={() => subMeta.remove(subIndex)}
+                                    />
+                                  </Space>
+                                ))}
+                                <Button
+                                  type="dashed"
+                                  onClick={() => subMeta.add()}
+                                  block
+                                >
+                                  + Thêm
+                                </Button>
+                              </div>
+                            )}
+                          </Form.List>
+                          <Form.Item
+                            label="Đáp án"
+                            name={[field.name, "answer"]}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Hãy nhập đáp án",
+                              },
+                            ]}
+                          >
+                            <Input placeholder="Đáp án" />
+                          </Form.Item>
+                        </Card>
+                      ))}
+                      <Button
+                        type="dashed"
+                        onClick={() => handleAddQuestion()}
+                        block
                       >
-                        <Form.Item
-                          label="Câu hỏi"
-                          name={[field.name, "question"]}
-                          rules={[
-                            {
-                              required: true,
-                              message: "Hãy nhập câu hỏi",
-                            },
-                          ]}
-                        >
-                          <Input placeholder="Câu hỏi" />
-                        </Form.Item>
-                        <Form.List name={[field.name, "options"]}>
-                          {(subFields, subMeta) => (
-                            <div>
-                              {subFields.map((subField, subIndex) => (
-                                <Space key={subField.key}>
-                                  <Form.Item
-                                    noStyle
-                                    name={[subField.name, "option"]}
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: "Hãy chọn lựa chọn",
-                                      },
-                                    ]}
-                                  >
-                                    <Input placeholder="Thêm lựa chọn" />
-                                  </Form.Item>
-                                  <CloseOutlined
-                                    onClick={() => subMeta.remove(subIndex)}
-                                  />
-                                </Space>
-                              ))}
-                              <Button
-                                type="dashed"
-                                onClick={() => subMeta.add()}
-                                block
-                              >
-                                + Thêm
-                              </Button>
-                            </div>
-                          )}
-                        </Form.List>
-                        <Form.Item
-                          label="Đáp án"
-                          name={[field.name, "answer"]}
-                          rules={[
-                            {
-                              required: true,
-                              message: "Hãy nhập đáp án",
-                            },
-                          ]}
-                        >
-                          <Input placeholder="Đáp án" />
-                        </Form.Item>
-                      </Card>
-                    ))}
-                    <Button
-                      type="dashed"
-                      onClick={() => handleAddQuestion()}
-                      block
-                    >
-                      + Thêm câu hỏi
-                    </Button>
-                  </div>
-                )}
-              </Form.List>
+                        + Thêm câu hỏi
+                      </Button>
+                    </div>
+                  )}
+                </Form.List>
+              </>
             ) : (
               <>
                 <Form.Item
