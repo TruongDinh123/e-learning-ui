@@ -183,7 +183,9 @@ const ScoreManagement = () => {
                               </p>
                             ))}
                             <p className="pt-3 text-green-500 font-bold">
-                              <span style={{ color: "red" }}>Your answer:</span>{" "}
+                              <span style={{ color: "red" }}>
+                                Câu trả lời của bạn:
+                              </span>{" "}
                               {answer}
                             </p>
                           </div>

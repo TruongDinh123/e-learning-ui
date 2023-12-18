@@ -46,8 +46,8 @@ export default function QuizCreator() {
   const [courses, setCourses] = useState([]);
   const [studentsByCourse, setStudentsByCourse] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
+  const [isTemplateMode, setIsTemplateMode] = useState(false);
   const [quizTemplates, setQuizTemplates] = useState([]);
-  console.log("🚀 ~ quizTemplates:", quizTemplates);
   const [selectedQuizTemplate, setSelectedQuizTemplate] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [quizType, setQuizType] = useState("multiple_choice");
@@ -60,6 +60,10 @@ export default function QuizCreator() {
   // Hàm xử lý khi loại quiz thay đổi
   const handleQuizTypeChange = (value) => {
     setQuizType(value);
+  };
+
+  const toggleTemplateMode = () => {
+    setIsTemplateMode(!isTemplateMode);
   };
 
   // Hàm xử lý khi chọn khóa học
@@ -89,8 +93,27 @@ export default function QuizCreator() {
 
   const handleAddQuestion = () => {
     const questions = form.getFieldValue("questions") || [];
-    const newQuestions = [...questions, {}];
-    form.setFieldsValue({ questions: newQuestions });
+    // Kiểm tra xem câu hỏi mới có trùng với câu hỏi mẫu không
+    if (selectedQuizTemplate) {
+      const selectedTemplate = quizTemplates.find(
+        (template) => template._id === selectedQuizTemplate
+      );
+      if (selectedTemplate && selectedTemplate.questions.length > 0) {
+        // Nếu có bài tập mẫu, chỉ thêm câu hỏi mới nếu nó không trùng lặp
+        const templateQuestions = selectedTemplate.questions.map(
+          (q) => q.question
+        );
+        if (!templateQuestions.includes("")) {
+          form.setFieldsValue({ questions: [...questions, {}] });
+        }
+      } else {
+        // Nếu không có bài tập mẫu, thêm câu hỏi mới
+        form.setFieldsValue({ questions: [...questions, {}] });
+      }
+    } else {
+      // Nếu không có bài tập mẫu, thêm câu hỏi mới
+      form.setFieldsValue({ questions: [...questions, {}] });
+    }
   };
 
   const handleRemoveQuestion = (index) => {
@@ -120,29 +143,39 @@ export default function QuizCreator() {
       studentIds = studentsByCourse.map((student) => student._id);
     }
 
+    let questions = values.questions || [];
+
     if (selectedQuizTemplate) {
       const quizTemplate = quizTemplates.find(
         (template) => template._id === selectedQuizTemplate
       );
 
-      const userQuestions = values.questions.map((question) => {
-        return {
-          ...question,
-          options: question.options.map((option) => option.option),
-        };
-      });
+      // Loại bỏ các câu hỏi trùng lặp từ người dùng
+      const userQuestions = questions
+        .filter(
+          (q) =>
+            !quizTemplate.questions.some((tq) => tq.question === q.question)
+        )
+        .map((question) => {
+          return {
+            ...question,
+            options: question.options.map((option) => option.option),
+          };
+        });
 
+      // Gộp các câu hỏi từ bài tập mẫu và người dùng
       const combinedQuestions = [...quizTemplate.questions, ...userQuestions];
 
       formattedValues = {
         type: quizTemplate.type,
-        name: quizTemplate.name,
+        name: values.name,
         courseIds: selectedCourse,
         studentIds: studentIds,
         questions: combinedQuestions,
         submissionTime: values?.submissionTime?.toISOString(),
       };
     } else {
+      // Xử lý cho trường hợp không sử dụng bài tập mẫu
       if (quizType === "multiple_choice") {
         formattedValues = {
           ...values,
@@ -195,7 +228,11 @@ export default function QuizCreator() {
             duration: 2.5,
           })
           .then(() => {
-            router.push(`/admin/quiz/view-list-question/${quizId}`);
+            if (isTemplateMode) {
+              router.push("/admin/quiz/template-quiz");
+            } else {
+              router.push(`/admin/quiz/view-list-question/${quizId}`);
+            }
             message.success(res.message, 1.5);
             setIsLoading(false);
           })
@@ -243,12 +280,22 @@ export default function QuizCreator() {
   const handleQuizTemplateChange = (value) => {
     setSelectedQuizTemplate(value);
     if (value) {
-      const selectedTemplate = quizTemplates.find((template) => template._id === value);
+      const selectedTemplate = quizTemplates.find(
+        (template) => template._id === value
+      );
       form.setFieldsValue({ type: selectedTemplate.type });
       form.setFieldsValue({ name: selectedTemplate.name });
+      form.setFieldsValue({
+        questions: selectedTemplate.questions.map((question) => ({
+          question: question.question,
+          options: question.options.map((option) => ({ option })),
+          answer: question.answer,
+        })),
+      });
     } else {
       form.setFieldsValue({ type: "" });
       form.setFieldsValue({ name: "" });
+      form.setFieldsValue({ questions: [{}] });
     }
   };
 
@@ -270,75 +317,98 @@ export default function QuizCreator() {
             }}
             onFinish={handleSaveQuiz}
           >
-            <Row gutter={16} className="py-4">
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <span>Chọn khóa học của bạn:</span>
-                <Select
-                  mode="multiple"
-                  placeholder="Chọn khóa học"
-                  onChange={handleCourseChange}
-                  value={selectedCourse}
-                  style={{ width: "100%" }}
-                >
-                  {courses.map((course) => (
-                    <Option key={course._id} value={course._id}>
-                      {course.name}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <span>Chọn học viên muốn chọn:</span>
-                <Select
-                  mode="multiple"
-                  placeholder="Chọn học viên"
-                  onChange={handleStudentChange}
-                  value={selectedStudents}
-                  disabled={selectedCourse.length > 1}
-                  style={{ width: "100%" }}
-                >
-                  {selectedCourse.length > 1 ? (
-                    <Option key="all" value="all">
-                      Thêm tất cả
-                    </Option>
-                  ) : (
-                    <>
-                      <Option key="all" value="all">
-                        Chọn tất cả
+            <div className="py-2">
+              <Button onClick={toggleTemplateMode}>
+                {isTemplateMode ? "Tạo bài tập" : "Tạo bài mẫu"}
+              </Button>
+            </div>
+            {!isTemplateMode && (
+              <>
+                <Row gutter={16} className="py-4">
+                  <Col xs={24} sm={12} md={8} lg={6}>
+                    <span>Chọn khóa học của bạn:</span>
+                    <Form.Item
+                      name="courseIds"
+                      rules={[
+                        { required: true, message: "Vui lòng chọn khóa học" },
+                      ]}
+                    >
+                      <Select
+                        mode="multiple"
+                        placeholder="Chọn khóa học"
+                        onChange={handleCourseChange}
+                        value={selectedCourse}
+                        style={{ width: "100%" }}
+                      >
+                        {courses.map((course) => (
+                          <Option key={course._id} value={course._id}>
+                            {course.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={12} md={8} lg={6}>
+                    <span>Chọn học viên muốn chọn:</span>
+                    <Form.Item
+                      name="studentIds"
+                      rules={[
+                        { required: true, message: "Vui lòng chọn học viên" },
+                      ]}
+                    >
+                      <Select
+                        mode="multiple"
+                        placeholder="Chọn học viên"
+                        onChange={handleStudentChange}
+                        value={selectedStudents}
+                        disabled={selectedCourse.length > 1}
+                        style={{ width: "100%" }}
+                      >
+                        {selectedCourse.length > 1 ? (
+                          <Option key="all" value="all">
+                            Thêm tất cả
+                          </Option>
+                        ) : (
+                          <>
+                            <Option key="all" value="all">
+                              Chọn tất cả
+                            </Option>
+                            {studentsByCourse.map((student) => (
+                              <Option key={student._id} value={student._id}>
+                                {student.lastName}
+                              </Option>
+                            ))}
+                          </>
+                        )}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={24} md={8} lg={6}>
+                    {selectedCourse.length > 1 && (
+                      <Tooltip title="Bài tập trên nhiều khóa học với bắt buộc chia sẻ với tất cả học viên">
+                        <InfoCircleOutlined style={{ color: "red" }} />
+                      </Tooltip>
+                    )}
+                  </Col>
+                </Row>
+
+                <Col xs={24} sm={12} md={8} lg={6} className="pb-4">
+                  <span>Chọn mẫu bài tập:</span>
+                  <Select
+                    placeholder="Chọn mẫu bài tập"
+                    onChange={handleQuizTemplateChange}
+                    style={{ width: "100%" }}
+                  >
+                    <Option value="">Không chọn</Option>
+                    {quizTemplates.map((template) => (
+                      <Option key={template._id} value={template._id}>
+                        {template.name}
                       </Option>
-                      {studentsByCourse.map((student) => (
-                        <Option key={student._id} value={student._id}>
-                          {student.lastName}
-                        </Option>
-                      ))}
-                    </>
-                  )}
-                </Select>
-              </Col>
-              <Col xs={24} sm={24} md={8} lg={6}>
-                {selectedCourse.length > 1 && (
-                  <Tooltip title="Bài tập trên nhiều khóa học với bắt buộc chia sẻ với tất cả học viên">
-                    <InfoCircleOutlined style={{ color: "red" }} />
-                  </Tooltip>
-                )}
-              </Col>
-            </Row>
-           
-            <Col xs={24} sm={12} md={8} lg={6} className="pb-4">
-              <span>Chọn mẫu bài tập:</span>
-              <Select
-                placeholder="Chọn mẫu bài tập"
-                onChange={handleQuizTemplateChange}
-                style={{ width: "100%" }}
-              >
-                <Option value="">Không chọn</Option>
-                {quizTemplates.map((template) => (
-                  <Option key={template._id} value={template._id}>
-                    {template.name}
-                  </Option>
-                ))}
-              </Select>
-            </Col>
+                    ))}
+                  </Select>
+                </Col>
+              </>
+            )}
 
             <Col xs={24} sm={12} md={8} lg={6}>
               <Form.Item
@@ -354,7 +424,7 @@ export default function QuizCreator() {
                   className="w-full"
                 >
                   <Option value="multiple_choice">Trắc nghiệm</Option>
-                  <Option value="essay">Tự luận</Option>
+                  {!isTemplateMode && <Option value="essay">Tự luận</Option>}
                 </Select>
               </Form.Item>
             </Col>
@@ -377,23 +447,25 @@ export default function QuizCreator() {
                       <Input placeholder="Tên bài" className="w-full" />
                     </Form.Item>
                   </Col>
-                  <Col xs={24} sm={12} md={8} lg={6}>
-                    <Form.Item label="Thời hạn nộp" name="submissionTime">
-                      <DatePicker
-                        showTime
-                        disabledDate={(current) => {
-                          // Không cho phép chọn ngày trước ngày hiện tại
-                          let currentDate = new Date();
-                          currentDate.setHours(0, 0, 0, 0); // Đặt thời gian về 00:00:00
-                          return current && current.toDate() < currentDate;
-                        }}
-                      />
-                    </Form.Item>
-                  </Col>
+                  {!isTemplateMode && (
+                    <Col xs={24} sm={12} md={8} lg={6}>
+                      <Form.Item label="Thời hạn nộp" name="submissionTime">
+                        <DatePicker
+                          showTime
+                          disabledDate={(current) => {
+                            // Không cho phép chọn ngày trước ngày hiện tại
+                            let currentDate = new Date();
+                            currentDate.setHours(0, 0, 0, 0); // Đặt thời gian về 00:00:00
+                            return current && current.toDate() < currentDate;
+                          }}
+                        />
+                      </Form.Item>
+                    </Col>
+                  )}
                 </Row>
                 <Form.List name="questions">
                   {(fields, { add, remove }) => (
-                    <div className="">
+                    <>
                       {fields.map((field, index) => (
                         <div key={field.key} className="pb-4">
                           <Card
@@ -425,36 +497,39 @@ export default function QuizCreator() {
                               {(subFields, subMeta) => (
                                 <div>
                                   {subFields.map((subField, subIndex) => (
-                                    <Space key={subField.key}>
+                                    <Space
+                                      key={subField.key}
+                                      style={{
+                                        display: "flex",
+                                        marginBottom: 8,
+                                      }}
+                                      align="baseline"
+                                    >
                                       <Form.Item
-                                        noStyle
+                                        {...subField}
                                         name={[subField.name, "option"]}
+                                        fieldKey={[subField.fieldKey, "option"]}
                                         rules={[
                                           {
                                             required: true,
-                                            message: "Vui lòng chọn câu hỏi",
+                                            message: "Vui lòng nhập lựa chọn",
                                           },
                                         ]}
                                       >
-                                        <div className="p-2">
-                                          <Input placeholder="Option" />
-                                        </div>
+                                        <Input placeholder="Option" />
                                       </Form.Item>
                                       <CloseOutlined
                                         onClick={() => subMeta.remove(subIndex)}
                                       />
                                     </Space>
                                   ))}
-                                  <div className="py-4 w-full">
-                                    <Button
-                                      type="dashed"
-                                      onClick={() => subMeta.add()}
-                                      block
-                                      className="bg-slate-400"
-                                    >
-                                      + Thêm lựa chọn
-                                    </Button>
-                                  </div>
+                                  <Button
+                                    type="dashed"
+                                    onClick={() => subMeta.add()}
+                                    block
+                                  >
+                                    + Thêm lựa chọn
+                                  </Button>
                                 </div>
                               )}
                             </Form.List>
@@ -481,7 +556,7 @@ export default function QuizCreator() {
                       >
                         + Thêm câu hỏi
                       </Button>
-                    </div>
+                    </>
                   )}
                 </Form.List>
                 <div className="pt-2 text-end">

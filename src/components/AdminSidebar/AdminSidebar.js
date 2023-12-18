@@ -51,6 +51,11 @@ export default function AdminSidebar(props) {
           icon: <UserOutlined />,
           label: "Xem bài tập",
         },
+        {
+          key: "quiz/template-quiz",
+          icon: <UserOutlined />,
+          label: "Bài tập mẫu",
+        },
       ],
     },
     {
