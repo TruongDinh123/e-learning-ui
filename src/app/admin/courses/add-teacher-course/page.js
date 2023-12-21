@@ -91,7 +91,7 @@ export default function AddTeacherToCourse(props) {
         Thêm giáo viên
       </Button>
       <Modal
-        title="Invite Email"
+        title="Thêm bằng Email"
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
@@ -102,13 +102,13 @@ export default function AddTeacherToCourse(props) {
             onClick={handleOk}
             style={{ backgroundColor: "#1890ff", color: "white" }}
           >
-            OK
+            Lưu
           </Button>
         }
       >
         <div>
           <label htmlFor="course" className="fs-6 fw-bold">
-            Email
+            Email :
           </label>
           <CustomInput
             className="mb-3"

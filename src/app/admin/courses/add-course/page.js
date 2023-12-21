@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as yup from "yup";
-import { Button, Modal, message } from "antd";
+import { Button, Modal, Radio, message } from "antd";
 import { useRouter } from "next/navigation";
 import {
   buttonPriavteourse,
@@ -116,7 +116,7 @@ export default function AddCourse(props) {
         </Button>
       )}
       <Modal
-        title="Tạo bài học"
+        title="Tạo khóa học"
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
@@ -144,25 +144,6 @@ export default function AddCourse(props) {
           <form action="" className="pb-5">
             <div className="mt-3 w-auto">
               <label htmlFor="course" className="fs-6 fw-bold">
-                Mô tả khóa học
-              </label>
-              <CustomInput
-                id="course"
-                placeholder="Thêm mô tả"
-                onChange={formik.handleChange("title")}
-                onBlur={formik.handleBlur("title")}
-                value={formik.values.title}
-                error={
-                  formik.submitCount > 0 &&
-                  formik.touched.title &&
-                  formik.errors.title
-                    ? formik.errors.title
-                    : null
-                }
-              />
-            </div>
-            <div className="mt-3">
-              <label htmlFor="course" className="fs-6 fw-bold">
                 Tên khóa học
               </label>
               <CustomInput
@@ -180,21 +161,40 @@ export default function AddCourse(props) {
                 }
               />
             </div>
+            <div className="mt-3 w-auto">
+              <label htmlFor="course" className="fs-6 fw-bold">
+                Mô tả khóa học
+              </label>
+              <textarea
+                id="course"
+                placeholder="Thêm mô tả"
+                onChange={formik.handleChange("title")}
+                onBlur={formik.handleBlur("title")}
+                value={formik.values.title}
+                className="form-control"
+              />
+              {formik.submitCount > 0 &&
+              formik.touched.title &&
+              formik.errors.title
+                ? formik.errors.title
+                : null}
+            </div>
+
             <div className="mt-3">
               <label htmlFor="visibility" className="fs-6 fw-bold">
                 Tùy chọn:
               </label>
-              <select
+              <Radio.Group
                 id="visibility"
                 onChange={(e) =>
-                  formik.setFieldValue("isPublic", e.target.value === "true")
+                  formik.setFieldValue("isPublic", e.target.value)
                 }
                 onBlur={formik.handleBlur("isPublic")}
                 value={formik.values.isPublic}
               >
-                <option value={true}>Public</option>
-                <option value={false}>Private</option>
-              </select>
+                <Radio value={true}>Public</Radio>
+                <Radio value={false}>Private</Radio>
+              </Radio.Group>
             </div>
           </form>
         </div>

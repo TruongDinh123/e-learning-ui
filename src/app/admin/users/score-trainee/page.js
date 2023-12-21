@@ -19,40 +19,6 @@ export default function ViewStudentsCourse() {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courses, setCourses] = useState([]);
   const [scores, setScores] = useState({}); // Change to an object
-  // const [selectedCourseDetails, setSelectedCourseDetails] = useState(null);
-  // const [isModalOpen, setIsModalOpen] = useState({}); // Change to an object
-
-  // const showModal = async (studentId) => {
-  //   const lessons = selectedCourseDetails?.lessons;
-
-  //   const lessonScores = await Promise.all(
-  //     lessons?.map((lesson) => {
-  //       const quizId = lesson.quiz;
-
-  //       return dispatch(getScoreByUserId({ userId: studentId, quizId }))
-  //         .then(unwrapResult)
-  //         .then((result_1) => {
-  //           return {
-  //             lesson,
-  //             score: result_1.metadata,
-  //             userId: studentId,
-  //           };
-  //         });
-  //     })
-  //   );
-  //   setScores((prevScores) => ({
-  //     ...prevScores,
-  //     [studentId]: lessonScores,
-  //   }));
-  //   setIsModalOpen((prevIsModalOpen) => ({
-  //     ...prevIsModalOpen,
-  //     [studentId]: true,
-  //   }));
-  // };
-
-  // const handleOk = () => {
-  //   setIsModalOpen(false);
-  // };
 
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
@@ -166,15 +132,6 @@ export default function ViewStudentsCourse() {
 
   const columns = [
     {
-      title: "Tên",
-      dataIndex: "lastName",
-      key: "lastName",
-      width: 100,
-      fixed: "left",
-      sorter: (a, b) => a.lastName.localeCompare(b.lastName),
-      sortDirections: ["descend"],
-    },
-    {
       title: "Email",
       dataIndex: "email",
       key: "email",
@@ -191,16 +148,6 @@ export default function ViewStudentsCourse() {
       width: 100,
     },
   ];
-
-  // let data = [];
-  // dataStudent.forEach((student, index) => {
-  //   data.push({
-  //     key: index + 1,
-  //     userId: student?._id,
-  //     lastName: student?.lastName,
-  //     email: student?.email,
-  //   });
-  // });
 
   const data = useMemo(
     () =>
@@ -254,11 +201,11 @@ export default function ViewStudentsCourse() {
       <Table
         columns={columns}
         dataSource={data}
-        pagination={{ pageSize: 5 }}
+        pagination={{ pageSize: 5, position: ["bottomLeft"] }}
         scroll={{
           x: 1300,
         }}
-        className="pt-3"
+        className="pt-3 grid-container"
       />
     </React.Fragment>
   );

@@ -18,6 +18,23 @@ const viewQuizTemplates = async (data) => {
   return res.data;
 };
 
+const deleteQuizTempplate = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/quiz/templates/${data.quizTemplateId}`,
+    method: "DELETE",
+    data: data,
+  });
+  return res.data;
+};
+
+const updateQuizTemplate = (data) => {
+  return axiosInstance({
+    url: `/e-learning/quiz/templates/${data.quizTemplateId}`,
+    method: "PUT",
+    data: data.formattedValues,
+  });
+};
+
 const viewQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/course/${data.courseIds}/quizzes`,
@@ -174,4 +191,6 @@ export const QuizService = {
   updateScore,
   uploadFileUserSubmit,
   viewQuizTemplates,
+  deleteQuizTempplate,
+  updateQuizTemplate,
 };

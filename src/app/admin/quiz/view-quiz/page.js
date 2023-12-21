@@ -1,5 +1,15 @@
 "use client";
-import { Button, Table, Popconfirm, Select, Spin } from "antd";
+import {
+  Button,
+  Table,
+  Popconfirm,
+  Select,
+  Spin,
+  Menu,
+  Dropdown,
+  Space,
+  Col,
+} from "antd";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { deleteQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
@@ -8,6 +18,8 @@ import { viewCourses } from "@/features/Courses/courseSlice";
 import React from "react";
 import { useRouter } from "next/navigation";
 import UpdateQuiz from "../update-quiz/page";
+import "../view-quiz/page.css";
+import { useMediaQuery } from "react-responsive";
 
 const { Option } = Select;
 
@@ -52,20 +64,6 @@ export default function ViewQuiz() {
         setIsLoading(false);
       });
   }, [updateQuiz]);
-
-  // useEffect(() => {
-  //   dispatch(viewQuiz({ courseIds: selectedCourse }))
-  //     .then(unwrapResult)
-  //     .then((res) => {
-  //       if (res.status) {
-  //         setquiz(res.metadata);
-  //       } else {
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, [updateQuiz]);
 
   const handleViewQuiz = () => {
     setIsLoading(true);
@@ -117,8 +115,41 @@ export default function ViewQuiz() {
     },
   ];
 
+  const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
+
   let data = [];
   quiz?.forEach((i, index) => {
+    const menu = (
+      <Menu>
+        <Menu.Item>
+          <UpdateQuiz
+            courseIds={selectedCourse}
+            quizId={i?._id}
+            refresh={() => setUpdateQuiz(updateQuiz + 1)}
+          />
+        </Menu.Item>
+        <Menu.Item>
+          <Popconfirm
+            title="Xóa bài tập"
+            description="Bạn có muốn xóa bài tập?"
+            okText="Yes"
+            cancelText="No"
+            okButtonProps={{
+              style: { backgroundColor: "red" },
+            }}
+            onConfirm={() =>
+              handleDeleteQuiz({
+                quizId: i?._id,
+              })
+            }
+          >
+            <Button danger style={{ width: "100%" }}>
+              Xóa
+            </Button>
+          </Popconfirm>
+        </Menu.Item>
+      </Menu>
+    );
     data.push({
       key: index + 1,
       name: i?.name,
@@ -135,30 +166,49 @@ export default function ViewQuiz() {
           Xem chi tiết
         </Button>
       ),
-      action: (
-        <div>
-          <UpdateQuiz
-            courseIds={selectedCourse}
-            quizId={i?._id}
-            refresh={() => setUpdateQuiz(updateQuiz + 1)}
-          />
-          <Popconfirm
-            title="Xóa bài tập"
-            description="Bạn có muốn xóa bài tập?"
-            okText="Yes"
-            cancelText="No"
-            okButtonProps={{
-              style: { backgroundColor: "red" },
-            }}
-            onConfirm={() =>
-              handleDeleteQuiz({
-                quizId: i?._id,
-              })
-            }
+      action: isMobile ? (
+        <Dropdown overlay={menu}>
+          <Button
+            className="ant-dropdown-link text-center justify-self-center"
+            onClick={(e) => e.preventDefault()}
           >
-            <Button danger>Xóa</Button>
-          </Popconfirm>
-        </div>
+            Chức năng
+          </Button>
+        </Dropdown>
+      ) : (
+        <Col lg="12">
+          <Space
+            size="large"
+            direction="vertical"
+            className="lg:flex lg:flex-row lg:space-x-4 flex-wrap justify-between"
+          >
+            <Space wrap>
+              <UpdateQuiz
+                courseIds={selectedCourse}
+                quizId={i?._id}
+                refresh={() => setUpdateQuiz(updateQuiz + 1)}
+              />
+              <Popconfirm
+                title="Xóa bài tập"
+                description="Bạn có muốn xóa bài tập?"
+                okText="Yes"
+                cancelText="No"
+                okButtonProps={{
+                  style: { backgroundColor: "red" },
+                }}
+                onConfirm={() =>
+                  handleDeleteQuiz({
+                    quizId: i?._id,
+                  })
+                }
+              >
+                <Button danger style={{ width: "100%" }}>
+                  Xóa
+                </Button>
+              </Popconfirm>
+            </Space>
+          </Space>
+        </Col>
       ),
     });
   });
@@ -182,41 +232,41 @@ export default function ViewQuiz() {
   };
 
   return (
-    <div className="pb-28">
+    <div className="">
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />
         </div>
       ) : (
         <React.Fragment>
-          <div className="pb-3">
-            <div style={{ display: "flex", paddingBottom: "20px" }}>
-              <Select
-                placeholder="Chọn khóa học"
-                onChange={handleCourseChange}
-                value={selectedCourse}
-                className="me-3"
-              >
-                {courses.map((course) => (
-                  <Option key={course._id} value={course._id}>
-                    {course.name}
-                  </Option>
-                ))}
-              </Select>
+          <div style={{ display: "flex", paddingBottom: "10px" }}>
+            <Select
+              placeholder="Chọn khóa học"
+              onChange={handleCourseChange}
+              value={selectedCourse}
+              className="me-3"
+            >
+              {courses.map((course) => (
+                <Option key={course._id} value={course._id}>
+                  {course.name}
+                </Option>
+              ))}
+            </Select>
 
-              <Select
-                placeholder="Chọn bài học"
-                onChange={handleLessonChange}
-                value={selectedLesson}
-                className="me-3"
-              >
-                {selectedCourseLessons.map((lesson) => (
-                  <Option key={lesson._id} value={lesson._id}>
-                    {lesson.name}
-                  </Option>
-                ))}
-              </Select>
-            </div>
+            {/* <Select
+              placeholder="Chọn bài học"
+              onChange={handleLessonChange}
+              value={selectedLesson}
+              className="me-3"
+            >
+              {selectedCourseLessons.map((lesson) => (
+                <Option key={lesson._id} value={lesson._id}>
+                  {lesson.name}
+                </Option>
+              ))}
+            </Select> */}
+          </div>
+          <div className="pb-3">
             <Button
               type="primary"
               onClick={handleViewQuiz}
@@ -228,7 +278,8 @@ export default function ViewQuiz() {
           <Table
             columns={columns}
             dataSource={data}
-            pagination={{ pageSize: 5 }}
+            pagination={{ pageSize: 5, position: ["bottomLeft"] }}
+            className="course-grid-container"
           />
         </React.Fragment>
       )}

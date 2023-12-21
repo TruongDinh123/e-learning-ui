@@ -89,7 +89,7 @@ export default function CreateLesson(props) {
         Tạo
       </Button>
       <Modal
-        title="Edit Course"
+        title="Tạo bài học"
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
@@ -110,7 +110,7 @@ export default function CreateLesson(props) {
       >
         <div>
           <label htmlFor="course" className="fs-6 fw-bold">
-            Lesson Name
+            Tên bài học:
           </label>
           <CustomInput
             className="mb-3"
@@ -127,9 +127,9 @@ export default function CreateLesson(props) {
           />
 
           <label htmlFor="course" className="fs-6 fw-bold">
-            Content
+            Nội dung:
           </label>
-          <CustomInput
+          <textarea
             onChange={formik.handleChange("content")}
             onBlur={formik.handleBlur("content")}
             value={formik.values.content}
@@ -140,6 +140,8 @@ export default function CreateLesson(props) {
                 ? formik.errors.content
                 : null
             }
+            placeholder="Thêm nội dung"
+            className="form-control"
           />
         </div>
       </Modal>

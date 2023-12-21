@@ -1,6 +1,6 @@
 "use client";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Menu, Image, Space, Empty, Drawer, Spin } from "antd";
+import { Menu, Image, Space, Empty, Drawer, Spin, Popconfirm } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button } from "antd";
@@ -8,7 +8,8 @@ import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
 import { BookOutlined } from "@ant-design/icons";
 import { Col } from "react-bootstrap";
-import { viewQuizTemplates } from "@/features/Quiz/quizSlice";
+import { deleteTemplates, viewQuizTemplates } from "@/features/Quiz/quizSlice";
+import "../template-quiz/page.css";
 
 export default function TeamplateQuiz() {
   const dispatch = useDispatch();
@@ -16,6 +17,7 @@ export default function TeamplateQuiz() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [currentQuiz, setCurrentQuiz] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [updateQuizTemplate, setUpdateQuizTemplate] = useState(0);
 
   // viewCourses api
   useEffect(() => {
@@ -32,7 +34,7 @@ export default function TeamplateQuiz() {
         console.log(error);
         setIsLoading(false);
       });
-  }, []);
+  }, [updateQuizTemplate]);
 
   const showDrawer = (quiz) => {
     setCurrentQuiz(quiz);
@@ -44,6 +46,26 @@ export default function TeamplateQuiz() {
   };
 
   const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
+
+  const handleDeleteQuizTemplate = ({ quizTemplateId }) => {
+    setIsLoading(true);
+
+    dispatch(deleteTemplates({ quizTemplateId }))
+      .then(unwrapResult)
+      .then((res) => {
+        console.log("🚀 ~ quizTemplateId:", quizTemplateId);
+        console.log("🚀 ~ res:", res);
+        if (res.status) {
+          setUpdateQuizTemplate(updateQuizTemplate + 1);
+        } else {
+        }
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  };
 
   //table data
   let data = [];
@@ -66,8 +88,8 @@ export default function TeamplateQuiz() {
       ) : (
         <div className="max-w-screen-2xl mx-auto">
           <h1 className="font-bold text-2xl">Danh Sách bài tập mẫu</h1>
-          <div className="p-6 space-y-4 pb-28">
-            <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3">
+          <div className="space-y-4">
+            <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 list-grid-container scrollbar scrollbar-thin pb-10">
               {data.map((item, index) => {
                 return (
                   <div
@@ -111,6 +133,22 @@ export default function TeamplateQuiz() {
                             >
                               Xem chi tiết
                             </Button>
+                            <Popconfirm
+                              title="Xóa"
+                              description="Bạn có muốn xóa?"
+                              okText="Yes"
+                              cancelText="No"
+                              okButtonProps={{
+                                style: { backgroundColor: "red" },
+                              }}
+                              onConfirm={() =>
+                                handleDeleteQuizTemplate({
+                                  quizTemplateId: item?._id,
+                                })
+                              }
+                            >
+                              <Button danger>Xóa</Button>
+                            </Popconfirm>
                           </Space>
                         </Space>
                       </Col>

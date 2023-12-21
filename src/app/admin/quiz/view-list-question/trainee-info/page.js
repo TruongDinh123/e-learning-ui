@@ -25,7 +25,7 @@ export default function StudentInfo({ student, onSelect, onCheck, onScoreChange 
 
   return (
     <li
-      class="px-4 py-4 flex items-center sm:px-6"
+      class="px-4 py-4 flex flex-col sm:flex-row items-center sm:px-6"
       onClick={() => onSelect(student)}
     >
       <input
@@ -39,7 +39,7 @@ export default function StudentInfo({ student, onSelect, onCheck, onScoreChange 
         src="https://placehold.co/100x100"
         alt="Placeholder avatar for student"
       />
-      <div class="min-w-0 flex-1">
+      <div class="min-w-0 flex-1 mb-2 sm:mb-0">
         <p class="text-sm font-medium text-gray-900 truncate">
           {student.user?.lastName}
         </p>

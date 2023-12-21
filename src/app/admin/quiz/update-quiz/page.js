@@ -76,24 +76,6 @@ export default function UpdateQuiz(props) {
 
   const handleUpdateQuiz = (values) => {
     setIsLoading(true);
-    // const formattedValues = {
-    //   ...values,
-    //   // questions: values.questions.map((question) => {
-    //   //   if (question._id === questionId) {
-    //   //     return {
-    //   //       _id: question._id,
-    //   //       ...question,
-    //   //       options: question.options.map((option) => option.option),
-    //   //     };
-    //   //   }
-    //   // }),
-    //   questions: values.questions.map((question) => ({
-    //     ...question,
-    //     submissionTime: values.submissionTime.toISOString(),
-    //     options: question.options?.map((option) => option?.option),
-    //   })),
-    // };
-
     let formattedValues;
 
     const quizToUpdate = quiz.find((quiz) => quiz._id === quizId);
@@ -154,79 +136,12 @@ export default function UpdateQuiz(props) {
       });
   };
 
-  // useEffect(() => {
-  //   if (quiz.length > 0) {
-  //     const questionToUpdate = quiz.questions?.find(
-  //       (question) => question._id === questionId
-  //     );
-  //     if (questionToUpdate) {
-  //       const formattedQuestion = {
-  //         _id: questionToUpdate._id,
-  //         question: questionToUpdate.question,
-  //         answer: questionToUpdate.answer,
-  //         options: questionToUpdate.options.map((option) =>  option),
-  //       };
-  //       form.setFieldsValue({ questions: [formattedQuestion] });
-  //     }
-  //   }
-  // }, [quiz]);
-
-  // const handleUpdateQuiz = (values) => {
-  //   console.log("🚀 ~ values:", values);
-  //   setIsLoading(true);
-  //   let formattedValues = {
-  //     ...values,
-  //     submissionTime: values.submissionTime.toISOString(),
-  //   };
-
-  //   if (values.type === "multiple_choice") {
-  //     formattedValues = {
-  //       ...formattedValues,
-  //       questions: values.questions.map((question) => ({
-  //         ...question,
-  //         options: question.options?.map((option) => option?.option),
-  //       })),
-  //     };
-  //   } else if (values.type === "essay") {
-  //     formattedValues = {
-  //       ...formattedValues,
-  //       essay: {
-  //         title: values.essayTitle,
-  //         content: values.essayContent,
-  //       },
-  //     };
-  //   }
-
-  //   dispatch(updateQuiz({ quizId: quizId, formattedValues }))
-  //     .then(unwrapResult)
-  //     .then((res) => {
-  //       messageApi
-  //         .open({
-  //           type: "success",
-  //           content: "Action in progress...",
-  //           duration: 2.5,
-  //         })
-  //         .then(() => {
-  //           setIsModalOpen(false);
-  //           message.success(res.message, 1.5);
-  //           router.push(`/admin/quiz/view-list-question/${quizId}`);
-  //           refresh();
-  //         });
-  //       setIsLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       setIsLoading(false);
-  //     });
-  // };
-
   useEffect(() => {
     if (isModalOpen) {
       setIsLoading(true);
       dispatch(viewAQuiz({ quizId: quizId }))
         .then(unwrapResult)
         .then((res) => {
-          console.log("🚀 ~ res update-quiz:", res);
           if (res.status) {
             setquiz(res.metadata);
             const quizToUpdate = res.metadata.find(
@@ -260,7 +175,7 @@ export default function UpdateQuiz(props) {
           console.log(error);
         });
     }
-  }, [courseIds, quizId, isModalOpen]); // Thêm isModalOpen vào mảng phụ thuộc
+  }, [courseIds, quizId, isModalOpen]);
 
   return (
     <React.Fragment>
@@ -269,7 +184,7 @@ export default function UpdateQuiz(props) {
         type="primary"
         onClick={showModal}
         className="me-3"
-        style={{ color: "#fff", backgroundColor: "#1890ff" }}
+        style={{ width: "100%", color: "#fff", backgroundColor: "#1890ff" }}
       >
         Cập nhật
       </Button>

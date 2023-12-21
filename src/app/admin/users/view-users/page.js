@@ -7,7 +7,7 @@ import { Button, Popconfirm } from "antd";
 import { deleteUser, getAllUser } from "@/features/User/userSlice";
 import EditUser from "../edit-user/page";
 import { useMediaQuery } from "react-responsive";
-
+import "../view-users/page.css";
 export default function ViewUsers() {
   const dispatch = useDispatch();
   const [user, setUser] = useState([]);
@@ -163,7 +163,8 @@ export default function ViewUsers() {
           <Table
             columns={columns}
             dataSource={data}
-            pagination={{ pageSize: 5 }}
+            pagination={{ pageSize: 5, position: ["bottomLeft"] }}
+            className="grid-container"
           />
         </React.Fragment>
       )}

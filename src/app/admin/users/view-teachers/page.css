@@ -1,0 +1,4 @@
+.grid-container {
+    max-height: calc(100vh - 260px);
+    overflow-y: auto;
+}

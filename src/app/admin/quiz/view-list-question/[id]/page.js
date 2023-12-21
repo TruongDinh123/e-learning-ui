@@ -12,12 +12,12 @@ import React from "react";
 import Link from "next/link";
 import TabPane from "antd/es/tabs/TabPane";
 import ViewListScore from "../score-trainee/page";
+import "../[id]/page.css";
 
 export default function ViewListQuestion({ params }) {
   const dispatch = useDispatch();
   const [quiz, setquiz] = useState([]);
   const [score, setScore] = useState([]);
-  console.log("🚀 ~ score:", score);
   const [updateQuiz, setUpdateQuiz] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -85,34 +85,33 @@ export default function ViewListQuestion({ params }) {
               <>
                 <TabPane tab={`Câu hỏi`} key={quizIndex}>
                   {quiz.type === "multiple_choice" ? (
-                    <>
-                      <div className="flex justify-between items-center">
-                        <div className="border-l-2 border-gray-300 pl-4">
-                          <span className="pr-4 text-green-600">
+                    <div className="grid-container">
+                      <div className="flex flex-col sm:flex-row justify-between items-center">
+                        <div className="border-gray-300">
+                          <span className="pr-4 text-green-600 block sm:inline">
                             Đã nộp: {score.filter((s) => s.isComplete).length}
                           </span>
-                          <span className="px-4 border-l-2 border-gray-300 text-yellow-600">
+                          <span className="pr-4 border-gray-300 text-yellow-600 block sm:inline">
                             Chưa nộp:{" "}
                             {quiz.studentIds.length -
                               score.filter((s) => s.isComplete).length}
                           </span>
-                          <span className="pl-4 text-red-600">
+                          <span className=" text-red-600 block sm:inline">
                             Đã giao: {quiz.studentIds.length}
                           </span>
                         </div>
                       </div>
-                      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+                      <div className="flex flex-col items-center justify-center min-h-screen">
                         <div className="p-6 m-5 bg-white rounded shadow-md w-full sm:w-1/2 lg:w-1/3">
                           <h2 className="text-2xl font-bold text-center mb-5">
-                            List Quiz: {quiz.name}
+                            Danh sách: {quiz.name}
                           </h2>
                           {quiz.questions?.map((question, questionIndex) => (
                             <ul key={questionIndex}>
                               <li className="border p-3 mb-2">
                                 <div className="mb-2">
                                   <span className="font-bold">
-                                    Quiz {questionIndex + 1}:{" "}
-                                    {question.question}
+                                    Câu {questionIndex + 1}: {question.question}
                                   </span>
                                 </div>
                                 {question.options.map((option, optionIndex) => (
@@ -121,12 +120,12 @@ export default function ViewListQuestion({ params }) {
                                     key={optionIndex}
                                   >
                                     <span>
-                                      {optionIndex + 1}: {option}
+                                      Câu {optionIndex + 1}: {option}
                                     </span>
                                   </label>
                                 ))}
                                 <span className="text-sm text-green-700 font-bold text-center mb-5">
-                                  Answer: {question.answer}
+                                  Đáp án: {question.answer}
                                 </span>
                                 <div className="mt-3">
                                   <Popconfirm
@@ -152,9 +151,9 @@ export default function ViewListQuestion({ params }) {
                           ))}
                         </div>
                       </div>
-                    </>
+                    </div>
                   ) : (
-                    <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6">
+                    <div className="grid-container bg-white shadow overflow-hidden sm:rounded-lg p-6">
                       <div className="border-2 border-gray-300 p-4 rounded-md">
                         <div className="flex items-center space-x-4">
                           <div>

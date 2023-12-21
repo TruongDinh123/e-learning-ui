@@ -1,12 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Button, Checkbox, Empty, Tabs, message } from "antd";
-import StudentInfo from "../trainee-info/page";
 import StudentWork from "../trainee-work/page";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { getScoreByQuizId, updateScore } from "@/features/Quiz/quizSlice";
-
+import "../score-trainee/page.css";
 const { TabPane } = Tabs;
 
 export default function ViewListScore(props) {
@@ -67,7 +66,6 @@ export default function ViewListScore(props) {
           })
           .then(() => {
             setUpdate(update + 1);
-            //reset the checkboxes
             setScore(score.map((student) => ({ ...student, selected: false })));
             setSelectAll(false);
           });
@@ -84,7 +82,6 @@ export default function ViewListScore(props) {
     dispatch(getScoreByQuizId({ quizId: quizId }))
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           setScore(res.metadata);
         }
@@ -116,9 +113,9 @@ export default function ViewListScore(props) {
       >
         Chọn tất cả học viên
       </Checkbox>
-      <div className="flex">
+      <div className="flex grid-container">
         {score.length > 0 ? (
-          <Tabs tabPosition={"left"}>
+          <Tabs tabPosition={"left"} className="tabs-container">
             {score.map((student, index) => (
               <TabPane
                 tab={

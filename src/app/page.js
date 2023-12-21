@@ -32,7 +32,8 @@ export default function Home() {
 
   return (
     <div className="flex">
-      {isLoading ? (
+    <div className="content flex-1">
+    {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />
         </div>
@@ -73,6 +74,7 @@ export default function Home() {
             ))}
         </div>
       )}
+    </div>
     </div>
   );
 }

@@ -106,7 +106,7 @@ export default function ViewRoles() {
           <Table
             columns={columns}
             dataSource={data}
-            pagination={{ pageSize: 5 }}
+            pagination={{ pageSize: 5, position: ["bottomLeft"] }}
             className="pt-3"
           />
         </React.Fragment>

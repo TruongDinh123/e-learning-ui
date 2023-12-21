@@ -16,6 +16,7 @@ import { useMediaQuery } from "react-responsive";
 import { BookOutlined } from "@ant-design/icons";
 import AddCourse from "../add-course/page";
 import { Col } from "react-bootstrap";
+import "../view-courses/page.css";
 
 export default function Courses() {
   const dispatch = useDispatch();
@@ -114,8 +115,8 @@ export default function Courses() {
       ) : (
         <div className="max-w-screen-2xl mx-auto">
           <AddCourse refresh={() => setUpdateCourse(updateCourse + 1)} />
-          <div className="p-6 space-y-4 pb-28">
-            <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3">
+          <div className="space-y-4">
+            <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 course-grid-container">
               {data.map((item, index) => {
                 const menu = (
                   <Menu>
@@ -165,7 +166,7 @@ export default function Courses() {
                 return (
                   <div
                     key={index}
-                    className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 h-full"
+                    className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 min-h-[100px]"
                   >
                     <div className="relative w-full aspect-video rounded-md overflow-hidden">
                       <Image

@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getScoreByUserId } from "@/features/Quiz/quizSlice";
 import AddTeacherToCourse from "../../courses/add-teacher-course/page";
+import "../view-teachers/page.css"
 
 const { Option } = Select;
 
@@ -309,8 +310,8 @@ export default function ViewTeachersCourse() {
       <Table
         columns={columns}
         dataSource={data}
-        pagination={{ pageSize: 5 }}
-        className="pt-3"
+        pagination={{ pageSize: 5, position: ["bottomLeft"] }}
+        className="grid-container"
       />
     </React.Fragment>
   );

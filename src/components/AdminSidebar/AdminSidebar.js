@@ -152,6 +152,7 @@ export default function AdminSidebar(props) {
       <Menu
         theme="dark"
         mode="inline"
+        style={{height: '100%'}}
         defaultSelectedKeys={["1"]}
         onClick={({ key }) => {
           router.push(`/admin/${key}`);

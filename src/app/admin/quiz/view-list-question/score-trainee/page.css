@@ -1,0 +1,9 @@
+.grid-container {
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
+  
+  .tabs-container {
+    overflow-y: auto;
+    max-height: 400px; /* Adjust this value to your needs */
+  }
