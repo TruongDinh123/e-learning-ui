@@ -21,10 +21,11 @@ import {
 } from "@heroicons/react/24/solid";
 import projectsTableData from "@/data/projects-table-data";
 import ordersOverviewData from "@/data/orders-overview-data";
+import "../dashboard/page.css";
 
 export default function Dashboard() {
   return (
-    <div className="mt-12">
+    <div className="mt-12 grid-container">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
         <StatisticsCardComponent />
       </div>

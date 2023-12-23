@@ -60,8 +60,8 @@ export default function ViewListScore(props) {
       .then((res) => {
         messageApi
           .open({
-            type: "success",
-            content: "Action in progress...",
+            type: "Thành công",
+            content: "Đang thực hiện...",
             duration: 2.5,
           })
           .then(() => {

@@ -9,6 +9,20 @@ const createCourse = async (data) => {
   return res.data;
 };
 
+const uploadImageCourse = async (data) => {
+  const formData = new FormData();
+  formData.append("filename", data.filename);
+  const res = await axiosInstance({
+    url: `/e-learning/course/${data.courseId}/upload-image`,
+    method: "POST",
+    data: formData,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res.data;
+};
+
 const viewCourse = async (data) => {
   const res = await axiosInstance({
     url: "/e-learning/get-courses",
@@ -133,4 +147,5 @@ export const courseService = {
   buttonPriavteCourse,
   addTeacherToCourse,
   createNotification,
+  uploadImageCourse,
 };

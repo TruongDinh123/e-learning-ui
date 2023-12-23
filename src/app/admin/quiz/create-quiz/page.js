@@ -223,8 +223,8 @@ export default function QuizCreator() {
         }
         messageApi
           .open({
-            type: "success",
-            content: "Action in progress...",
+            type: "Thành công",
+            content: "Đang thực hiện...",
             duration: 2.5,
           })
           .then(() => {
@@ -326,12 +326,14 @@ export default function QuizCreator() {
               <>
                 <Row gutter={16} className="py-4">
                   <Col xs={24} sm={12} md={8} lg={6}>
-                    <span>Chọn khóa học của bạn:</span>
                     <Form.Item
                       name="courseIds"
+                      label="Chọn khóa học của bạn:"
                       rules={[
                         { required: true, message: "Vui lòng chọn khóa học" },
                       ]}
+                      labelCol={{ span: 24 }}
+                      wrapperCol={{ span: 24 }}
                     >
                       <Select
                         mode="multiple"
@@ -349,12 +351,14 @@ export default function QuizCreator() {
                     </Form.Item>
                   </Col>
                   <Col xs={24} sm={12} md={8} lg={6}>
-                    <span>Chọn học viên muốn chọn:</span>
                     <Form.Item
                       name="studentIds"
+                      label="Chọn học viên muốn chọn: "
                       rules={[
                         { required: true, message: "Vui lòng chọn học viên" },
                       ]}
+                      labelCol={{ span: 24 }}
+                      wrapperCol={{ span: 24 }}
                     >
                       <Select
                         mode="multiple"
@@ -392,21 +396,23 @@ export default function QuizCreator() {
                   </Col>
                 </Row>
 
-                <Col xs={24} sm={12} md={8} lg={6} className="pb-4">
-                  <span>Chọn mẫu bài tập:</span>
-                  <Select
-                    placeholder="Chọn mẫu bài tập"
-                    onChange={handleQuizTemplateChange}
-                    style={{ width: "100%" }}
-                  >
-                    <Option value="">Không chọn</Option>
-                    {quizTemplates.map((template) => (
-                      <Option key={template._id} value={template._id}>
-                        {template.name}
-                      </Option>
-                    ))}
-                  </Select>
-                </Col>
+                {!isTemplateMode && quizType !== "essay" && (
+                  <Col xs={24} sm={12} md={8} lg={6} className="pb-4">
+                    <span>Chọn mẫu bài tập:</span>
+                    <Select
+                      placeholder="Chọn mẫu bài tập"
+                      onChange={handleQuizTemplateChange}
+                      style={{ width: "100%" }}
+                    >
+                      <Option value="">Không chọn</Option>
+                      {quizTemplates.map((template) => (
+                        <Option key={template._id} value={template._id}>
+                          {template.name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Col>
+                )}
               </>
             )}
 

@@ -115,10 +115,10 @@ export default function AdminSidebar(props) {
       .then((res) => {
         console.log("🚀 ~ res:", res);
         if (res.status) {
+          router.push("/login");
           localStorage.clear();
           Cookies.remove("Bearer");
           dispatch(resetState());
-          router.push("/login");
         } else {
           message.error(res.message, 2.5);
         }
@@ -152,7 +152,7 @@ export default function AdminSidebar(props) {
       <Menu
         theme="dark"
         mode="inline"
-        style={{height: '100%'}}
+        style={{ height: "100%" }}
         defaultSelectedKeys={["1"]}
         onClick={({ key }) => {
           router.push(`/admin/${key}`);

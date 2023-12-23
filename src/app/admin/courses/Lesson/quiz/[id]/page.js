@@ -67,8 +67,8 @@ export default function QuizCreator({ params }) {
       .then((res) => {
         messageApi
           .open({
-            type: "success",
-            content: "Action in progress...",
+            type: "Thành công",
+            content: "Đang thực hiện...",
             duration: 2.5,
           })
           .then(() => {
@@ -114,8 +114,8 @@ export default function QuizCreator({ params }) {
         if (res.status) {
           messageApi
             .open({
-              type: "success",
-              content: "Action in progress...",
+              type: "Thành công",
+              content: "Đang thực hiện...",
               duration: 2.5,
             })
             .then(() => setquiz(res.metadata))
@@ -189,8 +189,8 @@ export default function QuizCreator({ params }) {
         if (res.status) {
           messageApi
             .open({
-              type: "success",
-              content: "Action in progress...",
+              type: "Thành công",
+              content: "Đang thực hiện...",
               duration: 2.5,
             })
             .then(() => setUpdateQuiz(updateQuiz + 1))

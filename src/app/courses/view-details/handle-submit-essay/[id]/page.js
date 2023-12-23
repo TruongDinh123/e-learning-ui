@@ -14,7 +14,7 @@ import {
   Avatar,
   Tooltip,
 } from "antd";
-import { unwrapResult } from "@reduxjs/toolkit";
+import { current, unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { UploadOutlined } from "@ant-design/icons";
 import {
@@ -100,6 +100,10 @@ export default function HandleSubmitEssay({ params }) {
   }, [update]);
 
   const handleSubmitEssay = () => {
+    if (!essayContent && !file) {
+      message.error("Không được để trống nội dung bài làm và file đính kèm", 3.5);
+      return;
+    }
     dispatch(submitQuizEsay({ quizId: idQuiz, essayAnswer: essayContent }))
       .then(unwrapResult)
       .then((res) => {
@@ -117,8 +121,8 @@ export default function HandleSubmitEssay({ params }) {
         setEssayContent("");
         messageApi
           .open({
-            type: "success",
-            content: "Action in progress...",
+            type: "Thành công",
+            content: "Đang thực hiện...",
             duration: 2.5,
           })
           .then(() => {
@@ -231,7 +235,7 @@ export default function HandleSubmitEssay({ params }) {
                           <Button
                             color="blue"
                             onClick={handleSubmitEssay}
-                            disabled={isTimeExceeded}
+                            disabled={isTimeExceeded || currentScore?.score}
                           >
                             Nộp bài
                           </Button>

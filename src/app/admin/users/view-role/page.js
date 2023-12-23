@@ -62,12 +62,12 @@ export default function ViewRoles() {
         <Menu.Item>
           <EditRole id={i?._id} refresh={() => setUpdateRole(updateRole + 1)} />
         </Menu.Item>
-        <Menu.Item>
+        {/* <Menu.Item>
           <DelRole
             idRole={i?._id}
             refresh={() => setUpdateRole(updateRole + 1)}
           />
-        </Menu.Item>
+        </Menu.Item> */}
       </Menu>
     );
     data.push({
@@ -102,7 +102,7 @@ export default function ViewRoles() {
         </div>
       ) : (
         <React.Fragment>
-          <CreateRole refresh={() => setUpdateRole(updateRole + 1)} />
+          {/* <CreateRole refresh={() => setUpdateRole(updateRole + 1)} /> */}
           <Table
             columns={columns}
             dataSource={data}

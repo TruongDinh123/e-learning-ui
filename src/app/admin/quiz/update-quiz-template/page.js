@@ -17,8 +17,10 @@ import { useDispatch } from "react-redux";
 import { CloseOutlined, UploadOutlined } from "@ant-design/icons";
 import {
   updateQuiz,
+  updateTemplates,
   uploadFileQuiz,
   viewAQuiz,
+  viewAQuizTemplate,
   viewQuiz,
 } from "@/features/Quiz/quizSlice";
 import { useRouter } from "next/navigation";
@@ -31,28 +33,15 @@ const ReactQuill = dynamic(
   { ssr: false }
 );
 
-export default function UpdateQuiz(props) {
-  const { quizId, courseIds, questionId, refresh } = props;
+export default function UpdateQuizTemplate(props) {
+  const { quizTemplateId, questionId, refresh } = props;
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quiz, setquiz] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [file, setFile] = useState(null);
-
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const router = useRouter();
-
-  const propUpdate = {
-    onRemove: () => {
-      setFile(null);
-    },
-    beforeUpload: (file) => {
-      setFile(file);
-      return false;
-    },
-    fileList: file ? [file] : [],
-  };
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -78,7 +67,7 @@ export default function UpdateQuiz(props) {
     setIsLoading(true);
     let formattedValues;
 
-    const quizToUpdate = quiz.find((quiz) => quiz._id === quizId);
+    const quizToUpdate = quiz.find((quiz) => quiz._id === quizTemplateId);
 
     if (quizToUpdate.type === "multiple_choice") {
       formattedValues = {
@@ -90,41 +79,23 @@ export default function UpdateQuiz(props) {
           options: question.options.map((option) => option.option),
         })),
       };
-    } else if (quizToUpdate.type === "essay") {
-      formattedValues = {
-        ...values,
-        submissionTime: values?.submissionTime?.toISOString(),
-
-        essay: {
-          title: values.essayTitle,
-          content: values.essayContent,
-        },
-      };
     }
 
-    dispatch(updateQuiz({ quizId: quizId, formattedValues }))
+    dispatch(
+      updateTemplates({ quizTemplateId: quizTemplateId, formattedValues })
+    )
       .then(unwrapResult)
       .then((res) => {
-        if (file) {
-          dispatch(uploadFileQuiz({ quizId: quizId, filename: file })).then(
-            (res) => {
-              if (res.status) {
-                setFile(null);
-              }
-              setIsLoading(false);
-            }
-          );
-        }
         messageApi
           .open({
             type: "Thành công",
             content: "Đang thực hiện...",
-            duration: 2.5,
+            duration: 0.5,
           })
           .then(() => {
             setIsModalOpen(false);
             message.success(res.message, 1.5);
-            router.push(`/admin/quiz/view-list-question/${quizId}`);
+            router.push(`/admin/quiz/template-quiz`);
             refresh();
           });
         setIsLoading(false);
@@ -139,20 +110,19 @@ export default function UpdateQuiz(props) {
   useEffect(() => {
     if (isModalOpen) {
       setIsLoading(true);
-      dispatch(viewAQuiz({ quizId: quizId }))
+      dispatch(viewAQuizTemplate({ quizTemplateId: quizTemplateId }))
         .then(unwrapResult)
         .then((res) => {
+          console.log("🚀 ~ res:", res);
           if (res.status) {
             setquiz(res.metadata);
             const quizToUpdate = res.metadata.find(
-              (quiz) => quiz._id === quizId
+              (quiz) => quiz._id === quizTemplateId
             );
             if (quizToUpdate) {
               form.setFieldsValue({
-                name: quizToUpdate.name,
-                type: quizToUpdate.type,
-                courseIds: quizToUpdate.courseIds,
-                studentIds: quizToUpdate.studentIds,
+                name: quizToUpdate?.name,
+                type: quizToUpdate?.type,
                 essayTitle: quizToUpdate.essay?.title,
                 essayContent: quizToUpdate.essay?.content,
                 attachment: quizToUpdate.essay?.attachment,
@@ -175,7 +145,7 @@ export default function UpdateQuiz(props) {
           console.log(error);
         });
     }
-  }, [courseIds, quizId, isModalOpen]);
+  }, [quizTemplateId, isModalOpen]);
 
   return (
     <React.Fragment>
@@ -190,7 +160,7 @@ export default function UpdateQuiz(props) {
       </Button>
 
       <Modal
-        title="Cập nhật bài tập"
+        title="Cập nhật bài tập mẫu"
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[<></>]}
@@ -340,9 +310,9 @@ export default function UpdateQuiz(props) {
                     </a>
                   </div>
                 )}
-                <Upload {...propUpdate}>
+                {/* <Upload {...propUpdate}>
                   <Button icon={<UploadOutlined />}>Select File</Button>
-                </Upload>
+                </Upload> */}
               </>
             )}
             <div className="pt-2 text-end">

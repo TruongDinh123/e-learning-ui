@@ -87,6 +87,14 @@ const viewAQuiz = async (data) => {
   return res.data;
 };
 
+const viewAQuizTemplate = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/quiz-template/${data.quizTemplateId}`,
+    method: "GET",
+  });
+  return res.data;
+};
+
 const updateQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}`,
@@ -191,6 +199,7 @@ export const QuizService = {
   updateScore,
   uploadFileUserSubmit,
   viewQuizTemplates,
+  viewAQuizTemplate,
   deleteQuizTempplate,
   updateQuizTemplate,
 };

@@ -10,6 +10,7 @@ import { BookOutlined } from "@ant-design/icons";
 import { Col } from "react-bootstrap";
 import { deleteTemplates, viewQuizTemplates } from "@/features/Quiz/quizSlice";
 import "../template-quiz/page.css";
+import UpdateQuizTemplate from "../update-quiz-template/page";
 
 export default function TeamplateQuiz() {
   const dispatch = useDispatch();
@@ -133,6 +134,12 @@ export default function TeamplateQuiz() {
                             >
                               Xem chi tiết
                             </Button>
+                            <UpdateQuizTemplate
+                              quizTemplateId={item?._id}
+                              refresh={() =>
+                                setUpdateQuizTemplate(updateQuizTemplate + 1)
+                              }
+                            />
                             <Popconfirm
                               title="Xóa"
                               description="Bạn có muốn xóa?"

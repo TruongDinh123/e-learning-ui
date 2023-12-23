@@ -100,13 +100,13 @@ export default function Lesson({ params }) {
     <React.Fragment>
       <Breadcrumb className="pt-3 pl-5">
         <Breadcrumb.Item>
-          <Link href="/">Home</Link>
+          <Link href="/">Tramg chủ</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Link href="/courses/view-course">Courses</Link>
+          <Link href="/courses/view-course">Khóa học của bạn</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Link href={`/admin/courses/Lesson/${params?.id}`}>
+          <Link href={`/courses/Lesson/${params?.id}`}>
             {lesson[0]?.name.slice(0, 20)}
             {lesson[0]?.name.length > 20 ? "..." : ""}
           </Link>
@@ -197,7 +197,7 @@ export default function Lesson({ params }) {
                         </div>
                         <div className="lesson-content mt-4 border rounded-md p-6">
                           <h2 className="text-2xl font-bold mb-2">
-                            Lesson Content
+                            Nội dung bài học
                           </h2>
                           <p className="text-lg">{selectedLessonContent}</p>
                         </div>
@@ -209,13 +209,11 @@ export default function Lesson({ params }) {
                         <Button
                           className="button-container me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                           onClick={() =>
-                            router.push(
-                              `/courses/lessons/view-quizs/${selectedLesson}`
-                            )
+                            router.push(`/courses/view-details/${params.id}`)
                           }
                         >
                           <FolderOpenOutlined />
-                          Quizs
+                          Làm bài tập
                         </Button>
                       </div>
                     )}

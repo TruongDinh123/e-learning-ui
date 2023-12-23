@@ -18,8 +18,8 @@ export default function DelRole(props) {
         if (res.status) {
           messageApi
             .open({
-              type: "success",
-              content: "Action in progress...",
+              type: "Thành công",
+              content: "Đang thực hiện...",
               duration: 2.5,
             })
             .then(() => message.success(res.message, 2.5), refresh());

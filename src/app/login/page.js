@@ -44,8 +44,8 @@ export default function Login() {
           if (res.status) {
             messageApi
               .open({
-                type: "success",
-                content: "Action in progress...",
+                type: "Thành công",
+                content: "Đang thực hiện...",
               })
               .then(() =>
                 message.info(
@@ -90,7 +90,7 @@ export default function Login() {
       {contextHolder}
       <div className="row py-5">
         <div className="col-lg-4 col-md-6 col-sm-8 mx-auto py-5">
-          <h1 className="text-3xl font-bold p-2">Login</h1>
+          <h1 className="text-3xl font-bold p-2">Đăng nhập</h1>
           <form
             action=""
             onSubmit={formik.handleSubmit}
@@ -98,7 +98,7 @@ export default function Login() {
           >
             <CustomInput
               prefix={<AiOutlineMail />}
-              placeholder="Email Address"
+              placeholder="Địa chỉ email"
               onChange={formik.handleChange("email")}
               onBlur={formik.handleBlur("email")}
               value={formik.values.email}
@@ -125,7 +125,7 @@ export default function Login() {
                   />
                 )
               }
-              placeholder="Password"
+              placeholder="Mật khẩu"
               className="mt-3"
               onChange={(e) => {
                 formik.handleChange("password")(e);
@@ -143,15 +143,15 @@ export default function Login() {
               type={showPassword ? "text" : "password"}
             />
             <div className="pt-3 pb-2">
-              <Link href="#">
+              {/* <Link href="#">
                 <span className="text-decoration-none my-3 text-end">
                   Forgot Password ?
                 </span>
-              </Link>
+              </Link> */}
             </div>
             <Spin spinning={isLoading}>
               <CustomButton
-                title="login"
+                title="Đăng nhập"
                 type="primary"
                 className="w-100 d-block mb-3"
                 style={{ color: "#fff", backgroundColor: "#1890ff" }}
@@ -159,13 +159,13 @@ export default function Login() {
                 disabled={isLoading}
               />
             </Spin>
-            <div className="my-3">
+            {/* <div className="my-3">
               <Link href="/signup">
                 <span className="text-dark text-decoration-none text-center">
                   Do you have an Account? <b>Register</b>
                 </span>
               </Link>
-            </div>
+            </div> */}
           </form>
         </div>
       </div>

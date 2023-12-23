@@ -26,7 +26,7 @@ export default function CompleteLesson(props) {
           if (res.status) {
             messageApi
               .open({
-                type: "success",
+                type: "Thành công",
                 content: "Update...",
                 duration: 2.5,
               })

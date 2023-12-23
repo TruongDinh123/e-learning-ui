@@ -51,8 +51,8 @@ export default function CreateRole(props) {
         .then((res) => {
           messageApi
             .open({
-              type: "success",
-              content: "Action in progress...",
+              type: "Thành công",
+              content: "Đang thực hiện...",
             })
             .then(() => {
               refresh();

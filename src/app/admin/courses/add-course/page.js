@@ -4,14 +4,16 @@ import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as yup from "yup";
-import { Button, Modal, Radio, message } from "antd";
+import { Button, Modal, Radio, Upload, message } from "antd";
 import { useRouter } from "next/navigation";
 import {
   buttonPriavteourse,
   buttonPublicCourse,
   createCourse,
+  uploadImageCourse,
 } from "@/features/Courses/courseSlice";
 import { useState } from "react";
+import { UploadOutlined } from "@ant-design/icons";
 
 const CourseSchema = yup.object({
   title: yup
@@ -31,6 +33,7 @@ export default function AddCourse(props) {
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [file, setFile] = useState(null);
   const dispatch = useDispatch();
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -55,6 +58,18 @@ export default function AddCourse(props) {
     setIsModalOpen(false);
   };
 
+  const propsUdateImage = {
+    onRemove: () => {
+      setFile(null);
+      formik.setFieldValue("filename", ""); // reset filename when file is removed
+    },
+    beforeUpload: (file) => {
+      setFile(file);
+      formik.setFieldValue("filename", file.name); // set filename when a new file is uploaded
+      return false;
+    },
+    fileList: file ? [file] : [],
+  };
   const formik = useFormik({
     validationSchema: CourseSchema,
     initialValues: {
@@ -71,30 +86,39 @@ export default function AddCourse(props) {
         .then(unwrapResult)
         .then((res) => {
           const courseId = res.metadata?._id;
-          if (res.status) {
-            if (values.isPublic) {
-              dispatch(buttonPublicCourse(courseId));
-              refresh();
-            } else {
-              dispatch(buttonPriavteourse(courseId));
-              refresh();
-            }
-            messageApi
-              .open({
-                type: "success",
-                content: "Action in progress...",
-                duration: 2.5,
-              })
-              .then(() => message.success(res.message, 2.5), refresh())
-              .then(() => {
-                router.push("/admin/courses/view-courses");
-              });
-          } else {
-            messageApi.error(res.message);
+          if (file) {
+            dispatch(
+              uploadImageCourse({ courseId: courseId, filename: file })
+            ).then((res) => {
+              if (res.status) {
+                if (values.isPublic) {
+                  dispatch(buttonPublicCourse(courseId));
+                  refresh();
+                } else {
+                  dispatch(buttonPriavteourse(courseId));
+                  refresh();
+                }
+                setFile(null);
+              }
+              setIsLoading(false);
+            });
           }
-        })
-        .catch((error) => {
-          console.log(error);
+          messageApi
+            .open({
+              type: "Thành công",
+              content: "Đang thực hiện...",
+              duration: 2.5,
+            })
+            .then((res) => {
+              router.push("/admin/courses/view-courses");
+              message.success(res.message, 0.5), refresh();
+              setIsLoading(false);
+            })
+            .catch((error) => {
+              console.log(error);
+              setIsLoading(false);
+              message.error(error.response?.data?.message, 3.5);
+            });
         });
     },
   });
@@ -123,7 +147,7 @@ export default function AddCourse(props) {
         footer={
           <div>
             <Button
-              key="back"
+              key="save"
               type="primary"
               onClick={handleOk}
               style={{
@@ -134,7 +158,7 @@ export default function AddCourse(props) {
             >
               Save
             </Button>
-            <Button key="back" onClick={handleCancel}>
+            <Button key="cancel" onClick={handleCancel}>
               Cancel
             </Button>
           </div>
@@ -179,6 +203,10 @@ export default function AddCourse(props) {
                 ? formik.errors.title
                 : null}
             </div>
+
+            <Upload {...propsUdateImage}>
+              <Button icon={<UploadOutlined />}>Chọn tệp</Button>
+            </Upload>
 
             <div className="mt-3">
               <label htmlFor="visibility" className="fs-6 fw-bold">

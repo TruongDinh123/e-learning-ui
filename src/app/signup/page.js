@@ -38,7 +38,7 @@ export default function SignUp() {
         .then((res) => {
           messageApi
             .open({
-              type: "success",
+              type: "Thành công",
               content: "Register successfully...",
               duration: 2.5,
             })

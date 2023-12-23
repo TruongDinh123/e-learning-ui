@@ -13,6 +13,20 @@ export const createCourse = createAsyncThunk(
   }
 );
 
+export const uploadImageCourse = createAsyncThunk(
+  "/e-learning/upload-image-course",
+  async (data, { rejectWithValue }) => {
+    console.log("🚀 ~ data:", data);
+    try {
+      const response = await courseService.uploadImageCourse(data);
+      return response;
+    } catch (err) {
+      console.log("🚀 ~ err:", err);
+      return rejectWithValue(err);
+    }
+  }
+);
+
 export const viewCourses = createAsyncThunk(
   "/e-learning/get-courses",
   async (data, { rejectWithValue }) => {

@@ -37,8 +37,8 @@ export default function ViewStudentsCourse() {
         if (res.status) {
           messageApi
             .open({
-              type: "success",
-              content: "Action in progress...",
+              type: "Thành công",
+              content: "Đang thực hiện...",
               duration: 1.5,
             })
             .then(() => {

@@ -1,13 +1,18 @@
 "use client";
-import { editCourse, getACourse } from "@/features/Courses/courseSlice";
+import {
+  editCourse,
+  getACourse,
+  uploadImageCourse,
+} from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Modal, message } from "antd";
+import { Modal, Upload, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button } from "antd";
 import CustomInput from "@/components/comman/CustomInput";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { UploadOutlined } from "@ant-design/icons";
 
 const CourseSchema = yup.object({
   title: yup.string().min(2).required("Nhập tiêu đề"),
@@ -21,10 +26,24 @@ export default function EditCourses(props) {
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState(null);
+  const [file, setFile] = useState(null);
 
   useEffect(() => {
     getACourseData();
   }, []);
+
+  const propsUdateImage = {
+    onRemove: () => {
+      setFile(null);
+      formik.setFieldValue("filename", ""); // reset filename when file is removed
+    },
+    beforeUpload: (file) => {
+      setFile(file);
+      formik.setFieldValue("filename", file.name); // set filename when a new file is uploaded
+      return false;
+    },
+    fileList: file ? [file] : [],
+  };
 
   const getACourseData = () => {
     dispatch(getACourse(id))
@@ -64,10 +83,22 @@ export default function EditCourses(props) {
       dispatch(editCourse({ id: props?.id, values }))
         .then(unwrapResult)
         .then((res) => {
+          if (file) {
+            dispatch(uploadImageCourse({ courseId: id, filename: file })).then(
+              (res) => {
+                if (res.status) {
+                  refresh();
+                }
+              }
+            );
+          }
+          else {
+            refresh();
+          }
           messageApi
             .open({
-              type: "success",
-              content: "Action in progress...",
+              type: "Thành công",
+              content: "Đang thực hiện...",
               duration: 2.5,
             })
             .then(() => {
@@ -136,6 +167,10 @@ export default function EditCourses(props) {
             error={formik.touched.title && formik.errors.title}
           />
         </div>
+
+        <Upload {...propsUdateImage}>
+          <Button icon={<UploadOutlined />}>Chọn tệp</Button>
+        </Upload>
       </Modal>
     </React.Fragment>
   );

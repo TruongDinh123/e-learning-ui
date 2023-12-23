@@ -3,11 +3,9 @@ import Link from "next/link";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import { useDispatch, useSelector } from "react-redux";
-import CustomButton from "../comman/CustomBtn";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { resetState, setUser } from "@/features/User/userSlice";
-import { Button, Col, Row, Tooltip } from "antd";
+import { Col, Row, Tooltip } from "antd";
 import "../Header/header.css";
 import {
   LogoutOutlined,
@@ -17,6 +15,7 @@ import {
 } from "@ant-design/icons";
 import React, { useCallback } from "react";
 import { Image, Navbar } from "react-bootstrap";
+import Cookies from "js-cookie";
 
 const logo = "/images/logo.jpg";
 const logo2 = "/images/logo-svg.svg";
@@ -29,17 +28,17 @@ const UserLinks = () => {
     <React.Fragment>
       <Link href="/courses/view-course">
         <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
-          My Course
+          Khóa học của tôi
         </span>
       </Link>
       <Link href="/courses/view-score">
         <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
-          Score Quizs
+          Điểm của tôi
         </span>
       </Link>
       <Link href="/web-rtc/lobby">
         <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
-          Create Room
+          Tạo phòng họp
         </span>
       </Link>
       {(userState?.metadata?.account?.roles.includes("Admin") ||
@@ -60,11 +59,11 @@ export default function Header() {
   const dispatch = useDispatch();
 
   const logout = useCallback(() => {
+    router.push("/login");
     localStorage.clear();
     Cookies.remove("Bearer");
     dispatch(resetState());
     dispatch(setUser(null));
-    router.push("/login");
   }, [dispatch, router]);
 
   return (
@@ -99,7 +98,7 @@ export default function Header() {
           <Nav className="text-md font-bold text-blue-700 lg:flex-grow">
             <Link href="/">
               <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
-                Home
+                Trang chủ
               </span>
             </Link>
             {userState && <UserLinks />}
@@ -108,54 +107,41 @@ export default function Header() {
             style={{
               display: "flex",
               justifyContent: "center",
-              alignItems: "center",
             }}
+            id="responsive-navbar-nav"
+            className="text-md font-bold text-blue-700 lg:flex-grow"
           >
-            {userState ? (
-              <span
-                className="block text-md px-4 py-2 rounded text-blue-700 ml-2 font-bold hover:text-white mt-4 hover:bg-blue-700 lg:mt-0"
-                style={{ textAlign: "center" }}
-              >
-                {userState.metadata?.account?.lastName}
-              </span>
-            ) : (
-              <span
-                className="block text-md px-4 py-2 rounded text-blue-700 ml-2 font-bold hover:text-white mt-4 hover:bg-blue-700 lg:mt-0"
-                style={{ textAlign: "center" }}
-              >
-                Guest
-              </span>
-            )}
-            {userState !== null ? (
-              <Tooltip title="Logout">
-                <span
-                  title="Logout"
-                  onClick={logout}
-                  icon={<LogoutOutlined />}
-                  className="block text-md px-4 py-2 rounded text-blue-700 ml-2 font-bold hover:text-white mt-4 hover:bg-blue-700 lg:mt-0"
-                >
-                  Logout
+            <React.Fragment>
+              {userState ? (
+                <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
+                  {userState.metadata?.account?.lastName}
                 </span>
-              </Tooltip>
-            ) : (
-              <Tooltip title="Login">
-                <Link href="/login" icon={<LoginOutlined />}>
-                  <span className="block text-md px-4 ml-2 py-2 rounded text-blue-700 font-bold hover:text-white mt-4 hover:bg-blue-700 lg:mt-0">
-                    Login
+              ) : (
+                <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
+                  Khách
+                </span>
+              )}
+              {userState !== null ? (
+                <Tooltip title="Logout">
+                  <span
+                    title="Logout"
+                    onClick={logout}
+                    icon={<LogoutOutlined />}
+                    className="cursor-pointer block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
+                  >
+                    Đăng xuất
                   </span>
-                </Link>
-              </Tooltip>
-            )}
-
-            {userState === null && (
-              <Tooltip title="Sign up">
-                <Link href="/signup" icon={<UserAddOutlined />}>
-                  <span className="block text-md px-4 py-2 rounded text-blue-700 ml-2 font-bold hover:text-white mt-4 hover:bg-blue-700 lg:mt-0">
-                    Sign up
-                  </span>
-                </Link>
-              </Tooltip>
-            )}
+                </Tooltip>
+              ) : (
+                <Tooltip title="Login">
+                  <Link href="/login" icon={<LoginOutlined />}>
+                    <span className="cursor-pointer block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
+                      Đăng nhập
+                    </span>
+                  </Link>
+                </Tooltip>
+              )}
+            </React.Fragment>
           </Nav>
         </Navbar.Collapse>
       </Container>
