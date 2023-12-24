@@ -54,7 +54,7 @@ export default function Login() {
                       ? "Home"
                       : "Dashboard"
                   } `,
-                  2.5
+                  0.5
                 )
               )
               .then(() => {
