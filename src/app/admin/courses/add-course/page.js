@@ -36,9 +36,9 @@ export default function AddCourse(props) {
   const [file, setFile] = useState(null);
   const dispatch = useDispatch();
 
-  // const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage?.getItem("user"));
 
-  // const isAdmin = user.metadata.account.roles.includes("Admin");
+  const isAdmin = user?.metadata?.account?.roles?.includes("Admin");
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -84,42 +84,40 @@ export default function AddCourse(props) {
         .then((res) => {
           const courseId = res.metadata?._id;
           if (file) {
-            dispatch(
-              uploadImageCourse({ courseId: courseId, filename: file })
-            )
-            .then(unwrapResult)
-            .then((res) => {
-              if (res.status) {
-                if (values.isPublic) {
-                  dispatch(buttonPublicCourse(courseId));
-                } else {
-                  dispatch(buttonPriavteourse(courseId));
+            dispatch(uploadImageCourse({ courseId: courseId, filename: file }))
+              .then(unwrapResult)
+              .then((res) => {
+                if (res.status) {
+                  if (values.isPublic) {
+                    dispatch(buttonPublicCourse(courseId));
+                  } else {
+                    dispatch(buttonPriavteourse(courseId));
+                  }
+                  setFile(null);
+                  setIsLoading(false);
+                  messageApi
+                    .open({
+                      type: "Thành công",
+                      content: "Đang thực hiện...",
+                      duration: 2.5,
+                    })
+                    .then((res) => {
+                      router.push("/admin/courses/view-courses");
+                      message.success(res.message, 0.5);
+                      refresh();
+                      setIsLoading(false);
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                      setIsLoading(false);
+                      message.error(error.response?.data?.message, 3.5);
+                    });
                 }
-                setFile(null);
+              })
+              .catch((error) => {
+                console.log(error);
                 setIsLoading(false);
-                messageApi
-                .open({
-                  type: "Thành công",
-                  content: "Đang thực hiện...",
-                  duration: 2.5,
-                })
-                .then((res) => {
-                  router.push("/admin/courses/view-courses");
-                  message.success(res.message, 0.5);
-                  refresh();
-                  setIsLoading(false);
-                })
-                .catch((error) => {
-                  console.log(error);
-                  setIsLoading(false);
-                  message.error(error.response?.data?.message, 3.5);
-                });
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-              setIsLoading(false);
-            });
+              });
           }
         });
     },
@@ -128,19 +126,19 @@ export default function AddCourse(props) {
   return (
     <div>
       {contextHolder}
-      {/* {isAdmin && ( */}
-      <Button
-        type="primary"
-        onClick={showModal}
-        className="me-3"
-        style={{
-          color: "#fff",
-          backgroundColor: "#1890ff",
-        }}
-      >
-        Tạo khóa học
-      </Button>
-      {/* )} */}
+      {isAdmin && (
+        <Button
+          type="primary"
+          onClick={showModal}
+          className="me-3"
+          style={{
+            color: "#fff",
+            backgroundColor: "#1890ff",
+          }}
+        >
+          Tạo khóa học
+        </Button>
+      )}
       <Modal
         title="Tạo khóa học"
         open={isModalOpen}
