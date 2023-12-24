@@ -60,23 +60,6 @@ export default function AdminSidebar(props) {
     },
     {
       key: "3",
-      icon: <FileAddOutlined />,
-      label: "Bài kiểm tra",
-      children: [
-        {
-          key: "assignment/create-assignment",
-          icon: <UserOutlined />,
-          label: "Tạo bài kiểm tra",
-        },
-        {
-          key: "assignment/view-assignment",
-          icon: <UserOutlined />,
-          label: "Xem bài kiểm tra",
-        },
-      ],
-    },
-    {
-      key: "4",
       icon: <UserOutlined />,
       label: "Quản lý",
       children: [
@@ -90,7 +73,7 @@ export default function AdminSidebar(props) {
   ];
 
   if (userRole !== "Mentor") {
-    menuItems[3].children.push(
+    menuItems[2].children.push(
       {
         key: "users/view-users",
         icon: <UserOutlined />,
@@ -113,7 +96,6 @@ export default function AdminSidebar(props) {
     dispatch(logOut())
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           router.push("/login");
           localStorage.clear();
@@ -131,7 +113,7 @@ export default function AdminSidebar(props) {
   return (
     <Sider trigger={null} collapsible collapsed={collapsed}>
       <div className="demo-logo-vertical d-flex justify-content-center align-items-center py-3">
-        <Avatar src="" />
+        <Avatar src={`https://xsgames.co/randomusers/avatar.php?g=pixel`} />
         <Nav>
           {userState !== null ? (
             <CustomButton

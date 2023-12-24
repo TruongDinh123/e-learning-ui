@@ -117,8 +117,8 @@ export default function Lesson({ params }) {
                           <Popconfirm
                             title="Delete the Lesson"
                             description="Are you sure to delete this Lesson?"
-                            okText="Yes"
-                            cancelText="No"
+                            okText="Có"
+                            cancelText="Không"
                             okButtonProps={{
                               style: { backgroundColor: "red" },
                             }}
@@ -208,8 +208,8 @@ export default function Lesson({ params }) {
                                   <Popconfirm
                                     title="Delete the Lesson"
                                     description="Are you sure to delete this Lesson?"
-                                    okText="Yes"
-                                    cancelText="No"
+                                    okText="Có"
+                                    cancelText="Không"
                                     okButtonProps={{
                                       style: { backgroundColor: "red" },
                                     }}

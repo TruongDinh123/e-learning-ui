@@ -19,7 +19,7 @@ const ScoreManagement = () => {
   const dispatch = useDispatch();
   const [score, setScore] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("tất cả");
   const { Option } = Select;
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(
@@ -49,21 +49,21 @@ const ScoreManagement = () => {
       dataIndex: "key",
     },
     {
-      title: "Quiz Name",
+      title: "Tên bài tập",
       dataIndex: "name",
       onFilter: (value, record) => record.name.indexOf(value) === 0,
       sorter: (a, b) => a.name.length - b.name.length,
       sortDirections: ["descend"],
     },
     {
-      title: "Score",
+      title: "Điểm",
       dataIndex: "score",
       onFilter: (value, record) => record.score.indexOf(value) === 0,
       sorter: (a, b) => a.score.length - b.score.length,
       sortDirections: ["descend"],
     },
     {
-      title: "Action",
+      title: "Chức năng",
       dataIndex: "action",
     },
   ];
@@ -79,7 +79,6 @@ const ScoreManagement = () => {
     dispatch(getScore())
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           setScore(res.metadata);
         }
@@ -132,7 +131,7 @@ const ScoreManagement = () => {
     );
 
     if (
-      filter === "all" ||
+      filter === "tất cả" ||
       (filter === "quiz" && i.quiz) ||
       (filter === "assignment" && i.assignment)
     ) {
@@ -217,15 +216,14 @@ const ScoreManagement = () => {
         </div>
       ) : (
         <React.Fragment>
-          <h1>My Scoce</h1>
           <Select
-            defaultValue="all"
+            defaultValue="tất cả"
             style={{ width: 120 }}
             onChange={handleFilterChange}
           >
-            <Option value="all">All</Option>
-            <Option value="quiz">Quiz</Option>
-            <Option value="assignment">Assignment</Option>
+            <Option value="tất cả">Tất cả</Option>
+            <Option value="quiz">Bài tập</Option>
+            <Option value="assignment">Bài kiểm tra</Option>
           </Select>
           <Table columns={columns} dataSource={data} />
         </React.Fragment>

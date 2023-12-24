@@ -11,7 +11,6 @@ import {
 } from "@/features/Lesson/lessonSlice";
 import { UploadOutlined } from "@ant-design/icons";
 
-
 export default function VideoLesson(propsComponent) {
   const { lessonId } = propsComponent;
   const dispatch = useDispatch();
@@ -139,7 +138,7 @@ export default function VideoLesson(propsComponent) {
             video
           </Button>
           <Modal
-            title="Video Lesson"
+            title="Video bài học"
             open={isModalOpen}
             onCancel={handleCancel}
             onOk={handleOk}
@@ -148,7 +147,7 @@ export default function VideoLesson(propsComponent) {
             footer={
               <React.Fragment>
                 <Button key="cancel" onClick={handleOk}>
-                  Cancel
+                  Hủy
                 </Button>
               </React.Fragment>
             }
@@ -156,7 +155,7 @@ export default function VideoLesson(propsComponent) {
             <React.Fragment>
               <Upload {...props}>
                 <Button icon={<UploadOutlined />} disabled={!isVideoEmpty}>
-                  Select File
+                  Thêm video
                 </Button>
               </Upload>
               <Button
@@ -169,15 +168,15 @@ export default function VideoLesson(propsComponent) {
                 }}
                 disabled={!isVideoEmpty || !file}
               >
-                save
+                Lưu
               </Button>
               {data.map((item, itemIndex) => (
                 <React.Fragment key={itemIndex}>
                   <Popconfirm
                     title="Delete video"
                     description="Are you sure to delete video?"
-                    okText="Yes"
-                    cancelText="No"
+                    okText="Có"
+                    cancelText="Không"
                     okButtonProps={{ style: { backgroundColor: "red" } }}
                     onConfirm={() =>
                       handleDelVideoLesson({

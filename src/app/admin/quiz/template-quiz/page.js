@@ -143,8 +143,8 @@ export default function TeamplateQuiz() {
                             <Popconfirm
                               title="Xóa"
                               description="Bạn có muốn xóa?"
-                              okText="Yes"
-                              cancelText="No"
+                              okText="Có"
+                              cancelText="Không"
                               okButtonProps={{
                                 style: { backgroundColor: "red" },
                               }}

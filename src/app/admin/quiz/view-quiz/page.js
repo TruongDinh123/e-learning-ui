@@ -132,8 +132,8 @@ export default function ViewQuiz() {
           <Popconfirm
             title="Xóa bài tập"
             description="Bạn có muốn xóa bài tập?"
-            okText="Yes"
-            cancelText="No"
+            okText="Có"
+            cancelText="Không"
             okButtonProps={{
               style: { backgroundColor: "red" },
             }}
@@ -191,8 +191,8 @@ export default function ViewQuiz() {
               <Popconfirm
                 title="Xóa bài tập"
                 description="Bạn có muốn xóa bài tập?"
-                okText="Yes"
-                cancelText="No"
+                okText="Có"
+                cancelText="Không"
                 okButtonProps={{
                   style: { backgroundColor: "red" },
                 }}

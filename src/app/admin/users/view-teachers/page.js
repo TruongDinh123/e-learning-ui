@@ -183,8 +183,8 @@ export default function ViewTeachersCourse() {
           <Popconfirm
             title="Xóa học viên"
             description="Bạn có muốn xóa học viên?"
-            okText="Yes"
-            cancelText="No"
+            okText="Có"
+            cancelText="Không"
             okButtonProps={{
               style: { backgroundColor: "red" },
             }}

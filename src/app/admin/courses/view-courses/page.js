@@ -149,8 +149,8 @@ export default function Courses() {
                       <Popconfirm
                         title="Xóa khóa học"
                         description="Bạn muốn chắc xóa khóa học?"
-                        okText="Yes"
-                        cancelText="No"
+                        okText="Có"
+                        cancelText="Không"
                         onConfirm={() => handleDeleteCourse(item?._id)}
                       >
                         <Button danger style={{ width: "100%" }}>
@@ -254,8 +254,8 @@ export default function Courses() {
                               <Popconfirm
                                 title="Xóa khóa học"
                                 description="Bạn có chắc xóa khóa học?"
-                                okText="Yes"
-                                cancelText="No"
+                                okText="Có"
+                                cancelText="Không"
                                 okButtonProps={{
                                   style: { backgroundColor: "red" },
                                 }}

@@ -303,7 +303,7 @@ export default function QuizCreator() {
     <div>
       {contextHolder}
       <div className="overflow-y-auto h-screen pb-28 scrollbar-thin justify-center items-center ">
-        <h1 className="text-2xl">Tạo bài tập</h1>
+      <h1 className="text-2xl">{isTemplateMode ? "Tạo bài tập mẫu" : "Tạo bài tập"}</h1>
         {isLoading ? (
           <div className="flex justify-center items-center h-screen">
             <Spin />
@@ -593,6 +593,9 @@ export default function QuizCreator() {
                 <Form.Item label="Thời hạn nộp" name="submissionTime">
                   <DatePicker
                     showTime
+                    okButtonProps={{
+                      style: { backgroundColor: "#1890ff", color: "#fff" },
+                    }}
                     disabledDate={(current) => {
                       // Không cho phép chọn ngày trước ngày hiện tại
                       let currentDate = new Date();
@@ -603,7 +606,7 @@ export default function QuizCreator() {
                 </Form.Item>
 
                 <Upload {...props}>
-                  <Button icon={<UploadOutlined />}>Select File</Button>
+                  <Button icon={<UploadOutlined />}>Thêm tệp</Button>
                 </Upload>
 
                 <div className="pt-2 text-end">

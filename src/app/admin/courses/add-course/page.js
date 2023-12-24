@@ -86,36 +86,41 @@ export default function AddCourse(props) {
           if (file) {
             dispatch(
               uploadImageCourse({ courseId: courseId, filename: file })
-            ).then((res) => {
+            )
+            .then(unwrapResult)
+            .then((res) => {
               if (res.status) {
                 if (values.isPublic) {
                   dispatch(buttonPublicCourse(courseId));
-                  refresh();
                 } else {
                   dispatch(buttonPriavteourse(courseId));
-                  refresh();
                 }
                 setFile(null);
+                setIsLoading(false);
+                messageApi
+                .open({
+                  type: "Thành công",
+                  content: "Đang thực hiện...",
+                  duration: 2.5,
+                })
+                .then((res) => {
+                  router.push("/admin/courses/view-courses");
+                  message.success(res.message, 0.5);
+                  refresh();
+                  setIsLoading(false);
+                })
+                .catch((error) => {
+                  console.log(error);
+                  setIsLoading(false);
+                  message.error(error.response?.data?.message, 3.5);
+                });
               }
-              setIsLoading(false);
-            });
-          }
-          messageApi
-            .open({
-              type: "Thành công",
-              content: "Đang thực hiện...",
-              duration: 2.5,
-            })
-            .then((res) => {
-              router.push("/admin/courses/view-courses");
-              message.success(res.message, 0.5), refresh();
-              setIsLoading(false);
             })
             .catch((error) => {
               console.log(error);
               setIsLoading(false);
-              message.error(error.response?.data?.message, 3.5);
             });
+          }
         });
     },
   });

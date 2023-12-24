@@ -112,15 +112,9 @@ export default function Header() {
             className="text-md font-bold text-blue-700 lg:flex-grow"
           >
             <React.Fragment>
-              {userState ? (
-                <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
-                  {userState.metadata?.account?.lastName}
-                </span>
-              ) : (
-                <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
-                  Khách
-                </span>
-              )}
+              <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
+                {userState?.metadata?.account?.lastName}
+              </span>
               {userState !== null ? (
                 <Tooltip title="Logout">
                   <span

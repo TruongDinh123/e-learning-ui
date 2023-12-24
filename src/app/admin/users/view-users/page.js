@@ -85,9 +85,9 @@ export default function ViewUsers() {
           <Popconfirm
             title="Delete the user"
             description="Are you sure to delete this user?"
-            okText="Yes"
+            okText="Có"
             okButtonProps={{ style: { backgroundColor: "red" } }}
-            cancelText="No"
+            cancelText="Không"
             onConfirm={() => handleDeleteUser(i?._id)}
           >
             <Button danger>Xóa</Button>
@@ -118,8 +118,8 @@ export default function ViewUsers() {
             title="Delete the user"
             description="Are you sure to delete this user?"
             okButtonProps={{ style: { backgroundColor: "red" } }}
-            okText="Yes"
-            cancelText="No"
+            okText="Có"
+            cancelText="Không"
             onConfirm={() => handleDeleteUser(i?._id)}
           >
             <Button danger>Xóa</Button>

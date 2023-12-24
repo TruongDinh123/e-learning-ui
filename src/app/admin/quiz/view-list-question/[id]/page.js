@@ -131,8 +131,8 @@ export default function ViewListQuestion({ params }) {
                                   <Popconfirm
                                     title="Delete the quiz"
                                     description="Are you sure to delete this Quiz?"
-                                    okText="Yes"
-                                    cancelText="No"
+                                    okText="Có"
+                                    cancelText="Không"
                                     okButtonProps={{
                                       style: { backgroundColor: "red" },
                                     }}

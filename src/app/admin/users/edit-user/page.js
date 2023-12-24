@@ -98,10 +98,10 @@ export default function EditUser(props) {
         className="me-3"
         style={{ width: "100%", color: "#fff", backgroundColor: "#1890ff" }}
       >
-        Chỉnh sửa
+        Cập nhật
       </Button>
       <Modal
-        title="Chỉnh sửa vài trò"
+        title="Cập nhật vài trò"
         open={isModalOpen}
         footer={
           <React.Fragment>

@@ -84,29 +84,30 @@ export default function EditCourses(props) {
         .then(unwrapResult)
         .then((res) => {
           if (file) {
-            dispatch(uploadImageCourse({ courseId: id, filename: file })).then(
-              (res) => {
+            dispatch(uploadImageCourse({ courseId: id, filename: file }))
+              .then(unwrapResult)
+              .then((res) => {
                 if (res.status) {
-                  refresh();
+                  setFile(null);
+                  messageApi
+                    .open({
+                      type: "Thành công",
+                      content: "Đang thực hiện...",
+                      duration: 2.5,
+                    })
+                    .then(() => {
+                      refresh();
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                      message.error(error.response?.data?.message, 3.5);
+                    });
                 }
-              }
-            );
+              })
+              .catch((error) => {
+                console.log(error);
+              });
           }
-          else {
-            refresh();
-          }
-          messageApi
-            .open({
-              type: "Thành công",
-              content: "Đang thực hiện...",
-              duration: 2.5,
-            })
-            .then(() => {
-              refresh();
-            });
-        })
-        .catch((error) => {
-          console.log(error);
         });
     },
   });
@@ -120,10 +121,10 @@ export default function EditCourses(props) {
         className="me-3"
         style={{ width: "100%", color: "#fff", backgroundColor: "#1890ff" }}
       >
-        Chỉnh sửa
+        Cập nhật
       </Button>
       <Modal
-        title="Chỉnh sửa khóa học"
+        title="Cập nhật khóa học"
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}

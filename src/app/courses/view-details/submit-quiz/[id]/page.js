@@ -16,7 +16,6 @@ export default function Quizs({ params }) {
   const [isComplete, setIsComplete] = useState(false);
   const [loading, setLoading] = useState(true);
   const [studentAnswers, setStudentAnswers] = useState({});
-  console.log("🚀 ~ studentAnswers:", studentAnswers);
 
   const handleAnswer = (questionId, answer) => {
     setSelectedAnswers((prevAnswers) => ({
@@ -193,7 +192,7 @@ export default function Quizs({ params }) {
                       type="default"
                       onClick={handleSubmit}
                       disabled={isTimeExceeded || submitted || isComplete}
-                      className="mr-3 bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded"
+                      className="mr-3 bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 rounded"
                     >
                       Submit
                     </Button>

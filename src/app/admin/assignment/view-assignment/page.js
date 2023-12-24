@@ -151,8 +151,8 @@ export default function ViewAssignment() {
     //   <Popconfirm
     //     title="Delete the quiz"
     //     description="Are you sure to delete this Quiz?"
-    //     okText="Yes"
-    //     cancelText="No"
+    //     okText="Có"
+    //     cancelText="Không"
     //     onConfirm={() =>
     //       handleDeleteQuiz({
     //         quizId: i?._id,
@@ -181,8 +181,8 @@ export default function ViewAssignment() {
     //       <Popconfirm
     //         title="Delete the quiz"
     //         description="Are you sure to delete this Quiz?"
-    //         okText="Yes"
-    //         cancelText="No"
+    //         okText="Có"
+    //         cancelText="Không"
     //         onConfirm={() =>
     //           handleDeleteQuiz({
     //             quizId: i?._id,
@@ -250,8 +250,8 @@ export default function ViewAssignment() {
           <Popconfirm
             title="Delete the assignment"
             description="Are you sure to delete this assignment?"
-            okText="Yes"
-            cancelText="No"
+            okText="Có"
+            cancelText="Không"
             okButtonProps={{
               style: { backgroundColor: "red" },
             }}

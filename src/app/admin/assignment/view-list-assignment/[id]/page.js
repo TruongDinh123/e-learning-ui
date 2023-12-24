@@ -111,8 +111,8 @@ export default function ViewAssignment({ params }) {
                               <Popconfirm
                                 title="Delete the assignment"
                                 description="Are you sure to delete this Assignment?"
-                                okText="Yes"
-                                cancelText="No"
+                                okText="Có"
+                                cancelText="Không"
                                 okButtonProps={{
                                   style: { backgroundColor: "red" },
                                 }}

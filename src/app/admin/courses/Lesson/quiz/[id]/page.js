@@ -148,8 +148,8 @@ export default function QuizCreator({ params }) {
           <Popconfirm
             title="Delete the Course"
             description="Are you sure to delete this Course?"
-            okText="Yes"
-            cancelText="No"
+            okText="Có"
+            cancelText="Không"
             onConfirm={() =>
               handleDeleteQuiz({
                 quizId: i?._id,

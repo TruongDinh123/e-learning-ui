@@ -36,8 +36,8 @@ export default function DelRole(props) {
       <Popconfirm
         title="Delete the Role"
         description="Are you sure to delete this Role?"
-        okText="Yes"
-        cancelText="No"
+        okText="Có"
+        cancelText="Không"
         className="me-3"
         onConfirm={() => handleDeleteRole()}
         okButtonProps={{

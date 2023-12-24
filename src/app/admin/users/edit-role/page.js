@@ -79,10 +79,10 @@ export default function EditRole(props) {
         className="me-3"
         style={{ width: "100%", color: "#fff", backgroundColor: "#1890ff" }}
       >
-        Chỉnh sửa
+        Cập nhật
       </Button>
       <Modal
-        title="Chỉnh sửa vai trò"
+        title="Cập nhật vai trò"
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
