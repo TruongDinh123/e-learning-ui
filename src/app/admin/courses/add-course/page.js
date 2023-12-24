@@ -36,12 +36,9 @@ export default function AddCourse(props) {
   const [file, setFile] = useState(null);
   const dispatch = useDispatch();
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  // const user = JSON.parse(localStorage.getItem("user"));
 
-  const isAdmin =
-    user &&
-    user.metadata.account &&
-    user.metadata.account.roles.includes("Admin");
+  // const isAdmin = user.metadata.account.roles.includes("Admin");
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -126,19 +123,19 @@ export default function AddCourse(props) {
   return (
     <div>
       {contextHolder}
-      {isAdmin && (
-        <Button
-          type="primary"
-          onClick={showModal}
-          className="me-3"
-          style={{
-            color: "#fff",
-            backgroundColor: "#1890ff",
-          }}
-        >
-          Tạo khóa học
-        </Button>
-      )}
+      {/* {isAdmin && ( */}
+      <Button
+        type="primary"
+        onClick={showModal}
+        className="me-3"
+        style={{
+          color: "#fff",
+          backgroundColor: "#1890ff",
+        }}
+      >
+        Tạo khóa học
+      </Button>
+      {/* )} */}
       <Modal
         title="Tạo khóa học"
         open={isModalOpen}

@@ -42,6 +42,10 @@ export default function Courses() {
       });
   }, [updateCourse]);
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const isAdmin = user.metadata.account.roles.includes("Admin");
+
   const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
 
   //table data
@@ -115,7 +119,9 @@ export default function Courses() {
         </div>
       ) : (
         <div className="max-w-screen-2xl mx-auto">
-          <AddCourse refresh={() => setUpdateCourse(updateCourse + 1)} />
+          {isAdmin && (
+            <AddCourse refresh={() => setUpdateCourse(updateCourse + 1)} />
+          )}
           <div className="space-y-4">
             <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 course-grid-container">
               {data.map((item, index) => {
