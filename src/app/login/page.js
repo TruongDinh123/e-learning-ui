@@ -70,7 +70,7 @@ export default function Login() {
                 localStorage.setItem("x-client-id", res.metadata.account._id);
                 res.metadata.account.roles.includes("Trainee")
                   ? router.push("/")
-                  : router.push("/admin/dashboard");
+                  : router.push("/admin/courses/view-courses");
               });
           } else {
             message.error(res.message, 2.5);
