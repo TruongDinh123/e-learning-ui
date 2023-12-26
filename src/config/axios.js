@@ -2,8 +2,9 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.API_URL || process.env.API_URL_PRODUCTION,
+  // baseURL: process.env.API_URL || process.env.API_URL_PRODUCTION,
   // baseURL: "https://e-learning-95lab-productionv1.onrender.com/v1/api",
+  baseURL: "http://103.179.191.146:4001/v1/api",
   headers: {
     "Content-Type": "application/json",
     "x-api-key":
@@ -24,7 +25,7 @@ axiosInstance.interceptors.request.use(
       config.headers["x-client-id"] = clientId;
     }
     return config;
-  }, 
+  },
   function (error) {
     // Do something with request error
     return Promise.reject(error);
@@ -40,12 +41,14 @@ axiosInstance.interceptors.response.use(
   },
   function (error) {
     // If the response has a status of 500 and the message is 'invalid signature'
-    if (error.response.status === 500 && error.response.data.message === 'invalid signature') {
+    if (
+      error.response.status === 500 &&
+      error.response.data.message === "invalid signature"
+    ) {
       // Remove the invalid token from localStorage
-      localStorage.removeItem('authorization');
-      localStorage.removeItem('x-client-id');
+      localStorage.removeItem("authorization");
+      localStorage.removeItem("x-client-id");
       Cookies.remove("Bearer");
-
     }
 
     return Promise.reject(error);
