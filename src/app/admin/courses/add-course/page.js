@@ -102,7 +102,7 @@ export default function AddCourse(props) {
                       duration: 2.5,
                     })
                     .then((res) => {
-                      router.push("/admin/courses/view-courses");
+                      router.push("/admin/courses");
                       message.success(res.message, 0.5);
                       refresh();
                       setIsLoading(false);
@@ -146,6 +146,9 @@ export default function AddCourse(props) {
         onOk={handleOk}
         footer={
           <div>
+            <Button key="cancel" onClick={handleCancel}>
+              Hủy
+            </Button>
             <Button
               key="save"
               type="primary"
@@ -156,10 +159,7 @@ export default function AddCourse(props) {
               }}
               loading={isLoading}
             >
-              Save
-            </Button>
-            <Button key="cancel" onClick={handleCancel}>
-              Cancel
+              Lưu
             </Button>
           </div>
         }

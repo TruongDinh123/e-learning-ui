@@ -10,7 +10,7 @@ import {
   Image,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   getQuizsByCourse,
   getQuizzesByStudentAndCourse,
@@ -23,6 +23,7 @@ import { format } from "date-fns";
 import { createNotification, getACourse } from "@/features/Courses/courseSlice";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import { useMediaQuery } from "react-responsive";
 
 const { Sider, Content, Header } = Layout;
 
@@ -165,57 +166,73 @@ export default function ViewQuiz({ params }) {
   });
 
   // Component hiển thị thông báo
-  const NotificationsComponent = () => (
-    <>
-      <div className="w-full p-2">
-        <div className="bg-white flex flex-col sm:flex-row p-4 rounded-lg card-shadow border-t border-b border-l border-r">
-          <textarea
-            className="w-full p-2 rounded border-gray-300"
-            rows="4"
-            placeholder="Thông báo nội dung nào đó cho lớp học của bạn"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleNoti({ message: e.target.value });
-                e.target.value = "";
-              }
-            }}
-          ></textarea>
-        </div>
-      </div>
-      <div className="w-full p-2">
-        <div className="bg-white flex flex-col p-6 rounded-lg shadow-md border border-gray-200">
-          <div className="flex items-center mb-4">
-            <h2 className="text-lg font-semibold text-gray-700">
-              Notifications
-            </h2>
-          </div>
-          {dataCourse?.notifications?.map((noti, notiIndex) => (
+  const NotificationsComponent = () => {
+    const textareaRef = useRef(null);
+    return (
+      <>
+        <div className="w-full p-2">
+          <div className="bg-white flex flex-col sm:flex-row p-4 rounded-lg card-shadow border-t border-b border-l border-r">
+            <textarea
+              className="w-full p-2 rounded border-gray-300"
+              rows="4"
+              placeholder="Thông báo nội dung nào đó cho lớp học của bạn"
+              ref={textareaRef}
+            ></textarea>
             <div
-              key={notiIndex}
-              className="w-full p-4 mb-4 rounded border border-gray-300 bg-gray-50"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "20px",
+                paddingLeft: "10px",
+              }}
             >
-              <div className="flex flex-col sm:flex-row">
-                <div className="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center mr-4 mb-2 sm:mb-0">
-                  <Image
-                    fallback="data:image/png;base64,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"
-                  />
-                </div>
-                <p className="mb-2 font-semibold text-gray-700">
-                  Giáo viên: {dataCourse?.teacher.lastName}
-                  <p className="text-sm text-gray-500">
-                    {format(new Date(noti?.date), "HH:mm:ss")}
-                  </p>
-                </p>
-              </div>
-
-              <p className="text-gray-600">{noti?.message}</p>
+              <Button
+                type="primary"
+                shape="round"
+                size="large"
+                style={{ color: "#fff", backgroundColor: "#1890ff" }}
+                onClick={(e) => {
+                  handleNoti({ message: textareaRef.current.value });
+                  textareaRef.current.value = "";
+                }}
+              >
+                Gửi thông báo
+              </Button>
             </div>
-          ))}
+          </div>
         </div>
-      </div>
-    </>
-  );
+        <div className="w-full p-2">
+          <div className="bg-white flex flex-col p-6 rounded-lg shadow-md border border-gray-200">
+            <div className="flex items-center mb-4">
+              <h2 className="text-lg font-semibold text-gray-700">
+                Notifications
+              </h2>
+            </div>
+            {dataCourse?.notifications?.map((noti, notiIndex) => (
+              <div
+                key={notiIndex}
+                className="w-full p-4 mb-4 rounded border border-gray-300 bg-gray-50"
+              >
+                <div className="flex flex-col sm:flex-row">
+                  <div className="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center mr-4 mb-2 sm:mb-0">
+                    <Image fallback="data:image/png;base64,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" />
+                  </div>
+                  <p className="mb-2 font-semibold text-gray-700">
+                    Giáo viên: {dataCourse?.teacher.lastName}
+                    <p className="text-sm text-gray-500">
+                      {format(new Date(noti?.date), "HH:mm:ss")}
+                    </p>
+                  </p>
+                </div>
+
+                <p className="text-gray-600">{noti?.message}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </>
+    );
+  };
 
   // Component hiển thị khóa học hết hạn
   const ExpiredCoursesComponent = () => {
@@ -266,9 +283,9 @@ export default function ViewQuiz({ params }) {
           >
             <div className="flex items-center justify-between p-4">
               <div className="flex items-center">
-                <div className="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center">
+                {/* <div className="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center">
                   <i className="fas fa-book-open text-white"></i>
-                </div>
+                </div> */}
                 <div className="ml-4">
                   <p className="text-sm">Bài tập mới: {item.name}</p>
                   <p className="text-xs text-gray-600">
@@ -336,9 +353,9 @@ export default function ViewQuiz({ params }) {
           >
             <div className="flex items-center justify-between p-4">
               <div className="flex items-center">
-                <div className="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center">
+                {/* <div className="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center">
                   <i className="fas fa-book-open text-white"></i>
-                </div>
+                </div> */}
                 <div className="ml-4">
                   <p className="text-sm">Bài tập mới: {item.name}</p>
                   <p className="text-xs text-gray-600">
@@ -361,6 +378,8 @@ export default function ViewQuiz({ params }) {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  const isMobile = useMediaQuery({ maxWidth: "768px" });
+
   return (
     <Content
       style={{
@@ -375,6 +394,12 @@ export default function ViewQuiz({ params }) {
       >
         <Breadcrumb.Item>
           <Link href="/">Trang chủ</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          {(userState?.metadata?.account?.roles.includes("Admin") ||
+            userState?.metadata?.account?.roles.includes("Mentor")) && (
+            <Link href="/admin/courses">Admin</Link>
+          )}
         </Breadcrumb.Item>
         <Breadcrumb.Item>
           <Link href="/courses/view-course">Khóa học</Link>
@@ -416,16 +441,17 @@ export default function ViewQuiz({ params }) {
             }}
           >
             <Menu.Item key="1">Thông báo</Menu.Item>
-            <Menu.SubMenu key="sub1" title="Khóa học">
-              <Menu.Item key="2">Khóa học hết hạn</Menu.Item>
-              <Menu.Item key="3">Khóa học chưa hết hạn</Menu.Item>
+            <Menu.SubMenu key="sub1" title="Bài tập">
+              <Menu.Item key="2">Hết hạn</Menu.Item>
+              <Menu.Item key="3">Chưa hết hạn</Menu.Item>
             </Menu.SubMenu>
           </Menu>
         </Sider>
         <Layout>
           <Header
             style={{
-              padding: 0,
+              paddingBottom: 0,
+              paddingLeft: 0,
               background: colorBgContainer,
             }}
           >
@@ -453,9 +479,9 @@ export default function ViewQuiz({ params }) {
             ) : (
               // Hiển thị nội dung dựa trên mục menu được chọn
               {
-                1: <NotificationsComponent />,
-                2: <ExpiredCoursesComponent />,
-                3: <NonExpiredCoursesComponent />,
+                1: (collapsed || !isMobile) && <NotificationsComponent />,
+                2: (collapsed || !isMobile) && <ExpiredCoursesComponent />,
+                3: (collapsed || !isMobile) && <NonExpiredCoursesComponent />,
               }[selectedMenu]
             )}
           </Content>

@@ -29,7 +29,7 @@ export default function Dashboard() {
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
         <StatisticsCardComponent />
       </div>
-      <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
+      {/* <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
         chart
       </div>
       <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3 pb-28">
@@ -233,7 +233,7 @@ export default function Dashboard() {
             )}
           </CardBody>
         </Card>
-      </div>
+      </div> */}
     </div>
   );
 }

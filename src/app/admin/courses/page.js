@@ -10,17 +10,17 @@ import { Menu, Dropdown, Spin, Image, Space, Empty } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button, Popconfirm } from "antd";
-import EditCourses from "../edit-course/Page";
+import EditCourses from "./edit-course/Page";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "react-responsive";
 import { BookOutlined } from "@ant-design/icons";
-import AddCourse from "../add-course/page";
+import AddCourse from "./add-course/page";
 import { Col } from "react-bootstrap";
-import "../view-courses/page.css";
+import "../courses/page.css";
 
 export default function Courses() {
   const dispatch = useDispatch();
-  const [course, setCourse] = useState([]);
+  const [course, setCourses] = useState([]);
   const [updateCourse, setUpdateCourse] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -32,7 +32,20 @@ export default function Courses() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setCourse(res.metadata);
+          const currentTeacherId = localStorage.getItem("x-client-id");
+          const user = JSON.parse(localStorage?.getItem("user"));
+
+          const isAdmin = user?.metadata?.account?.roles?.includes("Admin");
+          let visibleCourses;
+
+          if (isAdmin) {
+            visibleCourses = res.metadata;
+          } else {
+            visibleCourses = res.metadata.filter(
+              (course) => course.teacher === currentTeacherId
+            );
+          }
+          setCourses(visibleCourses);
         }
         setIsLoading(false);
       })
@@ -120,10 +133,10 @@ export default function Courses() {
       ) : (
         <div className="max-w-screen-2xl mx-auto">
           {/* {isAdmin && ( */}
-            <AddCourse refresh={() => setUpdateCourse(updateCourse + 1)} />
+          <AddCourse refresh={() => setUpdateCourse(updateCourse + 1)} />
           {/* )} */}
           <div className="space-y-4">
-            <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 course-grid-container">
+            <div className="grid scrollbar-thin sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 grid-container-courses">
               {data.map((item, index) => {
                 const menu = (
                   <Menu>

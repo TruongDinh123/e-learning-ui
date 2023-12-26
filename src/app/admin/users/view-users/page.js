@@ -107,7 +107,7 @@ export default function ViewUsers() {
             className="text-center justify-self-center"
             onClick={(e) => e.preventDefault()}
           >
-            Actions
+            Chức năng
           </Button>
         </Dropdown>
       ) : (

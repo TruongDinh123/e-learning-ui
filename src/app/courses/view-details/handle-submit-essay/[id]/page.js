@@ -97,11 +97,14 @@ export default function HandleSubmitEssay({ params }) {
       .catch((error) => {
         console.log(error);
       });
-  }, [update]);
+  }, [score]);
 
   const handleSubmitEssay = () => {
     if (!essayContent && !file) {
-      message.error("Không được để trống nội dung bài làm và file đính kèm", 3.5);
+      message.error(
+        "Không được để trống nội dung bài làm và file đính kèm",
+        3.5
+      );
       return;
     }
     dispatch(submitQuizEsay({ quizId: idQuiz, essayAnswer: essayContent }))
@@ -112,7 +115,7 @@ export default function HandleSubmitEssay({ params }) {
             uploadFileUserSubmit({ quizId: idQuiz, filename: file })
           ).then((res) => {
             if (res.status) {
-              setUpdate(update + 1);
+              setScore(score + 1);
               setIsLoading(false);
             }
           });
@@ -248,7 +251,7 @@ export default function HandleSubmitEssay({ params }) {
                   </Col>
                   <Col xs={8} md={8} className="right-0">
                     <div className="border-2 border-gray-300 rounded-md">
-                      <div className="mb-4 border-b-4 border-gray-300 p-4 pb-4 rounded-md">
+                      <div className="mb-4 border-gray-300 p-4 pb-4 rounded-md">
                         <Button onClick={() => setDrawerVisible(true)}>
                           Xem nội dung làm bài của bạn
                         </Button>
@@ -306,7 +309,7 @@ export default function HandleSubmitEssay({ params }) {
                           </div>
                         </Drawer>
                       </div>
-                      <div>
+                      {/* <div>
                         <h4 className="text-2xl font-bold mb-2">Bình luận:</h4>
                         <List
                           className="comment-list"
@@ -361,7 +364,7 @@ export default function HandleSubmitEssay({ params }) {
                             Comment
                           </Button>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </Col>
                 </Row>

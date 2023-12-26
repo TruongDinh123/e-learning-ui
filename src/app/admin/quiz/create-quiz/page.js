@@ -13,6 +13,7 @@ import {
   Spin,
   Tooltip,
   Upload,
+  Grid,
 } from "antd";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
@@ -55,6 +56,10 @@ export default function QuizCreator() {
   const [form] = Form.useForm();
   const router = useRouter();
 
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
+  const datePickerPlacement = screens.xs ? 'bottomRight' : 'bottomLeft';
+  
   const dispatch = useDispatch();
 
   // Hàm xử lý khi loại quiz thay đổi
@@ -244,13 +249,25 @@ export default function QuizCreator() {
       });
   };
 
+
   useEffect(() => {
     dispatch(viewCourses())
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setCourses(res.metadata);
-          // setSelectedCourseLessons(res.data.metadata[0]?.students || []);
+          const currentTeacherId = localStorage.getItem("x-client-id");
+          const user = JSON.parse(localStorage?.getItem("user"));
+
+          const isAdmin = user?.metadata?.account?.roles?.includes("Admin");
+          let visibleCourses;
+          
+          if(isAdmin) {
+            visibleCourses = res.metadata;
+          }
+          else {
+            visibleCourses = res.metadata.filter(course => course.teacher === currentTeacherId);
+          }
+          setCourses(visibleCourses);
         } else {
           messageApi.error(res.message);
         }
@@ -302,8 +319,10 @@ export default function QuizCreator() {
   return (
     <div>
       {contextHolder}
-      <div className="overflow-y-auto h-screen pb-28 scrollbar-thin justify-center items-center ">
-      <h1 className="text-2xl">{isTemplateMode ? "Tạo bài tập mẫu" : "Tạo bài tập"}</h1>
+      <div className="overflow-y-auto h-screen pb-28 scrollbar-thin justify-center items-center grid-container">
+        <h1 className="text-2xl">
+          {isTemplateMode ? "Tạo bài tập mẫu" : "Tạo bài tập"}
+        </h1>
         {isLoading ? (
           <div className="flex justify-center items-center h-screen">
             <Spin />
@@ -437,7 +456,7 @@ export default function QuizCreator() {
 
             {quizType === "multiple_choice" ? (
               <>
-                <Row gutter={8}>
+                <Row  utter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                   <Col xs={24} sm={12} md={8} lg={6}>
                     <Form.Item
                       label="Tên bài tập"
@@ -455,9 +474,11 @@ export default function QuizCreator() {
                   </Col>
                   {!isTemplateMode && (
                     <Col xs={24} sm={12} md={8} lg={6}>
-                      <Form.Item label="Thời hạn nộp" name="submissionTime">
+                      <Form.Item label="Thời hạn nộp" name="submissionTime" className="pl-2">
                         <DatePicker
                           showTime
+                          style={{ width: "100%" }}
+                          placement={datePickerPlacement}
                           disabledDate={(current) => {
                             // Không cho phép chọn ngày trước ngày hiện tại
                             let currentDate = new Date();

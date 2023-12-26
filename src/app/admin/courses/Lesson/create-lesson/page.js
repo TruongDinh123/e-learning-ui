@@ -86,7 +86,7 @@ export default function CreateLesson(props) {
           backgroundColor: "#1890ff",
         }}
       >
-        Tạo
+        Tạo bài học
       </Button>
       <Modal
         title="Tạo bài học"
@@ -104,7 +104,7 @@ export default function CreateLesson(props) {
               backgroundColor: "#1890ff",
             }}
           >
-            Save
+            Lưu
           </Button>
         }
       >

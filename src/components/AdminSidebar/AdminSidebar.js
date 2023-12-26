@@ -18,10 +18,11 @@ const { Sider } = Layout;
 export default function AdminSidebar(props) {
   const { collapsed } = props;
   const router = useRouter();
-  const userState = useSelector((state) => state?.user?.user);
+  // const userState = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
+  const userState = JSON.parse(localStorage.getItem("user"));
 
-  const userRole = userState?.metadata?.account?.roles[0];
+  const userRole = userState.metadata.account.roles[0];
 
   const menuItems = [
     {
@@ -30,7 +31,7 @@ export default function AdminSidebar(props) {
       label: "Khóa học",
       children: [
         {
-          key: "courses/view-courses",
+          key: "courses",
           icon: <UserOutlined />,
           label: "Bảng khóa học",
         },
@@ -64,7 +65,7 @@ export default function AdminSidebar(props) {
       label: "Quản lý",
       children: [
         {
-          key: "users/score-trainee",
+          key: "users/trainee",
           icon: <UserOutlined />,
           label: "Học viên",
         },
@@ -97,10 +98,15 @@ export default function AdminSidebar(props) {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          router.push("/login");
+          // Clear any local storage or cookies that might persist state
           localStorage.clear();
           Cookies.remove("Bearer");
+
+          // Reset the Redux state
           dispatch(resetState());
+
+          // Redirect to the login page
+          router.push("/login");
         } else {
           message.error(res.message, 2.5);
         }
@@ -114,7 +120,33 @@ export default function AdminSidebar(props) {
     <Sider trigger={null} collapsible collapsed={collapsed}>
       <div className="demo-logo-vertical d-flex justify-content-center align-items-center py-3">
         <Avatar src={`https://xsgames.co/randomusers/avatar.php?g=pixel`} />
-        <Nav>
+        <span
+          className="fs-6 text-white text-decoration-none me-4"
+          style={{ paddingLeft: "10px" }}
+        >
+          {userState.metadata.account?.lastName}
+        </span>
+      </div>
+      <Menu
+        theme="dark"
+        mode="inline"
+        style={{ flex: 1 }}
+        defaultSelectedKeys={["1"]}
+        onClick={({ key }) => {
+          router.push(`/admin/${key}`);
+        }}
+        items={menuItems}
+      />
+      <div
+        style={{
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+          display: "flex",
+          justifyContent: "center", // Căn giữa nút đăng xuất
+        }}
+      >
+        <Nav style={{ padding: "10px 0" }}>
           {userState !== null ? (
             <CustomButton
               title="Đăng xuất"
@@ -131,16 +163,6 @@ export default function AdminSidebar(props) {
           )}
         </Nav>
       </div>
-      <Menu
-        theme="dark"
-        mode="inline"
-        style={{ height: "100%" }}
-        defaultSelectedKeys={["1"]}
-        onClick={({ key }) => {
-          router.push(`/admin/${key}`);
-        }}
-        items={menuItems}
-      />
     </Sider>
   );
 }

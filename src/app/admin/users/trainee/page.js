@@ -42,7 +42,20 @@ export default function ViewStudentsCourse() {
               duration: 1.5,
             })
             .then(() => {
-              setCourses(res.metadata);
+              const currentTeacherId = localStorage.getItem("x-client-id");
+              const user = JSON.parse(localStorage?.getItem("user"));
+
+              const isAdmin = user?.metadata?.account?.roles?.includes("Admin");
+              let visibleCourses;
+
+              if (isAdmin) {
+                visibleCourses = res.metadata;
+              } else {
+                visibleCourses = res.metadata.filter(
+                  (course) => course.teacher === currentTeacherId
+                );
+              }
+              setCourses(visibleCourses);
             });
         } else {
           messageApi.error(res.message);

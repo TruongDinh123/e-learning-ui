@@ -1,4 +1,14 @@
+.grid-container {
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
 .ant-picker-ok {
-    background-color: #1890ff;
-    color: white;
+  background-color: white;
+  border-color: none;
+  color: black;
+
+  span {
+    color: black;
   }
+}

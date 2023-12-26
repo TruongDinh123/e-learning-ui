@@ -5,7 +5,7 @@ import StudentWork from "../trainee-work/page";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { getScoreByQuizId, updateScore } from "@/features/Quiz/quizSlice";
-import "../score-trainee/page.css";
+import "./page.css";
 const { TabPane } = Tabs;
 
 export default function ViewListScore(props) {

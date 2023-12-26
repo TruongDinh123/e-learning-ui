@@ -19,16 +19,25 @@ export default function RootLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const shouldRenderFooter = !pathname.includes("/web-rtc/room");
 
   useEffect(() => {
     // Check if the cookie exists
-    const token = localStorage.getItem('authorization');
-    if (!token && pathname !== '/login') {
-      // If the cookie doesn't exist and the user is not on the login page, redirect to the login page
-      router.push('/login');
+    const token = Cookies.get("Bearer");
+    const user = JSON.parse(localStorage.getItem("user")); // Giả sử bạn lưu thông tin người dùng vào localStorage
+    const isAdmin = user?.metadata?.account?.roles?.includes("Admin");
+    const isMentor = user?.metadata?.account?.roles?.includes("Mentor");
+
+    if(!loading) {
+      if (!token && pathname !== "/login") {
+        router.push("/login");
+      } else if (pathname.includes("/admin") && !(isAdmin || isMentor)) {
+        router.push("/unauthorized");
+      }
     }
+    setLoading(false);
   }, [pathname]);
 
   return (

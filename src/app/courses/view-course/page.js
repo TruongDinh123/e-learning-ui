@@ -40,11 +40,10 @@ export default function Course() {
           {course &&
             course.map((item, index) => (
               <React.Fragment key={index}>
-                <div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 h-full">
+                <div className="group hover:shadow-sm transition scrollbar-thin border rounded-lg p-3 h-full">
                   <Link href={`/courses/lessons/${item?._id}`}>
                     <div className="relative w-full aspect-video rounded-md overflow-hidden">
                       <Image
-                        fill
                         className="object-cover"
                         alt="course image"
                         src="https://www.codewithantonio.com/_next/image?url=https%3A%2F%2Futfs.io%2Ff%2F7b009b26-3dd8-4947-a3d6-c3f7e7420990-c91s7l.png&w=1920&q=75"

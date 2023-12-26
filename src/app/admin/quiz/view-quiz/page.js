@@ -47,14 +47,19 @@ export default function ViewQuiz() {
     setSelectedLesson(value);
   };
 
+  const currentTeacherId = localStorage.getItem("x-client-id");
+
   useEffect(() => {
     setIsLoading(true);
     dispatch(viewCourses())
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setCourses(res.metadata);
-          setSelectedCourseLessons(res.data.metadata[0]?.lessons || []);
+          const teacherCourses = res.metadata.filter(
+            (course) => course.teacher === currentTeacherId
+          );
+          setCourses(teacherCourses);
+          setSelectedCourseLessons(res.data?.metadata[0]?.lessons || []);
         } else {
         }
         setIsLoading(false);

@@ -45,7 +45,6 @@ export default function Login() {
             messageApi
               .open({
                 type: "Thành công",
-                content: "Đang thực hiện...",
               })
               .then(() =>
                 message.info(
@@ -68,9 +67,14 @@ export default function Login() {
                 );
 
                 localStorage.setItem("x-client-id", res.metadata.account._id);
-                res.metadata.account.roles.includes("Trainee")
-                  ? router.push("/")
-                  : router.push("/admin/courses/view-courses");
+                if (
+                  res.metadata.account.roles.includes("Admin") ||
+                  res.metadata.account.roles.includes("Mentor")
+                ) {
+                  router.push("/admin/courses");
+                } else {
+                  router.push("/");
+                }
               });
           } else {
             message.error(res.message, 2.5);

@@ -148,7 +148,7 @@ export default function EditCourses(props) {
       >
         <div>
           <label htmlFor="course" className="fs-6 fw-bold">
-            Tên
+            Tên khóa học:
           </label>
           <CustomInput
             onChange={formik.handleChange("name")}
@@ -158,7 +158,7 @@ export default function EditCourses(props) {
           />
 
           <label htmlFor="course" className="fs-6 fw-bold">
-            Chủ đề
+            Mô tả khóa học
           </label>
           <CustomInput
             className="mb-3"
@@ -170,7 +170,7 @@ export default function EditCourses(props) {
         </div>
 
         <Upload {...propsUdateImage}>
-          <Button icon={<UploadOutlined />}>Chọn tệp</Button>
+          <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
         </Upload>
       </Modal>
     </React.Fragment>

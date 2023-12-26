@@ -13,7 +13,7 @@ import {
   UserAddOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Image, Navbar } from "react-bootstrap";
 import Cookies from "js-cookie";
 
@@ -22,7 +22,7 @@ const logo2 = "/images/logo-svg.svg";
 const logo3 = "/images/logo3.png";
 
 const UserLinks = () => {
-  const userState = useSelector((state) => state?.user?.user);
+  // const userState = useSelector((state) => state.user.user);
 
   return (
     <React.Fragment>
@@ -41,22 +41,28 @@ const UserLinks = () => {
           Tạo phòng họp
         </span>
       </Link>
-      {(userState?.metadata?.account?.roles.includes("Admin") ||
+      {/* {(userState?.metadata?.account?.roles.includes("Admin") ||
         userState?.metadata?.account?.roles.includes("Mentor")) && (
-        <Link href="/admin/courses/view-courses">
+        <Link href="/admin/courses">
           <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
             Admin
           </span>
         </Link>
-      )}
+      )} */}
     </React.Fragment>
   );
 };
 
 export default function Header() {
-  const userState = useSelector((state) => state?.user?.user);
+  const userState = JSON.parse(localStorage.getItem("user"));
   const router = useRouter();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!userState) {
+      router.push("/login");
+    }
+  }, [userState, router]);
 
   const logout = useCallback(() => {
     router.push("/login");
@@ -69,6 +75,7 @@ export default function Header() {
   return (
     <Navbar
       collapseOnSelect
+      key={userState ? "user-logged-in" : "no-user"}
       expand="lg"
       // className="bg-gray-200 hover:bg-body-primary transition-colors duration-200"
       variant="light"

@@ -147,14 +147,22 @@ export const createRole = createAsyncThunk(
   }
 );
 
-let userFromLocalStorage = null;
+// let userFromLocalStorage = null;
 
-if (typeof window !== "undefined") {
-  userFromLocalStorage = localStorage?.getItem("user");
+// if (typeof window !== "undefined") {
+//   userFromLocalStorage = localStorage?.getItem("user");
+// }
+
+let getUserFromLocalStorage = () => {
+  if (typeof window !== "undefined") {
+    const user = localStorage?.getItem("user");
+    return JSON.parse(user);
+  }
+  return null;
 }
 
 const initialState = {
-  user: JSON.parse(userFromLocalStorage),
+  user: getUserFromLocalStorage,
   isError: false,
   isSuccess: false,
   isLoading: false,

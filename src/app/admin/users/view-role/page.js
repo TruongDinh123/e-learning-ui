@@ -27,10 +27,10 @@ export default function ViewRoles() {
       sorter: (a, b) => a.name.length - b.name.length,
       sortDirections: ["descend"],
     },
-    {
-      title: "Chức năng",
-      dataIndex: "action",
-    },
+    // {
+    //   title: "Chức năng",
+    //   dataIndex: "action",
+    // },
   ];
 
   //viewRoles api
@@ -60,7 +60,7 @@ export default function ViewRoles() {
     const menu = (
       <Menu>
         <Menu.Item>
-          <EditRole id={i?._id} refresh={() => setUpdateRole(updateRole + 1)} />
+          {/* <EditRole id={i?._id} refresh={() => setUpdateRole(updateRole + 1)} /> */}
         </Menu.Item>
         {/* <Menu.Item>
           <DelRole
@@ -84,11 +84,11 @@ export default function ViewRoles() {
         </Dropdown>
       ) : (
         <Space size={"middle"}>
-          <EditRole id={i?._id} refresh={() => setUpdateRole(updateRole + 1)} />
-          <DelRole
+          {/* <EditRole id={i?._id} refresh={() => setUpdateRole(updateRole + 1)} /> */}
+          {/* <DelRole
             idRole={i?._id}
             refresh={() => setUpdateRole(updateRole + 1)}
-          />
+          /> */}
         </Space>
       ),
     });
