@@ -4,9 +4,6 @@ const nextConfig = {
     API_URL: process.env.API_URL,
     API_URL_PRODUCTION: process.env.API_URL_PRODUCTION,
   },
-  future: {
-    webpack5: true,
-  },
   webpack: (config, { dev, isServer }) => {
     if (!isServer) {
       config.resolve.fallback.fs = false;
