@@ -31,6 +31,7 @@ export default function EditUser(props) {
   const showModal = () => {
     setIsModalOpen(true);
   };
+
   const handleCancel = () => {
     setIsModalOpen(false);
   };
@@ -101,8 +102,10 @@ export default function EditUser(props) {
         Cập nhật
       </Button>
       <Modal
-        title="Cập nhật vài trò"
+        title="Cập nhật thông tin"
         open={isModalOpen}
+        onCancel={handleCancel}
+        onOk={handleOk}
         footer={
           <React.Fragment>
             <Button key="cancle" type="default" onClick={handleCancel}>
