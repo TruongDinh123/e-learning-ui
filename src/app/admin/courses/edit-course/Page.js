@@ -1,11 +1,13 @@
 "use client";
 import {
+  buttonPriavteourse,
+  buttonPublicCourse,
   editCourse,
   getACourse,
   uploadImageCourse,
 } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Modal, Upload, message } from "antd";
+import { Modal, Radio, Upload, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button } from "antd";
@@ -18,6 +20,7 @@ const CourseSchema = yup.object({
   title: yup.string().min(2).required("Nhập tiêu đề"),
 
   name: yup.string().min(2).required("Nhập tên"),
+  isPublic: yup.boolean().required("Visibility is required"),
 });
 
 export default function EditCourses(props) {
@@ -78,36 +81,42 @@ export default function EditCourses(props) {
     initialValues: {
       title: data?.title,
       name: data?.name,
+      isPublic: data?.showCourse,
     },
     onSubmit: (values) => {
       dispatch(editCourse({ id: props?.id, values }))
         .then(unwrapResult)
         .then((res) => {
           if (file) {
-            dispatch(uploadImageCourse({ courseId: id, filename: file }))
+            return dispatch(uploadImageCourse({ courseId: id, filename: file }))
               .then(unwrapResult)
               .then((res) => {
                 if (res.status) {
                   setFile(null);
-                  messageApi
-                    .open({
-                      type: "Thành công",
-                      content: "Đang thực hiện...",
-                      duration: 2.5,
-                    })
-                    .then(() => {
-                      refresh();
-                    })
-                    .catch((error) => {
-                      console.log(error);
-                      message.error(error.response?.data?.message, 3.5);
-                    });
+                  messageApi.open({
+                    type: "Thành công",
+                    content: "Đang thực hiện...",
+                    duration: 2.5,
+                  });
                 }
-              })
-              .catch((error) => {
-                console.log(error);
+                return res;
               });
           }
+          return res;
+        })
+        .then((res) => {
+          if (values.isPublic) {
+            return dispatch(buttonPublicCourse(id));
+          } else {
+            return dispatch(buttonPriavteourse(id));
+          }
+        })
+        .then(() => {
+          refresh();
+        })
+        .catch((error) => {
+          console.log(error);
+          message.error(error.response?.data?.message, 3.5);
         });
     },
   });
@@ -124,7 +133,12 @@ export default function EditCourses(props) {
         Cập nhật
       </Button>
       <Modal
-        title="Cập nhật khóa học"
+        title={
+          <h1 className="text-3xl font-bold text-blue-500">
+            Cập nhật khóa học
+          </h1>
+        }
+        width={1000}
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
@@ -146,7 +160,7 @@ export default function EditCourses(props) {
           </Button>,
         ]}
       >
-        <div>
+        <div className="mt-10">
           <label htmlFor="course" className="fs-6 fw-bold">
             Tên khóa học:
           </label>
@@ -157,21 +171,43 @@ export default function EditCourses(props) {
             error={formik.touched.name && formik.errors.name}
           />
 
-          <label htmlFor="course" className="fs-6 fw-bold">
-            Mô tả khóa học
+          <label htmlFor="course" className="fs-6 fw-bold mt-2">
+            Mô tả khóa học:
           </label>
-          <CustomInput
-            className="mb-3"
+          <textarea
+            id="course"
+            placeholder="Thêm mô tả"
             onChange={formik.handleChange("title")}
             onBlur={formik.handleBlur("title")}
             value={formik.values.title}
             error={formik.touched.title && formik.errors.title}
+            className="form-control"
           />
+          {formik.submitCount > 0 && formik.touched.title && formik.errors.title
+            ? formik.errors.title
+            : null}
         </div>
 
         <Upload {...propsUdateImage}>
-          <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
+          <Button className="mt-3" icon={<UploadOutlined />}>
+            Chọn hình ảnh
+          </Button>
         </Upload>
+
+        <div className="mt-3">
+          <label htmlFor="visibility" className="fs-6 fw-bold">
+            Tùy chọn:
+          </label>
+          <Radio.Group
+            id="visibility"
+            onChange={(e) => formik.setFieldValue("isPublic", e.target.value)}
+            onBlur={formik.handleBlur("isPublic")}
+            value={formik.values.isPublic}
+          >
+            <Radio value={true}>Public</Radio>
+            <Radio value={false}>Private</Radio>
+          </Radio.Group>
+        </div>
       </Modal>
     </React.Fragment>
   );

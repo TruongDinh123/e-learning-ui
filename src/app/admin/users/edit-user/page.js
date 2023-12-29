@@ -41,6 +41,7 @@ export default function EditUser(props) {
     if (formik.isValid && !formik.isSubmitting && formik.submitCount > 0) {
       setIsModalOpen(false);
     }
+    setIsModalOpen(false);
   };
 
   useEffect(() => {
@@ -97,7 +98,7 @@ export default function EditUser(props) {
         type="primary"
         onClick={showModal}
         className="me-3"
-        style={{ width: "100%", color: "#fff", backgroundColor: "#1890ff" }}
+        style={{ color: "#fff", backgroundColor: "#1890ff" }}
       >
         Cập nhật
       </Button>

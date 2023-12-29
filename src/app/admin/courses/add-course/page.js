@@ -12,7 +12,7 @@ import {
   createCourse,
   uploadImageCourse,
 } from "@/features/Courses/courseSlice";
-import { useState } from "react";
+import React, { useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 
 const CourseSchema = yup.object({
@@ -124,7 +124,7 @@ export default function AddCourse(props) {
   });
 
   return (
-    <div>
+    <React.Fragment>
       {contextHolder}
       {isAdmin && (
         <Button
@@ -140,10 +140,15 @@ export default function AddCourse(props) {
         </Button>
       )}
       <Modal
-        title="Tạo khóa học"
+        title={
+          <h1 className="text-2xl font-bold text-blue-500">
+            Tạo khóa học
+          </h1>
+        }
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
+        width={1000}
         footer={
           <div>
             <Button key="cancel" onClick={handleCancel}>
@@ -164,69 +169,62 @@ export default function AddCourse(props) {
           </div>
         }
       >
-        <div className="col-md-6 col-sm-12">
-          <form action="" className="pb-5">
-            <div className="mt-3 w-auto">
-              <label htmlFor="course" className="fs-6 fw-bold">
-                Tên khóa học
-              </label>
-              <CustomInput
-                id="course"
-                placeholder="Thêm tên"
-                onChange={formik.handleChange("name")}
-                onBlur={formik.handleBlur("name")}
-                value={formik.values.name}
-                error={
-                  formik.submitCount > 0 &&
-                  formik.touched.name &&
-                  formik.errors.name
-                    ? formik.errors.name
-                    : null
-                }
-              />
-            </div>
-            <div className="mt-3 w-auto">
-              <label htmlFor="course" className="fs-6 fw-bold">
-                Mô tả khóa học
-              </label>
-              <textarea
-                id="course"
-                placeholder="Thêm mô tả"
-                onChange={formik.handleChange("title")}
-                onBlur={formik.handleBlur("title")}
-                value={formik.values.title}
-                className="form-control"
-              />
-              {formik.submitCount > 0 &&
-              formik.touched.title &&
-              formik.errors.title
-                ? formik.errors.title
-                : null}
-            </div>
+        <div className="mt-10">
+          <label htmlFor="course" className="text-lg font-medium">
+            Tên khóa học
+          </label>
+          <CustomInput
+            id="course"
+            placeholder="Thêm tên"
+            onChange={formik.handleChange("name")}
+            onBlur={formik.handleBlur("name")}
+            value={formik.values.name}
+            error={
+              formik.submitCount > 0 &&
+              formik.touched.name &&
+              formik.errors.name
+                ? formik.errors.name
+                : null
+            }
+          />
 
-            <Upload {...propsUdateImage}>
-              <Button icon={<UploadOutlined />}>Chọn tệp</Button>
-            </Upload>
+          <label htmlFor="course" className="text-lg font-medium">
+            Mô tả khóa học:
+          </label>
+          <textarea
+            id="course"
+            placeholder="Thêm mô tả"
+            onChange={formik.handleChange("title")}
+            onBlur={formik.handleBlur("title")}
+            value={formik.values.title}
+            className="form-control"
+          />
+          {formik.submitCount > 0 && formik.touched.title && formik.errors.title
+            ? formik.errors.title
+            : null}
+        </div>
 
-            <div className="mt-3">
-              <label htmlFor="visibility" className="fs-6 fw-bold">
-                Tùy chọn:
-              </label>
-              <Radio.Group
-                id="visibility"
-                onChange={(e) =>
-                  formik.setFieldValue("isPublic", e.target.value)
-                }
-                onBlur={formik.handleBlur("isPublic")}
-                value={formik.values.isPublic}
-              >
-                <Radio value={true}>Public</Radio>
-                <Radio value={false}>Private</Radio>
-              </Radio.Group>
-            </div>
-          </form>
+        <Upload {...propsUdateImage}>
+          <Button className="mt-3" icon={<UploadOutlined />}>
+            Chọn hình ảnh khóa học
+          </Button>
+        </Upload>
+
+        <div className="mt-3">
+          <label htmlFor="visibility" className="fs-6 fw-bold">
+            Tùy chọn:
+          </label>
+          <Radio.Group
+            id="visibility"
+            onChange={(e) => formik.setFieldValue("isPublic", e.target.value)}
+            onBlur={formik.handleBlur("isPublic")}
+            value={formik.values.isPublic}
+          >
+            <Radio value={true}>Public</Radio>
+            <Radio value={false}>Private</Radio>
+          </Radio.Group>
         </div>
       </Modal>
-    </div>
+    </React.Fragment>
   );
 }

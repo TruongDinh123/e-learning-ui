@@ -11,7 +11,6 @@ export default function UpdateQuiz(props) {
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quiz, setquiz] = useState([]);
-  console.log("🚀 ~ quiz:", quiz);
 
   const dispatch = useDispatch();
   const [form] = Form.useForm();

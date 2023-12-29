@@ -13,6 +13,7 @@ import {
   Dropdown,
   Menu,
   Drawer,
+  Modal,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -24,6 +25,7 @@ import Link from "next/link";
 import { BookOutlined } from "@ant-design/icons";
 import { useMediaQuery } from "react-responsive";
 import "../[id]/page.css";
+import EditLesson from "../update-lesson/page";
 
 export default function Lesson({ params }) {
   const dispatch = useDispatch();
@@ -31,13 +33,14 @@ export default function Lesson({ params }) {
   const [isLoading, setIsLoading] = useState(false);
   const [updateLesson, setUpdateLesson] = useState(0);
   const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [fullContent, setFullContent] = useState("");
 
   const handleReadMore = (content) => {
     setFullContent(content);
-    setIsDrawerVisible(true);
+    setIsModalOpen(true);
   };
 
   const handleCloseDrawer = () => {
@@ -84,6 +87,19 @@ export default function Lesson({ params }) {
       });
   };
 
+  const showModal = (content) => {
+    setFullContent(content);
+    setIsModalOpen(true);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+    formik.handleSubmit();
+  };
+
   return (
     <div className="">
       <Breadcrumb>
@@ -114,6 +130,10 @@ export default function Lesson({ params }) {
                     const menu = (
                       <Menu>
                         <Menu.Item>
+                          <EditLesson
+                            id={i?._id}
+                            refresh={() => setUpdateLesson(updateLesson + 1)}
+                          />
                           <Popconfirm
                             title="Delete the Lesson"
                             description="Are you sure to delete this Lesson?"
@@ -122,7 +142,7 @@ export default function Lesson({ params }) {
                             okButtonProps={{
                               style: { backgroundColor: "red" },
                             }}
-                            className="me-3"
+                            className="me-3 mt-2"
                             onConfirm={() =>
                               handleDeleteLesson({
                                 courseId: params?.id,
@@ -130,7 +150,9 @@ export default function Lesson({ params }) {
                               })
                             }
                           >
-                            <Button danger>Xóa</Button>
+                            <Button danger style={{ width: "100%" }}>
+                              Xóa
+                            </Button>
                           </Popconfirm>
                         </Menu.Item>
                         <Menu.Item>
@@ -144,24 +166,40 @@ export default function Lesson({ params }) {
                         key={subIndex}
                         className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 min-h-[100px]"
                       >
-                        <div className="relative w-full aspect-video rounded-md overflow-hidden">
+                        {/* <div className="relative w-full aspect-video rounded-md overflow-hidden">
                           <img
                             src="https://placehold.co/300x200/d1d4ff/352cb5.png"
                             alt="Placeholder Image"
                             class="w-full h-48 rounded-md object-cover"
                           />
-                        </div>
+                        </div> */}
                         <div className="flex flex-col pt-2">
-                          <p className="text-xs text-muted-foreground">
+                          <h3 className="text-xs font-bold text-muted-foreground">
                             {i?.name}
-                          </p>
-                          <Drawer
-                            title="Nội dung"
-                            visible={isDrawerVisible}
-                            onClose={handleCloseDrawer}
+                          </h3>
+                          <Modal
+                            title={
+                              <h1 className="text-3xl font-bold text-blue-500 mb-10">
+                                Thông tin chi tiết
+                              </h1>
+                            }
+                            width={1000}
+                            open={isModalOpen}
+                            onCancel={handleCancel}
+                            onOk={handleOk}
+                            footer={[
+                              <Button
+                                key="cancel"
+                                onClick={handleCancel}
+                                style={{ marginRight: 8 }}
+                              >
+                                Hủy
+                              </Button>,
+                              <></>,
+                            ]}
                           >
                             <p>{fullContent}</p>
-                          </Drawer>
+                          </Modal>
                           <div className="my-3 flex items-center gap-x-2 text-sm md:text-xs">
                             <div className="flex items-center gap-x-1 text-slate-500">
                               <BookOutlined />
@@ -177,7 +215,7 @@ export default function Lesson({ params }) {
                                     </span>
                                     <span
                                       className=" text-blue-500 cursor-pointer"
-                                      onClick={() => handleReadMore(i?.content)}
+                                      onClick={() => showModal(i?.content)}
                                     >
                                       Đọc thêm
                                     </span>
@@ -205,6 +243,12 @@ export default function Lesson({ params }) {
                                 className="lg:flex lg:flex-row lg:space-x-4 flex-wrap justify-between"
                               >
                                 <Space wrap>
+                                  <EditLesson
+                                    id={i?._id}
+                                    refresh={() =>
+                                      setUpdateLesson(updateLesson + 1)
+                                    }
+                                  />
                                   <Popconfirm
                                     title="Delete the Lesson"
                                     description="Are you sure to delete this Lesson?"
@@ -221,7 +265,9 @@ export default function Lesson({ params }) {
                                       })
                                     }
                                   >
-                                    <Button danger>Xóa</Button>
+                                    <Button danger style={{ width: "100%" }}>
+                                      Xóa
+                                    </Button>
                                   </Popconfirm>
                                   <VideoLesson lessonId={i?._id} />
                                 </Space>

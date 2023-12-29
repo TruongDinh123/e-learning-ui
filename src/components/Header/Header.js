@@ -4,18 +4,20 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { resetState, setUser } from "@/features/User/userSlice";
-import { Col, Row, Tooltip } from "antd";
+import { getAUser, resetState, setUser } from "@/features/User/userSlice";
+import { Col, Dropdown, Menu, Row, Tooltip, message } from "antd";
 import "../Header/header.css";
 import {
   LogoutOutlined,
   LoginOutlined,
   UserAddOutlined,
   SearchOutlined,
+  DownOutlined,
 } from "@ant-design/icons";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Image, Navbar } from "react-bootstrap";
 import Cookies from "js-cookie";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const logo = "/images/logo.jpg";
 const logo2 = "/images/logo-svg.svg";
@@ -58,6 +60,29 @@ export default function Header() {
   const router = useRouter();
   const dispatch = useDispatch();
 
+  const id = localStorage.getItem("x-client-id");
+  const [user, setUser] = useState(null);
+  const [messageApi, contextHolder] = message.useMessage();
+
+  useEffect(() => {
+    getAUsereData();
+  }, [getAUser]);
+
+  const getAUsereData = () => {
+    dispatch(getAUser(id))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setUser(res.data.metadata);
+        } else {
+          messageApi.error(res.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     if (!userState) {
       router.push("/login");
@@ -72,6 +97,14 @@ export default function Header() {
     dispatch(setUser(null));
   }, [dispatch, router]);
 
+  const menu = (
+    <Menu>
+      <Menu.Item>
+        <Link href="/user">Cập nhật thông tin</Link>
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
     <Navbar
       collapseOnSelect
@@ -81,6 +114,7 @@ export default function Header() {
       variant="light"
       className="flex items-center justify-between flex-wrap bg-white shadow border-solid border-t-2 border-blue-700 p-4"
     >
+      {contextHolder}
       <Container fluid>
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
           <Col className="gutter-row" xs={24} sm={24} md={12} lg={8} xl={6}>
@@ -119,9 +153,18 @@ export default function Header() {
             className="text-md font-bold text-blue-700 lg:flex-grow"
           >
             <React.Fragment>
-              <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
-                {userState?.metadata?.account?.lastName}
-              </span>
+              {userState !== null && (
+                <Dropdown overlay={menu}>
+                  <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
+                    {userState?.metadata?.account?.lastName}
+                    {(userState?.metadata?.account?.roles.includes("Admin") ||
+                      userState?.metadata?.account?.roles.includes(
+                        "Mentor"
+                      )) && <Link href="/admin/courses">( Admin )</Link>}
+                    <DownOutlined />
+                  </span>
+                </Dropdown>
+              )}
               {userState !== null ? (
                 <Tooltip title="Logout">
                   <span

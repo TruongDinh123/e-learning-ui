@@ -147,6 +147,18 @@ export const createRole = createAsyncThunk(
   }
 );
 
+export const changePassword = createAsyncThunk(
+  "/e-learning/change-password",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await authService.changePassword(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 // let userFromLocalStorage = null;
 
 // if (typeof window !== "undefined") {
@@ -159,7 +171,7 @@ let getUserFromLocalStorage = () => {
     return JSON.parse(user);
   }
   return null;
-}
+};
 
 const initialState = {
   user: getUserFromLocalStorage,

@@ -10,7 +10,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getScoreByUserId } from "@/features/Quiz/quizSlice";
 import AddTeacherToCourse from "../../courses/add-teacher-course/page";
-import "../view-teachers/page.css"
+import "../view-teachers/page.css";
+import EditUser from "../edit-user/page";
 
 const { Option } = Select;
 
@@ -25,6 +26,7 @@ export default function ViewTeachersCourse() {
   const [scores, setScores] = useState({}); // Change to an object
   const [selectedCourseDetails, setSelectedCourseDetails] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState({}); // Change to an object
+  const [showTable, setShowTable] = useState(false);
 
   const showModal = async (studentId) => {
     const lessons = selectedCourseDetails?.lessons;
@@ -66,6 +68,7 @@ export default function ViewTeachersCourse() {
 
   const handleViewCourse = (value) => {
     getACourseData(value);
+    setShowTable(true);
   };
 
   const handleDeleteStudent = ({ courseId, userId }) => {
@@ -278,9 +281,10 @@ export default function ViewTeachersCourse() {
           onChange={handleCourseChange}
           value={selectedCourse}
           className="me-3"
+          optionLabelProp="label"
         >
           {courses.map((course) => (
-            <Option key={course._id} value={course._id}>
+            <Option key={course._id} value={course._id} label={course.name}>
               {course.name}
             </Option>
           ))}
@@ -294,25 +298,37 @@ export default function ViewTeachersCourse() {
           Xem
         </Button>
       </div>
-
-      <AddTeacherToCourse
-        courseId={selectedCourse}
-        refresh={() => setUpdate(update + 1)}
-      >
-        Thêm giáo viên
-      </AddTeacherToCourse>
-      {teacher && (
-        <div className="border p-4 rounded-md my-4">
-          <h2 className="font-bold text-lg">Giáo viên: {teacher?.lastName}</h2>
-          <p className="text-sm">Email: {teacher?.email}</p>
+      {teacher ? (
+        <div className="border p-4 rounded-md my-4 d-flex align-items-center justify-content-between">
+          <div>
+            <h2 className="font-bold text-lg">
+              Giáo viên: {teacher?.lastName}
+            </h2>
+            <p className="text-sm">Email: {teacher?.email}</p>
+          </div>
+          <EditUser id={teacher?._id} refresh={() => setUpdate(update + 1)} />
+        </div>
+      ) : (
+        <div className="border p-4 rounded-md my-4 flex flex-col items-center justify-center space-y-4">
+          <p className="text-lg font-bold text-red-500">
+            Chưa có giáo viên thêm vào khóa học
+          </p>
+          <AddTeacherToCourse
+            courseId={selectedCourse}
+            refresh={() => setUpdate(update + 1)}
+          >
+            Thêm giáo viên
+          </AddTeacherToCourse>
         </div>
       )}
-      <Table
-        columns={columns}
-        dataSource={data}
-        pagination={{ pageSize: 5, position: ["bottomLeft"] }}
-        className="grid-container"
-      />
+      {showTable && (
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={{ pageSize: 5, position: ["bottomLeft"] }}
+          className="grid-container"
+        />
+      )}
     </React.Fragment>
   );
 }

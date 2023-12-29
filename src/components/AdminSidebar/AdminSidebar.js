@@ -88,7 +88,7 @@ export default function AdminSidebar(props) {
       {
         key: "users/view-teachers",
         icon: <UserOutlined />,
-        label: "Giáo viên",
+        label: "Khóa học",
       }
     );
   }

@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
     const isAdmin = user?.metadata?.account?.roles?.includes("Admin");
     const isMentor = user?.metadata?.account?.roles?.includes("Mentor");
 
-    if(!loading) {
+    if (!loading) {
       if (!token && pathname !== "/login") {
         router.push("/login");
       } else if (pathname.includes("/admin") && !(isAdmin || isMentor)) {

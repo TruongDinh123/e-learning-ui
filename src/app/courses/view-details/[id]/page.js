@@ -395,12 +395,12 @@ export default function ViewQuiz({ params }) {
         <Breadcrumb.Item>
           <Link href="/">Trang chủ</Link>
         </Breadcrumb.Item>
-        <Breadcrumb.Item>
+        {/* <Breadcrumb.Item>
           {(userState?.metadata?.account?.roles.includes("Admin") ||
             userState?.metadata?.account?.roles.includes("Mentor")) && (
             <Link href="/admin/courses">Admin</Link>
           )}
-        </Breadcrumb.Item>
+        </Breadcrumb.Item> */}
         <Breadcrumb.Item>
           <Link href="/courses/view-course">Khóa học</Link>
         </Breadcrumb.Item>

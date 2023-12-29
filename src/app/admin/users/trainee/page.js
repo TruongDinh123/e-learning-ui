@@ -1,7 +1,11 @@
 "use client";
-import { getACourse, viewCourses } from "@/features/Courses/courseSlice";
+import {
+  getACourse,
+  removeStudentFromCourse,
+  viewCourses,
+} from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Modal, Select, Table, message } from "antd";
+import { Button, Modal, Popconfirm, Select, Table, message } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { batch, useDispatch } from "react-redux";
 import AddStudentToCourse from "../../courses/add-student-course/page";
@@ -19,6 +23,7 @@ export default function ViewStudentsCourse() {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courses, setCourses] = useState([]);
   const [scores, setScores] = useState({}); // Change to an object
+  const [loading, setLoading] = useState(false);
 
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
@@ -30,7 +35,23 @@ export default function ViewStudentsCourse() {
     getACourseData(selectedCourse);
   }, [selectedCourse]); // Sử dụng useCallback và thêm selectedCourse vào dependencies
 
+  const handleDeleteStudent = ({ courseId, userId }) => {
+    dispatch(removeStudentFromCourse({ courseId, userId }))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setUpdate(update + 1);
+        } else {
+          messageApi.error(res.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
+    setLoading(true);
     dispatch(viewCourses())
       .then(unwrapResult)
       .then((res) => {
@@ -39,7 +60,7 @@ export default function ViewStudentsCourse() {
             .open({
               type: "Thành công",
               content: "Đang thực hiện...",
-              duration: 1.5,
+              duration: 0.5,
             })
             .then(() => {
               const currentTeacherId = localStorage.getItem("x-client-id");
@@ -56,12 +77,14 @@ export default function ViewStudentsCourse() {
                 );
               }
               setCourses(visibleCourses);
+              setLoading(true);
             });
         } else {
           messageApi.error(res.message);
         }
       })
       .catch((error) => {
+        setLoading(false);
         messageApi.error(error);
       });
   }, []);
@@ -111,7 +134,6 @@ export default function ViewStudentsCourse() {
         if (res.status) {
           setData(res.metadata.students);
           setTeacher(res.metadata.teacher);
-          // setSelectedCourseDetails(res.metadata);
         } else {
           messageApi.error(res.message);
         }
@@ -123,8 +145,8 @@ export default function ViewStudentsCourse() {
 
   const quizColumns = useMemo(
     () =>
-      quizzes.map((quiz) => ({
-        title: quiz.name,
+      quizzes.map((quiz, index) => ({
+        title: `Bài ${index + 1}`,
         dataIndex: quiz._id,
         key: quiz._id,
         render: (text, record) => {
@@ -169,6 +191,25 @@ export default function ViewStudentsCourse() {
         userId: student?._id,
         lastName: student?.lastName,
         email: student?.email,
+        action: (
+          <Popconfirm
+            title="Xóa học viên"
+            description="Bạn có muốn xóa học viên?"
+            okText="Có"
+            cancelText="Không"
+            okButtonProps={{
+              style: { backgroundColor: "red" },
+            }}
+            onConfirm={() =>
+              handleDeleteStudent({
+                courseId: selectedCourse,
+                userId: student?._id,
+              })
+            }
+          >
+            <Button danger>Xóa</Button>
+          </Popconfirm>
+        ),
       })),
     [dataStudent]
   );

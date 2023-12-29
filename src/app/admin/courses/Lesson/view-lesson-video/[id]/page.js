@@ -127,13 +127,10 @@ export default function VideoLesson(propsComponent) {
       ) : (
         <React.Fragment>
           <Button
-            type="primary"
+            type="default"
             onClick={showModal}
             className="me-3"
-            style={{
-              color: "#fff",
-              backgroundColor: "#1890ff",
-            }}
+            style={{ width: "100%" }}
           >
             video
           </Button>

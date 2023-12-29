@@ -1,16 +1,27 @@
 "use client";
+import {
+  buttonPriavteourse,
+  buttonPublicCourse,
+  editCourse,
+  getACourse,
+  uploadImageCourse,
+} from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Modal, Upload, message } from "antd";
-import React, { useState } from "react";
+import { Modal, Radio, Upload, message } from "antd";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button } from "antd";
 import CustomInput from "@/components/comman/CustomInput";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { createLesson, createVdLesson } from "@/features/Lesson/lessonSlice";
 import { UploadOutlined } from "@ant-design/icons";
+import {
+  createVdLesson,
+  updatelesson,
+  viewALesson,
+} from "@/features/Lesson/lessonSlice";
 
-const CreateLessonSchema = yup.object({
+const CourseSchema = yup.object({
   content: yup
     .string()
     .required("content is required")
@@ -23,27 +34,18 @@ const CreateLessonSchema = yup.object({
     .min(6, "name must be at least 6 characters long"),
 });
 
-export default function CreateLesson(props) {
-  const { courseId, refresh } = props;
+export default function EditLesson(props) {
+  const { id, refresh } = props;
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState(null);
   const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleOk = () => {
-    formik.submitForm();
-    if (formik.isValid && !formik.isSubmitting && formik.submitCount > 0) {
-      setIsModalOpen(false);
-    }
-  };
+  useEffect(() => {
+    getALesson();
+  }, []);
 
   const propsUdateImage = {
     onRemove: () => {
@@ -58,25 +60,47 @@ export default function CreateLesson(props) {
     fileList: file ? [file] : [],
   };
 
+  const getALesson = () => {
+    dispatch(viewALesson({ lessonId: id }))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setData(res.metadata);
+        } else {
+          messageApi.error(res.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+    formik.handleSubmit();
+  };
+
   const formik = useFormik({
-    validationSchema: CreateLessonSchema,
+    validationSchema: CourseSchema,
     enableReinitialize: true,
     initialValues: {
-      content: "",
-      name: "",
+      name: data?.name,
+      content: data?.content,
     },
     onSubmit: (values) => {
-      values.content = values.content.trim();
-      values.name = values.name.trim();
-      setIsLoading(true);
-      dispatch(createLesson({ courseId: courseId, values }))
+      setLoading(true);
+      dispatch(updatelesson({ lessonId: id, values }))
         .then(unwrapResult)
         .then((res) => {
-          const lessonId = res.metadata.lesson._id;
           if (file) {
-            return dispatch(
-              createVdLesson({ lessonId: lessonId, filename: file })
-            )
+            return dispatch(createVdLesson({ lessonId: id, filename: file }))
               .then(unwrapResult)
               .then((res) => {
                 if (res.status) {
@@ -87,22 +111,21 @@ export default function CreateLesson(props) {
                     duration: 2.5,
                   });
                 }
+                setLoading(false);
                 return res;
               });
           }
-          messageApi
-            .open({
-              type: "Thành công",
-              content: "Đang thực hiện...",
-              duration: 2.5,
-            })
-            .then(() => {
-              message.success(res.message, 1.5);
-              refresh();
-            });
+          return res;
+        })
+        .then(() => {
+          setLoading(false);
+
+          refresh();
         })
         .catch((error) => {
           console.log(error);
+          setLoading(false);
+          message.error(error.response?.data?.message, 3.5);
         });
     },
   });
@@ -113,70 +136,61 @@ export default function CreateLesson(props) {
       <Button
         type="primary"
         onClick={showModal}
-        className="me-3 mt-2"
-        style={{
-          color: "#fff",
-          backgroundColor: "#1890ff",
-        }}
+        className="me-3"
+        loading={loading}
+        style={{ width: "100%", color: "#fff", backgroundColor: "#1890ff" }}
       >
-        Tạo bài học
+        Cập nhật
       </Button>
       <Modal
         title={
-          <h1 className="text-2xl font-bold text-blue-500">Tạo bài học</h1>
+          <h1 className="text-3xl font-bold text-blue-500">
+            Cập nhật khóa học
+          </h1>
         }
+        width={1000}
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
-        width={1000}
-        footer={
+        footer={[
           <Button
-            key="back"
+            key="cancel"
+            onClick={handleCancel}
+            style={{ marginRight: 8 }}
+          >
+            Hủy
+          </Button>,
+          <Button
+            key="ok"
             type="primary"
             onClick={handleOk}
-            loading={isLoading}
-            style={{
-              color: "#fff",
-              backgroundColor: "#1890ff",
-            }}
+            style={{ backgroundColor: "#1890ff", color: "white" }}
           >
             Lưu
-          </Button>
-        }
+          </Button>,
+        ]}
       >
         <div className="mt-10">
           <label htmlFor="course" className="fs-6 fw-bold">
             Tên bài học:
           </label>
           <CustomInput
-            className="mb-3"
             onChange={formik.handleChange("name")}
             onBlur={formik.handleBlur("name")}
             value={formik.values.name}
-            error={
-              formik.submitCount > 0 &&
-              formik.touched.name &&
-              formik.errors.name
-                ? formik.errors.name
-                : null
-            }
+            error={formik.touched.name && formik.errors.name}
           />
 
-          <label htmlFor="course" className="fs-6 fw-bold">
-            Nội dung:
+          <label htmlFor="course" className="fs-6 fw-bold mt-2">
+            Nội dung bài học:
           </label>
           <textarea
+            id="course"
+            placeholder="Thêm nội dung"
             onChange={formik.handleChange("content")}
             onBlur={formik.handleBlur("content")}
             value={formik.values.content}
-            error={
-              formik.submitCount > 0 &&
-              formik.touched.content &&
-              formik.errors.content
-                ? formik.errors.content
-                : null
-            }
-            placeholder="Thêm nội dung"
+            error={formik.touched.content && formik.errors.content}
             className="form-control"
           />
         </div>
