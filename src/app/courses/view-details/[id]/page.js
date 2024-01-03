@@ -19,7 +19,7 @@ import {
 import { unwrapResult } from "@reduxjs/toolkit";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { format } from "date-fns";
+import { format, getTime } from "date-fns";
 import { createNotification, getACourse } from "@/features/Courses/courseSlice";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import Link from "next/link";
@@ -96,6 +96,7 @@ export default function ViewQuiz({ params }) {
       dispatch(getQuizsByCourse({ courseId: params?.id }))
         .then(unwrapResult)
         .then((res) => {
+          console.log("🚀 ~ res:", res);
           if (res.status) {
             setquiz(res.metadata);
           } else {
@@ -240,15 +241,18 @@ export default function ViewQuiz({ params }) {
 
     quiz?.forEach((i, index) => {
       const correspondingScore = score.find((s) => s.quiz?._id === i?._id);
-      const submissionTime = i?.submissionTime
-        ? format(new Date(i?.submissionTime), "dd/MM/yyyy HH:mm:ss")
-        : "Không có hạn";
 
-      if (submissionTime < format(new Date(), "dd/MM/yyyy HH:mm:ss")) {
+        const submissionTime = i?.submissionTime
+        ? getTime(new Date(i?.submissionTime))
+        : null;
+
+      const currentDate = getTime(new Date());
+
+      if (submissionTime < currentDate) {
         expiredCourses.push({
           key: index + 1,
           name: i?.name,
-          submissionTime: submissionTime,
+          submissionTime: format(new Date(submissionTime), "dd/MM/yyyy HH:mm:ss"),
           isComplete: correspondingScore
             ? correspondingScore.isComplete
               ? "Đã hoàn thành"
@@ -307,18 +311,21 @@ export default function ViewQuiz({ params }) {
   // Component hiển thị khóa học chưa hết hạn
   const NonExpiredCoursesComponent = () => {
     const nonExpiredCourses = [];
-
+    console.log("🚀 ~ nonExpiredCourses:", nonExpiredCourses);
     quiz?.forEach((i, index) => {
       const correspondingScore = score.find((s) => s.quiz?._id === i?._id);
-      const submissionTime = i?.submissionTime
-        ? format(new Date(i?.submissionTime), "dd/MM/yyyy HH:mm:ss")
-        : "Không có hạn";
 
-      if (submissionTime >= format(new Date(), "dd/MM/yyyy HH:mm:ss")) {
+      const submissionTime = i?.submissionTime
+        ? getTime(new Date(i?.submissionTime))
+        : null;
+
+      const currentDate = getTime(new Date());
+
+      if (!submissionTime || submissionTime > currentDate) {
         nonExpiredCourses.push({
           key: index + 1,
           name: i?.name,
-          submissionTime: submissionTime,
+          submissionTime: format(new Date(submissionTime), "dd/MM/yyyy HH:mm:ss"),
           isComplete: correspondingScore
             ? correspondingScore.isComplete
               ? "Đã hoàn thành"
@@ -393,24 +400,15 @@ export default function ViewQuiz({ params }) {
         }}
       >
         <Breadcrumb.Item>
-          <Link href="/">Trang chủ</Link>
-        </Breadcrumb.Item>
-        {/* <Breadcrumb.Item>
-          {(userState?.metadata?.account?.roles.includes("Admin") ||
-            userState?.metadata?.account?.roles.includes("Mentor")) && (
-            <Link href="/admin/courses">Admin</Link>
-          )}
-        </Breadcrumb.Item> */}
-        <Breadcrumb.Item>
           <Link href="/courses/view-course">Khóa học</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
           <Link href={`/courses/lessons/${params?.id}`}>Bài học</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Link href={`/courses/view-details/${params?.id}`}>
+          <span href={`/courses/view-details/${params?.id}`}>
             {dataCourse.name}
-          </Link>
+          </span>
         </Breadcrumb.Item>
       </Breadcrumb>
       <Layout

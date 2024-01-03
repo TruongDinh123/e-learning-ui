@@ -150,7 +150,7 @@ export default function Lesson({ params }) {
                       }}
                     >
                       <FolderOpenOutlined />
-                      {item.name}
+                      <span className="ml-1">{item.name}</span>
                     </Menu.Item>
                   ))
                 )}

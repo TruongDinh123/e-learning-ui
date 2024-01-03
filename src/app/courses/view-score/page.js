@@ -124,7 +124,7 @@ const ScoreManagement = () => {
             rel="noopener noreferrer"
             className="text-blue-500 underline hover:text-blue-700"
           >
-            Download File
+            Tải xuống tệp
           </a>
         </div>
       </div>
@@ -148,7 +148,7 @@ const ScoreManagement = () => {
               className="me-3"
               key={index}
             >
-              Details
+              Chi tiết
             </Button>
             <Drawer
               title="Details Score"

@@ -3,8 +3,8 @@ import Cookies from "js-cookie";
 
 const axiosInstance = axios.create({
   // baseURL: process.env.API_URL || process.env.API_URL_PRODUCTION,
-  // baseURL: "https://e-learning-95lab-productionv1.onrender.com/v1/api",
-  baseURL: "http://103.179.191.146:4001/v1/api",
+  baseURL: "https://e-learning-95lab-productionv1.onrender.com/v1/api",
+  // baseURL: "http://103.179.191.146:4001/v1/api",
   headers: {
     "Content-Type": "application/json",
     "x-api-key":

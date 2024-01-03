@@ -4,7 +4,12 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { getAUser, resetState, setUser } from "@/features/User/userSlice";
+import {
+  getAUser,
+  resetState,
+  setUser,
+  setUserName,
+} from "@/features/User/userSlice";
 import { Col, Dropdown, Menu, Row, Tooltip, message } from "antd";
 import "../Header/header.css";
 import {
@@ -19,13 +24,9 @@ import { Image, Navbar } from "react-bootstrap";
 import Cookies from "js-cookie";
 import { unwrapResult } from "@reduxjs/toolkit";
 
-const logo = "/images/logo.jpg";
-const logo2 = "/images/logo-svg.svg";
 const logo3 = "/images/logo3.png";
 
 const UserLinks = () => {
-  // const userState = useSelector((state) => state.user.user);
-
   return (
     <React.Fragment>
       <Link href="/courses/view-course">
@@ -43,20 +44,17 @@ const UserLinks = () => {
           Tạo phòng họp
         </span>
       </Link>
-      {/* {(userState?.metadata?.account?.roles.includes("Admin") ||
-        userState?.metadata?.account?.roles.includes("Mentor")) && (
-        <Link href="/admin/courses">
-          <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
-            Admin
-          </span>
-        </Link>
-      )} */}
     </React.Fragment>
   );
 };
 
 export default function Header() {
-  const userState = JSON.parse(localStorage.getItem("user"));
+  const userState = useSelector((state) => state.user?.user);
+
+  const userName =
+    useSelector((state) => state.user.userName) ||
+    JSON.parse(localStorage.getItem("userName"));
+
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -66,7 +64,7 @@ export default function Header() {
 
   useEffect(() => {
     getAUsereData();
-  }, [getAUser]);
+  }, [getAUser, userName]);
 
   const getAUsereData = () => {
     dispatch(getAUser(id))
@@ -94,6 +92,7 @@ export default function Header() {
     localStorage.clear();
     Cookies.remove("Bearer");
     dispatch(resetState());
+    dispatch(setUserName(null));
     dispatch(setUser(null));
   }, [dispatch, router]);
 
@@ -110,7 +109,6 @@ export default function Header() {
       collapseOnSelect
       key={userState ? "user-logged-in" : "no-user"}
       expand="lg"
-      // className="bg-gray-200 hover:bg-body-primary transition-colors duration-200"
       variant="light"
       className="flex items-center justify-between flex-wrap bg-white shadow border-solid border-t-2 border-blue-700 p-4"
     >
@@ -156,7 +154,7 @@ export default function Header() {
               {userState !== null && (
                 <Dropdown overlay={menu}>
                   <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
-                    {userState?.metadata?.account?.lastName}
+                    {userName}
                     {(userState?.metadata?.account?.roles.includes("Admin") ||
                       userState?.metadata?.account?.roles.includes(
                         "Mentor"

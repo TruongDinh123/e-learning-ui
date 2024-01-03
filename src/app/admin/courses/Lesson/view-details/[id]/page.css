@@ -1,0 +1,12 @@
+.grid-container {
+  max-height: calc(100vh - 155px);
+  overflow-y: auto;
+}
+
+
+/* Trong file CSS của bạn */
+@media (max-width: 768px) {
+  .video-container-mobile {
+    height: 0 !important; /* Sử dụng !important để đảm bảo ghi đè các styles khác */
+  }
+}

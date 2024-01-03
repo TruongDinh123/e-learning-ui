@@ -30,6 +30,12 @@ export default function RootLayout({ children }) {
     const isAdmin = user?.metadata?.account?.roles?.includes("Admin");
     const isMentor = user?.metadata?.account?.roles?.includes("Mentor");
 
+    // Ngay lập tức chuyển hướng nếu không phải Admin hoặc Mentor và cố gắng truy cập vào /admin/courses
+    if (pathname === "/admin/courses" && !(isAdmin || isMentor)) {
+      router.push("/unauthorized");
+      return; // Ngăn không chạy các đoạn mã phía dưới
+    }
+
     if (!loading) {
       if (!token && pathname !== "/login") {
         router.push("/login");
@@ -50,16 +56,16 @@ export default function RootLayout({ children }) {
                 <AdminSidebar collapsed={collapsed} />
               )}
               <Layout>
-                {!pathname.includes("/admin") && pathname !== "/login" ? (
+                {!pathname.includes("/admin") && pathname !== "/login" && (
                   <Header />
-                ) : pathname === "/login" ? (
-                  <Header />
-                ) : (
+                )}
+                {pathname.includes("/admin") && (
                   <AdminHeader
                     setCollapsed={setCollapsed}
                     collapsed={collapsed}
                   />
                 )}
+
                 <div
                   className={pathname.includes("/admin") ? "p-3" : undefined}
                 >

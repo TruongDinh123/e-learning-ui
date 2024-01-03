@@ -45,6 +45,7 @@ export default function Login() {
             messageApi
               .open({
                 type: "Thành công",
+                icon: <Spin />,
               })
               .then(() =>
                 message.info(
@@ -60,6 +61,10 @@ export default function Login() {
                 Cookies.set("Bearer", res?.metadata.tokens.accessToken);
 
                 localStorage.setItem("user", JSON.stringify(res));
+                localStorage.setItem(
+                  "userName",
+                  JSON.stringify(res.metadata.account.lastName)
+                );
 
                 localStorage.setItem(
                   "authorization",
@@ -90,86 +95,97 @@ export default function Login() {
   });
 
   return (
-    <div className="container-fluid bg-white">
+    <div
+      className="bg-no-repeat bg-cover bg-center relative"
+      style={{
+        backgroundImage:
+          "url(https://images.unsplash.com/photo-1552581234-26160f608093?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D;auto=format&amp;fit=crop&amp;w=1951&amp;q=80)",
+      }}
+    >
+      <div class="absolute bg-gradient-to-b from-yellow-50 opacity-80 inset-0 z-0"></div>
       {contextHolder}
-      <div className="row py-5">
-        <div className="col-lg-4 col-md-6 col-sm-8 mx-auto py-5">
-          <h1 className="text-3xl font-bold p-2">Đăng nhập</h1>
+      <div
+        style={{ minHeight: "100vh" }}
+        className="sm:flex sm:flex-row mx-0 justify-center"
+      >
+        <div class="flex-col flex self-center p-10 sm:max-w-5xl xl:max-w-2xl z-10">
+          <div class="self-start hidden lg:flex flex-col  text-white">
+            <img src="" class="mb-3" />
+            <h1 class="mb-3 font-bold text-5xl text-blue-500">
+              Xin chào ? Chào mừng bạn trở lại với 95E-Learning{" "}
+            </h1>
+            {/* <p class="pr-3 text-black text-xl">
+              Ăn tranh thủ, ngủ khẩn trương. Học hết sức, chơi hết mình.
+            </p> */}
+          </div>
+        </div>
+        <div className="flex justify-center self-center z-20 relative">
           <form
             action=""
             onSubmit={formik.handleSubmit}
-            className="form-wrapper p-4 border rounded"
+            className="p-12 bg-white mx-auto rounded-2xl w-100 z-20 relative"
           >
-            <CustomInput
-              prefix={<AiOutlineMail />}
-              placeholder="Địa chỉ email"
-              onChange={formik.handleChange("email")}
-              onBlur={formik.handleBlur("email")}
-              value={formik.values.email}
-              error={
-                formik.submitCount > 0 &&
-                formik.touched.email &&
-                formik.errors.email
-                  ? formik.errors.email
-                  : null
-              }
-            />
-            <CustomInput
-              prefix={<RiLockPasswordLine />}
-              suffix={
-                showPassword ? (
-                  <BsEyeSlash
-                    onClick={() => setShowPassword(false)}
-                    style={{ cursor: "pointer" }}
-                  />
-                ) : (
-                  <BsEye
-                    onClick={() => setShowPassword(true)}
-                    style={{ cursor: "pointer" }}
-                  />
-                )
-              }
-              placeholder="Mật khẩu"
-              className="mt-3"
-              onChange={(e) => {
-                formik.handleChange("password")(e);
-                setPasswordValue(e.target.value);
-              }}
-              onBlur={formik.handleBlur("password")}
-              value={passwordValue}
-              error={
-                formik.submitCount > 0 &&
-                formik.touched.password &&
-                formik.errors.password
-                  ? formik.errors.password
-                  : null
-              }
-              type={showPassword ? "text" : "password"}
-            />
-            <div className="pt-3 pb-2">
-              {/* <Link href="#">
-                <span className="text-decoration-none my-3 text-end">
-                  Forgot Password ?
-                </span>
-              </Link> */}
+            <div class="mb-4">
+              <h3 class="font-semibold text-2xl text-gray-800">Đăng nhập </h3>
+              <p class="text-gray-500">Xin hãy đăng nhập tài khoản của bạn.</p>
             </div>
-            <Spin spinning={isLoading}>
-              <CustomButton
-                title="Đăng nhập"
-                type="primary"
-                className="w-100 d-block mb-3"
-                style={{ color: "#fff", backgroundColor: "#1890ff" }}
-                onClick={() => formik.handleSubmit()}
-                disabled={isLoading}
+            <div className="space-y-5">
+              <CustomInput
+                prefix={<AiOutlineMail />}
+                placeholder="Địa chỉ email"
+                onChange={formik.handleChange("email")}
+                onBlur={formik.handleBlur("email")}
+                value={formik.values.email}
+                error={
+                  formik.submitCount > 0 &&
+                  formik.touched.email &&
+                  formik.errors.email
+                    ? formik.errors.email
+                    : null
+                }
               />
-            </Spin>
-            {/* <div className="my-3">
-              <Link href="/signup">
-                <span className="text-dark text-decoration-none text-center">
-                  Do you have an Account? <b>Register</b>
-                </span>
-              </Link>
-            </div> */}
+              <CustomInput
+                prefix={<RiLockPasswordLine />}
+                suffix={
+                  showPassword ? (
+                    <BsEyeSlash
+                      onClick={() => setShowPassword(false)}
+                      style={{ cursor: "pointer" }}
+                    />
+                  ) : (
+                    <BsEye
+                      onClick={() => setShowPassword(true)}
+                      style={{ cursor: "pointer" }}
+                    />
+                  )
+                }
+                placeholder="Mật khẩu"
+                className="mt-3"
+                onChange={(e) => {
+                  formik.handleChange("password")(e);
+                  setPasswordValue(e.target.value);
+                }}
+                onBlur={formik.handleBlur("password")}
+                value={passwordValue}
+                error={
+                  formik.submitCount > 0 &&
+                  formik.touched.password &&
+                  formik.errors.password
+                    ? formik.errors.password
+                    : null
+                }
+                type={showPassword ? "text" : "password"}
+              />
+              <Spin spinning={isLoading}>
+                <CustomButton
+                  title="Đăng nhập"
+                  type="primary"
+                  className="w-full flex justify-center bg-blue-400 hover:bg-blue-500 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition ease-in duration-500"
+                  onClick={() => formik.handleSubmit()}
+                  disabled={isLoading}
+                />
+              </Spin>
+            </div>
           </form>
         </div>
       </div>

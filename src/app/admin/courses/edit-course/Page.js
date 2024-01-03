@@ -161,7 +161,7 @@ export default function EditCourses(props) {
         ]}
       >
         <div className="mt-10">
-          <label htmlFor="course" className="fs-6 fw-bold">
+          <label htmlFor="course" className="fs-6 font-medium">
             Tên khóa học:
           </label>
           <CustomInput
@@ -171,7 +171,7 @@ export default function EditCourses(props) {
             error={formik.touched.name && formik.errors.name}
           />
 
-          <label htmlFor="course" className="fs-6 fw-bold mt-2">
+          <label htmlFor="course" className="fs-6 font-medium mt-3">
             Mô tả khóa học:
           </label>
           <textarea
@@ -188,14 +188,20 @@ export default function EditCourses(props) {
             : null}
         </div>
 
-        <Upload {...propsUdateImage}>
-          <Button className="mt-3" icon={<UploadOutlined />}>
-            Chọn hình ảnh
-          </Button>
-        </Upload>
+        <div>
+          <label htmlFor="course" className="fs-6 font-medium mt-3 mr-3">
+            Hình ảnh khóa học:
+          </label>
+
+          <Upload {...propsUdateImage}>
+            <Button className="mt-3" icon={<UploadOutlined />}>
+              Chọn hình ảnh
+            </Button>
+          </Upload>
+        </div>
 
         <div className="mt-3">
-          <label htmlFor="visibility" className="fs-6 fw-bold">
+          <label htmlFor="visibility" className="fs-6 font-medium pr-2">
             Tùy chọn:
           </label>
           <Radio.Group

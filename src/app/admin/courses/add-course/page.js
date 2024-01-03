@@ -13,7 +13,8 @@ import {
   uploadImageCourse,
 } from "@/features/Courses/courseSlice";
 import React, { useState } from "react";
-import { UploadOutlined } from "@ant-design/icons";
+import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import CustomButton from "@/components/comman/CustomBtn";
 
 const CourseSchema = yup.object({
   title: yup
@@ -127,23 +128,21 @@ export default function AddCourse(props) {
     <React.Fragment>
       {contextHolder}
       {isAdmin && (
-        <Button
+        <CustomButton
           type="primary"
+          title={
+            <div className="flex items-center justify-center">
+              <PlusOutlined />
+              <span className="ml-1">Tạo khóa học</span>
+            </div>
+          }
           onClick={showModal}
-          className="me-3"
-          style={{
-            color: "#fff",
-            backgroundColor: "#1890ff",
-          }}
-        >
-          Tạo khóa học
-        </Button>
+          className="flex justify-center bg-blue-500 hover:bg-blue-400 text-white p-2 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition ease-in duration-500"
+        ></CustomButton>
       )}
       <Modal
         title={
-          <h1 className="text-2xl font-bold text-blue-500">
-            Tạo khóa học
-          </h1>
+          <h1 className="text-2xl font-bold text-blue-500">Tạo khóa học</h1>
         }
         open={isModalOpen}
         onCancel={handleCancel}
@@ -171,7 +170,7 @@ export default function AddCourse(props) {
       >
         <div className="mt-10">
           <label htmlFor="course" className="text-lg font-medium">
-            Tên khóa học
+            Tên khóa học:
           </label>
           <CustomInput
             id="course"
@@ -188,7 +187,7 @@ export default function AddCourse(props) {
             }
           />
 
-          <label htmlFor="course" className="text-lg font-medium">
+          <label htmlFor="course" className="text-lg font-medium mt-3">
             Mô tả khóa học:
           </label>
           <textarea
@@ -204,14 +203,19 @@ export default function AddCourse(props) {
             : null}
         </div>
 
-        <Upload {...propsUdateImage}>
-          <Button className="mt-3" icon={<UploadOutlined />}>
-            Chọn hình ảnh khóa học
-          </Button>
-        </Upload>
+        <div>
+          <label htmlFor="course" className="text-lg font-medium mt-3 mr-3">
+            Hình ảnh khóa học:
+          </label>
+          <Upload {...propsUdateImage}>
+            <Button className="mt-3" icon={<UploadOutlined />}>
+              Chọn hình ảnh
+            </Button>
+          </Upload>
+        </div>
 
         <div className="mt-3">
-          <label htmlFor="visibility" className="fs-6 fw-bold">
+          <label htmlFor="visibility" className="text-lg font-medium pr-2">
             Tùy chọn:
           </label>
           <Radio.Group

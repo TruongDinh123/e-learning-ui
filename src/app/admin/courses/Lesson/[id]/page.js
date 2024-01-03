@@ -26,6 +26,7 @@ import { BookOutlined } from "@ant-design/icons";
 import { useMediaQuery } from "react-responsive";
 import "../[id]/page.css";
 import EditLesson from "../update-lesson/page";
+import { AiOutlineFundView } from "react-icons/ai";
 
 export default function Lesson({ params }) {
   const dispatch = useDispatch();
@@ -35,17 +36,7 @@ export default function Lesson({ params }) {
   const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [fullContent, setFullContent] = useState("");
-
-  const handleReadMore = (content) => {
-    setFullContent(content);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseDrawer = () => {
-    setIsDrawerVisible(false);
-  };
 
   //viewLesson api
   useEffect(() => {
@@ -156,7 +147,16 @@ export default function Lesson({ params }) {
                           </Popconfirm>
                         </Menu.Item>
                         <Menu.Item>
-                          <VideoLesson lessonId={i?._id} />
+                          <Link
+                            href={`/admin/courses/Lesson/view-details/${i?._id}`}
+                          >
+                            <Button
+                              type="default"
+                              className="w-full items-center justify-center"
+                            >
+                              Xem bài học
+                            </Button>
+                          </Link>
                         </Menu.Item>
                       </Menu>
                     );
@@ -250,8 +250,8 @@ export default function Lesson({ params }) {
                                     }
                                   />
                                   <Popconfirm
-                                    title="Delete the Lesson"
-                                    description="Are you sure to delete this Lesson?"
+                                    title="Xóa bài học"
+                                    description="Bạn có chắc muốn xóa bài học này?"
                                     okText="Có"
                                     cancelText="Không"
                                     okButtonProps={{
@@ -269,7 +269,16 @@ export default function Lesson({ params }) {
                                       Xóa
                                     </Button>
                                   </Popconfirm>
-                                  <VideoLesson lessonId={i?._id} />
+                                  <Link
+                                    href={`/admin/courses/Lesson/view-details/${i?._id}`}
+                                  >
+                                    <Button
+                                      type="default"
+                                      className="w-full items-center justify-center"
+                                    >
+                                      Xem bài học
+                                    </Button>
+                                  </Link>
                                 </Space>
                               </Space>
                             </Col>
@@ -280,10 +289,11 @@ export default function Lesson({ params }) {
                   })
                 )}
               </div>
-              {lesson?.length === 0 && (
-                <Empty className="text-center text-sm text-muted-foreground mt-10">
-                  Không có bài tập nào được tạo.
-                </Empty>
+              {lessonIds?.length === 0 && (
+                <Empty
+                  description="Không có bài tập nào được tạo."
+                  className="text-center text-sm text-muted-foreground mt-10"
+                ></Empty>
               )}
             </div>
           </div>

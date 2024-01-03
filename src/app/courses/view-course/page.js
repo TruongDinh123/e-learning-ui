@@ -71,9 +71,11 @@ export default function Course() {
                   {item.quizzes.length > 0 ? (
                     <div className="flex items-center gap-x-1 text-slate-500">
                       <Link href={`/courses/view-details/${item?._id}`}>
-                        <div className="button-container me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                          <FolderOpenOutlined className="pr-2" />
-                          Danh sách bài tập
+                        <div className="me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                          <div className="flex items-center justify-center">
+                            <FolderOpenOutlined />
+                            <span className="ml-1">Bài tập</span>
+                          </div>
                         </div>
                       </Link>
                     </div>

@@ -2,10 +2,19 @@
 import { Button } from "antd";
 
 export default function CustomButton(props) {
-  const { title, className, type, shape, onClick , style, disabled} = props;
+  const { title, className, type, shape, onClick, style, disabled, icon } =
+    props;
   return (
-    <Button type={type} className={className} onClick={onClick} shape={shape} style={style} disabled={disabled}>
+    <button
+      type={type}
+      className={className}
+      onClick={onClick}
+      shape={shape}
+      style={style}
+      disabled={disabled}
+      icon={icon}
+    >
       {title}
-    </Button>
+    </button>
   );
 }

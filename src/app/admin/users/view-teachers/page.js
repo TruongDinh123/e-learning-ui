@@ -12,6 +12,7 @@ import { getScoreByUserId } from "@/features/Quiz/quizSlice";
 import AddTeacherToCourse from "../../courses/add-teacher-course/page";
 import "../view-teachers/page.css";
 import EditUser from "../edit-user/page";
+import UpdateTeacherToCourse from "../../courses/update-teacher-course/page";
 
 const { Option } = Select;
 
@@ -306,7 +307,11 @@ export default function ViewTeachersCourse() {
             </h2>
             <p className="text-sm">Email: {teacher?.email}</p>
           </div>
-          <EditUser id={teacher?._id} refresh={() => setUpdate(update + 1)} />
+          {/* <EditUser id={teacher?._id} refresh={() => setUpdate(update + 1)} /> */}
+          <UpdateTeacherToCourse
+            courseId={selectedCourse}
+            refresh={() => setUpdate(update + 1)}
+          />
         </div>
       ) : (
         <div className="border p-4 rounded-md my-4 flex flex-col items-center justify-center space-y-4">

@@ -6,6 +6,7 @@ import { Button, message } from "antd";
 import { getAUser, updateUser } from "@/features/User/userSlice";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
+import CustomButton from "@/components/comman/CustomBtn";
 
 const Userchema = yup.object().shape({
   lastName: yup
@@ -15,14 +16,9 @@ const Userchema = yup.object().shape({
     .min(3, "Name must be at least 3 characters long")
     .matches(/^\S*$/, "Name must not contain whitespace"),
   email: yup.string().email().required("email is required"),
-
-  // password: Yup.string()
-  //   .min(5, "Your password must be at least 5 characters long")
-  //   .max(50, "Your password must be at least 5 characters long")
-  //   .required("Please provide a password"),
 });
 
-export default function FormValidation() {
+export default function UpdateInfoUser() {
   const id = localStorage.getItem("x-client-id");
   const [user, setUser] = useState(null);
   const dispatch = useDispatch();
@@ -86,7 +82,7 @@ export default function FormValidation() {
         <div className="col-lg-12">
           <div className="card">
             <div className="card-header">
-              <h4 className="card-title">Form Validation</h4>
+              <h4 className="card-title">Cập nhật thông tin</h4>
             </div>
             <div className="card-body">
               <div className="form-validation">
@@ -103,8 +99,8 @@ export default function FormValidation() {
                           className="col-lg-4 col-form-label"
                           htmlFor="val-username"
                         >
-                          Username
-                          <span className="text-danger">*</span>
+                          Tên:
+                          {/* <span className="text-danger">*</span> */}
                         </label>
                         <div className="col-lg-6">
                           <input
@@ -131,7 +127,8 @@ export default function FormValidation() {
                           className="col-lg-4 col-form-label"
                           htmlFor="val-email"
                         >
-                          Email <span className="text-danger">*</span>
+                          Email:
+                          {/* Email <span className="text-danger">*</span> */}
                         </label>
                         <div className="col-lg-6">
                           <input
@@ -153,46 +150,17 @@ export default function FormValidation() {
                           />
                         </div>
                       </div>
-                      {/* <div className="form-group mb-3 row">
-                        <label
-                          className="col-lg-4 col-form-label"
-                          htmlFor="val-password"
-                        >
-                          Mật khẩu cũ
-                          <span className="text-danger">*</span>
-                        </label>
-                        <div className="col-lg-6">
-                          <input
-                            type="password"
-                            className="form-control"
-                            id="val-password"
-                            name="val-password"
-                            placeholder="Nhập mật khẩu cũ..."
-                          />
-                        </div>
-                      </div>
-                      <div className="form-group mb-3 row">
-                        <label
-                          className="col-lg-4 col-form-label"
-                          htmlFor="val-password"
-                        >
-                          Mật khẩu mới
-                          <span className="text-danger">*</span>
-                        </label>
-                        <div className="col-lg-6">
-                          <input
-                            type="password"
-                            className="form-control"
-                            id="val-password"
-                            name="val-password"
-                            placeholder="Nhập mật khẩu mới..."
-                          />
-                        </div>
-                      </div> */}
                       <div className="form-group mb-3 row">
                         <div className="col-lg-8 ms-auto">
-                          <Button type="default" onClick={handleOk}>
-                            Submit
+                          <Button
+                            type="primary"
+                            onClick={handleOk}
+                            style={{
+                              color: "#fff",
+                              backgroundColor: "#1890ff",
+                            }}
+                          >
+                            Lưu
                           </Button>
                         </div>
                       </div>

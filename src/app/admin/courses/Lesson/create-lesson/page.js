@@ -145,7 +145,7 @@ export default function CreateLesson(props) {
         }
       >
         <div className="mt-10">
-          <label htmlFor="course" className="fs-6 fw-bold">
+          <label htmlFor="course" className="fs-6 font-medium">
             Tên bài học:
           </label>
           <CustomInput
@@ -153,6 +153,7 @@ export default function CreateLesson(props) {
             onChange={formik.handleChange("name")}
             onBlur={formik.handleBlur("name")}
             value={formik.values.name}
+            placeholder="Tên bài học"
             error={
               formik.submitCount > 0 &&
               formik.touched.name &&
@@ -162,7 +163,7 @@ export default function CreateLesson(props) {
             }
           />
 
-          <label htmlFor="course" className="fs-6 fw-bold">
+          <label htmlFor="course" className="fs-6 font-medium">
             Nội dung:
           </label>
           <textarea
@@ -181,11 +182,16 @@ export default function CreateLesson(props) {
           />
         </div>
 
-        <Upload {...propsUdateImage}>
-          <Button className="mt-3" icon={<UploadOutlined />}>
-            Chọn video
-          </Button>
-        </Upload>
+        <div>
+          <label htmlFor="course" className="fs-6 font-medium mr-2">
+            Video bài học:
+          </label>
+          <Upload {...propsUdateImage}>
+            <Button className="mt-3" icon={<UploadOutlined />}>
+              Chọn video
+            </Button>
+          </Upload>
+        </div>
       </Modal>
     </React.Fragment>
   );

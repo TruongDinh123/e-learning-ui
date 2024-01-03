@@ -75,6 +75,15 @@ const addTeacherToCourse = async (data) => {
   return res.data;
 };
 
+const updateCourseTeacher = async (data) => {
+  const res = await axiosInstance({
+    url: "/e-learning/update-teacher-course/" + data.courseId,
+    method: "PUT",
+    data: data.values,
+  });
+  return res.data;
+};
+
 const removeStudentFromCourse = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/delete-user-course/user/${data.userId}/course/${data.courseId}`,
@@ -148,4 +157,5 @@ export const courseService = {
   addTeacherToCourse,
   createNotification,
   uploadImageCourse,
+  updateCourseTeacher,
 };

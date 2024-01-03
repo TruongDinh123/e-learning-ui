@@ -171,7 +171,7 @@ export default function Courses() {
                         </Button>
                       </Popconfirm>
                     </Menu.Item>
-                    <Menu.Item>
+                    {/* <Menu.Item>
                       <Button
                         onClick={() => handleCoursePublic(item?._id)}
                         style={{ width: "100%" }}
@@ -180,7 +180,7 @@ export default function Courses() {
                           ? "Chế độ riêng tư"
                           : "Chế độ công khai"}
                       </Button>
-                    </Menu.Item>
+                    </Menu.Item> */}
                   </Menu>
                 );
                 return (
@@ -201,7 +201,8 @@ export default function Courses() {
                     </div>
                     <div className="flex flex-col pt-2">
                       <div className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2">
-                        {item.name}
+                        {item.name} (
+                        {item.showCourse ? "Công khai" : "Riêng tư"})
                       </div>
                       <p className="text-xs text-muted-foreground"></p>
                       <div className="my-3 flex items-center gap-x-2 text-sm md:text-xs">
@@ -253,7 +254,7 @@ export default function Courses() {
                               >
                                 Học viên
                               </Button>
-                              <Button
+                              {/* <Button
                                 onClick={() =>
                                   item.showCourse
                                     ? handleCoursePrivate(item._id)
@@ -263,7 +264,7 @@ export default function Courses() {
                                 {item.showCourse
                                   ? "Chế độ riêng tư"
                                   : "Chế độ công khai"}
-                              </Button>
+                              </Button> */}
                               <Popconfirm
                                 title="Xóa khóa học"
                                 description="Bạn có chắc xóa khóa học?"

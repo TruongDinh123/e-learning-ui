@@ -5,7 +5,7 @@ import {
   viewCourses,
 } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Modal, Popconfirm, Select, Table, message } from "antd";
+import { Button, Empty, Modal, Popconfirm, Select, Table, message } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { batch, useDispatch } from "react-redux";
 import AddStudentToCourse from "../../courses/add-student-course/page";
@@ -24,6 +24,7 @@ export default function ViewStudentsCourse() {
   const [courses, setCourses] = useState([]);
   const [scores, setScores] = useState({}); // Change to an object
   const [loading, setLoading] = useState(false);
+  const [viewSuccess, setViewSuccess] = useState(false);
 
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
@@ -134,6 +135,7 @@ export default function ViewStudentsCourse() {
         if (res.status) {
           setData(res.metadata.students);
           setTeacher(res.metadata.teacher);
+          setViewSuccess(true);
         } else {
           messageApi.error(res.message);
         }
@@ -240,27 +242,40 @@ export default function ViewStudentsCourse() {
         </Button>
       </div>
 
-      <AddStudentToCourse
-        courseId={selectedCourse}
-        refresh={() => setUpdate(update + 1)}
-      >
-        Thêm học viên
-      </AddStudentToCourse>
-      {teacher && (
-        <div className="border p-4 rounded-md my-4">
-          <h2 className="font-bold text-lg">Giáo viên: {teacher?.lastName}</h2>
-          <p className="text-sm">Email: {teacher?.email}</p>
-        </div>
+      {viewSuccess && (
+        <>
+          <AddStudentToCourse
+            courseId={selectedCourse}
+            refresh={() => setUpdate(update + 1)}
+          >
+            Thêm học viên
+          </AddStudentToCourse>
+          {teacher && (
+            <div className="border p-4 rounded-md my-4">
+              <h2 className="font-bold text-lg">
+                Giáo viên: {teacher?.lastName}
+              </h2>
+              <p className="text-sm">Email: {teacher?.email}</p>
+            </div>
+          )}
+          <Table
+            columns={columns}
+            dataSource={data}
+            pagination={{ pageSize: 5, position: ["bottomLeft"] }}
+            scroll={{
+              x: 1300,
+            }}
+            className="pt-3 grid-container"
+          />
+        </>
       )}
-      <Table
-        columns={columns}
-        dataSource={data}
-        pagination={{ pageSize: 5, position: ["bottomLeft"] }}
-        scroll={{
-          x: 1300,
-        }}
-        className="pt-3 grid-container"
-      />
+
+      {dataStudent?.length === 0 && (
+        <Empty
+          description="Không tìm thấy dữ liệu."
+          className="text-center text-sm text-muted-foreground mt-10"
+        ></Empty>
+      )}
     </React.Fragment>
   );
 }

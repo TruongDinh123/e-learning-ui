@@ -51,10 +51,14 @@ export const deleteUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
   "/e-learning/update-user",
-  async (data, { rejectWithValue }) => {
+  async (data, { rejectWithValue, dispatch }) => {
     try {
       const response = await authService.updateUser(data);
-      return response;
+      if (response.status) {
+        const userName = response.data?.metadata.lastName;
+        localStorage.setItem("userName", JSON.stringify(userName));
+      }
+      return response.data;
     } catch (err) {
       return rejectWithValue(err);
     }
@@ -159,22 +163,25 @@ export const changePassword = createAsyncThunk(
   }
 );
 
-// let userFromLocalStorage = null;
+let userFromLocalStorage = null;
+let userNameFromLocalStogare = null;
 
-// if (typeof window !== "undefined") {
-//   userFromLocalStorage = localStorage?.getItem("user");
-// }
+if (typeof window !== "undefined") {
+  userFromLocalStorage = JSON.parse(localStorage?.getItem("user"));
+  userNameFromLocalStogare = JSON.parse(localStorage?.getItem("userName"));
+}
 
-let getUserFromLocalStorage = () => {
-  if (typeof window !== "undefined") {
-    const user = localStorage?.getItem("user");
-    return JSON.parse(user);
-  }
-  return null;
-};
+// let getUserFromLocalStorage = () => {
+//   if (typeof window !== "undefined") {
+//     const user = localStorage?.getItem("user");
+//     return JSON.parse(user);
+//   }
+//   return null;
+// };
 
 const initialState = {
-  user: getUserFromLocalStorage,
+  user: userFromLocalStorage,
+  userName: userNameFromLocalStogare,
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -189,6 +196,9 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload;
+    },
+    setUserName: (state, action) => {
+      state.userName = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -301,10 +311,24 @@ const userSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
       })
+      .addCase(updateUser.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.user = action.payload;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+      })
       .addCase(resetState, () => initialState);
   },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser, setUserName } = userSlice.actions;
 
 export default userSlice.reducer;
