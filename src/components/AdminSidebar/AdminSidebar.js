@@ -11,8 +11,9 @@ import Link from "next/link";
 import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { logOut, resetState } from "@/features/User/userSlice";
+import { getAUser, logOut, resetState } from "@/features/User/userSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { useEffect, useState } from "react";
 
 const { Sider } = Layout;
 export default function AdminSidebar(props) {
@@ -20,9 +21,14 @@ export default function AdminSidebar(props) {
   const router = useRouter();
   // const userState = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
+  
   const userState = JSON.parse(localStorage.getItem("user"));
+  const id = localStorage.getItem("x-client-id");
 
-  const userRole = userState.metadata.account.roles[0];
+  const userProfile = useSelector((state) => state.user.profile);
+  const [data, setData] = useState(null);
+
+  const userRole = userState?.roles[0];
 
   const menuItems = [
     {
@@ -116,15 +122,38 @@ export default function AdminSidebar(props) {
       });
   };
 
+  useEffect(() => {
+    getAUsereData();
+  }, []);
+
+  const getAUsereData = () => {
+    dispatch(getAUser(id))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setData(res.data.metadata);
+        } else {
+          messageApi.error(res.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <Sider trigger={null} collapsible collapsed={collapsed}>
       <div className="demo-logo-vertical d-flex justify-content-center align-items-center py-3">
-        <Avatar src={`https://xsgames.co/randomusers/avatar.php?g=pixel`} />
+        <Avatar
+          src={
+            userProfile?.image_url || data?.image_url || `https://xsgames.co/randomusers/avatar.php?g=pixel`
+          }
+        />
         <span
           className="fs-6 text-white text-decoration-none me-4"
           style={{ paddingLeft: "10px" }}
         >
-          {userState.metadata.account?.lastName}
+          {userState?.lastName}
         </span>
       </div>
       <Menu
@@ -137,7 +166,7 @@ export default function AdminSidebar(props) {
         }}
         items={menuItems}
       />
-      <div
+      {/* <div
         style={{
           position: "absolute",
           bottom: 0,
@@ -162,7 +191,7 @@ export default function AdminSidebar(props) {
             </Link>
           )}
         </Nav>
-      </div>
+      </div> */}
     </Sider>
   );
 }

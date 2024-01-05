@@ -65,6 +65,18 @@ export const updateUser = createAsyncThunk(
   }
 );
 
+export const uploadImageUser = createAsyncThunk(
+  "/e-learning/user/upload-image",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await authService.uploadImageUser(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 export const getAUser = createAsyncThunk(
   "/e-learning/user",
   async (data, { rejectWithValue }) => {
@@ -154,6 +166,7 @@ export const createRole = createAsyncThunk(
 export const changePassword = createAsyncThunk(
   "/e-learning/change-password",
   async (data, { rejectWithValue }) => {
+    console.log("🚀 ~ data:", data);
     try {
       const response = await authService.changePassword(data);
       return response;
@@ -189,6 +202,7 @@ const initialState = {
 };
 
 export const resetState = createAction("Reset_all");
+export const updateUserProfile = createAction("user/updateProfile");
 
 const userSlice = createSlice({
   name: "login",
@@ -199,6 +213,9 @@ const userSlice = createSlice({
     },
     setUserName: (state, action) => {
       state.userName = action.payload;
+    },
+    updateUserProfile: (state, action) => {
+      state.user = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -324,6 +341,9 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
+      })
+      .addCase(updateUserProfile, (state, action) => {
+        state.profile = action.payload;
       })
       .addCase(resetState, () => initialState);
   },

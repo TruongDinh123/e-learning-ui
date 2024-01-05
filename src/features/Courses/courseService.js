@@ -66,6 +66,8 @@ const addStudentToCourse = async (data) => {
   return res.data;
 };
 
+
+
 const addTeacherToCourse = async (data) => {
   const res = await axiosInstance({
     url: "/e-learning/invite-teacher-course/" + data.courseId,

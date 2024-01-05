@@ -91,13 +91,11 @@ export default function Quizs({ params }) {
     dispatch(getScore())
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           setScore(res.metadata);
           const completedQuiz = res.metadata.find(
             (quiz) => quiz.quiz?._id === params?.id
           );
-          console.log("🚀 ~ completedQuiz:", completedQuiz);
           if (completedQuiz) {
             setIsComplete(completedQuiz.isComplete);
             const answersObject = completedQuiz.answers.reduce((obj, item) => {

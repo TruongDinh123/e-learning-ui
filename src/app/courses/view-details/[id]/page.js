@@ -89,14 +89,13 @@ export default function ViewQuiz({ params }) {
 
   useEffect(() => {
     if (
-      userState?.metadata?.account?.roles.includes("Admin") ||
-      userState?.metadata?.account?.roles.includes("Mentor")
+      userState?.roles.includes("Admin") ||
+      userState?.roles.includes("Mentor")
     ) {
       setLoading(true);
       dispatch(getQuizsByCourse({ courseId: params?.id }))
         .then(unwrapResult)
         .then((res) => {
-          console.log("🚀 ~ res:", res);
           if (res.status) {
             setquiz(res.metadata);
           } else {
@@ -242,7 +241,7 @@ export default function ViewQuiz({ params }) {
     quiz?.forEach((i, index) => {
       const correspondingScore = score.find((s) => s.quiz?._id === i?._id);
 
-        const submissionTime = i?.submissionTime
+      const submissionTime = i?.submissionTime
         ? getTime(new Date(i?.submissionTime))
         : null;
 
@@ -252,7 +251,10 @@ export default function ViewQuiz({ params }) {
         expiredCourses.push({
           key: index + 1,
           name: i?.name,
-          submissionTime: format(new Date(submissionTime), "dd/MM/yyyy HH:mm:ss"),
+          submissionTime: format(
+            new Date(submissionTime),
+            "dd/MM/yyyy HH:mm:ss"
+          ),
           isComplete: correspondingScore
             ? correspondingScore.isComplete
               ? "Đã hoàn thành"
@@ -311,7 +313,6 @@ export default function ViewQuiz({ params }) {
   // Component hiển thị khóa học chưa hết hạn
   const NonExpiredCoursesComponent = () => {
     const nonExpiredCourses = [];
-    console.log("🚀 ~ nonExpiredCourses:", nonExpiredCourses);
     quiz?.forEach((i, index) => {
       const correspondingScore = score.find((s) => s.quiz?._id === i?._id);
 
@@ -325,7 +326,10 @@ export default function ViewQuiz({ params }) {
         nonExpiredCourses.push({
           key: index + 1,
           name: i?.name,
-          submissionTime: format(new Date(submissionTime), "dd/MM/yyyy HH:mm:ss"),
+          submissionTime: format(
+            new Date(submissionTime),
+            "dd/MM/yyyy HH:mm:ss"
+          ),
           isComplete: correspondingScore
             ? correspondingScore.isComplete
               ? "Đã hoàn thành"

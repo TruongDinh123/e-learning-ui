@@ -34,6 +34,20 @@ const getAUser = async (data) => {
   return res;
 };
 
+const uploadImageUser = async (data) => {
+  const formData = new FormData();
+  formData.append("filename", data.filename);
+  const res = await axiosInstance({
+    url: `/e-learning/user/${data.userId}/upload-image`,
+    method: "POST",
+    data: formData,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res.data;
+};
+
 const deleteUser = async (data) => {
   const res = await axiosInstance({
     url: "/e-learning/user/" + data,
@@ -126,4 +140,5 @@ export const authService = {
   getAUser,
   logOut,
   changePassword,
+  uploadImageUser,
 };

@@ -35,7 +35,7 @@ export default function Courses() {
           const currentTeacherId = localStorage.getItem("x-client-id");
           const user = JSON.parse(localStorage?.getItem("user"));
 
-          const isAdmin = user?.metadata?.account?.roles?.includes("Admin");
+          const isAdmin = user?.roles?.includes("Admin");
           let visibleCourses;
 
           if (isAdmin) {

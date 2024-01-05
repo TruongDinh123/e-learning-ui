@@ -16,7 +16,6 @@ import Link from "next/link";
 export default function LessonDetails({ params }) {
   const dispatch = useDispatch();
   const [lesson, setLesson] = useState([]);
-  console.log("🚀 ~ lesson:", lesson);
   const [videoLesson, setvideoLesson] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isVideoEmpty, setIsVideoEmpty] = useState(true);

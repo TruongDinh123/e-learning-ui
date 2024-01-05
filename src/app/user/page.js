@@ -1,12 +1,12 @@
 "use client";
 import React, { Fragment, useEffect, useState } from "react";
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as yup from "yup";
 import { Button, message } from "antd";
 import { getAUser, updateUser } from "@/features/User/userSlice";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-import CustomButton from "@/components/comman/CustomBtn";
+import ChangePasswordForm from "./change-password/page";
 
 const Userchema = yup.object().shape({
   lastName: yup
@@ -172,6 +172,7 @@ export default function UpdateInfoUser() {
           </div>
         </div>
       </div>
+      <ChangePasswordForm />
     </Fragment>
   );
 }

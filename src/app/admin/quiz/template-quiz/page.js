@@ -54,8 +54,6 @@ export default function TeamplateQuiz() {
     dispatch(deleteTemplates({ quizTemplateId }))
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ quizTemplateId:", quizTemplateId);
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           setUpdateQuizTemplate(updateQuizTemplate + 1);
         } else {

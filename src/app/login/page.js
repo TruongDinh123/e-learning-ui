@@ -60,16 +60,19 @@ export default function Login() {
               .then(() => {
                 Cookies.set("Bearer", res?.metadata.tokens.accessToken);
 
-                localStorage.setItem("user", JSON.stringify(res));
+                localStorage.setItem(
+                  "user",
+                  JSON.stringify(res.metadata.account)
+                );
                 localStorage.setItem(
                   "userName",
                   JSON.stringify(res.metadata.account.lastName)
                 );
 
-                localStorage.setItem(
-                  "authorization",
-                  res.metadata.tokens.accessToken
-                );
+                // localStorage.setItem(
+                //   "authorization",
+                //   res.metadata.tokens.accessToken
+                // );
 
                 localStorage.setItem("x-client-id", res.metadata.account._id);
                 if (

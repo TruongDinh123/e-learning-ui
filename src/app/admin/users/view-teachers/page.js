@@ -11,7 +11,7 @@ import { useDispatch } from "react-redux";
 import { getScoreByUserId } from "@/features/Quiz/quizSlice";
 import AddTeacherToCourse from "../../courses/add-teacher-course/page";
 import "../view-teachers/page.css";
-import EditUser from "../edit-user/page";
+import EditUser from "../edit-user-modal/page";
 import UpdateTeacherToCourse from "../../courses/update-teacher-course/page";
 
 const { Option } = Select;

@@ -3,8 +3,8 @@ import Cookies from "js-cookie";
 
 const axiosInstance = axios.create({
   // baseURL: process.env.API_URL || process.env.API_URL_PRODUCTION,
-  baseURL: "https://e-learning-95lab-productionv1.onrender.com/v1/api",
-  // baseURL: "http://103.179.191.146:4001/v1/api",
+  // baseURL: "https://e-learning-95lab-productionv1.onrender.com/v1/api",
+  baseURL: "http://116.118.51.23:4001/v1/api",
   headers: {
     "Content-Type": "application/json",
     "x-api-key":
@@ -15,7 +15,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   function (config) {
-    const token = localStorage?.getItem("authorization");
+    const token = Cookies.get("Bearer");
     const clientId = localStorage?.getItem("x-client-id");
     if (token) {
       config.headers["authorization"] = token;
@@ -46,7 +46,7 @@ axiosInstance.interceptors.response.use(
       error.response.data.message === "invalid signature"
     ) {
       // Remove the invalid token from localStorage
-      localStorage.removeItem("authorization");
+      // localStorage.removeItem("authorization");
       localStorage.removeItem("x-client-id");
       Cookies.remove("Bearer");
     }

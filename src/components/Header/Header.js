@@ -155,10 +155,10 @@ export default function Header() {
                 <Dropdown overlay={menu}>
                   <span className="block mt-4 lg:inline-block lg:mt-0 hover:text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
                     {userName}
-                    {(userState?.metadata?.account?.roles.includes("Admin") ||
-                      userState?.metadata?.account?.roles.includes(
-                        "Mentor"
-                      )) && <Link href="/admin/courses">( Admin )</Link>}
+                    {(userState?.roles?.includes("Admin") ||
+                      userState?.roles?.includes("Mentor")) && (
+                      <Link href="/admin/courses">( Admin )</Link>
+                    )}
                     <DownOutlined />
                   </span>
                 </Dropdown>

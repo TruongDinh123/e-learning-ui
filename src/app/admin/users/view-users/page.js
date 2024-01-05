@@ -5,7 +5,7 @@ import { Dropdown, Menu, Space, Spin, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { Button, Popconfirm } from "antd";
 import { deleteUser, getAllUser } from "@/features/User/userSlice";
-import EditUser from "../edit-user/page";
+import EditUser from "../edit-user-modal/page";
 import { useMediaQuery } from "react-responsive";
 import "../view-users/page.css";
 export default function ViewUsers() {

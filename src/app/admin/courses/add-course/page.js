@@ -39,7 +39,7 @@ export default function AddCourse(props) {
 
   const user = JSON.parse(localStorage?.getItem("user"));
 
-  const isAdmin = user?.metadata?.account?.roles?.includes("Admin");
+  const isAdmin = user?.roles?.includes("Admin");
 
   const showModal = () => {
     setIsModalOpen(true);

@@ -27,8 +27,8 @@ export default function RootLayout({ children }) {
     // Check if the cookie exists
     const token = Cookies.get("Bearer");
     const user = JSON.parse(localStorage.getItem("user")); // Giả sử bạn lưu thông tin người dùng vào localStorage
-    const isAdmin = user?.metadata?.account?.roles?.includes("Admin");
-    const isMentor = user?.metadata?.account?.roles?.includes("Mentor");
+    const isAdmin = user?.roles?.includes("Admin");
+    const isMentor = user?.roles?.includes("Mentor");
 
     // Ngay lập tức chuyển hướng nếu không phải Admin hoặc Mentor và cố gắng truy cập vào /admin/courses
     if (pathname === "/admin/courses" && !(isAdmin || isMentor)) {

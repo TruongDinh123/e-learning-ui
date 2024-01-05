@@ -113,7 +113,6 @@ export default function UpdateQuizTemplate(props) {
       dispatch(viewAQuizTemplate({ quizTemplateId: quizTemplateId }))
         .then(unwrapResult)
         .then((res) => {
-          console.log("🚀 ~ res:", res);
           if (res.status) {
             setquiz(res.metadata);
             const quizToUpdate = res.metadata.find(
