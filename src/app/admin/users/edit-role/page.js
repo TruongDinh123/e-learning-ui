@@ -76,8 +76,8 @@ export default function EditRole(props) {
       <Button
         type="primary"
         onClick={showModal}
-        className="me-3"
-        style={{ width: "100%", color: "#fff", backgroundColor: "#1890ff" }}
+        className="me-3 custom-button"
+        style={{ width: "100%" }}
       >
         Cập nhật
       </Button>
@@ -95,10 +95,7 @@ export default function EditRole(props) {
               key="back"
               type="primary"
               onClick={handleOk}
-              style={{
-                color: "#fff",
-                backgroundColor: "#1890ff",
-              }}
+              className="custom-button"
             >
               Lưu
             </Button>

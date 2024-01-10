@@ -97,8 +97,8 @@ export default function EditUser(props) {
       <Button
         type="primary"
         onClick={showModal}
-        className="me-3"
-        style={{ color: "#fff", backgroundColor: "#1890ff" }}
+        className="me-3 custom-button"
+        style={{width: '100%'}}
       >
         Cập nhật
       </Button>
@@ -116,7 +116,7 @@ export default function EditUser(props) {
               key="ok"
               type="primary"
               onClick={handleOk}
-              style={{ backgroundColor: "#1890ff", color: "white" }}
+              className="custom-button"
             >
               Lưu
             </Button>

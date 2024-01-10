@@ -155,10 +155,7 @@ export default function UpdateInfoUser() {
                           <Button
                             type="primary"
                             onClick={handleOk}
-                            style={{
-                              color: "#fff",
-                              backgroundColor: "#1890ff",
-                            }}
+                            className="custom-button"
                           >
                             Lưu
                           </Button>

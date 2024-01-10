@@ -113,11 +113,7 @@ export default function CreateLesson(props) {
       <Button
         type="primary"
         onClick={showModal}
-        className="me-3 mt-2"
-        style={{
-          color: "#fff",
-          backgroundColor: "#1890ff",
-        }}
+        className="me-3 mt-2 custom-button"
       >
         Tạo bài học
       </Button>
@@ -135,10 +131,7 @@ export default function CreateLesson(props) {
             type="primary"
             onClick={handleOk}
             loading={isLoading}
-            style={{
-              color: "#fff",
-              backgroundColor: "#1890ff",
-            }}
+            className="custom-button"
           >
             Lưu
           </Button>

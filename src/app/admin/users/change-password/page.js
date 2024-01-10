@@ -208,7 +208,7 @@ export default function ChangePassword() {
             </button> */}
               <Button
                 onClick={handleOk}
-                className="px-4 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300"
+                className="px-4 text-sm font-medium text-white bg-blue-900 hover:bg-blue-400 focus:outline-none focus:ring focus:border-blue-300"
               >
                 Lưu
               </Button>

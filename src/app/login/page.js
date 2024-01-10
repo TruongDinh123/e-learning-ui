@@ -1,7 +1,6 @@
 "use client";
 import CustomButton from "@/components/comman/CustomBtn";
 import CustomInput from "@/components/comman/CustomInput";
-import Link from "next/link";
 import { AiOutlineMail } from "react-icons/ai";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { useDispatch } from "react-redux";
@@ -19,8 +18,8 @@ const loginSchema = yup.object({
   email: yup
     .string()
     .email("Email should be Valid")
-    .required("Email is required"),
-  password: yup.string().min(6).required("Password is required"),
+    .required("Yêu cầu nhập email"),
+  password: yup.string().min(6).required("Yêu cầu nhập mật khẩu"),
 });
 
 export default function Login() {
@@ -105,30 +104,27 @@ export default function Login() {
           "url(https://images.unsplash.com/photo-1552581234-26160f608093?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D;auto=format&amp;fit=crop&amp;w=1951&amp;q=80)",
       }}
     >
-      <div class="absolute bg-gradient-to-b from-yellow-50 opacity-80 inset-0 z-0"></div>
+      <div class="absolute bg-gradient-to-b from-yellow-50 opacity-50 inset-0 z-0"></div>
       {contextHolder}
       <div
         style={{ minHeight: "100vh" }}
         className="sm:flex sm:flex-row mx-0 justify-center"
       >
         <div class="flex-col flex self-center p-10 sm:max-w-5xl xl:max-w-2xl z-10">
-          <div class="self-start hidden lg:flex flex-col  text-white">
+          <div class="self-start hidden lg:flex flex-col text-white">
             <img src="" class="mb-3" />
-            <h1 class="mb-3 font-bold text-5xl text-blue-500">
-              Xin chào ? Chào mừng bạn trở lại với 95E-Learning{" "}
+            <h1 class="mb-3 font-bold text-5xl text-blue-900">
+              Chào mừng bạn tới với 247learn.vn{" "}
             </h1>
-            {/* <p class="pr-3 text-black text-xl">
-              Ăn tranh thủ, ngủ khẩn trương. Học hết sức, chơi hết mình.
-            </p> */}
           </div>
         </div>
-        <div className="flex justify-center self-center z-20 relative">
+        <div className="flex justify-center items-center p-10 self-center z-20 relative w-full sm:w-full min-h-screen sm:min-h-0">
           <form
             action=""
             onSubmit={formik.handleSubmit}
-            className="p-12 bg-white mx-auto rounded-2xl w-100 z-20 relative"
+            className="p-12 bg-white mx-auto rounded-2xl lg:w-2/4 sm:w-full z-20 relative"
           >
-            <div class="mb-4">
+            <div class="mb-2">
               <h3 class="font-semibold text-2xl text-gray-800">Đăng nhập </h3>
               <p class="text-gray-500">Xin hãy đăng nhập tài khoản của bạn.</p>
             </div>
@@ -179,15 +175,15 @@ export default function Login() {
                 }
                 type={showPassword ? "text" : "password"}
               />
-              <Spin spinning={isLoading}>
+              <div>
                 <CustomButton
-                  title="Đăng nhập"
+                  title={isLoading ? <Spin /> : "Đăng nhập"}
                   type="primary"
-                  className="w-full flex justify-center bg-blue-400 hover:bg-blue-500 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition ease-in duration-500"
-                  onClick={() => formik.handleSubmit()}
                   disabled={isLoading}
+                  onClick={() => formik.handleSubmit()}
+                  className="py-1 px-8 bg-blue-900 hover:bg-blue-400 text-white text-center inline-block text-lg my-1 mx-1 rounded-lg cursor-pointer border-none"
                 />
-              </Spin>
+              </div>
             </div>
           </form>
         </div>

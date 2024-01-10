@@ -87,26 +87,34 @@ export default function ViewQuiz({ params }) {
 
   const userState = useSelector((state) => state?.user?.user);
 
-  useEffect(() => {
-    if (
-      userState?.roles.includes("Admin") ||
-      userState?.roles.includes("Mentor")
-    ) {
-      setLoading(true);
-      dispatch(getQuizsByCourse({ courseId: params?.id }))
-        .then(unwrapResult)
-        .then((res) => {
-          if (res.status) {
-            setquiz(res.metadata);
-          } else {
-          }
-          setLoading(false);
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.log(error);
-        });
+  const checkUserRole = () => {
+    try {
+      if (
+        userState?.roles.includes("Admin") ||
+        userState?.roles.includes("Mentor")
+      ) {
+        setLoading(true);
+        dispatch(getQuizsByCourse({ courseId: params?.id }))
+          .then(unwrapResult)
+          .then((res) => {
+            if (res.status) {
+              setquiz(res.metadata);
+            } else {
+            }
+            setLoading(false);
+          })
+          .catch((error) => {
+            setLoading(false);
+          });
+      }
+    } catch (error) {
+      console.error(error);
+      window.location.reload();
     }
+  };
+  
+  useEffect(() => {
+    checkUserRole();
   }, [userState]);
 
   const handleNoti = ({ message }) => {

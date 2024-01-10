@@ -206,10 +206,7 @@ export default function ChangePasswordForm() {
                             type="primary"
                             onClick={handleOk}
                             loading={loading}
-                            style={{
-                              color: "#fff",
-                              backgroundColor: "#1890ff",
-                            }}
+                            className="custom-button"
                           >
                             Lưu
                           </Button>

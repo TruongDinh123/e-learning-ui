@@ -58,8 +58,8 @@ export default function QuizCreator() {
 
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
-  const datePickerPlacement = screens.xs ? 'bottomRight' : 'bottomLeft';
-  
+  const datePickerPlacement = screens.xs ? "bottomRight" : "bottomLeft";
+
   const dispatch = useDispatch();
 
   // Hàm xử lý khi loại quiz thay đổi
@@ -249,7 +249,6 @@ export default function QuizCreator() {
       });
   };
 
-
   useEffect(() => {
     dispatch(viewCourses())
       .then(unwrapResult)
@@ -260,12 +259,13 @@ export default function QuizCreator() {
 
           const isAdmin = user?.roles?.includes("Admin");
           let visibleCourses;
-          
-          if(isAdmin) {
+
+          if (isAdmin) {
             visibleCourses = res.metadata;
-          }
-          else {
-            visibleCourses = res.metadata.filter(course => course.teacher === currentTeacherId);
+          } else {
+            visibleCourses = res.metadata.filter(
+              (course) => course.teacher === currentTeacherId
+            );
           }
           setCourses(visibleCourses);
         } else {
@@ -337,7 +337,7 @@ export default function QuizCreator() {
             onFinish={handleSaveQuiz}
           >
             <div className="py-2">
-              <Button onClick={toggleTemplateMode}>
+              <Button onClick={toggleTemplateMode} className="custom-button">
                 {isTemplateMode ? "Tạo bài tập" : "Tạo bài mẫu"}
               </Button>
             </div>
@@ -456,7 +456,7 @@ export default function QuizCreator() {
 
             {quizType === "multiple_choice" ? (
               <>
-                <Row  utter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                <Row utter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                   <Col xs={24} sm={12} md={8} lg={6}>
                     <Form.Item
                       label="Tên bài tập"
@@ -474,7 +474,11 @@ export default function QuizCreator() {
                   </Col>
                   {!isTemplateMode && (
                     <Col xs={24} sm={12} md={8} lg={6}>
-                      <Form.Item label="Thời hạn nộp" name="submissionTime" className="pl-2">
+                      <Form.Item
+                        label="Thời hạn nộp"
+                        name="submissionTime"
+                        className="pl-2"
+                      >
                         <DatePicker
                           showTime
                           style={{ width: "100%" }}
@@ -590,7 +594,7 @@ export default function QuizCreator() {
                   <Button
                     type="primary"
                     htmlType="submit"
-                    style={{ color: "#fff", backgroundColor: "#1890ff" }}
+                    className="custom-button"
                     loading={isLoading}
                   >
                     Lưu
@@ -634,7 +638,7 @@ export default function QuizCreator() {
                   <Button
                     type="primary"
                     htmlType="submit"
-                    style={{ color: "#fff", backgroundColor: "#1890ff" }}
+                    className="custom-button"
                     loading={isLoading}
                   >
                     Lưu

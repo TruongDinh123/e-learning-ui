@@ -127,8 +127,8 @@ export default function EditCourses(props) {
       <Button
         type="primary"
         onClick={showModal}
-        className="me-3"
-        style={{ width: "100%", color: "#fff", backgroundColor: "#1890ff" }}
+        className="me-3 custom-button"
+        style={{width: '100%'}}
       >
         Cập nhật
       </Button>
@@ -154,7 +154,7 @@ export default function EditCourses(props) {
             key="ok"
             type="primary"
             onClick={handleOk}
-            style={{ backgroundColor: "#1890ff", color: "white" }}
+            className="custom-button"
           >
             Lưu
           </Button>,

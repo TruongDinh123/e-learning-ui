@@ -7,7 +7,7 @@ import CustomFooter from "@/components/Footer/footer";
 import AdminFooter from "@/components/AdminFooter/AdminFooter";
 import AdminHeader from "@/components/AdminHeaeder/AdminHeader";
 import AdminSidebar from "@/components/AdminSidebar/AdminSidebar";
-import { Layout } from "antd";
+import { Layout, Spin } from "antd";
 import React, { Suspense, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Cookies from "js-cookie";
@@ -23,34 +23,59 @@ export default function RootLayout({ children }) {
 
   const shouldRenderFooter = !pathname.includes("/web-rtc/room");
 
-  useEffect(() => {
-    // Check if the cookie exists
+  const checkAccess = () => {
     const token = Cookies.get("Bearer");
-    const user = JSON.parse(localStorage.getItem("user")); // Giả sử bạn lưu thông tin người dùng vào localStorage
+    const user = JSON.parse(localStorage.getItem("user"));
     const isAdmin = user?.roles?.includes("Admin");
     const isMentor = user?.roles?.includes("Mentor");
 
-    // Ngay lập tức chuyển hướng nếu không phải Admin hoặc Mentor và cố gắng truy cập vào /admin/courses
     if (pathname === "/admin/courses" && !(isAdmin || isMentor)) {
       router.push("/unauthorized");
-      return; // Ngăn không chạy các đoạn mã phía dưới
+      return;
     }
 
-    if (!loading) {
-      if (!token && pathname !== "/login") {
-        router.push("/login");
-      } else if (pathname.includes("/admin") && !(isAdmin || isMentor)) {
-        router.push("/unauthorized");
-      }
+    if (!token && pathname !== "/login" && pathname !== "/") {
+      router.push("/login");
+    } else if (pathname.includes("/admin") && !(isAdmin || isMentor)) {
+      router.push("/unauthorized");
     }
+  };
+
+  // Gọi hàm checkAccess ngay khi component được render
+  checkAccess();
+
+  useEffect(() => {
     setLoading(false);
   }, [pathname]);
+
+  // useEffect(() => {
+  //   // Check if the cookie exists
+  //   const token = Cookies.get("Bearer");
+  //   const user = JSON.parse(localStorage.getItem("user")); // Giả sử bạn lưu thông tin người dùng vào localStorage
+  //   const isAdmin = user?.roles?.includes("Admin");
+  //   const isMentor = user?.roles?.includes("Mentor");
+
+  //   // Ngay lập tức chuyển hướng nếu không phải Admin hoặc Mentor và cố gắng truy cập vào /admin/courses
+  //   if (pathname === "/admin/courses" && !(isAdmin || isMentor)) {
+  //     router.push("/unauthorized");
+  //     return; // Ngăn không chạy các đoạn mã phía dưới
+  //   }
+
+  //   if (!loading) {
+  //     if (!token && pathname !== "/login") {
+  //       router.push("/login");
+  //     } else if (pathname.includes("/admin") && !(isAdmin || isMentor)) {
+  //       router.push("/unauthorized");
+  //     }
+  //   }
+  //   setLoading(false);
+  // }, [pathname]);
 
   return (
     <html>
       <body>
         <Providers>
-          <Suspense fallback={<p>Loading..</p>}>
+          <Suspense fallback={<Spin size="large"></Spin>}>
             <Layout>
               {pathname.includes("/admin") && (
                 <AdminSidebar collapsed={collapsed} />

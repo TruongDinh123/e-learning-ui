@@ -293,8 +293,7 @@ export default function ViewTeachersCourse() {
         <Button
           type="primary"
           onClick={handleViewCourse}
-          className="me-3"
-          style={{ color: "#fff", backgroundColor: "#1890ff" }}
+          className="me-3 custom-button"
         >
           Xem
         </Button>

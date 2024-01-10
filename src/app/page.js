@@ -1,82 +1,456 @@
 "use client";
 import { getCoursePublic } from "@/features/Courses/courseSlice";
-import { BookOutlined } from "@ant-design/icons";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Image, Spin } from "antd";
-import Link from "next/link";
+import { Badge, Button, Card, Carousel, Tabs } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+
+const fakeCourses = [
+  {
+    id: 1,
+    title: "Procedural Python - Lập trình hàm trong Python",
+    description:
+      "Mô hình học tập tương tác mới của... Môi trường lập trình trực tuyến ngay...",
+    price: "199,999 ₫",
+    originalPrice: "399,999 ₫",
+    badge: "HOT",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+  },
+  {
+    id: 2,
+    title: "Procedural Python - Lập trình hàm trong Python",
+    description:
+      "Mô hình học tập tương tác mới của... Môi trường lập trình trực tuyến ngay...",
+    price: "199,999 ₫",
+    originalPrice: "399,999 ₫",
+    badge: "HOT",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+  },
+  {
+    id: 3,
+    title: "Procedural Python - Lập trình hàm trong Python",
+    description:
+      "Mô hình học tập tương tác mới của... Môi trường lập trình trực tuyến ngay...",
+    price: "199,999 ₫",
+    originalPrice: "399,999 ₫",
+    badge: "HOT",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+  },
+  {
+    id: 4,
+    title: "Procedural Python - Lập trình hàm trong Python",
+    description:
+      "Mô hình học tập tương tác mới của... Môi trường lập trình trực tuyến ngay...",
+    price: "199,999 ₫",
+    originalPrice: "399,999 ₫",
+    badge: "HOT",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+  },
+  {
+    id: 5,
+    title: "Procedural Python - Lập trình hàm trong Python",
+    description:
+      "Mô hình học tập tương tác mới của... Môi trường lập trình trực tuyến ngay...",
+    price: "199,999 ₫",
+    originalPrice: "399,999 ₫",
+    badge: "HOT",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+  },
+  {
+    id: 6,
+    title: "Procedural Python - Lập trình hàm trong Python",
+    description:
+      "Mô hình học tập tương tác mới của... Môi trường lập trình trực tuyến ngay...",
+    price: "199,999 ₫",
+    originalPrice: "399,999 ₫",
+    badge: "HOT",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+  },
+];
+
+const fakeCourseHighlights = [
+  {
+    id: 1,
+    title: "IELTS Academic - Module Speaking",
+    description:
+      "Học viên tham gia khóa học được nhận tài khoản miễn phí thực hành IELTS tại website...",
+    price: "399,000 đ",
+    originalPrice: "699,000 đ",
+    badge: "NGOẠI NGỮ",
+    instructor: "LƯU THỊ THU HÀ",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+    category: "NGOẠI NGỮ",
+  },
+  {
+    id: 2,
+    title: "Lập trình C# trong 5 tuần - Nâng cao",
+    description:
+      "Với lộ trình 65 bài học được chia thành 8 chương, khóa học sẽ cung cấp: - Kiến thức...",
+    price: "299,000 đ",
+    originalPrice: "599,000 đ",
+    badge: "LẬP TRÌNH - CNTT",
+    instructor: "Trần Duy Thanh",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+    category: "LẬP TRÌNH-CNTT",
+  },
+  {
+    id: 3,
+    title: "Procedural Python - Lập trình hàm trong Python",
+    description:
+      "Mô hình học tập tương tác mới của... Môi trường lập trình trực tuyến ngay...",
+    price: "199,999 ₫",
+    originalPrice: "399,999 ₫",
+    badge: "HOT",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+    category: "LẬP TRÌNH-CNTT",
+  },
+  {
+    id: 4,
+    title: "Procedural Python - Lập trình hàm trong Python",
+    description:
+      "Mô hình học tập tương tác mới của... Môi trường lập trình trực tuyến ngay...",
+    price: "199,999 ₫",
+    originalPrice: "399,999 ₫",
+    badge: "HOT",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+    category: "LẬP TRÌNH-CNTT",
+  },
+  {
+    id: 5,
+    title: "Procedural Python - Lập trình hàm trong Python",
+    description:
+      "Mô hình học tập tương tác mới của... Môi trường lập trình trực tuyến ngay...",
+    price: "199,999 ₫",
+    originalPrice: "399,999 ₫",
+    badge: "HOT",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+    category: "LẬP TRÌNH-CNTT",
+  },
+  {
+    id: 6,
+    title: "Procedural Python - Lập trình hàm trong Python",
+    description:
+      "Mô hình học tập tương tác mới của... Môi trường lập trình trực tuyến ngay...",
+    price: "199,999 ₫",
+    originalPrice: "399,999 ₫",
+    badge: "HOT",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+    category: "LẬP TRÌNH-CNTT",
+  },
+  {
+    id: 7,
+    title: "IELTS Academic - Module Speaking",
+    description:
+      "Học viên tham gia khóa học được nhận tài khoản miễn phí thực hành IELTS tại website...",
+    price: "399,000 đ",
+    originalPrice: "699,000 đ",
+    badge: "NGOẠI NGỮ",
+    instructor: "LƯU THỊ THU HÀ",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+    category: "NGOẠI NGỮ",
+  },
+  {
+    id: 8,
+    title: "IELTS Academic - Module Speaking",
+    description:
+      "Học viên tham gia khóa học được nhận tài khoản miễn phí thực hành IELTS tại website...",
+    price: "399,000 đ",
+    originalPrice: "699,000 đ",
+    badge: "NGOẠI NGỮ",
+    instructor: "LƯU THỊ THU HÀ",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+    category: "NGOẠI NGỮ",
+  },
+  {
+    id: 9,
+    title: "IELTS Academic - Module Speaking",
+    description:
+      "Học viên tham gia khóa học được nhận tài khoản miễn phí thực hành IELTS tại website...",
+    price: "399,000 đ",
+    originalPrice: "699,000 đ",
+    badge: "NGOẠI NGỮ",
+    instructor: "LƯU THỊ THU HÀ",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+    category: "NGOẠI NGỮ",
+  },
+  {
+    id: 10,
+    title: "IELTS Academic - Module Speaking",
+    description:
+      "Học viên tham gia khóa học được nhận tài khoản miễn phí thực hành IELTS tại website...",
+    price: "399,000 đ",
+    originalPrice: "699,000 đ",
+    badge: "NGOẠI NGỮ",
+    instructor: "LƯU THỊ THU HÀ",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+    category: "NGOẠI NGỮ",
+  },
+  {
+    id: 11,
+    title: "IELTS Academic - Module Speaking",
+    description:
+      "Học viên tham gia khóa học được nhận tài khoản miễn phí thực hành IELTS tại website...",
+    price: "399,000 đ",
+    originalPrice: "699,000 đ",
+    badge: "NGOẠI NGỮ",
+    instructor: "LƯU THỊ THU HÀ",
+    imageUrl:
+      "https://img.freepik.com/premium-vector/learn-english-design_24908-7443.jpg?w=740",
+    category: "NGOẠI NGỮ",
+  },
+];
 
 export default function Home() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  //viewCourses api
-  useEffect(() => {
-    setIsLoading(true);
+  const { TabPane } = Tabs;
+  const categories = [...new Set(fakeCourseHighlights.map((i) => i.category))];
 
-    dispatch(getCoursePublic())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setCourse(res.metadata);
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setIsLoading(false);
-      });
-  }, []);
+  const carouselRef = React.useRef();
+
+  const next = () => {
+    carouselRef.current.next();
+  };
+
+  const previous = () => {
+    carouselRef.current.prev();
+  };
+
+  const carouselRef1 = React.useRef();
+
+  const next1 = () => {
+    carouselRef1.current.next();
+  };
+
+  const previous1 = () => {
+    carouselRef1.current.prev();
+  };
+
+  //viewCourses api
+  // useEffect(() => {
+  //   setIsLoading(true);
+
+  //   dispatch(getCoursePublic())
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       if (res.status) {
+  //         setCourse(res.metadata);
+  //       }
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       setIsLoading(false);
+  //     });
+  // }, []);
 
   return (
-    <div className="flex">
-      <div className="content flex-1">
-        {isLoading ? (
-          <div className="flex justify-center items-center h-screen">
-            <Spin />
-          </div>
-        ) : (
-          <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 pb-28">
-            {course &&
-              course.map((item, index) => (
-                <Link href={`/courses/lessons/${item?._id}`} key={index}>
-                  <div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 min-h-[100px]">
-                    <div className="relative w-full aspect-video rounded-md overflow-hidden">
-                      <Image
-                        width={330}
-                        height={186}
-                        fill
-                        className="object-cover"
-                        alt="course image"
-                        fallback="data:image/png;base64,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"
-                        src={item?.image_url}
+    <div className="max-w-[105rem] mx-auto px-4 sm:px-6 lg:px-8">
+      <Carousel autoplay>
+        <div>
+          <img
+            src="https://cdn2.topica.vn/b92eed95-8a0f-4ba6-bc37-aaa9205437f5/product/63b68ce8d45fde00262e81cd"
+            alt="First"
+            className="w-full"
+          />
+        </div>
+        <div>
+          <img
+            src="https://cdn2.topica.vn/b92eed95-8a0f-4ba6-bc37-aaa9205437f5/product/63898019af47c60040e48ea7"
+            alt="Second"
+            className="w-full"
+          />
+        </div>
+      </Carousel>
+      <div className="bg-white p-4">
+        <h1 className="font-bold text-2xl">
+          Các khóa được mua nhiều nhất tuần qua
+        </h1>
+        <span>Các khóa được mua nhiều nhất tuần qua</span>
+        <div className="carousel-container relative">
+          <Button
+            className="carousel-control left"
+            onClick={previous}
+            icon={<LeftOutlined />}
+          />
+          <Carousel
+            ref={carouselRef}
+            dots={false}
+            slidesToShow={4.5}
+            slidesToScroll={4.5}
+            responsive={[
+              {
+                breakpoint: 1024,
+                settings: {
+                  slidesToShow: 4.5,
+                  slidesToScroll: 4.5,
+                },
+              },
+              {
+                breakpoint: 600,
+                settings: {
+                  slidesToShow: 2,
+                  slidesToScroll: 2,
+                },
+              },
+              {
+                breakpoint: 480,
+                settings: {
+                  slidesToShow: 1,
+                  slidesToScroll: 1,
+                },
+              },
+            ]}
+          >
+            {fakeCourses.map((course) => (
+              <div
+                key={course.id}
+                className="bg-[#f7f7f7] p-4 rounded-lg shadow-md"
+              >
+                <Badge className="mb-2" variant="secondary">
+                  {course.badge}
+                </Badge>
+                <img
+                  alt={course.title}
+                  className="w-full h-auto rounded-lg mb-2"
+                  src={course.imageUrl}
+                  style={{
+                    aspectRatio: "150/150",
+                    objectFit: "cover",
+                  }}
+                  width="150"
+                  height="150"
+                />
+                <h3 className="text-lg font-semibold mb-1">{course.title}</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  {course.description}
+                </p>
+                <div className="text-green-600 text-xl font-bold mb-1">
+                  {course.price}
+                </div>
+                <div className="text-gray-400 text-sm line-through">
+                  {course.originalPrice}
+                </div>
+              </div>
+            ))}
+          </Carousel>
+          <Button
+            className="carousel-control right"
+            onClick={next}
+            icon={<RightOutlined />}
+          />
+        </div>
+      </div>
+      <div className="bg-white p-8">
+        <h2 className="text-3xl font-bold">Khóa học nổi bật</h2>
+        <p className="mt-2 text-sm text-gray-600">
+          Khám phá các kỹ năng được tìm kiếm nhiều nhất/hàng đầu trong tuần này
+          và bắt đầu việc học của bạn ngay hôm nay
+        </p>
+        <Tabs defaultActiveKey="1" className="mt-4 flex space-x-4">
+          {categories.map((category, index) => (
+            <TabPane
+              tab={category}
+              key={index + 1}
+              className="carousel-container relative"
+            >
+              <Button
+                className="carousel-control left"
+                onClick={previous1}
+                icon={<LeftOutlined />}
+              />
+              <Carousel
+                ref={carouselRef1}
+                dots={false}
+                slidesToShow={4.5}
+                slidesToScroll={4.5}
+                responsive={[
+                  {
+                    breakpoint: 1024,
+                    settings: {
+                      slidesToShow: 4.5,
+                      slidesToScroll: 4.5,
+                    },
+                  },
+                  {
+                    breakpoint: 600,
+                    settings: {
+                      slidesToShow: 2,
+                      slidesToScroll: 2,
+                    },
+                  },
+                  {
+                    breakpoint: 480,
+                    settings: {
+                      slidesToShow: 1,
+                      slidesToScroll: 1,
+                    },
+                  },
+                ]}
+              >
+                {fakeCourseHighlights
+                  .filter((course) => course.category === category)
+                  .map((course) => (
+                    <div
+                      key={course.id}
+                      className="bg-[#f7f7f7] p-4 rounded-lg shadow-md"
+                    >
+                      <Badge className="mb-2" variant="secondary">
+                        {course.badge}
+                      </Badge>
+                      <img
+                        alt={course.title}
+                        className="w-full h-auto rounded-lg mb-2"
+                        src={course.imageUrl}
+                        style={{
+                          aspectRatio: "150/150",
+                          objectFit: "cover",
+                        }}
+                        width="150"
+                        height="150"
                       />
-                    </div>
-                    <div className="flex flex-col pt-2">
-                      <div className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2">
-                        {item.name}
-                      </div>
-                      <div className="text-lg md:text-sm font-semibold group-hover:text-sky-700 transition line-clamp-2">
-                        Mô tả: {item.title}
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        Teacher: {item.teacher?.lastName}
+                      <h3 className="text-lg font-semibold mb-1">
+                        {course.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        {course.description}
                       </p>
-                      <div className="my-3 flex items-center gap-x-2 text-sm md:text-xs">
-                        <div className="flex items-center gap-x-1 text-slate-500">
-                          <BookOutlined />
-                          <span>lessons: {item.lessons.length}</span>
-                        </div>
-                        <div className="flex items-center gap-x-1 text-slate-500"></div>
+                      <div className="text-green-600 text-xl font-bold mb-1">
+                        {course.price}
+                      </div>
+                      <div className="text-gray-400 text-sm line-through">
+                        {course.originalPrice}
                       </div>
                     </div>
-                  </div>
-                </Link>
-              ))}
-          </div>
-        )}
+                  ))}
+              </Carousel>
+              <Button
+                className="carousel-control right"
+                onClick={next1}
+                icon={<RightOutlined />}
+              />
+            </TabPane>
+          ))}
+        </Tabs>
       </div>
     </div>
   );

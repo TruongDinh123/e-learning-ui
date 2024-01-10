@@ -22,3 +22,26 @@
 .header-link:hover {
   color: #ff0000;
 }
+
+.category-column {
+  width: 33.3333%; /* hoặc bất kỳ tỷ lệ phần trăm nào bạn muốn */
+}
+
+.course-column {
+  width: 66.6666%; /* hoặc bất kỳ tỷ lệ phần trăm nào bạn muốn */
+}
+
+/* CSS cho giao diện di động */
+@media (max-width: 768px) { /* hoặc bất kỳ breakpoint nào bạn đang sử dụng cho giao diện di động */
+  .fullscreen-collapse {
+    max-height: 100vh;
+  }
+}
+
+/* CSS cho giao diện máy tính để bàn */
+@media (min-width: 769px) {
+  .fullscreen-collapse {
+    max-height: 100vh;
+    /* hoặc bạn có thể đặt một chiều cao cụ thể nếu cần */
+  }
+}

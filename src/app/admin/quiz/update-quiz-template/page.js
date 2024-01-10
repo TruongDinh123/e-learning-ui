@@ -152,8 +152,8 @@ export default function UpdateQuizTemplate(props) {
       <Button
         type="primary"
         onClick={showModal}
-        className="me-3"
-        style={{ width: "100%", color: "#fff", backgroundColor: "#1890ff" }}
+        className="me-3 custom-button"
+        style={{ width: "100%"}}
       >
         Cập nhật
       </Button>
@@ -318,7 +318,7 @@ export default function UpdateQuizTemplate(props) {
               <Button
                 type="primary"
                 htmlType="submit"
-                style={{ color: "#fff", backgroundColor: "#1890ff" }}
+                className="custom-button"
                 loading={isLoading}
               >
                 Lưu

@@ -137,7 +137,7 @@ export default function AddCourse(props) {
             </div>
           }
           onClick={showModal}
-          className="flex justify-center bg-blue-500 hover:bg-blue-400 text-white p-2 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition ease-in duration-500"
+          className={`py-2 px-3 bg-blue-900 hover:bg-blue-400 text-white text-center inline-block text-lg my-1 mx-1 rounded-lg cursor-pointer border-none`}
         ></CustomButton>
       )}
       <Modal
@@ -155,12 +155,8 @@ export default function AddCourse(props) {
             </Button>
             <Button
               key="save"
-              type="primary"
+              className="custom-button"
               onClick={handleOk}
-              style={{
-                color: "#fff",
-                backgroundColor: "#1890ff",
-              }}
               loading={isLoading}
             >
               Lưu

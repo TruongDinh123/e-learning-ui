@@ -116,8 +116,8 @@ export default function UpdateAssignment(props) {
       <Button
         type="primary"
         onClick={showModal}
-        className="me-3"
-        style={{ color: "#fff", backgroundColor: "#1890ff" }}
+        className="me-3 custom-button"
+        style={{width: '100%'}}
       >
         Cập nhật
       </Button>

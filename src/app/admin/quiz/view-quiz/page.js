@@ -270,15 +270,11 @@ export default function ViewQuiz() {
                 </Option>
               ))}
             </Select> */}
-          </div>
-          <div className="pb-3">
-            <Button
-              type="primary"
-              onClick={handleViewQuiz}
-              style={{ color: "#fff", backgroundColor: "#1890ff" }}
-            >
-              Xem
-            </Button>
+            <div className="pb-3">
+              <Button className="custom-button" onClick={handleViewQuiz}>
+                Xem
+              </Button>
+            </div>
           </div>
           <Table
             columns={columns}

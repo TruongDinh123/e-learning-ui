@@ -30,22 +30,22 @@ export default function Course() {
   }, [dispatch]);
 
   return (
-    <div className="flex">
-      {isLoading ? (
-        <div className="flex justify-center items-center h-screen">
-          <Spin />
-        </div>
-      ) : (
-        <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 pb-28">
-          {course &&
-            course.map((item, index) => (
-              <React.Fragment key={index}>
-                <div className="group hover:shadow-sm transition scrollbar-thin border rounded-lg p-3 min-h-[100px]">
-                  <Link href={`/courses/lessons/${item?._id}`}>
+    <div className="flex p-4">
+      <div className="content flex-1">
+        {isLoading ? (
+          <div className="flex justify-center items-center h-screen">
+            <Spin />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 pb-28">
+            {course &&
+              course.map((item, index) => (
+                <Link href={`/courses/lessons/${item?._id}`} key={index}>
+                  <div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 min-h-[100px]">
                     <div className="relative w-full aspect-video rounded-md overflow-hidden">
                       <Image
-                        width={350}
-                        height={200}
+                        width={380}
+                        height={186}
                         fill
                         className="object-cover"
                         alt="course image"
@@ -57,6 +57,9 @@ export default function Course() {
                       <div className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2">
                         {item.name}
                       </div>
+                      <div className="text-lg md:text-sm font-semibold group-hover:text-sky-700 transition line-clamp-2">
+                        Mô tả: {item.title}
+                      </div>
                       <p className="text-xs text-muted-foreground">
                         Teacher: {item.teacher?.lastName}
                       </p>
@@ -65,28 +68,15 @@ export default function Course() {
                           <BookOutlined />
                           <span>lessons: {item.lessons.length}</span>
                         </div>
+                        <div className="flex items-center gap-x-1 text-slate-500"></div>
                       </div>
                     </div>
-                  </Link>
-                  {item.quizzes.length > 0 ? (
-                    <div className="flex items-center gap-x-1 text-slate-500">
-                      <Link href={`/courses/view-details/${item?._id}`}>
-                        <div className="me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                          <div className="flex items-center justify-center">
-                            <FolderOpenOutlined />
-                            <span className="ml-1">Bài tập</span>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                  ) : (
-                    <p>Không có bài tập</p>
-                  )}
-                </div>
-              </React.Fragment>
-            ))}
-        </div>
-      )}
+                  </div>
+                </Link>
+              ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

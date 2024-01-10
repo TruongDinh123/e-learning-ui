@@ -85,7 +85,7 @@ export default function AddTeacherToCourse(props) {
       <Button
         type="primary"
         onClick={showModal}
-        className="me-3"
+        className="me-3 bg-blue-900 hover:bg-blue-400 "
         style={{ color: "#fff", backgroundColor: "#1890ff" }}
       >
         Thêm giáo viên
@@ -100,7 +100,7 @@ export default function AddTeacherToCourse(props) {
             key="ok"
             type="primary"
             onClick={handleOk}
-            style={{ backgroundColor: "#1890ff", color: "white" }}
+            className="custom-button"
           >
             Lưu
           </Button>

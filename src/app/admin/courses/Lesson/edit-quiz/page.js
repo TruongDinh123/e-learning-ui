@@ -98,7 +98,7 @@ export default function UpdateQuiz(props) {
       <Button
         type="primary"
         onClick={showModal}
-        className="me-3"
+        className="me-3 bg-blue-900 hover:bg-blue-400 "
         style={{ color: "#fff", backgroundColor: "#1890ff" }}
       >
         update quiz
