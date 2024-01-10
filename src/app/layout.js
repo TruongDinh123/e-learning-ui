@@ -22,54 +22,53 @@ export default function RootLayout({ children }) {
   const [loading, setLoading] = useState(true);
 
   const shouldRenderFooter = !pathname.includes("/web-rtc/room");
+  // const checkAccess = () => {
+  //   const token = Cookies.get("Bearer");
+  //   const user = JSON.parse(localStorage.getItem("user"));
+  //   const isAdmin = user?.roles?.includes("Admin");
+  //   const isMentor = user?.roles?.includes("Mentor");
 
-  const checkAccess = () => {
-    const token = Cookies.get("Bearer");
-    const user = JSON.parse(localStorage.getItem("user"));
-    const isAdmin = user?.roles?.includes("Admin");
-    const isMentor = user?.roles?.includes("Mentor");
+  //   if (pathname === "/admin/courses" && !(isAdmin || isMentor)) {
+  //     router.push("/unauthorized");
+  //     return;
+  //   }
 
-    if (pathname === "/admin/courses" && !(isAdmin || isMentor)) {
-      router.push("/unauthorized");
-      return;
-    }
+  //   if (!token && pathname !== "/login" && pathname !== "/") {
+  //     router.push("/login");
+  //   } else if (pathname.includes("/admin") && !(isAdmin || isMentor)) {
+  //     router.push("/unauthorized");
+  //   }
+  // };
 
-    if (!token && pathname !== "/login" && pathname !== "/") {
-      router.push("/login");
-    } else if (pathname.includes("/admin") && !(isAdmin || isMentor)) {
-      router.push("/unauthorized");
-    }
-  };
-
-  // Gọi hàm checkAccess ngay khi component được render
-  checkAccess();
+  // // Gọi hàm checkAccess ngay khi component được render
+  // checkAccess();
 
   useEffect(() => {
     setLoading(false);
   }, [pathname]);
 
-  // useEffect(() => {
-  //   // Check if the cookie exists
-  //   const token = Cookies.get("Bearer");
-  //   const user = JSON.parse(localStorage.getItem("user")); // Giả sử bạn lưu thông tin người dùng vào localStorage
-  //   const isAdmin = user?.roles?.includes("Admin");
-  //   const isMentor = user?.roles?.includes("Mentor");
+  useEffect(() => {
+    // Check if the cookie exists
+    const token = Cookies.get("Bearer");
+    const user = JSON.parse(localStorage.getItem("user")); // Giả sử bạn lưu thông tin người dùng vào localStorage
+    const isAdmin = user?.roles?.includes("Admin");
+    const isMentor = user?.roles?.includes("Mentor");
 
-  //   // Ngay lập tức chuyển hướng nếu không phải Admin hoặc Mentor và cố gắng truy cập vào /admin/courses
-  //   if (pathname === "/admin/courses" && !(isAdmin || isMentor)) {
-  //     router.push("/unauthorized");
-  //     return; // Ngăn không chạy các đoạn mã phía dưới
-  //   }
+    // Ngay lập tức chuyển hướng nếu không phải Admin hoặc Mentor và cố gắng truy cập vào /admin/courses
+    if (pathname === "/admin/courses" && !(isAdmin || isMentor)) {
+      router.push("/unauthorized");
+      return; // Ngăn không chạy các đoạn mã phía dưới
+    }
 
-  //   if (!loading) {
-  //     if (!token && pathname !== "/login") {
-  //       router.push("/login");
-  //     } else if (pathname.includes("/admin") && !(isAdmin || isMentor)) {
-  //       router.push("/unauthorized");
-  //     }
-  //   }
-  //   setLoading(false);
-  // }, [pathname]);
+    if (!loading) {
+      if (!token && pathname !== "/login" && pathname !== "/") {
+        router.push("/login");
+      } else if (pathname.includes("/admin") && !(isAdmin || isMentor)) {
+        router.push("/unauthorized");
+      }
+    }
+    setLoading(false);
+  }, [pathname]);
 
   return (
     <html>
