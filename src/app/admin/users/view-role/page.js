@@ -60,7 +60,11 @@ export default function ViewRoles() {
     const menu = (
       <Menu>
         <Menu.Item>
-          <EditRole id={i?._id} refresh={() => setUpdateRole(updateRole + 1)} />
+          <EditRole
+            id={i?._id}
+            roleName={i?.name}
+            refresh={() => setUpdateRole(updateRole + 1)}
+          />
         </Menu.Item>
         {/* <Menu.Item>
           <DelRole
@@ -84,7 +88,11 @@ export default function ViewRoles() {
         </Dropdown>
       ) : (
         <Space size={"middle"}>
-          <EditRole id={i?._id} refresh={() => setUpdateRole(updateRole + 1)} />
+          <EditRole
+            id={i?._id}
+            roleName={i?.name}
+            refresh={() => setUpdateRole(updateRole + 1)}
+          />
           {/* <DelRole
             idRole={i?._id}
             refresh={() => setUpdateRole(updateRole + 1)}

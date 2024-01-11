@@ -52,24 +52,18 @@ export default function CustomFooter() {
             <ul className="space-y-2">
               <li>
                 <span className="hover:underline">
-                  Công ty TNHH Công Nghệ Giáo Dục Topica Việt Nam
+                  95IDEAL TECHNOLOGY SOLUTIONS
                 </span>
               </li>
               <li>
-                <span className="hover:underline">
-                  MST: 0109475876
-                </span>
+                <span className="hover:underline">MST: 12345678</span>
+              </li>
+              <li>
+                <span className="hover:underline">Địa chỉ: Hồ Chí Minh</span>
               </li>
               <li>
                 <span className="hover:underline">
-                  Địa chỉ: Tầng 6, Tòa nhà Kim Khí Thăng Long, Số 1 Lương Yên,
-                  Phường Bạch Đằng, Quận Hai Bà Trưng, Thành phố Hà Nội, Việt
-                  Nam
-                </span>
-              </li>
-              <li>
-                <span className="hover:underline">
-                  Email: trogiup@edumall.vn
+                  Email: customerservice.95lab@gmail.com
                 </span>
               </li>
             </ul>
@@ -123,9 +117,7 @@ export default function CustomFooter() {
             <YoutubeIcon className="h-6 w-6" />
           </div>
         </div>
-        <p className="text-center mt-8">
-          © 2022 Công ty TNHH Công Nghệ Giáo Dục Topica Việt Nam
-        </p>
+        <p className="text-center mt-8">© 2024 95IDEAL TECHNOLOGY SOLUTIONS</p>
       </div>
     </footer>
   );

@@ -20,7 +20,7 @@ const RoleSchema = yup.object({
 });
 
 export default function EditRole(props) {
-  const { id, refresh } = props;
+  const { id, refresh, roleName } = props;
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,7 +43,7 @@ export default function EditRole(props) {
     validationSchema: RoleSchema,
     enableReinitialize: true,
     initialValues: {
-      name: "",
+      name: roleName,
     },
     onSubmit: (values) => {
       values.name = values.name.trim();

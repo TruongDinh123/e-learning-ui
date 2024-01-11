@@ -85,13 +85,8 @@ export default function UpdateTeacherToCourse(props) {
   return (
     <React.Fragment>
       {contextHolder}
-      <Button
-        type="primary"
-        onClick={showModal}
-        className="me-3 custom-button"
-        style={{width: '100%'}}
-      >
-        Cập nhật
+      <Button type="primary" onClick={showModal} className="me-3 custom-button">
+        Cập nhật giáo viên
       </Button>
       <Modal
         title="Thêm bằng Email"

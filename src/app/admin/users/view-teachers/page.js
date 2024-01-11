@@ -11,7 +11,6 @@ import { useDispatch } from "react-redux";
 import { getScoreByUserId } from "@/features/Quiz/quizSlice";
 import AddTeacherToCourse from "../../courses/add-teacher-course/page";
 import "../view-teachers/page.css";
-import EditUser from "../edit-user-modal/page";
 import UpdateTeacherToCourse from "../../courses/update-teacher-course/page";
 
 const { Option } = Select;
@@ -317,12 +316,12 @@ export default function ViewTeachersCourse() {
           <p className="text-lg font-bold text-red-500">
             Chưa có giáo viên thêm vào khóa học
           </p>
-          <AddTeacherToCourse
+          {/* <AddTeacherToCourse
             courseId={selectedCourse}
             refresh={() => setUpdate(update + 1)}
           >
             Thêm giáo viên
-          </AddTeacherToCourse>
+          </AddTeacherToCourse> */}
         </div>
       )}
       {showTable && (

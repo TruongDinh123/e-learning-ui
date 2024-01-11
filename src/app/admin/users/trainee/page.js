@@ -239,35 +239,35 @@ export default function ViewStudentsCourse() {
         >
           Xem
         </Button>
-      </div>
 
-      {viewSuccess && (
-        <>
-          <AddStudentToCourse
-            courseId={selectedCourse}
-            refresh={() => setUpdate(update + 1)}
-          >
-            Thêm học viên
-          </AddStudentToCourse>
-          {teacher && (
-            <div className="border p-4 rounded-md my-4">
-              <h2 className="font-bold text-lg">
-                Giáo viên: {teacher?.lastName}
-              </h2>
-              <p className="text-sm">Email: {teacher?.email}</p>
-            </div>
-          )}
-          <Table
-            columns={columns}
-            dataSource={data}
-            pagination={{ pageSize: 5, position: ["bottomLeft"] }}
-            scroll={{
-              x: 1300,
-            }}
-            className="pt-3 grid-container"
-          />
-        </>
-      )}
+        {viewSuccess && (
+          <>
+            <AddStudentToCourse
+              courseId={selectedCourse}
+              refresh={() => setUpdate(update + 1)}
+            >
+              Thêm học viên
+            </AddStudentToCourse>
+            {teacher && (
+              <div className="border p-4 rounded-md my-4">
+                <h2 className="font-bold text-lg">
+                  Giáo viên: {teacher?.lastName}
+                </h2>
+                <p className="text-sm">Email: {teacher?.email}</p>
+              </div>
+            )}
+            <Table
+              columns={columns}
+              dataSource={data}
+              pagination={{ pageSize: 5, position: ["bottomLeft"] }}
+              scroll={{
+                x: 1300,
+              }}
+              className="pt-3 grid-container"
+            />
+          </>
+        )}
+      </div>
 
       {dataStudent?.length === 0 && (
         <Empty

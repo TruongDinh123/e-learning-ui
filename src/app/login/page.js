@@ -17,9 +17,12 @@ import { useState } from "react";
 const loginSchema = yup.object({
   email: yup
     .string()
-    .email("Email should be Valid")
+    .email("Email không hợp lệ")
     .required("Yêu cầu nhập email"),
-  password: yup.string().min(6).required("Yêu cầu nhập mật khẩu"),
+  password: yup
+    .string()
+    .min(6, "Password phải có ít nhất 6 kí tự")
+    .required("Yêu cầu nhập mật khẩu"),
 });
 
 export default function Login() {
@@ -101,24 +104,21 @@ export default function Login() {
       className="bg-no-repeat bg-cover bg-center relative"
       style={{
         backgroundImage:
-          "url(https://images.unsplash.com/photo-1552581234-26160f608093?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D;auto=format&amp;fit=crop&amp;w=1951&amp;q=80)",
+          "url(https://images.pexels.com/photos/5905445/pexels-photo-5905445.jpeg)",
       }}
     >
-      <div class="absolute bg-gradient-to-b from-yellow-50 opacity-50 inset-0 z-0"></div>
+      <div class="absolute bg-gradient-to-b from-slate-500 opacity-30 inset-0 z-0"></div>
       {contextHolder}
       <div
         style={{ minHeight: "100vh" }}
         className="sm:flex sm:flex-row mx-0 justify-center"
       >
-        <div class="flex-col flex self-center p-10 sm:max-w-5xl xl:max-w-2xl z-10">
-          <div class="self-start hidden lg:flex flex-col text-white">
-            <img src="" class="mb-3" />
-            <h1 class="mb-3 font-bold text-5xl text-blue-900">
+        <div className="flex flex-col lg:flex-row justify-center items-center p-10 self-center z-20 relative w-full sm:w-full min-h-screen sm:min-h-0">
+          <div className="flex flex-col text-white self-center p-5 sm:max-w-5xl xl:max-w-2xl z-10">
+            <h1 className="mb-3 font-bold text-5xl sm:text-3xl text-black">
               Chào mừng bạn tới với 247learn.vn{" "}
             </h1>
           </div>
-        </div>
-        <div className="flex justify-center items-center p-10 self-center z-20 relative w-full sm:w-full min-h-screen sm:min-h-0">
           <form
             action=""
             onSubmit={formik.handleSubmit}

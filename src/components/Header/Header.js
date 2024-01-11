@@ -13,15 +13,20 @@ import {
 } from "@heroicons/react/24/outline";
 import React from "@heroicons/react";
 import Link from "next/link";
-import { Button, Dropdown, Menu, message } from "antd";
-import { DownOutlined, LoginOutlined, LogoutOutlined } from "@ant-design/icons";
+import { Avatar, Button, Dropdown, Menu, message } from "antd";
+import {
+  DownOutlined,
+  LoginOutlined,
+  LogoutOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { getAUser, resetState, setUserName } from "@/features/User/userSlice";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
-const logo3 = "/images/logo3.png";
+const logo3 = "/images/logo5.png";
 
 const products = [
   {
@@ -48,25 +53,176 @@ const UserLinks = () => {
   return (
     <>
       <Link href="/courses/view-course">
-        <span className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-          Khóa học của tôi
-        </span>
+        <div className="flex items-center">
+          <BookOpenIcon className="h-5 w-5 text-gray-600 mr-2" />
+          <span className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+            Khóa học của tôi
+          </span>
+        </div>
       </Link>
       <Link href="/courses/view-score">
-        <span className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-          Điểm của tôi
-        </span>
+        <div className="flex items-center">
+          <BarChartIcon className="h-5 w-5 text-gray-600 mr-2" />
+          <span className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+            Điểm của tôi
+          </span>
+        </div>
       </Link>
       <Link href="/web-rtc/lobby">
-        <span className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-          Tạo phòng họp
-        </span>
+        <div className="flex items-center">
+          <CameraIcon className="h-5 w-5 text-gray-600 mr-2" />
+          <span className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+            Tạo phòng họp
+          </span>
+        </div>
       </Link>
     </>
   );
 };
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
+}
+
+function BarChartIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="12" x2="12" y1="20" y2="10" />
+      <line x1="18" x2="18" y1="20" y2="4" />
+      <line x1="6" x2="6" y1="20" y2="16" />
+    </svg>
+  );
+}
+
+function BookOpenIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+    </svg>
+  );
+}
+
+function CameraIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+      <circle cx="12" cy="13" r="3" />
+    </svg>
+  );
+}
+
+function ChevronDownIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+function FlagIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+      <line x1="4" x2="4" y1="22" y2="15" />
+    </svg>
+  );
+}
+
+function LogOutIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" x2="9" y1="12" y2="12" />
+    </svg>
+  );
+}
+
+function PanelTopCloseIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+      <line x1="3" x2="21" y1="9" y2="9" />
+      <path d="m9 16 3-3 3 3" />
+    </svg>
+  );
 }
 
 function LayoutGridIcon(props) {
@@ -87,25 +243,6 @@ function LayoutGridIcon(props) {
       <rect width="7" height="7" x="14" y="3" rx="1" />
       <rect width="7" height="7" x="14" y="14" rx="1" />
       <rect width="7" height="7" x="3" y="14" rx="1" />
-    </svg>
-  );
-}
-
-function ChevronDownIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m6 9 6 6 6-6" />
     </svg>
   );
 }
@@ -235,7 +372,7 @@ export default function Header() {
   }, [getAUser, userName, userState]);
 
   const logout = useCallback(() => {
-    router.push("/login");
+    router.push("/");
     localStorage.clear();
     Cookies.remove("Bearer");
     dispatch(resetState());
@@ -247,6 +384,24 @@ export default function Header() {
     <Menu>
       <Menu.Item>
         <Link href="/user">Cập nhật thông tin</Link>
+      </Menu.Item>
+      <Menu.Item>
+        {(userState?.roles?.includes("Admin") ||
+          userState?.roles?.includes("Mentor")) && (
+          <Link href="/admin/courses">Quản trị viên</Link>
+        )}
+      </Menu.Item>
+      <Menu.Item>
+        {userState !== null && (
+          <span
+            title="Logout"
+            className="text-red-500"
+            onClick={logout}
+            icon={<LogoutOutlined />}
+          >
+            Đăng xuất
+          </span>
+        )}
       </Menu.Item>
     </Menu>
   );
@@ -319,14 +474,14 @@ export default function Header() {
     },
   ];
   return (
-    <header className="bg-[#1a1a1a] sticky top-0 z-20">
+    <header className="bg-[#02354B] sticky top-0 z-20">
       {contextHolder}
       <div className="max-w-[105rem] mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between h-[75px]">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <Link href="/">
-                <img className="h-8 w-auto" src={logo3} alt="" />
+                <img className="h-36 w-auto" src={logo3} alt="" />
               </Link>
             </div>
             <div className="hidden md:block">
@@ -443,7 +598,7 @@ export default function Header() {
           <div className="flex lg:hidden">
             <button
               type="button"
-              className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+              className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-white"
               onClick={() => setMobileMenuOpen(true)}
             >
               <span className="sr-only">Open main menu</span>
@@ -513,16 +668,7 @@ export default function Header() {
                     </Popover>
                   )}
 
-                  {userState !== null ? (
-                    <span
-                      title="Logout"
-                      onClick={logout}
-                      icon={<LogoutOutlined />}
-                      className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                    >
-                      Đăng xuất
-                    </span>
-                  ) : (
+                  {userState == null && (
                     <Link href="/login" icon={<LoginOutlined />}>
                       <span className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                         Đăng nhập
@@ -531,20 +677,19 @@ export default function Header() {
                   )}
 
                   {userState !== null && (
-                    <Dropdown overlay={menu}>
+                    <Dropdown overlay={menu} placement="bottomLeft">
                       <div className="ml-3 relative">
                         <div className="flex items-center space-x-4">
                           <a
                             aria-current="page"
-                            className="flex items-center justify-between text-white bg-[#fbbf24] hover:bg-[#fbbf24]/80 px-3 py-2 rounded-md text-sm font-medium"
+                            className="flex items-center justify-between text-white px-3 py-2 rounded-md text-sm font-medium"
                             href="#"
                           >
-                            {userName}
-                            {(userState?.roles?.includes("Admin") ||
-                              userState?.roles?.includes("Mentor")) && (
-                              <Link href="/admin/courses">( Admin )</Link>
-                            )}
-                            <ChevronDownIcon className="h-4 w-4 text-white" />
+                            <Avatar
+                              size={40}
+                              className="bg-white items-center justify-between"
+                              icon={<UserOutlined />}
+                            />
                           </a>
                         </div>
                       </div>
@@ -565,76 +710,79 @@ export default function Header() {
             onClose={setMobileMenuOpen}
           >
             <div className="fixed inset-0" />
-            <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-              <div className="flex items-center justify-between">
-                <a href="#" className="-m-1.5 p-1.5">
-                  <span className="sr-only">Your Company</span>
-                  <img className="h-8 w-auto" src={logo3} alt="" />
+            <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+              <div className="flex items-center justify-between bg-[#02354B]">
+                <a href="/" className="-m-1.5 p-1.5">
+                  <img className="h-28 w-auto" src={logo3} alt="" />
                 </a>
                 <button
                   type="button"
-                  className="-m-2.5 rounded-md p-2.5 text-gray-700"
+                  className="rounded-md p-2.5 text-gray-700"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span className="sr-only">Close menu</span>
-                  <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                  <XMarkIcon
+                    className="h-8 w-8 text-white"
+                    aria-hidden="true"
+                  />
                 </button>
               </div>
-              <div className="mt-6 flow-root">
-                <div className="-my-6 divide-y divide-gray-500/10">
+              <div className="flow-root px-6 py-6">
+                <div className="-my-6 divide-y divide-black">
                   <div className="space-y-2 py-6">
+                    {userState !== null && (
+                      <Disclosure as="div" className="-mx-3">
+                        {({ open }) => (
+                          <>
+                            <Disclosure.Button className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                              <span className="font-bold">{userName}</span>
+                              {(userState?.roles?.includes("Admin") ||
+                                userState?.roles?.includes("Mentor")) && (
+                                <Link href="/admin/courses">( Admin )</Link>
+                              )}
+                              <ChevronDownIcon
+                                className={classNames(
+                                  open ? "rotate-180" : "",
+                                  "h-5 w-5 flex-none"
+                                )}
+                                aria-hidden="true"
+                              />
+                            </Disclosure.Button>
+                            <Disclosure.Panel className="mt-2 space-y-2">
+                              <Disclosure.Button
+                                as="a"
+                                href="/user"
+                                className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                              >
+                                Cập nhật thông tin
+                              </Disclosure.Button>
+                            </Disclosure.Panel>
+                          </>
+                        )}
+                      </Disclosure>
+                    )}
                     {userState && <UserLinks />}
                   </div>
                   <div className="space-y-2 py-6">
-                    <>
-                      {userState !== null && (
-                        <Disclosure as="div" className="-mx-3">
-                          {({ open }) => (
-                            <>
-                              <Disclosure.Button className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                                {userName}
-                                {(userState?.roles?.includes("Admin") ||
-                                  userState?.roles?.includes("Mentor")) && (
-                                  <Link href="/admin/courses">( Admin )</Link>
-                                )}
-                                <ChevronDownIcon
-                                  className={classNames(
-                                    open ? "rotate-180" : "",
-                                    "h-5 w-5 flex-none"
-                                  )}
-                                  aria-hidden="true"
-                                />
-                              </Disclosure.Button>
-                              <Disclosure.Panel className="mt-2 space-y-2">
-                                <Disclosure.Button
-                                  as="a"
-                                  href="/user"
-                                  className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                                >
-                                  Cập nhật thông tin
-                                </Disclosure.Button>
-                              </Disclosure.Panel>
-                            </>
-                          )}
-                        </Disclosure>
-                      )}
-                      {userState !== null ? (
-                        <span
-                          title="Logout"
-                          onClick={logout}
-                          icon={<LogoutOutlined />}
-                          className="cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                        >
-                          Đăng xuất
+                    {userState !== null ? (
+                      <span
+                        title="Logout"
+                        onClick={logout}
+                        icon={<LogoutOutlined />}
+                        className="cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                      >
+                        <div className="flex items-center">
+                          <LogOutIcon className="h-5 w-5 text-gray-600 mr-2" />
+                          <span>Đăng xuất</span>
+                        </div>
+                      </span>
+                    ) : (
+                      <Link href="/login" icon={<LoginOutlined />}>
+                        <span className="cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                          Đăng nhập
                         </span>
-                      ) : (
-                        <Link href="/login" icon={<LoginOutlined />}>
-                          <span className="cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                            Đăng nhập
-                          </span>
-                        </Link>
-                      )}
-                    </>
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
