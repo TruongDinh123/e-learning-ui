@@ -82,7 +82,7 @@ export default function ViewTeachersCourse() {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 
@@ -105,7 +105,7 @@ export default function ViewTeachersCourse() {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   }, []);
 
@@ -126,7 +126,7 @@ export default function ViewTeachersCourse() {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 

@@ -85,7 +85,6 @@ const ScoreManagement = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
         setIsLoading(false);
       });
   }, []);
@@ -215,7 +214,7 @@ const ScoreManagement = () => {
           <Spin />
         </div>
       ) : (
-        <React.Fragment>
+        <div className="pb-28">
           <Select
             defaultValue="tất cả"
             style={{ width: 120 }}
@@ -226,7 +225,7 @@ const ScoreManagement = () => {
             <Option value="assignment">Bài kiểm tra</Option>
           </Select>
           <Table columns={columns} dataSource={data} />
-        </React.Fragment>
+        </div>
       )}
     </div>
   );

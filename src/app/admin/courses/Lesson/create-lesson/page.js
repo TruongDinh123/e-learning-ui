@@ -101,9 +101,7 @@ export default function CreateLesson(props) {
               refresh();
             });
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch((error) => {});
     },
   });
 

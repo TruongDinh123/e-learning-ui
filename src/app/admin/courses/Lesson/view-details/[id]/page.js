@@ -34,7 +34,7 @@ export default function LessonDetails({ params }) {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        
         setIsLoading(false);
       });
   };
@@ -52,7 +52,7 @@ export default function LessonDetails({ params }) {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        
         setIsLoading(false);
       });
   };

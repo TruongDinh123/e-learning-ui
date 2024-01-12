@@ -107,7 +107,7 @@ export default function Login() {
           "url(https://images.pexels.com/photos/5905445/pexels-photo-5905445.jpeg)",
       }}
     >
-      <div class="absolute bg-gradient-to-b from-slate-500 opacity-30 inset-0 z-0"></div>
+      <div className="absolute bg-gradient-to-b from-slate-500 opacity-30 inset-0 z-0"></div>
       {contextHolder}
       <div
         style={{ minHeight: "100vh" }}
@@ -124,9 +124,9 @@ export default function Login() {
             onSubmit={formik.handleSubmit}
             className="p-12 bg-white mx-auto rounded-2xl lg:w-2/4 sm:w-full z-20 relative"
           >
-            <div class="mb-2">
-              <h3 class="font-semibold text-2xl text-gray-800">Đăng nhập </h3>
-              <p class="text-gray-500">Xin hãy đăng nhập tài khoản của bạn.</p>
+            <div className="mb-2">
+              <h3 className="font-semibold text-2xl text-gray-800">Đăng nhập </h3>
+              <p className="text-gray-500">Xin hãy đăng nhập tài khoản của bạn.</p>
             </div>
             <div className="space-y-5">
               <CustomInput

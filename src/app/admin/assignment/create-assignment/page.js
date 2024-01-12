@@ -87,7 +87,7 @@ export default function AssignmentCreate() {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        messageApi.error(error.response?.data?.message);
         setIsLoading(false);
       });
   }, []);

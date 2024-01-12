@@ -58,7 +58,7 @@ export default function Quizs({ params }) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 
@@ -80,7 +80,7 @@ export default function Quizs({ params }) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       })
       .finally(() => {
         setLoading(false);
@@ -108,7 +108,7 @@ export default function Quizs({ params }) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   }, []);
 

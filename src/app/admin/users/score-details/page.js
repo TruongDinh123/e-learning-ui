@@ -58,7 +58,7 @@ export default function ViewScoreDetail(props) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 

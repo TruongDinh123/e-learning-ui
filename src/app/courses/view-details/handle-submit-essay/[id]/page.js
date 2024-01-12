@@ -95,7 +95,7 @@ export default function HandleSubmitEssay({ params }) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   }, [score]);
 
@@ -133,7 +133,7 @@ export default function HandleSubmitEssay({ params }) {
             message.success(res.message, 1.5);
           })
           .catch((error) => {
-            console.log(error);
+            
             setIsLoading(false);
             message.error(error.response?.data?.message, 3.5);
           });
@@ -154,7 +154,7 @@ export default function HandleSubmitEssay({ params }) {
       .catch((error) => {
         setIsLoading(false);
 
-        console.log(error);
+        
       });
   }, [update]);
 

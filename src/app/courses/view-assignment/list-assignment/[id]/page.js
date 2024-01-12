@@ -44,7 +44,7 @@ export default function ListAssignment({ params }) {
           messageApi.error(res.message);
         }
       } catch (error) {
-        console.log(error);
+        
       }
     };
     fetchData();

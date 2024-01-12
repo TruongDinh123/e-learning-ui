@@ -31,7 +31,7 @@ export default function ViewListQuestion({ params }) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   }, [updateQuiz]);
 
@@ -44,7 +44,7 @@ export default function ViewListQuestion({ params }) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   }, []);
 
@@ -60,7 +60,7 @@ export default function ViewListQuestion({ params }) {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 

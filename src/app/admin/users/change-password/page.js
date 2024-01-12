@@ -82,7 +82,7 @@ export default function ChangePassword() {
                   })
                   .catch((error) => {
                     setLoading(false);
-                    console.log(error);
+                    
                   })
                   .finally(() => {
                     setLoading(false);

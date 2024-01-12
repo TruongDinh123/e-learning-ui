@@ -101,7 +101,7 @@ export default function UpdateQuizTemplate(props) {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        
         message.error(error.response?.data?.message, 3.5);
         setIsLoading(false);
       });
@@ -141,7 +141,7 @@ export default function UpdateQuizTemplate(props) {
           }
         })
         .catch((error) => {
-          console.log(error);
+          
         });
     }
   }, [quizTemplateId, isModalOpen]);

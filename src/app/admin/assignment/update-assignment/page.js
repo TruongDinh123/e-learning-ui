@@ -73,7 +73,7 @@ export default function UpdateAssignment(props) {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        
         setIsLoading(false);
       });
   };
@@ -106,7 +106,6 @@ export default function UpdateAssignment(props) {
         }
       })
       .catch((error) => {
-        console.log(error);
       });
   }, []);
 

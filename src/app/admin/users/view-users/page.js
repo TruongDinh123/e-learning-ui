@@ -68,7 +68,7 @@ export default function ViewUsers() {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        
         setIsLoading(false);
       });
   }, [updateUser, dispatch, messageApi]);
@@ -147,7 +147,7 @@ export default function ViewUsers() {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 

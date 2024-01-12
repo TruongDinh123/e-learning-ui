@@ -53,7 +53,7 @@ export default function Lesson({ params }) {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        
         setIsLoading(false);
       });
     dispatch(getCourseCompletion({ courseId: params.id }))
@@ -64,7 +64,7 @@ export default function Lesson({ params }) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   }, [updateProgress]);
 
@@ -81,7 +81,7 @@ export default function Lesson({ params }) {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        
         setIsLoading(false);
       });
   };

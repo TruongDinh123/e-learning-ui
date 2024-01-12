@@ -59,7 +59,7 @@ export default function EditUser(props) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 
@@ -86,7 +86,7 @@ export default function EditUser(props) {
             });
         })
         .catch((error) => {
-          console.log(error);
+          
         });
     },
   });

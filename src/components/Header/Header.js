@@ -331,6 +331,7 @@ function XIcon(props) {
 
 export default function Header() {
   const userState = useSelector((state) => state.user?.user);
+  const userProfile = useSelector((state) => state.user.profile);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const userName =
@@ -354,9 +355,7 @@ export default function Header() {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   // useEffect(() => {
@@ -384,6 +383,15 @@ export default function Header() {
     <Menu>
       <Menu.Item>
         <Link href="/user">Cập nhật thông tin</Link>
+      </Menu.Item>
+      <Menu.Item>
+        {(userState?.roles?.includes("Admin") ||
+          userState?.roles?.includes("Mentor")) && (
+          <Link href="/admin/courses">Quản trị viên</Link>
+        )}
+      </Menu.Item>
+      <Menu.Item>
+        <Link href="/user/change-password">Đổi mật khẩu</Link>
       </Menu.Item>
       <Menu.Item>
         {(userState?.roles?.includes("Admin") ||
@@ -608,7 +616,7 @@ export default function Header() {
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
               <div className="ml-3 relative">
-                <div className="ml-10 flex items-baseline space-x-4">
+                <div className="ml-10 flex items-center space-x-4">
                   {userState !== null && (
                     <Popover className="relative">
                       <Popover.Button className="">
@@ -689,6 +697,7 @@ export default function Header() {
                               size={40}
                               className="bg-white items-center justify-between"
                               icon={<UserOutlined />}
+                              src={userProfile?.image_url || user?.image_url}
                             />
                           </a>
                         </div>

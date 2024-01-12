@@ -58,9 +58,7 @@ export default function EditCourses(props) {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   const showModal = () => {
@@ -115,7 +113,6 @@ export default function EditCourses(props) {
           refresh();
         })
         .catch((error) => {
-          console.log(error);
           message.error(error.response?.data?.message, 3.5);
         });
     },
@@ -128,7 +125,7 @@ export default function EditCourses(props) {
         type="primary"
         onClick={showModal}
         className="me-3 custom-button"
-        style={{width: '100%'}}
+        style={{ width: "100%" }}
       >
         Cập nhật
       </Button>

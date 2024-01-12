@@ -2,29 +2,59 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { Button, message } from "antd";
-import { getAUser, updateUser } from "@/features/User/userSlice";
+import { Avatar, Button, Card, DatePicker, Upload, message } from "antd";
+import { getAUser, updateUser, updateUserProfile, uploadImageUser } from "@/features/User/userSlice";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
 import ChangePasswordForm from "./change-password/page";
+import { Content } from "antd/es/layout/layout";
+import { AntDesignOutlined, UploadOutlined } from "@ant-design/icons";
+import CustomInput from "@/components/comman/CustomInput";
+import moment from "moment";
 
 const Userchema = yup.object().shape({
   lastName: yup
     .string()
-    .required("Name is required")
-    .trim("Name must not start or end with whitespace")
-    .min(3, "Name must be at least 3 characters long")
-    .matches(/^\S*$/, "Name must not contain whitespace"),
-  email: yup.string().email().required("email is required"),
+    .required("Họ và tên đệm là bắt buộc")
+    .trim("Họ và tên đệm không được bắt đầu hoặc kết thúc bằng khoảng trắng")
+    .min(3, "Họ và tên đệm phải có ít nhất 3 ký tự")
+    .matches(/^\S*$/, "Họ và tên đệm không được chứa khoảng trắng"),
+  firstName: yup
+    .string()
+    .required("Tên là bắt buộc")
+    .trim("Tên không được bắt đầu hoặc kết thúc bằng khoảng trắng")
+    .min(3, "Tên phải có ít nhất 3 ký tự")
+    .matches(/^\S*$/, "Tên không được chứa khoảng trắng"),
+  email: yup.string().email().required("Email là bắt buộc"),
+  dob: yup.date().required("Ngày sinh là bắt buộc"),
+  phoneNumber: yup.string().required("Số điện thoại là bắt buộc"),
+  gender: yup.string().required("Giới tính là bắt buộc"),
 });
 
 export default function UpdateInfoUser() {
   const id = localStorage.getItem("x-client-id");
   const [user, setUser] = useState(null);
+  const [file, setFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
+  const [loading, setLoading] = useState(false);
+
+  const propsUdateImage = {
+    onRemove: () => {
+      setFile(null);
+      formik.setFieldValue("filename", ""); // reset filename when file is removed
+    },
+    beforeUpload: (file) => {
+      setFile(file);
+      formik.setFieldValue("filename", file.name); // set filename when a new file is uploaded
+      return false;
+    },
+    fileList: file ? [file] : [],
+  };
 
   const handleOk = () => {
+    setLoading(true);
     formik.submitForm();
   };
 
@@ -33,25 +63,44 @@ export default function UpdateInfoUser() {
     enableReinitialize: true,
     initialValues: {
       lastName: user?.lastName,
+      firstName: user?.firstName,
       email: user?.email,
+      phoneNumber: user?.phoneNumber,
+      dob: user?.dob,
+      gender: user?.gender,
     },
     onSubmit: (values) => {
       values.lastName = values.lastName.trim();
       dispatch(updateUser({ id: id, values }))
         .then(unwrapResult)
         .then((res) => {
-          messageApi
-            .open({
-              type: "Thành công",
-              content: "Đang thực hiện...",
-              duration: 2.5,
-            })
-            .then(() => {
-              setUser(res);
-            });
+          if (file) {
+            return dispatch(uploadImageUser({ userId: id, filename: file }))
+              .then(unwrapResult)
+              .then((res) => {
+                if (res.status) {
+                  setFile(null);
+                  setImageUrl(res.metadata.image_url);
+                  dispatch(updateUserProfile(res.metadata));
+                  messageApi.open({
+                    type: "Thành công",
+                    content: "Đang thực hiện...",
+                    duration: 2.5,
+                  });
+                }
+                return res;
+              });
+          }
+          return res;
+        })
+        .then(() => {
+          window.location.reload();
         })
         .catch((error) => {
-          console.log(error);
+          message.error(error.response?.data?.message, 3.5);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     },
   });
@@ -76,100 +125,165 @@ export default function UpdateInfoUser() {
   };
 
   return (
-    <Fragment>
+    <div className="mx-auto max-w-md space-y-6 overflow-x-hidden grid-container">
       {contextHolder}
-      <div className="row p-5">
-        <div className="col-lg-12">
-          <div className="card">
-            <div className="card-header">
-              <h4 className="card-title">Cập nhật thông tin</h4>
-            </div>
-            <div className="card-body">
-              <div className="form-validation">
-                <form
-                  className="form-valide"
-                  action="#"
-                  method="post"
-                  onSubmit={(e) => e.preventDefault()}
-                >
-                  <div className="row">
-                    <div className="col-xl-6">
-                      <div className="form-group mb-3 row">
-                        <label
-                          className="col-lg-4 col-form-label"
-                          htmlFor="val-username"
-                        >
-                          Tên:
-                          {/* <span className="text-danger">*</span> */}
-                        </label>
-                        <div className="col-lg-6">
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="val-username"
-                            name="val-username"
-                            placeholder="Enter a username.."
-                            onChange={formik.handleChange("lastName")}
-                            onBlur={formik.handleBlur("lastName")}
-                            value={formik.values.lastName}
-                            error={
-                              formik.submitCount > 0 &&
-                              formik.touched.lastName &&
-                              formik.errors.lastName
-                                ? formik.errors.lastName
-                                : null
-                            }
-                          />
-                        </div>
-                      </div>
-                      <div className="form-group mb-3 row">
-                        <label
-                          className="col-lg-4 col-form-label"
-                          htmlFor="val-email"
-                        >
-                          Email:
-                          {/* Email <span className="text-danger">*</span> */}
-                        </label>
-                        <div className="col-lg-6">
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="val-email"
-                            name="val-email"
-                            placeholder="Your valid email.."
-                            onChange={formik.handleChange("email")}
-                            onBlur={formik.handleBlur("email")}
-                            value={formik.values.email}
-                            error={
-                              formik.submitCount > 0 &&
-                              formik.touched.email &&
-                              formik.errors.email
-                                ? formik.errors.email
-                                : null
-                            }
-                          />
-                        </div>
-                      </div>
-                      <div className="form-group mb-3 row">
-                        <div className="col-lg-8 ms-auto">
-                          <Button
-                            type="primary"
-                            onClick={handleOk}
-                            className="custom-button"
-                          >
-                            Lưu
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </form>
+      <div className="space-y-2 text-center">
+        <h1 className="text-3xl font-bold">Thông tin của bạn</h1>
+        <p className="text-gray-500 dark:text-gray-400">
+          Vui lòng cập nhật thông tin của bạn bên dưới
+        </p>
+      </div>
+      <Card className="space-y-4">
+        <Content>
+          <form>
+            <div className="col-span-2 my-2">
+              <label className="text-base" htmlFor="name">
+                Ảnh đại diện
+              </label>
+              <div className="flex items-center">
+                <Avatar
+                  size={{
+                    xs: 24,
+                    sm: 32,
+                    md: 40,
+                    lg: 64,
+                    xl: 80,
+                    xxl: 100,
+                  }}
+                  icon={<AntDesignOutlined />}
+                  src={imageUrl || user?.image_url}
+                  className="mr-1"
+                />
+                <Upload {...propsUdateImage}>
+                  <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
+                </Upload>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <ChangePasswordForm />
-    </Fragment>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-base" htmlFor="name">
+                  Họ của bạn
+                </label>
+                <CustomInput
+                  className="mb-3"
+                  onChange={formik.handleChange("lastName")}
+                  onBlur={formik.handleBlur("lastName")}
+                  placeholder="Nhập tên..."
+                  value={formik.values.lastName}
+                  error={
+                    formik.submitCount > 0 &&
+                    formik.touched.lastName &&
+                    formik.errors.lastName
+                      ? formik.errors.lastName
+                      : null
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-base" htmlFor="name">
+                  Tên của bạn
+                </label>
+                <CustomInput
+                  className="mb-3"
+                  onChange={formik.handleChange("firstName")}
+                  onBlur={formik.handleBlur("firstName")}
+                  placeholder="Nhập tên..."
+                  value={formik.values.firstName}
+                  error={
+                    formik.submitCount > 0 &&
+                    formik.touched.firstName &&
+                    formik.errors.firstName
+                      ? formik.errors.firstName
+                      : null
+                  }
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-base" htmlFor="email">
+                Email
+              </label>
+              <CustomInput
+                className="mb-3"
+                onChange={formik.handleChange("email")}
+                onBlur={formik.handleBlur("email")}
+                value={formik.values.email}
+                error={
+                  formik.submitCount > 0 &&
+                  formik.touched.email &&
+                  formik.errors.email
+                    ? formik.errors.email
+                    : null
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-base" htmlFor="dob">
+                Ngày sinh
+              </label>
+              <DatePicker
+                size="large"
+                className="mb-3 w-full"
+                onChange={(date, dateString) =>
+                  formik.setFieldValue("dob", dateString)
+                }
+                onBlur={formik.handleBlur("dob")}
+                value={formik.values.dob ? moment(formik.values.dob) : null}
+              />
+              {formik.submitCount > 0 &&
+              formik.touched.dob &&
+              formik.errors.dob ? (
+                <div>{formik.errors.dob}</div>
+              ) : null}
+            </div>
+            <div className="space-y-2">
+              <label className="text-base" htmlFor="phoneNumber">
+                Phone Number
+              </label>
+              <CustomInput
+                className="mb-3"
+                onChange={formik.handleChange("phoneNumber")}
+                onBlur={formik.handleBlur("phoneNumber")}
+                value={formik.values.phoneNumber}
+                error={
+                  formik.submitCount > 0 &&
+                  formik.touched.phoneNumber &&
+                  formik.errors.phoneNumber
+                    ? formik.errors.phoneNumber
+                    : null
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-base" htmlFor="gender">
+                Gender:
+              </label>
+              <select
+                className="mb-3"
+                onChange={formik.handleChange("gender")}
+                onBlur={formik.handleBlur("gender")}
+                value={formik.values.gender}
+              >
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+              </select>
+              {formik.submitCount > 0 &&
+              formik.touched.gender &&
+              formik.errors.gender ? (
+                <div>{formik.errors.gender}</div>
+              ) : null}
+            </div>
+          </form>
+        </Content>
+        <Button
+          onClick={handleOk}
+          loading={loading}
+          className="ml-auto w-full custom-button"
+        >
+          Save
+        </Button>
+      </Card>
+    </div>
   );
 }

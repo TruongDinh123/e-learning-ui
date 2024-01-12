@@ -50,7 +50,7 @@ export default function ViewQuiz({ params }) {
       })
       .catch((error) => {
         setLoading(false);
-        console.log(error);
+        
       });
   }, []);
 
@@ -63,7 +63,7 @@ export default function ViewQuiz({ params }) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   }, []);
 
@@ -81,7 +81,7 @@ export default function ViewQuiz({ params }) {
       })
       .catch((error) => {
         setLoading(false);
-        console.log(error);
+        
       });
   }, []);
 
@@ -135,7 +135,7 @@ export default function ViewQuiz({ params }) {
       })
       .catch((error) => {
         setLoading(false);
-        console.log(error);
+        
       });
   };
 

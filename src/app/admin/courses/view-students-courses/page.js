@@ -48,7 +48,7 @@ export default function ViewStudentsCourse(props) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 

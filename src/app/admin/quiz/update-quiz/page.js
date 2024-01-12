@@ -130,7 +130,7 @@ export default function UpdateQuiz(props) {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        
         message.error(error.response?.data?.message, 3.5);
         setIsLoading(false);
       });
@@ -172,7 +172,7 @@ export default function UpdateQuiz(props) {
           }
         })
         .catch((error) => {
-          console.log(error);
+          
         });
     }
   }, [courseIds, quizId, isModalOpen]);

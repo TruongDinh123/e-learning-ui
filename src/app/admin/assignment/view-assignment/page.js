@@ -70,7 +70,6 @@ export default function ViewAssignment() {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
         setIsLoading(false);
       });
   }, []);
@@ -84,9 +83,7 @@ export default function ViewAssignment() {
         } else {
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   }, [updateQuiz]);
 
   const handleViewQuiz = () => {
@@ -102,7 +99,6 @@ export default function ViewAssignment() {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
         setIsLoading(false);
       });
   };
@@ -282,7 +278,6 @@ export default function ViewAssignment() {
         }
       })
       .catch((error) => {
-        console.log(error);
         setIsLoading(false);
       });
   };

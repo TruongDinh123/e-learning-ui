@@ -85,7 +85,7 @@ export default function ChangePasswordForm() {
                     }
                   })
                   .catch((error) => {
-                    console.log(error);
+                    
                   })
                   .finally(() => {
                     setLoading(false);
@@ -105,7 +105,7 @@ export default function ChangePasswordForm() {
     <Fragment>
       {contextHolder}
       <div className="row p-5">
-        <div className="col-lg-12">
+        <div className="col-lg-12 pb-28">
           <div className="card">
             <div className="card-header">
               <h4 className="card-title">Cập nhật mật khẩu</h4>

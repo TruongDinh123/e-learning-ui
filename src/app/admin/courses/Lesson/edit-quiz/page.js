@@ -59,9 +59,7 @@ export default function UpdateQuiz(props) {
             refresh();
           });
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   useEffect(() => {
@@ -87,9 +85,7 @@ export default function UpdateQuiz(props) {
         } else {
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   }, []);
 
   return (

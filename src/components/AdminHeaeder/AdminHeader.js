@@ -42,7 +42,7 @@ export default function AdminHeader(props) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 
@@ -78,7 +78,7 @@ export default function AdminHeader(props) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 

@@ -25,9 +25,7 @@ export default function ViewAssignment({ params }) {
         } else {
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   }, [updateQuiz]);
 
   const handleDeleteQuiz = ({ assignmentId, questionId }) => {
@@ -42,9 +40,7 @@ export default function ViewAssignment({ params }) {
         }
         setIsLoading(false);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   return (

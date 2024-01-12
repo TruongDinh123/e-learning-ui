@@ -71,7 +71,7 @@ export default function EditLesson(props) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 
@@ -123,7 +123,7 @@ export default function EditLesson(props) {
           refresh();
         })
         .catch((error) => {
-          console.log(error);
+          
           setLoading(false);
           message.error(error.response?.data?.message, 3.5);
         });

@@ -47,7 +47,7 @@ export default function ViewStudentsCourse() {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 
@@ -124,7 +124,7 @@ export default function ViewStudentsCourse() {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   }, [selectedCourse, dispatch, dataStudent]);
 
@@ -141,7 +141,7 @@ export default function ViewStudentsCourse() {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 

@@ -73,7 +73,7 @@ export default function ViewListScore(props) {
       })
       .catch((error) => {
         setIsLoading(false);
-        console.log(error);
+        
       });
   };
 
@@ -89,7 +89,7 @@ export default function ViewListScore(props) {
       })
       .catch((error) => {
         setIsLoading(false);
-        console.log(error);
+        
       });
   }, [update]);
 

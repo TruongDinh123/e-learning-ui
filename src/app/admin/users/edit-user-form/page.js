@@ -8,28 +8,32 @@ import {
 } from "@/features/User/userSlice";
 import { AntDesignOutlined, UploadOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Avatar, Button, Card, Input, Upload, message } from "antd";
+import { Avatar, Button, Card, DatePicker, Input, Upload, message } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import * as yup from "yup";
 import "../../users/edit-user-form/page.css";
+import moment from "moment/moment";
 
 const Userchema = yup.object({
   lastName: yup
     .string()
-    .required("Name is required")
-    .trim("Name must not start or end with whitespace")
-    .min(3, "Name must be at least 3 characters long")
-    .matches(/^\S*$/, "Name must not contain whitespace"),
+    .required("Họ và tên đệm là bắt buộc")
+    .trim("Họ và tên đệm không được bắt đầu hoặc kết thúc bằng khoảng trắng")
+    .min(3, "Họ và tên đệm phải có ít nhất 3 ký tự")
+    .matches(/^\S*$/, "Họ và tên đệm không được chứa khoảng trắng"),
   firstName: yup
     .string()
-    .required("Name is required")
-    .trim("Name must not start or end with whitespace")
-    .min(3, "Name must be at least 3 characters long")
-    .matches(/^\S*$/, "Name must not contain whitespace"),
-  email: yup.string().email().required("email is required"),
+    .required("Tên là bắt buộc")
+    .trim("Tên không được bắt đầu hoặc kết thúc bằng khoảng trắng")
+    .min(3, "Tên phải có ít nhất 3 ký tự")
+    .matches(/^\S*$/, "Tên không được chứa khoảng trắng"),
+  email: yup.string().email().required("Email là bắt buộc"),
+  dob: yup.date().required("Ngày sinh là bắt buộc"),
+  phoneNumber: yup.string().required("Số điện thoại là bắt buộc"),
+  gender: yup.string().required("Giới tính là bắt buộc"),
 });
 export default function EditUserForm() {
   const [messageApi, contextHolder] = message.useMessage();
@@ -37,6 +41,7 @@ export default function EditUserForm() {
   const [data, setData] = useState(null);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const propsUdateImage = {
     onRemove: () => {
@@ -54,6 +59,7 @@ export default function EditUserForm() {
   const id = localStorage.getItem("x-client-id");
 
   const handleOk = () => {
+    setLoading(true);
     formik.submitForm();
   };
 
@@ -71,9 +77,7 @@ export default function EditUserForm() {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   const formik = useFormik({
@@ -81,8 +85,11 @@ export default function EditUserForm() {
     enableReinitialize: true,
     initialValues: {
       lastName: data?.lastName,
-      email: data?.email,
       firstName: data?.firstName,
+      email: data?.email,
+      phoneNumber: data?.phoneNumber,
+      dob: data?.dob,
+      gender: data?.gender,
     },
     onSubmit: (values) => {
       values.lastName = values.lastName.trim();
@@ -108,45 +115,54 @@ export default function EditUserForm() {
           }
           return res;
         })
-        // .then(() => {
-        //   refresh();
-        // })
+        .then(() => {
+          window.location.reload();
+        })
         .catch((error) => {
-          console.log(error);
           message.error(error.response?.data?.message, 3.5);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     },
   });
   return (
-    <div className="flex flex-col w-full overflow-x-hidden grid-container bg-gray-100">
+    <div className="mx-auto max-w-md space-y-6 overflow-x-hidden grid-container">
       {contextHolder}
-      <main className="flex-grow p-6">
-        <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-950">
-          Thông tin của bạn
-        </h2>
-        <Card className="mt-6">
-          <Content>
-            <form className="grid gap-4">
+      <div className="space-y-2 text-center">
+        <h1 className="text-3xl font-bold">Thông tin của bạn</h1>
+        <p className="text-gray-500 dark:text-gray-400">
+          Vui lòng cập nhật thông tin của bạn bên dưới
+        </p>
+      </div>
+      <Card className="space-y-4">
+        <Content>
+          <form>
+            <div className="col-span-2 my-2">
               <label className="text-base" htmlFor="name">
                 Ảnh đại diện
               </label>
-              <Avatar
-                size={{
-                  xs: 24,
-                  sm: 32,
-                  md: 40,
-                  lg: 64,
-                  xl: 80,
-                  xxl: 100,
-                }}
-                icon={<AntDesignOutlined />}
-                src={imageUrl || data?.image_url}
-                className="mr-1"
-              />
-              <Upload {...propsUdateImage}>
-                <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
-              </Upload>
-              <div className="grid gap-2">
+              <div className="flex items-center">
+                <Avatar
+                  size={{
+                    xs: 24,
+                    sm: 32,
+                    md: 40,
+                    lg: 64,
+                    xl: 80,
+                    xxl: 100,
+                  }}
+                  icon={<AntDesignOutlined />}
+                  src={imageUrl || data?.image_url}
+                  className="mr-1"
+                />
+                <Upload {...propsUdateImage}>
+                  <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
+                </Upload>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
                 <label className="text-base" htmlFor="name">
                   Họ của bạn
                 </label>
@@ -165,7 +181,7 @@ export default function EditUserForm() {
                   }
                 />
               </div>
-              <div className="grid gap-2">
+              <div className="space-y-2">
                 <label className="text-base" htmlFor="name">
                   Tên của bạn
                 </label>
@@ -184,32 +200,92 @@ export default function EditUserForm() {
                   }
                 />
               </div>
-              <div className="grid gap-2">
-                <label className="text-base" htmlFor="email">
-                  Email
-                </label>
-                <CustomInput
-                  className="mb-3"
-                  onChange={formik.handleChange("email")}
-                  onBlur={formik.handleBlur("email")}
-                  value={formik.values.email}
-                  error={
-                    formik.submitCount > 0 &&
-                    formik.touched.email &&
-                    formik.errors.email
-                      ? formik.errors.email
-                      : null
-                  }
-                />
-              </div>
-              <div className="grid gap-2"></div>
-            </form>
-          </Content>
-          <Button onClick={handleOk} className="ml-auto">
-            Save
-          </Button>
-        </Card>
-      </main>
+            </div>
+            <div className="space-y-2">
+              <label className="text-base" htmlFor="email">
+                Email
+              </label>
+              <CustomInput
+                className="mb-3"
+                onChange={formik.handleChange("email")}
+                onBlur={formik.handleBlur("email")}
+                value={formik.values.email}
+                error={
+                  formik.submitCount > 0 &&
+                  formik.touched.email &&
+                  formik.errors.email
+                    ? formik.errors.email
+                    : null
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-base" htmlFor="dob">
+                Ngày sinh
+              </label>
+              <DatePicker
+                size="large"
+                className="mb-3 w-full"
+                onChange={(date, dateString) =>
+                  formik.setFieldValue("dob", dateString)
+                }
+                onBlur={formik.handleBlur("dob")}
+                value={formik.values.dob ? moment(formik.values.dob) : null}
+              />
+              {formik.submitCount > 0 &&
+              formik.touched.dob &&
+              formik.errors.dob ? (
+                <div>{formik.errors.dob}</div>
+              ) : null}
+            </div>
+            <div className="space-y-2">
+              <label className="text-base" htmlFor="phoneNumber">
+                Phone Number
+              </label>
+              <CustomInput
+                className="mb-3"
+                onChange={formik.handleChange("phoneNumber")}
+                onBlur={formik.handleBlur("phoneNumber")}
+                value={formik.values.phoneNumber}
+                error={
+                  formik.submitCount > 0 &&
+                  formik.touched.phoneNumber &&
+                  formik.errors.phoneNumber
+                    ? formik.errors.phoneNumber
+                    : null
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-base" htmlFor="gender">
+                Gender:
+              </label>
+              <select
+                className="mb-3"
+                onChange={formik.handleChange("gender")}
+                onBlur={formik.handleBlur("gender")}
+                value={formik.values.gender}
+              >
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+              </select>
+              {formik.submitCount > 0 &&
+              formik.touched.gender &&
+              formik.errors.gender ? (
+                <div>{formik.errors.gender}</div>
+              ) : null}
+            </div>
+          </form>
+        </Content>
+        <Button
+          onClick={handleOk}
+          loading={loading}
+          className="ml-auto w-full custom-button"
+        >
+          Save
+        </Button>
+      </Card>
     </div>
   );
 }

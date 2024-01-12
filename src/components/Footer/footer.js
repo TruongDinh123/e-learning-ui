@@ -75,7 +75,6 @@ export default function CustomFooter() {
                 <img
                   alt="App Store"
                   height="40"
-                  src="/placeholder.svg"
                   style={{
                     aspectRatio: "120/40",
                     objectFit: "cover",
@@ -87,7 +86,6 @@ export default function CustomFooter() {
                 <img
                   alt="Google Play"
                   height="40"
-                  src="/placeholder.svg"
                   style={{
                     aspectRatio: "120/40",
                     objectFit: "cover",
@@ -103,7 +101,6 @@ export default function CustomFooter() {
             <img
               alt="Registered"
               height="40"
-              src="/placeholder.svg"
               style={{
                 aspectRatio: "40/40",
                 objectFit: "cover",

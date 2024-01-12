@@ -56,7 +56,6 @@ export default function Lesson({ params }) {
   }, [updateLesson, dispatch]);
 
   const lessonIds = lesson[0]?.lessons.map((lesson) => lesson._id);
-  console.log(lessonIds);
 
   //handleDeleteLesson
   const handleDeleteLesson = ({ courseId, lessonId }) => {
@@ -73,7 +72,6 @@ export default function Lesson({ params }) {
         }
       })
       .catch((error) => {
-        console.log(error);
         setIsLoading(false);
       });
   };

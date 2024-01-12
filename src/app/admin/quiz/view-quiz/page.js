@@ -65,7 +65,7 @@ export default function ViewQuiz() {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        
         setIsLoading(false);
       });
   }, [updateQuiz]);
@@ -83,7 +83,7 @@ export default function ViewQuiz() {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        
         setIsLoading(false);
       });
   };
@@ -231,7 +231,7 @@ export default function ViewQuiz() {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        
         setIsLoading(false);
       });
   };

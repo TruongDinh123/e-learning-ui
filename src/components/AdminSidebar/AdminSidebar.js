@@ -118,7 +118,7 @@ export default function AdminSidebar(props) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 
@@ -137,7 +137,7 @@ export default function AdminSidebar(props) {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 

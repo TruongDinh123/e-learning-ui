@@ -15,7 +15,11 @@ import {
 import { CloseOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { createQuiz, deleteQuizQuestion, viewQuiz } from "@/features/Quiz/quizSlice";
+import {
+  createQuiz,
+  deleteQuizQuestion,
+  viewQuiz,
+} from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Modal } from "antd";
 import UpdateQuiz from "../../edit-quiz/page";
@@ -77,9 +81,7 @@ export default function QuizCreator({ params }) {
             message.success(res.message, 1.5);
           });
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   const columns = [
@@ -124,9 +126,7 @@ export default function QuizCreator({ params }) {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   }, [updateQuiz]);
 
   let data = [];
@@ -199,9 +199,7 @@ export default function QuizCreator({ params }) {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   return (

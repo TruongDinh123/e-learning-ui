@@ -242,7 +242,7 @@ export default function QuizCreator() {
             setIsLoading(false);
           })
           .catch((error) => {
-            console.log(error);
+            
             setIsLoading(false);
             message.error(error.response?.data?.message, 3.5);
           });
@@ -273,7 +273,7 @@ export default function QuizCreator() {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   }, []);
 
@@ -289,7 +289,7 @@ export default function QuizCreator() {
         }
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   }, []);
 
