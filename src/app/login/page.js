@@ -101,90 +101,85 @@ export default function Login() {
 
   return (
     <div
-      className="bg-no-repeat bg-cover bg-center relative"
+      className="min-h-screen bg-no-repeat bg-cover bg-center relative
+      flex items-center justify-center"
       style={{
         backgroundImage:
           "url(https://images.pexels.com/photos/5905445/pexels-photo-5905445.jpeg)",
       }}
     >
-      <div className="absolute bg-gradient-to-b from-slate-500 opacity-30 inset-0 z-0"></div>
       {contextHolder}
-      <div
-        style={{ minHeight: "100vh" }}
-        className="sm:flex sm:flex-row mx-0 justify-center"
-      >
-        <div className="flex flex-col lg:flex-row justify-center items-center p-10 self-center z-20 relative w-full sm:w-full min-h-screen sm:min-h-0">
-          <div className="flex flex-col text-white self-center p-5 sm:max-w-5xl xl:max-w-2xl z-10">
-            <h1 className="mb-3 font-bold text-5xl sm:text-3xl text-black">
-              Chào mừng bạn tới với 247learn.vn{" "}
-            </h1>
-          </div>
-          <form
-            action=""
-            onSubmit={formik.handleSubmit}
-            className="p-12 bg-white mx-auto rounded-2xl lg:w-2/4 sm:w-full z-20 relative"
-          >
-            <div className="mb-2">
-              <h3 className="font-semibold text-2xl text-gray-800">Đăng nhập </h3>
-              <p className="text-gray-500">Xin hãy đăng nhập tài khoản của bạn.</p>
-            </div>
-            <div className="space-y-5">
-              <CustomInput
-                prefix={<AiOutlineMail />}
-                placeholder="Địa chỉ email"
-                onChange={formik.handleChange("email")}
-                onBlur={formik.handleBlur("email")}
-                value={formik.values.email}
-                error={
-                  formik.submitCount > 0 &&
-                  formik.touched.email &&
-                  formik.errors.email
-                    ? formik.errors.email
-                    : null
-                }
-              />
-              <CustomInput
-                prefix={<RiLockPasswordLine />}
-                suffix={
-                  showPassword ? (
-                    <BsEyeSlash
-                      onClick={() => setShowPassword(false)}
-                      style={{ cursor: "pointer" }}
-                    />
-                  ) : (
-                    <BsEye
-                      onClick={() => setShowPassword(true)}
-                      style={{ cursor: "pointer" }}
-                    />
-                  )
-                }
-                placeholder="Mật khẩu"
-                className="mt-3"
-                onChange={(e) => {
-                  formik.handleChange("password")(e);
-                  setPasswordValue(e.target.value);
-                }}
-                onBlur={formik.handleBlur("password")}
-                value={passwordValue}
-                error={
-                  formik.submitCount > 0 &&
-                  formik.touched.password &&
-                  formik.errors.password
-                    ? formik.errors.password
-                    : null
-                }
-                type={showPassword ? "text" : "password"}
-              />
-              <div>
-                <CustomButton
-                  title={isLoading ? <Spin /> : "Đăng nhập"}
-                  type="primary"
-                  disabled={isLoading}
-                  onClick={() => formik.handleSubmit()}
-                  className="py-1 px-8 bg-blue-900 hover:bg-blue-400 text-white text-center inline-block text-lg my-1 mx-1 rounded-lg cursor-pointer border-none"
+      <div className="flex flex-col md:flex-row items-center justify-center w-full max-w-5xl">
+        <div className="md:w-1/2 text-center md:text-left p-8">
+          <h1 className="text-4xl font-bold mb-4">
+            Chào mừng bạn tới với 247learn.vn
+          </h1>
+        </div>
+        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm md:max-w-md">
+          <h2 className="text-2xl font-semibold mb-6">Đăng nhập</h2>
+          <p className="text-sm mb-4">Xin hãy đăng nhập tài khoản của bạn.</p>
+          <form action="" onSubmit={formik.handleSubmit}>
+            <div className="flex flex-col space-y-4 mb-6">
+              <label className="flex flex-col" htmlFor="email">
+                <span className="text-sm font-medium">Email</span>
+                <CustomInput
+                  prefix={<AiOutlineMail />}
+                  placeholder="Địa chỉ email"
+                  onChange={formik.handleChange("email")}
+                  onBlur={formik.handleBlur("email")}
+                  value={formik.values.email}
+                  error={
+                    formik.submitCount > 0 &&
+                    formik.touched.email &&
+                    formik.errors.email
+                      ? formik.errors.email
+                      : null
+                  }
                 />
-              </div>
+              </label>
+              <label className="flex flex-col" htmlFor="password">
+                <span className="text-sm font-medium">Mật khẩu</span>
+                <CustomInput
+                  prefix={<RiLockPasswordLine />}
+                  suffix={
+                    showPassword ? (
+                      <BsEyeSlash
+                        onClick={() => setShowPassword(false)}
+                        style={{ cursor: "pointer" }}
+                      />
+                    ) : (
+                      <BsEye
+                        onClick={() => setShowPassword(true)}
+                        style={{ cursor: "pointer" }}
+                      />
+                    )
+                  }
+                  placeholder="Mật khẩu"
+                  onChange={(e) => {
+                    formik.handleChange("password")(e);
+                    setPasswordValue(e.target.value);
+                  }}
+                  onBlur={formik.handleBlur("password")}
+                  value={passwordValue}
+                  error={
+                    formik.submitCount > 0 &&
+                    formik.touched.password &&
+                    formik.errors.password
+                      ? formik.errors.password
+                      : null
+                  }
+                  type={showPassword ? "text" : "password"}
+                />
+              </label>
             </div>
+
+            <CustomButton
+              title={isLoading ? <Spin /> : "Đăng nhập"}
+              type="primary"
+              disabled={isLoading}
+              onClick={() => formik.handleSubmit()}
+              className="py-1 px-8 bg-blue-900 hover:bg-blue-400 text-white text-center inline-block text-lg my-1 mx-1 rounded-lg cursor-pointer border-none w-full"
+            />
           </form>
         </div>
       </div>

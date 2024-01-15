@@ -9,7 +9,7 @@ import {
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Modal, Radio, Upload, message } from "antd";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button } from "antd";
 import CustomInput from "@/components/comman/CustomInput";
 import { useFormik } from "formik";
@@ -24,16 +24,25 @@ const CourseSchema = yup.object({
 });
 
 export default function EditCourses(props) {
-  const { id, refresh } = props;
+  const { id, refresh, course, categoryId } = props;
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState(null);
   const [file, setFile] = useState(null);
+  const [currentCategory, setCurrentCategory] = useState(null);
 
   useEffect(() => {
-    getACourseData();
-  }, []);
+    setData(course);
+    setCurrentCategory(
+      categories &&
+        categories.find((category) => category?._id === course?.category)
+    );
+  }, [course]);
+
+  const categories = useSelector(
+    (state) => state.category?.categories?.metadata
+  );
 
   const propsUdateImage = {
     onRemove: () => {
@@ -48,18 +57,18 @@ export default function EditCourses(props) {
     fileList: file ? [file] : [],
   };
 
-  const getACourseData = () => {
-    dispatch(getACourse(id))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setData(res.metadata);
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {});
-  };
+  // const getACourseData = () => {
+  //   dispatch(getACourse(id))
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       if (res.status) {
+  //         setData(res.metadata);
+  //       } else {
+  //         messageApi.error(res.message);
+  //       }
+  //     })
+  //     .catch((error) => {});
+  // };
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -80,6 +89,7 @@ export default function EditCourses(props) {
       title: data?.title,
       name: data?.name,
       isPublic: data?.showCourse,
+      categoryId: currentCategory?._id || categoryId,
     },
     onSubmit: (values) => {
       dispatch(editCourse({ id: props?.id, values }))
@@ -182,6 +192,30 @@ export default function EditCourses(props) {
           />
           {formik.submitCount > 0 && formik.touched.title && formik.errors.title
             ? formik.errors.title
+            : null}
+
+          <label htmlFor="category" className="text-lg font-medium mt-3">
+            Danh mục:
+          </label>
+          <select
+            id="category"
+            onChange={formik.handleChange("categoryId")}
+            onBlur={formik.handleBlur("categoryId")}
+            value={formik.values.categoryId}
+            className="mx-2"
+          >
+            {!currentCategory && <option value="">Chưa có danh mục</option>}
+            {categories &&
+              categories.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.name}
+                </option>
+              ))}
+          </select>
+          {formik.submitCount > 0 &&
+          formik.touched.categoryId &&
+          formik.errors.categoryId
+            ? formik.errors.categoryId
             : null}
         </div>
 

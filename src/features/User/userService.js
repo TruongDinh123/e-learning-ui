@@ -31,7 +31,7 @@ const getAUser = async (data) => {
     url: "/e-learning/user/" + data,
     method: "GET",
   });
-  return res;
+  return res.data;
 };
 
 const uploadImageUser = async (data) => {

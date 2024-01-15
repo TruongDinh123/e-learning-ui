@@ -82,12 +82,7 @@ export default function AddTeacherToCourse(props) {
   return (
     <React.Fragment>
       {contextHolder}
-      <Button
-        type="primary"
-        onClick={showModal}
-        className="me-3 bg-blue-900 hover:bg-blue-400 "
-        style={{ color: "#fff", backgroundColor: "#1890ff" }}
-      >
+      <Button type="primary" onClick={showModal} className="me-3 custom-button">
         Thêm giáo viên
       </Button>
       <Modal

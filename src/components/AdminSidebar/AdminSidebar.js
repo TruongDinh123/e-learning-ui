@@ -21,7 +21,7 @@ export default function AdminSidebar(props) {
   const router = useRouter();
   // const userState = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
-  
+
   const userState = JSON.parse(localStorage.getItem("user"));
   const id = localStorage.getItem("x-client-id");
 
@@ -95,6 +95,11 @@ export default function AdminSidebar(props) {
         key: "users/view-teachers",
         icon: <UserOutlined />,
         label: "Khóa học",
+      },
+      {
+        key: "category",
+        icon: <UserOutlined />,
+        label: "Danh mục",
       }
     );
   }
@@ -117,9 +122,7 @@ export default function AdminSidebar(props) {
           message.error(res.message, 2.5);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
 
   useEffect(() => {
@@ -131,14 +134,12 @@ export default function AdminSidebar(props) {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setData(res.data.metadata);
+          setData(res.metadata);
         } else {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
 
   return (
@@ -146,7 +147,9 @@ export default function AdminSidebar(props) {
       <div className="demo-logo-vertical d-flex justify-content-center align-items-center py-3">
         <Avatar
           src={
-            userProfile?.image_url || data?.image_url || `https://xsgames.co/randomusers/avatar.php?g=pixel`
+            userProfile?.image_url ||
+            data?.image_url ||
+            `https://xsgames.co/randomusers/avatar.php?g=pixel`
           }
         />
         <span
@@ -166,32 +169,6 @@ export default function AdminSidebar(props) {
         }}
         items={menuItems}
       />
-      {/* <div
-        style={{
-          position: "absolute",
-          bottom: 0,
-          width: "100%",
-          display: "flex",
-          justifyContent: "center", // Căn giữa nút đăng xuất
-        }}
-      >
-        <Nav style={{ padding: "10px 0" }}>
-          {userState !== null ? (
-            <CustomButton
-              title="Đăng xuất"
-              type="link"
-              className="text-white"
-              onClick={() => handleLogOut()}
-            />
-          ) : (
-            <Link href="/login">
-              <span className="fs-6 text-dark text-decoration-none me-4">
-                Đăng nhập
-              </span>
-            </Link>
-          )}
-        </Nav>
-      </div> */}
     </Sider>
   );
 }

@@ -150,6 +150,9 @@ export default function QuizCreator({ params }) {
             description="Are you sure to delete this Course?"
             okText="Có"
             cancelText="Không"
+            okButtonProps={{
+              style: { backgroundColor: "red" },
+            }}
             onConfirm={() =>
               handleDeleteQuiz({
                 quizId: i?._id,

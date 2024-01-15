@@ -193,8 +193,34 @@ export const createNotification = createAsyncThunk(
   }
 );
 
+//sub-course
+export const getAllSubCourses = createAsyncThunk(
+  "/e-learning/get-all-subcourses/",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await courseService.getAllSubCourses(data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getAllSubCoursesById = createAsyncThunk(
+  "/e-learning/get-all-subcourses-by-id/",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await courseService.getAllSubCoursesById(data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 const initialState = {
   course: "",
+  subCourses: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -274,6 +300,21 @@ const courseSlice = createSlice({
         state.isSuccess = true;
       })
       .addCase(getACourse.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
+      .addCase(getAllSubCourses.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllSubCourses.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.subCourses = action.payload;
+      })
+      .addCase(getAllSubCourses.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

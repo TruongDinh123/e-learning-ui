@@ -11,7 +11,7 @@ export default function CustomFooter() {
   return (
     <footer className="bg-[#111111] text-white bottom-0">
       <div className="max-w-[105rem] mx-auto py-10 px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
           <div>
             <h5 className="font-bold mb-4 text-[#C89F65]">VỀ CHÚNG TÔI</h5>
             <ul className="space-y-2">
@@ -68,7 +68,7 @@ export default function CustomFooter() {
               </li>
             </ul>
           </div>
-          <div>
+          {/* <div>
             <h5 className="font-bold mb-4 text-[#C89F65]">TẢI APP EDUMALL:</h5>
             <div className="flex space-x-2">
               <a className="block" href="#">
@@ -94,11 +94,11 @@ export default function CustomFooter() {
                 />
               </a>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="flex flex-col md:flex-row justify-between items-center mt-8 border-t border-gray-700 pt-4">
           <div className="flex items-center space-x-4 mb-4 md:mb-0">
-            <img
+            {/* <img
               alt="Registered"
               height="40"
               style={{
@@ -106,7 +106,7 @@ export default function CustomFooter() {
                 objectFit: "cover",
               }}
               width="40"
-            />
+            /> */}
             <span>Đã đăng ký Bộ Công Thương</span>
           </div>
           <div className="flex space-x-4">

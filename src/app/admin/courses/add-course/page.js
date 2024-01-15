@@ -1,6 +1,6 @@
 "use client";
 import CustomInput from "@/components/comman/CustomInput";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as yup from "yup";
@@ -10,11 +10,13 @@ import {
   buttonPriavteourse,
   buttonPublicCourse,
   createCourse,
+  getAllSubCourses,
   uploadImageCourse,
 } from "@/features/Courses/courseSlice";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import CustomButton from "@/components/comman/CustomBtn";
+import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
 
 const CourseSchema = yup.object({
   title: yup
@@ -26,6 +28,7 @@ const CourseSchema = yup.object({
     .required("Nhập tên")
     .trim("Name must not start or end with whitespace"),
   isPublic: yup.boolean().required("Visibility is required"),
+  categoryId: yup.string().required("Category is required"),
 });
 
 export default function AddCourse(props) {
@@ -40,6 +43,22 @@ export default function AddCourse(props) {
   const user = JSON.parse(localStorage?.getItem("user"));
 
   const isAdmin = user?.roles?.includes("Admin");
+
+  useEffect(() => {
+    dispatch(getAllCategoryAndSubCourses())
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+        } else {
+          messageApi.error(res.message);
+        }
+      })
+      .catch((error) => {});
+  }, []);
+
+  const categories = useSelector(
+    (state) => state.category?.categories?.metadata
+  );
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -73,11 +92,13 @@ export default function AddCourse(props) {
     initialValues: {
       title: "",
       name: "",
+      categoryId: "" || (categories && categories[0]?._id),
       isPublic: true,
     },
     onSubmit: (values) => {
       values.name = values.name.trim();
       values.title = values.title.trim();
+      values.categoryId = values.categoryId.trim();
       setIsLoading(true);
 
       dispatch(createCourse(values))
@@ -117,6 +138,29 @@ export default function AddCourse(props) {
               .catch((error) => {
                 setIsLoading(false);
               });
+          } else {
+            if (values.isPublic) {
+              dispatch(buttonPublicCourse(courseId));
+            } else {
+              dispatch(buttonPriavteourse(courseId));
+            }
+            setIsLoading(false);
+            messageApi
+              .open({
+                type: "Thành công",
+                content: "Đang thực hiện...",
+                duration: 2.5,
+              })
+              .then((res) => {
+                router.push("/admin/courses");
+                message.success(res.message, 0.5);
+                refresh();
+                setIsLoading(false);
+              })
+              .catch((error) => {
+                setIsLoading(false);
+                message.error(error.response?.data?.message, 3.5);
+              });
           }
         });
     },
@@ -135,7 +179,7 @@ export default function AddCourse(props) {
             </div>
           }
           onClick={showModal}
-          className={`py-2 px-3 bg-blue-900 hover:bg-blue-400 text-white text-center inline-block text-lg my-1 mx-1 rounded-lg cursor-pointer border-none`}
+          className={`py-2 px-3 bg-blue-900 hover:bg-blue-400 text-white text-center inline-block text-sm my-1 mx-1 rounded-lg cursor-pointer border-none`}
         ></CustomButton>
       )}
       <Modal
@@ -194,6 +238,29 @@ export default function AddCourse(props) {
           />
           {formik.submitCount > 0 && formik.touched.title && formik.errors.title
             ? formik.errors.title
+            : null}
+
+          <label htmlFor="category" className="text-lg font-medium mt-3">
+            Danh mục:
+          </label>
+          <select
+            id="category"
+            onChange={formik.handleChange("categoryId")}
+            onBlur={formik.handleBlur("categoryId")}
+            value={formik.values.categoryId}
+            className="mx-2"
+          >
+            {categories &&
+              categories.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.name}
+                </option>
+              ))}
+          </select>
+          {formik.submitCount > 0 &&
+          formik.touched.categoryId &&
+          formik.errors.categoryId
+            ? formik.errors.categoryId
             : null}
         </div>
 

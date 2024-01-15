@@ -18,22 +18,12 @@ import "../../users/edit-user-form/page.css";
 import moment from "moment/moment";
 
 const Userchema = yup.object({
-  lastName: yup
-    .string()
-    .required("Họ và tên đệm là bắt buộc")
-    .trim("Họ và tên đệm không được bắt đầu hoặc kết thúc bằng khoảng trắng")
-    .min(3, "Họ và tên đệm phải có ít nhất 3 ký tự")
-    .matches(/^\S*$/, "Họ và tên đệm không được chứa khoảng trắng"),
-  firstName: yup
-    .string()
-    .required("Tên là bắt buộc")
-    .trim("Tên không được bắt đầu hoặc kết thúc bằng khoảng trắng")
-    .min(3, "Tên phải có ít nhất 3 ký tự")
-    .matches(/^\S*$/, "Tên không được chứa khoảng trắng"),
-  email: yup.string().email().required("Email là bắt buộc"),
-  dob: yup.date().required("Ngày sinh là bắt buộc"),
-  phoneNumber: yup.string().required("Số điện thoại là bắt buộc"),
-  gender: yup.string().required("Giới tính là bắt buộc"),
+  lastName: yup.string(),
+  firstName: yup.string(),
+  email: yup.string().email(),
+  dob: yup.date(),
+  phoneNumber: yup.string(),
+  gender: yup.string(),
 });
 export default function EditUserForm() {
   const [messageApi, contextHolder] = message.useMessage();
@@ -72,7 +62,7 @@ export default function EditUserForm() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setData(res.data.metadata);
+          setData(res.metadata);
         } else {
           messageApi.error(res.message);
         }
@@ -104,6 +94,7 @@ export default function EditUserForm() {
                   setFile(null);
                   setImageUrl(res.metadata.image_url);
                   dispatch(updateUserProfile(res.metadata));
+                  setLoading(false);
                   messageApi.open({
                     type: "Thành công",
                     content: "Đang thực hiện...",
@@ -117,9 +108,11 @@ export default function EditUserForm() {
         })
         .then(() => {
           window.location.reload();
+          setLoading(false);
         })
         .catch((error) => {
           message.error(error.response?.data?.message, 3.5);
+          setLoading(false);
         })
         .finally(() => {
           setLoading(false);

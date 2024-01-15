@@ -1,12 +1,7 @@
 "use client";
-import {
-  buttonPriavteourse,
-  buttonPublicCourse,
-  deleteCourse,
-  viewCourses,
-} from "@/features/Courses/courseSlice";
+import { deleteCourse, viewCourses } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Menu, Dropdown, Spin, Image, Space, Empty } from "antd";
+import { Menu, Dropdown, Spin, Image, Space, Empty, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button, Popconfirm } from "antd";
@@ -17,13 +12,37 @@ import { BookOutlined } from "@ant-design/icons";
 import AddCourse from "./add-course/page";
 import { Col } from "react-bootstrap";
 import "../courses/page.css";
+import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
 
 export default function Courses() {
   const dispatch = useDispatch();
   const [course, setCourses] = useState([]);
   const [updateCourse, setUpdateCourse] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const router = useRouter();
+
+  useEffect(() => {
+    dispatch(getAllCategoryAndSubCourses())
+      .then(unwrapResult)
+      .then((res) => {
+        setCategories(res.metadata);
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
+      });
+  }, [dispatch]);
+
+  // Lọc các khóa học theo danh mục được chọn
+  const filteredCourses = selectedCategory
+    ? categories.find((c) => c._id === selectedCategory)?.courses || []
+    : course;
+
+  // Xử lý khi danh mục được chọn thay đổi
+  const handleCategoryChange = (value) => {
+    setSelectedCategory(value);
+  };
 
   // viewCourses api
   useEffect(() => {
@@ -54,10 +73,6 @@ export default function Courses() {
       });
   }, [updateCourse]);
 
-  // const user = JSON.parse(localStorage.getItem("user"));
-
-  // const isAdmin = user.metadata.account.roles.includes("Admin");
-
   const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
 
   //table data
@@ -83,37 +98,7 @@ export default function Courses() {
         if (res.status) {
           setUpdateCourse(updateCourse + 1);
         }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-      });
-  };
-
-  const handleCoursePublic = (courseId) => {
-    setIsLoading(true);
-    dispatch(buttonPublicCourse(courseId))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setUpdateCourse(updateCourse + 1);
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-      });
-  };
-
-  const handleCoursePrivate = (courseId) => {
-    setIsLoading(true);
-    dispatch(buttonPriavteourse(courseId))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setUpdateCourse(updateCourse + 1);
-        }
-        setIsLoading(false);
+        setUpdateCourse(updateCourse + 1);
       })
       .catch((error) => {
         setIsLoading(false);
@@ -128,17 +113,40 @@ export default function Courses() {
         </div>
       ) : (
         <div className="max-w-screen-2xl mx-auto">
-          {/* {isAdmin && ( */}
           <AddCourse refresh={() => setUpdateCourse(updateCourse + 1)} />
-          {/* )} */}
+          <div className="space-y-4 mt-2 mb-3">
+            <label htmlFor="category-select">Chọn danh mục:</label>
+            <Select
+              showSearch
+              style={{ width: 200 }}
+              placeholder="Chọn danh mục"
+              optionFilterProp="children"
+              onChange={handleCategoryChange}
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              defaultValue={null}
+              className="mx-3"
+            >
+              <Select.Option value={null}>Tất cả</Select.Option>
+              {categories.map((category) => (
+                <Select.Option key={category._id} value={category._id}>
+                  {category.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+
           <div className="space-y-4">
             <div className="grid scrollbar-thin sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 grid-container-courses">
-              {data.map((item, index) => {
+              {filteredCourses.map((item, index) => {
                 const menu = (
                   <Menu>
                     <Menu.Item>
                       <EditCourses
+                        course={item}
                         id={item?._id}
+                        categoryId={selectedCategory}
                         refresh={() => setUpdateCourse(updateCourse + 1)}
                       />
                     </Menu.Item>
@@ -160,6 +168,9 @@ export default function Courses() {
                         description="Bạn muốn chắc xóa khóa học?"
                         okText="Có"
                         cancelText="Không"
+                        okButtonProps={{
+                          style: { backgroundColor: "red" },
+                        }}
                         onConfirm={() => handleDeleteCourse(item?._id)}
                       >
                         <Button danger style={{ width: "100%" }}>
@@ -167,16 +178,6 @@ export default function Courses() {
                         </Button>
                       </Popconfirm>
                     </Menu.Item>
-                    {/* <Menu.Item>
-                      <Button
-                        onClick={() => handleCoursePublic(item?._id)}
-                        style={{ width: "100%" }}
-                      >
-                        {item.showCourse
-                          ? "Chế độ riêng tư"
-                          : "Chế độ công khai"}
-                      </Button>
-                    </Menu.Item> */}
                   </Menu>
                 );
                 return (
@@ -204,7 +205,7 @@ export default function Courses() {
                       <div className="my-3 flex items-center gap-x-2 text-sm md:text-xs">
                         <div className="flex items-center gap-x-1 text-slate-500">
                           <BookOutlined />
-                          <span>bài học: {item.lessons.length}</span>
+                          <span>bài học: {item.lessons?.length}</span>
                         </div>
                       </div>
                       {isMobile ? (
@@ -226,6 +227,8 @@ export default function Courses() {
                             <Space wrap>
                               <EditCourses
                                 id={item?._id}
+                                course={item}
+                                categoryId={selectedCategory}
                                 refresh={() =>
                                   setUpdateCourse(updateCourse + 1)
                                 }
@@ -285,7 +288,7 @@ export default function Courses() {
                 );
               })}
             </div>
-            {data?.length === 0 && (
+            {filteredCourses?.length === 0 && (
               <Empty className="text-center text-sm text-muted-foreground mt-10">
                 Khóa học không tồn tại
               </Empty>

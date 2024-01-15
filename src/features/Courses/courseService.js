@@ -37,7 +37,7 @@ const deleteCourse = async (data) => {
     url: "/e-learning/course/" + data,
     method: "DELETE",
   });
-  return res;
+  return res.data;
 };
 
 const editCourse = async (data) => {
@@ -65,8 +65,6 @@ const addStudentToCourse = async (data) => {
   });
   return res.data;
 };
-
-
 
 const addTeacherToCourse = async (data) => {
   const res = await axiosInstance({
@@ -143,6 +141,23 @@ const createNotification = async (data) => {
   return res;
 };
 
+//sub-course
+const getAllSubCoursesById = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/get-all-subcourses/${data.subCourseId}`,
+    method: "GET",
+  });
+  return res.data;
+};
+
+const getAllSubCourses = async (data) => {
+  const res = await axiosInstance({
+    url: "/e-learning/get-all-subcourses",
+    method: "GET",
+  });
+  return res.data;
+};
+
 export const courseService = {
   createCourse,
   viewCourse,
@@ -160,4 +175,6 @@ export const courseService = {
   createNotification,
   uploadImageCourse,
   updateCourseTeacher,
+  getAllSubCourses,
+  getAllSubCoursesById,
 };

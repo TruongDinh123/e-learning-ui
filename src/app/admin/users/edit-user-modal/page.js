@@ -53,7 +53,7 @@ export default function EditUser(props) {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setData(res.data.metadata);
+          setData(res.metadata);
         } else {
           messageApi.error(res.message);
         }

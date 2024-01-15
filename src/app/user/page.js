@@ -3,32 +3,27 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { Avatar, Button, Card, DatePicker, Upload, message } from "antd";
-import { getAUser, updateUser, updateUserProfile, uploadImageUser } from "@/features/User/userSlice";
+import {
+  getAUser,
+  updateUser,
+  updateUserProfile,
+  uploadImageUser,
+} from "@/features/User/userSlice";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-import ChangePasswordForm from "./change-password/page";
 import { Content } from "antd/es/layout/layout";
 import { AntDesignOutlined, UploadOutlined } from "@ant-design/icons";
 import CustomInput from "@/components/comman/CustomInput";
 import moment from "moment";
+import "../user/page.css";
 
 const Userchema = yup.object().shape({
-  lastName: yup
-    .string()
-    .required("Họ và tên đệm là bắt buộc")
-    .trim("Họ và tên đệm không được bắt đầu hoặc kết thúc bằng khoảng trắng")
-    .min(3, "Họ và tên đệm phải có ít nhất 3 ký tự")
-    .matches(/^\S*$/, "Họ và tên đệm không được chứa khoảng trắng"),
-  firstName: yup
-    .string()
-    .required("Tên là bắt buộc")
-    .trim("Tên không được bắt đầu hoặc kết thúc bằng khoảng trắng")
-    .min(3, "Tên phải có ít nhất 3 ký tự")
-    .matches(/^\S*$/, "Tên không được chứa khoảng trắng"),
-  email: yup.string().email().required("Email là bắt buộc"),
-  dob: yup.date().required("Ngày sinh là bắt buộc"),
-  phoneNumber: yup.string().required("Số điện thoại là bắt buộc"),
-  gender: yup.string().required("Giới tính là bắt buộc"),
+  lastName: yup.string(),
+  firstName: yup.string(),
+  email: yup.string().email(),
+  dob: yup.date(),
+  phoneNumber: yup.string(),
+  gender: yup.string(),
 });
 
 export default function UpdateInfoUser() {
@@ -82,6 +77,7 @@ export default function UpdateInfoUser() {
                   setFile(null);
                   setImageUrl(res.metadata.image_url);
                   dispatch(updateUserProfile(res.metadata));
+                  setLoading(false);
                   messageApi.open({
                     type: "Thành công",
                     content: "Đang thực hiện...",
@@ -95,9 +91,11 @@ export default function UpdateInfoUser() {
         })
         .then(() => {
           window.location.reload();
+          setLoading(false);
         })
         .catch((error) => {
           message.error(error.response?.data?.message, 3.5);
+          setLoading(false);
         })
         .finally(() => {
           setLoading(false);
@@ -114,7 +112,7 @@ export default function UpdateInfoUser() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setUser(res.data.metadata);
+          setUser(res.metadata);
         } else {
           messageApi.error(res.message);
         }
@@ -140,7 +138,7 @@ export default function UpdateInfoUser() {
               <label className="text-base" htmlFor="name">
                 Ảnh đại diện
               </label>
-              <div className="flex items-center">
+              <div className="flex items-center mb-2">
                 <Avatar
                   size={{
                     xs: 24,
@@ -152,12 +150,12 @@ export default function UpdateInfoUser() {
                   }}
                   icon={<AntDesignOutlined />}
                   src={imageUrl || user?.image_url}
-                  className="mr-1"
+                  className="mr-1 avatar-mobile"
                 />
-                <Upload {...propsUdateImage}>
-                  <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
-                </Upload>
               </div>
+              <Upload {...propsUdateImage}>
+                <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
+              </Upload>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">

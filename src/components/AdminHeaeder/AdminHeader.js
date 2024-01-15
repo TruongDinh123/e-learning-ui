@@ -38,7 +38,7 @@ export default function AdminHeader(props) {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setData(res.data.metadata);
+          setData(res.metadata);
         }
       })
       .catch((error) => {

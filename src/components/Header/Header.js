@@ -288,7 +288,7 @@ function SearchIcon(props) {
   );
 }
 
-function ShoppingCartIcon(props) {
+function UsersIcon(props) {
   return (
     <svg
       {...props}
@@ -302,29 +302,10 @@ function ShoppingCartIcon(props) {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <circle cx="8" cy="21" r="1" />
-      <circle cx="19" cy="21" r="1" />
-      <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-    </svg>
-  );
-}
-
-function XIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M18 6 6 18" />
-      <path d="m6 6 12 12" />
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </svg>
   );
 }
@@ -350,7 +331,7 @@ export default function Header() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setUser(res.data.metadata);
+          setUser(res.metadata);
         } else {
           messageApi.error(res.message);
         }
@@ -721,9 +702,16 @@ export default function Header() {
             <div className="fixed inset-0" />
             <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
               <div className="flex items-center justify-between bg-[#02354B]">
-                <a href="/" className="-m-1.5 p-1.5">
-                  <img className="h-28 w-auto" src={logo3} alt="" />
-                </a>
+                <div className="flex-shrink-0">
+                  <Link href="/">
+                    <img
+                      className="h-36 w-auto object-contain  absolute top-0 mt-[26px] transform -translate-y-1/2 "
+                      style={{ left: "1rem" }}
+                      src={logo3}
+                      alt=""
+                    />
+                  </Link>
+                </div>
                 <button
                   type="button"
                   className="rounded-md p-2.5 text-gray-700"
@@ -763,6 +751,7 @@ export default function Header() {
                                 href="/user"
                                 className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                               >
+                                <UserOutlined className="h-5 w-5 text-gray-600 mr-2" />
                                 Cập nhật thông tin
                               </Disclosure.Button>
                             </Disclosure.Panel>

@@ -5,13 +5,13 @@ import {
   viewCourses,
 } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Modal, Popconfirm, Select, Table, message } from "antd";
+import { Button, Empty, Modal, Popconfirm, Select, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getScoreByUserId } from "@/features/Quiz/quizSlice";
-import AddTeacherToCourse from "../../courses/add-teacher-course/page";
 import "../view-teachers/page.css";
 import UpdateTeacherToCourse from "../../courses/update-teacher-course/page";
+import AddTeacherToCourse from "../../courses/add-teacher-course/page";
 
 const { Option } = Select;
 
@@ -81,9 +81,7 @@ export default function ViewTeachersCourse() {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
 
   useEffect(() => {
@@ -104,9 +102,7 @@ export default function ViewTeachersCourse() {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   }, []);
 
   useEffect(() => {
@@ -117,6 +113,7 @@ export default function ViewTeachersCourse() {
     return dispatch(getACourse(selectedCourse))
       .then(unwrapResult)
       .then((res) => {
+        console.log("🚀 ~ res:", res);
         if (res.status) {
           setData(res.metadata.students);
           setTeacher(res.metadata.teacher);
@@ -125,9 +122,7 @@ export default function ViewTeachersCourse() {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
 
   const columns = [
@@ -297,31 +292,36 @@ export default function ViewTeachersCourse() {
           Xem
         </Button>
       </div>
-      {teacher ? (
-        <div className="border p-4 rounded-md my-4 d-flex align-items-center justify-content-between">
-          <div>
-            <h2 className="font-bold text-lg">
-              Giáo viên: {teacher?.lastName}
-            </h2>
-            <p className="text-sm">Email: {teacher?.email}</p>
+      {showTable ? (
+        teacher ? (
+          <div className="border p-4 rounded-md my-4 d-flex align-items-center justify-content-between">
+            <div>
+              <h2 className="font-bold text-lg">
+                Giáo viên: {teacher?.lastName}
+              </h2>
+              <p className="text-sm">Email: {teacher?.email}</p>
+            </div>
+            {/* <EditUser id={teacher?._id} refresh={() => setUpdate(update + 1)} /> */}
+            <UpdateTeacherToCourse
+              courseId={selectedCourse}
+              refresh={() => setUpdate(update + 1)}
+            />
           </div>
-          {/* <EditUser id={teacher?._id} refresh={() => setUpdate(update + 1)} /> */}
-          <UpdateTeacherToCourse
-            courseId={selectedCourse}
-            refresh={() => setUpdate(update + 1)}
-          />
-        </div>
+        ) : (
+          <div className="border p-4 rounded-md my-4 flex flex-col items-center justify-center space-y-4">
+            <AddTeacherToCourse
+              courseId={selectedCourse}
+              refresh={() => setUpdate(update + 1)}
+            >
+              Thêm giáo viên
+            </AddTeacherToCourse>
+          </div>
+        )
       ) : (
         <div className="border p-4 rounded-md my-4 flex flex-col items-center justify-center space-y-4">
-          <p className="text-lg font-bold text-red-500">
-            Chưa có giáo viên thêm vào khóa học
+          <p className="text-lg font-bold text-[#002c6a]">
+            Hãy chọn khoá học bạn muốn xem thông tin
           </p>
-          {/* <AddTeacherToCourse
-            courseId={selectedCourse}
-            refresh={() => setUpdate(update + 1)}
-          >
-            Thêm giáo viên
-          </AddTeacherToCourse> */}
         </div>
       )}
       {showTable && (
