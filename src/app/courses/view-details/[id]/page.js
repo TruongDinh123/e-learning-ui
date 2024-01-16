@@ -10,7 +10,7 @@ import {
   Image,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   getQuizsByCourse,
   getQuizzesByStudentAndCourse,
@@ -42,15 +42,13 @@ export default function ViewQuiz({ params }) {
     dispatch(getQuizzesByStudentAndCourse({ courseId: params?.id }))
       .then(unwrapResult)
       .then((res) => {
-        if (res.status) {
-          setquiz(res.metadata);
-        } else {
+        if (res?.status) {
+          setquiz(res?.metadata);
         }
         setLoading(false);
       })
       .catch((error) => {
         setLoading(false);
-        
       });
   }, []);
 
@@ -62,9 +60,7 @@ export default function ViewQuiz({ params }) {
           setScore(res.metadata);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   }, []);
 
   useEffect(() => {
@@ -81,7 +77,6 @@ export default function ViewQuiz({ params }) {
       })
       .catch((error) => {
         setLoading(false);
-        
       });
   }, []);
 
@@ -108,11 +103,10 @@ export default function ViewQuiz({ params }) {
           });
       }
     } catch (error) {
-      console.error(error);
       window.location.reload();
     }
   };
-  
+
   useEffect(() => {
     checkUserRole();
   }, [userState]);
@@ -135,7 +129,6 @@ export default function ViewQuiz({ params }) {
       })
       .catch((error) => {
         setLoading(false);
-        
       });
   };
 
@@ -176,38 +169,42 @@ export default function ViewQuiz({ params }) {
   // Component hiển thị thông báo
   const NotificationsComponent = () => {
     const textareaRef = useRef(null);
+    const isAdminOrMentor =
+      userState?.roles.includes("Admin") || userState?.roles.includes("Mentor");
     return (
       <>
         <div className="w-full p-2">
-          <div className="bg-white flex flex-col sm:flex-row p-4 rounded-lg card-shadow border-t border-b border-l border-r">
-            <textarea
-              className="w-full p-2 rounded border-gray-300"
-              rows="4"
-              placeholder="Thông báo nội dung nào đó cho lớp học của bạn"
-              ref={textareaRef}
-            ></textarea>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: "20px",
-                paddingLeft: "10px",
-              }}
-            >
-              <Button
-                type="primary"
-                shape="round"
-                size="large"
-                style={{ color: "#fff", backgroundColor: "#1890ff" }}
-                onClick={(e) => {
-                  handleNoti({ message: textareaRef.current.value });
-                  textareaRef.current.value = "";
+          {isAdminOrMentor && (
+            <div className="bg-white flex flex-col sm:flex-row p-4 rounded-lg card-shadow border-t border-b border-l border-r">
+              <textarea
+                className="w-full p-2 rounded border-gray-300"
+                rows="4"
+                placeholder="Thông báo nội dung nào đó cho lớp học của bạn"
+                ref={textareaRef}
+              ></textarea>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "20px",
+                  paddingLeft: "10px",
                 }}
               >
-                Gửi thông báo
-              </Button>
+                <Button
+                  type="primary"
+                  shape="round"
+                  size="large"
+                  style={{ color: "#fff", backgroundColor: "#1890ff" }}
+                  onClick={(e) => {
+                    handleNoti({ message: textareaRef.current.value });
+                    textareaRef.current.value = "";
+                  }}
+                >
+                  Gửi thông báo
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="w-full p-2">
           <div className="bg-white flex flex-col p-6 rounded-lg shadow-md border border-gray-200">
@@ -227,9 +224,9 @@ export default function ViewQuiz({ params }) {
                   </div>
                   <p className="mb-2 font-semibold text-gray-700">
                     Giáo viên: {dataCourse?.teacher.lastName}
-                    <p className="text-sm text-gray-500">
+                    <span className="text-sm text-gray-500">
                       {format(new Date(noti?.date), "HH:mm:ss")}
-                    </p>
+                    </span>
                   </p>
                 </div>
 
@@ -406,16 +403,12 @@ export default function ViewQuiz({ params }) {
         paddingBottom: "100px",
       }}
     >
-      <Breadcrumb
-        style={{
-          margin: "16px 0",
-        }}
-      >
+      <Breadcrumb className="my-6">
         <Breadcrumb.Item>
           <Link href="/courses/view-course">Khóa học</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Link href={`/courses/lessons/${params?.id}`}>Bài học</Link>
+          <Link href={`/courses/lessons/${params.id}`}>Bài học</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
           <span href={`/courses/view-details/${params?.id}`}>

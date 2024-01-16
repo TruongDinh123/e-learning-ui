@@ -4,18 +4,17 @@ import {
   VideoCameraOutlined,
   FileAddOutlined,
 } from "@ant-design/icons";
-import { Avatar, Layout, Menu } from "antd";
-import { Nav } from "react-bootstrap";
-import CustomButton from "../comman/CustomBtn";
-import Link from "next/link";
+import { Layout, Menu } from "antd";
 import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { getAUser, logOut, resetState } from "@/features/User/userSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useEffect, useState } from "react";
+const logo3 = "/images/logo5.png";
 
 const { Sider } = Layout;
+
 export default function AdminSidebar(props) {
   const { collapsed } = props;
   const router = useRouter();
@@ -143,21 +142,22 @@ export default function AdminSidebar(props) {
   };
 
   return (
-    <Sider trigger={null} collapsible collapsed={collapsed}>
+    <Sider
+      trigger={null}
+      collapsible
+      collapsed={collapsed}
+      breakpoint="lg"
+      collapsedWidth="0"
+    >
       <div className="demo-logo-vertical d-flex justify-content-center align-items-center py-3">
-        <Avatar
-          src={
-            userProfile?.image_url ||
-            data?.image_url ||
-            `https://xsgames.co/randomusers/avatar.php?g=pixel`
-          }
-        />
-        <span
-          className="fs-6 text-white text-decoration-none me-4"
-          style={{ paddingLeft: "10px" }}
-        >
-          {userState?.lastName}
-        </span>
+        <div className="flex-shrink-0 pb-4">
+          <img
+            className="h-36 w-auto object-contain  absolute top-0 mt-[26px] transform -translate-y-1/2  fs-6 text-white text-decoration-none me-4"
+            style={{ left: "1rem", paddingLeft: "10px" }}
+            src={logo3}
+            alt=""
+          />
+        </div>
       </div>
       <Menu
         theme="dark"

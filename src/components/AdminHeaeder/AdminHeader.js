@@ -2,6 +2,7 @@ import { getAUser, logOut, resetState } from "@/features/User/userSlice";
 import {
   LockOutlined,
   LoginOutlined,
+  LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UserOutlined,
@@ -14,20 +15,24 @@ import { Nav } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { useMediaQuery } from "react-responsive";
 
 const { Header } = Layout;
 
-const headerStyle = { padding: 0, background: "#fff" };
+const headerStyle = { padding: 0, background: "#02354B" };
 
 export default function AdminHeader(props) {
   const { setCollapsed, collapsed } = props;
   const userProfile = useSelector((state) => state.user.profile);
   const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const userState = JSON.parse(localStorage.getItem("user"));
   const router = useRouter();
 
   const id = localStorage.getItem("x-client-id");
   const dispatch = useDispatch();
+
+  const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
 
   useEffect(() => {
     getAUsereData();
@@ -41,25 +46,35 @@ export default function AdminHeader(props) {
           setData(res.metadata);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
 
   const menu = (
     <Menu>
       <Menu.Item key="0">
-        <UserOutlined />{" "}
         <Link href={"/admin/users/edit-user-form"}>Cập nhật thông tin</Link>
       </Menu.Item>
       <Menu.Item key="1">
-        <LockOutlined />
         <Link href={"/admin/users/change-password"}> Đổi mật khẩu</Link>
+      </Menu.Item>
+      <Menu.Item>
+        {userState !== null && (
+          <span
+            title="Logout"
+            className="text-red-500"
+            onClick={() => handleLogOut()}
+            loading={isLoading}
+            icon={<LogoutOutlined />}
+          >
+            Đăng xuất
+          </span>
+        )}
       </Menu.Item>
     </Menu>
   );
 
   const handleLogOut = () => {
+    setIsLoading(true);
     dispatch(logOut())
       .then(unwrapResult)
       .then((res) => {
@@ -70,15 +85,16 @@ export default function AdminHeader(props) {
 
           // Reset the Redux state
           dispatch(resetState());
-
+          setIsLoading(false);
           // Redirect to the login page
           router.push("/login");
         } else {
+          setIsLoading(false);
           message.error(res.message, 2.5);
         }
       })
       .catch((error) => {
-        
+        setIsLoading(false);
       });
   };
 
@@ -99,31 +115,25 @@ export default function AdminHeader(props) {
             />
           </div>
           <div className="flex items-center">
-            <Nav>
-              {userState !== null ? (
-                <>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => handleLogOut()}
-                  >
-                    <LoginOutlined className="h-6 w-6" title="Đăng xuất" />
-                    <span className="sr-only">Đăng xuất</span>
-                  </Button>
-                </>
-              ) : (
-                <Link href="/login">
-                  <span className="fs-6 text-dark text-decoration-none me-4 text-black">
-                    Đăng nhập
-                  </span>
-                </Link>
-              )}
-            </Nav>
+            {isMobile ? null : (
+              <span>
+                Xin chào, <a className="font-medium">{data?.firstName}</a>
+              </span>
+            )}
+            {collapsed && isMobile ? (
+              <span>
+                Xin chào, <a className="font-medium">{data?.firstName}</a>
+              </span>
+            ) : null}
 
             <Dropdown overlay={menu} trigger={["click"]}>
               <Avatar
                 className="ml-4 h-9 w-9"
-                src={userProfile?.image_url || data?.image_url}
+                src={
+                  userProfile?.image_url ||
+                  data?.image_url ||
+                  `https://xsgames.co/randomusers/avatar.php?g=pixel`
+                }
                 alt="avatar"
               />
             </Dropdown>

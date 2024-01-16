@@ -44,11 +44,16 @@ const viewQuiz = async (data) => {
 };
 
 const getQuizzesByStudentAndCourse = async (data) => {
-  const res = await axiosInstance({
-    url: `/e-learning/course/${data.courseId}/list-quizzes`,
-    method: "GET",
-  });
-  return res.data;
+  try {
+    const res = await axiosInstance({
+      url: `/e-learning/course/${data.courseId}/list-quizzes`,
+      method: "GET",
+    });
+    return res;
+  } catch (error) {
+    // Xử lý lỗi ở đây mà không cần in ra console
+    return null;
+  }
 };
 
 const uploadFileQuiz = async (data) => {

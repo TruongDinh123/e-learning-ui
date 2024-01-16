@@ -2,7 +2,7 @@
 import { getCoursePublic } from "@/features/Courses/courseSlice";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Badge, Button, Card, Carousel, Tabs } from "antd";
+import { Badge, Button, Carousel, Tabs } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 

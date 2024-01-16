@@ -12,6 +12,10 @@
   background-color: white;
 }
 
+/* .anticon svg {
+  color: #fff;
+} */
+
 html,
 body {
   height: 100%;
@@ -35,7 +39,6 @@ body {
 .custom-button:hover {
   background-color: #007bff;
 }
-
 
 .carousel-container {
   position: relative;
@@ -61,4 +64,3 @@ body {
   padding: 0 10px; /* Add padding to make cards smaller */
   width: 100%;
 }
-

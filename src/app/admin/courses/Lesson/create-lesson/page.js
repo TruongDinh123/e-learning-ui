@@ -161,6 +161,8 @@ export default function CreateLesson(props) {
             onChange={formik.handleChange("content")}
             onBlur={formik.handleBlur("content")}
             value={formik.values.content}
+            placeholder="Thêm nội dung"
+            className="form-control"
             error={
               formik.submitCount > 0 &&
               formik.touched.content &&
@@ -168,9 +170,10 @@ export default function CreateLesson(props) {
                 ? formik.errors.content
                 : null
             }
-            placeholder="Thêm nội dung"
-            className="form-control"
           />
+          {formik.touched.content && formik.errors.content ? (
+            <div className="text-red-600">{formik.errors.content}</div>
+          ) : null}
         </div>
 
         <div>

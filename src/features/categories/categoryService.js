@@ -37,6 +37,7 @@ const updateCategory = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/update-category/${data.categoryId}`,
     method: "PUT",
+    data: data.values,
   });
   return res.data;
 };

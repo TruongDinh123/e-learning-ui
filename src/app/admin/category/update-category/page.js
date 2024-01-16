@@ -12,7 +12,7 @@ import React from "react";
 import { updateCategory } from "@/features/categories/categorySlice";
 
 const CategorySchema = yup.object({
-  name: yup.string().required("Yêu cầu nhập tên"),
+  categoryName: yup.string().required("Yêu cầu nhập tên"),
 });
 
 export default function EditCategory(props) {
@@ -39,7 +39,7 @@ export default function EditCategory(props) {
     validationSchema: CategorySchema,
     enableReinitialize: true,
     initialValues: {
-      name: categoryName,
+      categoryName: categoryName,
     },
     onSubmit: (values) => {
       dispatch(updateCategory({ categoryId: id, values }))
@@ -82,11 +82,11 @@ export default function EditCategory(props) {
         onOk={handleOk}
         footer={
           <React.Fragment>
-            <Button key="back" onClick={handleCancel}>
+            <Button key="cancel" onClick={handleCancel}>
               Hủy
             </Button>
             <Button
-              key="back"
+              key="submit"
               type="primary"
               onClick={handleOk}
               className="custom-button"
@@ -102,14 +102,14 @@ export default function EditCategory(props) {
           </label>
           <CustomInput
             className="mb-3"
-            onChange={formik.handleChange("name")}
-            onBlur={formik.handleBlur("name")}
-            value={formik.values.name}
+            onChange={formik.handleChange("categoryName")}
+            onBlur={formik.handleBlur("categoryName")}
+            value={formik.values.categoryName}
             error={
               formik.submitCount > 0 &&
-              formik.touched.name &&
-              formik.errors.name
-                ? formik.errors.name
+              formik.touched.categoryName &&
+              formik.errors.categoryName
+                ? formik.errors.categoryName
                 : null
             }
           />

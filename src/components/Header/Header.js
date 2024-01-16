@@ -22,7 +22,7 @@ import {
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { getAUser, resetState, setUserName } from "@/features/User/userSlice";
+import { getAUser, resetState, setUser, setUserName } from "@/features/User/userSlice";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
@@ -163,26 +163,6 @@ function ChevronDownIcon(props) {
   );
 }
 
-function FlagIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
-      <line x1="4" x2="4" y1="22" y2="15" />
-    </svg>
-  );
-}
-
 function LogOutIcon(props) {
   return (
     <svg
@@ -200,70 +180,6 @@ function LogOutIcon(props) {
       <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
       <polyline points="16 17 21 12 16 7" />
       <line x1="21" x2="9" y1="12" y2="12" />
-    </svg>
-  );
-}
-
-function PanelTopCloseIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
-      <line x1="3" x2="21" y1="9" y2="9" />
-      <path d="m9 16 3-3 3 3" />
-    </svg>
-  );
-}
-
-function LayoutGridIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect width="7" height="7" x="3" y="3" rx="1" />
-      <rect width="7" height="7" x="14" y="3" rx="1" />
-      <rect width="7" height="7" x="14" y="14" rx="1" />
-      <rect width="7" height="7" x="3" y="14" rx="1" />
-    </svg>
-  );
-}
-
-function MenuIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="4" x2="20" y1="12" y2="12" />
-      <line x1="4" x2="20" y1="6" y2="6" />
-      <line x1="4" x2="20" y1="18" y2="18" />
     </svg>
   );
 }
@@ -323,7 +239,7 @@ export default function Header() {
   const dispatch = useDispatch();
 
   const id = localStorage.getItem("x-client-id");
-  const [user, setUser] = useState(null);
+  const [user, setUserInfo] = useState(null);
   const [messageApi, contextHolder] = message.useMessage();
 
   const getAUsereData = () => {
@@ -331,7 +247,7 @@ export default function Header() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setUser(res.metadata);
+          setUserInfo(res.metadata);
         } else {
           messageApi.error(res.message);
         }
@@ -364,12 +280,6 @@ export default function Header() {
     <Menu>
       <Menu.Item>
         <Link href="/user">Cập nhật thông tin</Link>
-      </Menu.Item>
-      <Menu.Item>
-        {(userState?.roles?.includes("Admin") ||
-          userState?.roles?.includes("Mentor")) && (
-          <Link href="/admin/courses">Quản trị viên</Link>
-        )}
       </Menu.Item>
       <Menu.Item>
         <Link href="/user/change-password">Đổi mật khẩu</Link>

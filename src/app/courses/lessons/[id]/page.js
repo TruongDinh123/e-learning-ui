@@ -98,18 +98,18 @@ export default function Lesson({ params }) {
 
   return (
     <React.Fragment>
-      <Breadcrumb className="pt-3 pl-5">
+      <Breadcrumb className="mt-6 pl-5">
         <Breadcrumb.Item>
-          <Link href="/">Tramg chủ</Link>
+          <Link href="/">Trang chủ</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
           <Link href="/courses/view-course">Khóa học của bạn</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Link href={`/courses/Lesson/${params?.id}`}>
+          <span href={`/courses/Lesson/${params?.id}`}>
             {lesson[0]?.name.slice(0, 20)}
             {lesson[0]?.name.length > 20 ? "..." : ""}
-          </Link>
+          </span>
         </Breadcrumb.Item>
       </Breadcrumb>
       <div className="pt-4">
