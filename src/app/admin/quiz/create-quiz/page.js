@@ -242,7 +242,6 @@ export default function QuizCreator() {
             setIsLoading(false);
           })
           .catch((error) => {
-            
             setIsLoading(false);
             message.error(error.response?.data?.message, 3.5);
           });
@@ -272,9 +271,7 @@ export default function QuizCreator() {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   }, []);
 
   // Fetch quiz templates when the component mounts
@@ -288,9 +285,7 @@ export default function QuizCreator() {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   }, []);
 
   // Handle quiz template selection
@@ -337,7 +332,12 @@ export default function QuizCreator() {
             onFinish={handleSaveQuiz}
           >
             <div className="py-2">
-              <Button onClick={toggleTemplateMode} className="custom-button">
+              <Button
+                onClick={toggleTemplateMode}
+                type="primary"
+                htmlType="submit"
+                className="custom-button"
+              >
                 {isTemplateMode ? "Tạo bài tập" : "Tạo bài mẫu"}
               </Button>
             </div>

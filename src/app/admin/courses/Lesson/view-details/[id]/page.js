@@ -34,7 +34,6 @@ export default function LessonDetails({ params }) {
         setIsLoading(false);
       })
       .catch((error) => {
-        
         setIsLoading(false);
       });
   };
@@ -52,7 +51,6 @@ export default function LessonDetails({ params }) {
         setIsLoading(false);
       })
       .catch((error) => {
-        
         setIsLoading(false);
       });
   };
@@ -130,11 +128,11 @@ export default function LessonDetails({ params }) {
                 <Button
                   type="primary"
                   onClick={handleSave}
-                  className="mt-2 mb-2 me-3 custom-button"
-                  style={{
-                    color: "#fff",
-                    backgroundColor: isVideoEmpty && file ? "#1890ff" : "#ccc",
-                  }}
+                  className={`mt-2 mb-2 me-3 custom-button ${
+                    isVideoEmpty && file
+                      ? "custom-button"
+                      : "#ccc"
+                  }`}
                   disabled={!isVideoEmpty || !file}
                   loading={isLoading}
                 >

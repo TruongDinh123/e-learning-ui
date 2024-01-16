@@ -203,6 +203,7 @@ export default function EditUserForm() {
                 onChange={formik.handleChange("email")}
                 onBlur={formik.handleBlur("email")}
                 value={formik.values.email}
+                disabled
                 error={
                   formik.submitCount > 0 &&
                   formik.touched.email &&

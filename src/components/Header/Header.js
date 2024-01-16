@@ -22,9 +22,15 @@ import {
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { getAUser, resetState, setUser, setUserName } from "@/features/User/userSlice";
+import {
+  getAUser,
+  resetState,
+  setUser,
+  setUserName,
+} from "@/features/User/userSlice";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
 
 const logo3 = "/images/logo5.png";
 
@@ -306,72 +312,86 @@ export default function Header() {
   );
 
   const [selectedCategory, setSelectedCategory] = useState(null);
+  console.log("🚀 ~ selectedCategory:", selectedCategory);
 
-  const categories = [
-    {
-      name: "Ngoại Ngữ",
-      courses: {
-        "Tiếng Anh": [
-          "Học Tiếng Anh Theo Chủ Đề",
-          "Tiếng Anh Giao Tiếp",
-          "Tiếng Anh Thương Mại",
-          "Phương Pháp Học Tiếng Anh",
-          "Từ Vựng Tiếng Anh",
-          "Luyện Thi Tiếng Anh",
-          "IELTS",
-          "Phát Âm Tiếng Anh",
-          "Ngữ Pháp Tiếng Anh",
-          "TOEIC",
-        ],
-        "Tiếng Trung": ["Tiếng Trung Giao Tiếp", "Chứng Chỉ Tiếng Trung"],
-        "Tiếng Nhật": ["Chứng Chỉ Tiếng Nhật", "Tiếng Nhật Cơ Bản"],
-        "Tiếng Hàn": ["Tự Học Tiếng Hàn", "Chứng Chỉ Tiếng Hàn"],
-        "Ngôn Ngữ Khác": [],
-      },
-    },
-    {
-      name: "Lập Trình - CNTT",
-      courses: {
-        "Tiếng Anh": [
-          "Học Tiếng Anh Theo Chủ Đề",
-          "Tiếng Anh Giao Tiếp",
-          "Tiếng Anh Thương Mại",
-          "Phương Pháp Học Tiếng Anh",
-          "Từ Vựng Tiếng Anh",
-          "Luyện Thi Tiếng Anh",
-          "IELTS",
-          "Phát Âm Tiếng Anh",
-          "Ngữ Pháp Tiếng Anh",
-          "TOEIC",
-        ],
-        "Tiếng Trung": ["Tiếng Trung Giao Tiếp", "Chứng Chỉ Tiếng Trung"],
-        "Tiếng Nhật": ["Chứng Chỉ Tiếng Nhật", "Tiếng Nhật Cơ Bản"],
-        "Tiếng Hàn": ["Tự Học Tiếng Hàn", "Chứng Chỉ Tiếng Hàn"],
-        "Ngôn Ngữ Khác": [],
-      },
-    },
-    {
-      name: "Phát triển bản thân",
-      courses: {
-        "Tiếng Anh": [
-          "Học Tiếng Anh Theo Chủ Đề",
-          "Tiếng Anh Giao Tiếp",
-          "Tiếng Anh Thương Mại",
-          "Phương Pháp Học Tiếng Anh",
-          "Từ Vựng Tiếng Anh",
-          "Luyện Thi Tiếng Anh",
-          "IELTS",
-          "Phát Âm Tiếng Anh",
-          "Ngữ Pháp Tiếng Anh",
-          "TOEIC",
-        ],
-        "Tiếng Trung": ["Tiếng Trung Giao Tiếp", "Chứng Chỉ Tiếng Trung"],
-        "Tiếng Nhật": ["Chứng Chỉ Tiếng Nhật", "Tiếng Nhật Cơ Bản"],
-        "Tiếng Hàn": ["Tự Học Tiếng Hàn", "Chứng Chỉ Tiếng Hàn"],
-        "Ngôn Ngữ Khác": [],
-      },
-    },
-  ];
+  const [categories, setCategories] = useState([]);
+  console.log("🚀 ~ categories:", categories);
+  useEffect(() => {
+    dispatch(getAllCategoryAndSubCourses())
+      .then(unwrapResult)
+      .then((res) => {
+        setCategories(res.metadata);
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
+      });
+  }, [dispatch]);
+
+  // const categories = [
+  //   {
+  //     name: "Ngoại Ngữ",
+  //     courses: {
+  //       "Tiếng Anh": [
+  //         "Học Tiếng Anh Theo Chủ Đề",
+  //         "Tiếng Anh Giao Tiếp",
+  //         "Tiếng Anh Thương Mại",
+  //         "Phương Pháp Học Tiếng Anh",
+  //         "Từ Vựng Tiếng Anh",
+  //         "Luyện Thi Tiếng Anh",
+  //         "IELTS",
+  //         "Phát Âm Tiếng Anh",
+  //         "Ngữ Pháp Tiếng Anh",
+  //         "TOEIC",
+  //       ],
+  //       "Tiếng Trung": ["Tiếng Trung Giao Tiếp", "Chứng Chỉ Tiếng Trung"],
+  //       "Tiếng Nhật": ["Chứng Chỉ Tiếng Nhật", "Tiếng Nhật Cơ Bản"],
+  //       "Tiếng Hàn": ["Tự Học Tiếng Hàn", "Chứng Chỉ Tiếng Hàn"],
+  //       "Ngôn Ngữ Khác": [],
+  //     },
+  //   },
+  //   {
+  //     name: "Lập Trình - CNTT",
+  //     courses: {
+  //       "Tiếng Anh": [
+  //         "Học Tiếng Anh Theo Chủ Đề",
+  //         "Tiếng Anh Giao Tiếp",
+  //         "Tiếng Anh Thương Mại",
+  //         "Phương Pháp Học Tiếng Anh",
+  //         "Từ Vựng Tiếng Anh",
+  //         "Luyện Thi Tiếng Anh",
+  //         "IELTS",
+  //         "Phát Âm Tiếng Anh",
+  //         "Ngữ Pháp Tiếng Anh",
+  //         "TOEIC",
+  //       ],
+  //       "Tiếng Trung": ["Tiếng Trung Giao Tiếp", "Chứng Chỉ Tiếng Trung"],
+  //       "Tiếng Nhật": ["Chứng Chỉ Tiếng Nhật", "Tiếng Nhật Cơ Bản"],
+  //       "Tiếng Hàn": ["Tự Học Tiếng Hàn", "Chứng Chỉ Tiếng Hàn"],
+  //       "Ngôn Ngữ Khác": [],
+  //     },
+  //   },
+  //   {
+  //     name: "Phát triển bản thân",
+  //     courses: {
+  //       "Tiếng Anh": [
+  //         "Học Tiếng Anh Theo Chủ Đề",
+  //         "Tiếng Anh Giao Tiếp",
+  //         "Tiếng Anh Thương Mại",
+  //         "Phương Pháp Học Tiếng Anh",
+  //         "Từ Vựng Tiếng Anh",
+  //         "Luyện Thi Tiếng Anh",
+  //         "IELTS",
+  //         "Phát Âm Tiếng Anh",
+  //         "Ngữ Pháp Tiếng Anh",
+  //         "TOEIC",
+  //       ],
+  //       "Tiếng Trung": ["Tiếng Trung Giao Tiếp", "Chứng Chỉ Tiếng Trung"],
+  //       "Tiếng Nhật": ["Chứng Chỉ Tiếng Nhật", "Tiếng Nhật Cơ Bản"],
+  //       "Tiếng Hàn": ["Tự Học Tiếng Hàn", "Chứng Chỉ Tiếng Hàn"],
+  //       "Ngôn Ngữ Khác": [],
+  //     },
+  //   },
+  // ];
   return (
     <header className="bg-[#02354B] sticky top-0 z-20">
       {contextHolder}
@@ -438,30 +458,14 @@ export default function Header() {
                                 <h2 className="text-xl font-semibold mb-4">
                                   {selectedCategory.name}
                                 </h2>
-                                {Object.entries(selectedCategory.courses).map(
-                                  ([language, courses]) => (
-                                    <div key={language} className="mb-6">
-                                      <h3 className="text-lg text-[#C89F65] font-medium mb-2">
-                                        {language}
-                                      </h3>
-                                      <div className="flex flex-wrap -mx-2">
-                                        {courses.map((course) => (
-                                          <div
-                                            key={course}
-                                            className="px-2 w-1/2"
-                                          >
-                                            <a
-                                              className="hover:text-blue-600 block mb-2"
-                                              href="#"
-                                            >
-                                              {course}
-                                            </a>
-                                          </div>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  )
-                                )}
+                                {selectedCategory.courses.map((course) => (
+                                  <div key={course.name} className="mb-6">
+                                    <h3 className="text-sm text-[#C89F65] font-medium mb-2">
+                                      {course.name}
+                                    </h3>
+                                    {/* <p>{course.title}</p> */}
+                                  </div>
+                                ))}
                                 <div className="mt-4">
                                   <a
                                     className="text-blue-600 hover:underline"
@@ -669,7 +673,9 @@ export default function Header() {
                         )}
                       </Disclosure>
                     )}
-                    {userState && <UserLinks />}
+                    <div onClick={() => setMobileMenuOpen(false)}>
+                      {userState && <UserLinks />}
+                    </div>
                   </div>
                   <div className="space-y-2 py-6">
                     {userState !== null ? (

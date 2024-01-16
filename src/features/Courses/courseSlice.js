@@ -52,6 +52,7 @@ export const deleteCourse = createAsyncThunk(
 export const editCourse = createAsyncThunk(
   "/e-learning/update-course/",
   async (data, { rejectWithValue }) => {
+    console.log("🚀 ~ data:", data);
     try {
       const response = await courseService.editCourse(data);
       return response;

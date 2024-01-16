@@ -14,6 +14,7 @@ export default function CustomInput(props) {
     value,
     error,
     type,
+    disabled,
   } = props;
   return (
     <React.Fragment>
@@ -28,6 +29,7 @@ export default function CustomInput(props) {
         value={value}
         status={error && "error"}
         type={type}
+        disabled={disabled}
       />
       {error && <p className="ms-2 mb-0 mt-1 text-danger">{error}</p>}
     </React.Fragment>

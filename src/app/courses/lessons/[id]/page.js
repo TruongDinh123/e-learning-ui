@@ -53,7 +53,6 @@ export default function Lesson({ params }) {
         setIsLoading(false);
       })
       .catch((error) => {
-        
         setIsLoading(false);
       });
     dispatch(getCourseCompletion({ courseId: params.id }))
@@ -63,9 +62,7 @@ export default function Lesson({ params }) {
           setCompleteCourse(res.metadata);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   }, [updateProgress]);
 
   const handleSelectLesson = (item) => {
@@ -81,7 +78,6 @@ export default function Lesson({ params }) {
         setIsLoading(false);
       })
       .catch((error) => {
-        
         setIsLoading(false);
       });
   };
@@ -207,7 +203,9 @@ export default function Lesson({ params }) {
                     {selectedLesson && (
                       <div className="mt-4">
                         <Button
-                          className="button-container me-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                          type="primary"
+                          htmlType="submit"
+                          className="custom-button me-3 font-bold py-2 button-container"
                           onClick={() =>
                             router.push(`/courses/view-details/${params.id}`)
                           }

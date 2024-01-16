@@ -32,7 +32,7 @@ export default function Courses() {
       .catch((error) => {
         console.error("Error fetching categories:", error);
       });
-  }, [dispatch]);
+  }, [dispatch, selectedCategory]);
 
   // Lọc các khóa học theo danh mục được chọn
   const filteredCourses = selectedCategory
@@ -253,17 +253,6 @@ export default function Courses() {
                               >
                                 Học viên
                               </Button>
-                              {/* <Button
-                                onClick={() =>
-                                  item.showCourse
-                                    ? handleCoursePrivate(item._id)
-                                    : handleCoursePublic(item._id)
-                                }
-                              >
-                                {item.showCourse
-                                  ? "Chế độ riêng tư"
-                                  : "Chế độ công khai"}
-                              </Button> */}
                               <Popconfirm
                                 title="Xóa khóa học"
                                 description="Bạn có chắc xóa khóa học?"
