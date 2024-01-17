@@ -275,9 +275,10 @@ export default function EditUserForm() {
         <Button
           onClick={handleOk}
           loading={loading}
+          type="primary"
           className="ml-auto w-full custom-button"
         >
-          Save
+          Lưu
         </Button>
       </Card>
     </div>

@@ -141,7 +141,7 @@ export default function UpdateInfoUser() {
               <div className="flex items-center mb-2">
                 <Avatar
                   size={{
-                    xs: 24,
+                    xs: 80,
                     sm: 32,
                     md: 40,
                     lg: 64,
@@ -150,7 +150,7 @@ export default function UpdateInfoUser() {
                   }}
                   icon={<AntDesignOutlined />}
                   src={imageUrl || user?.image_url}
-                  className="mr-1 avatar-mobile"
+                  className="mr-1"
                 />
               </div>
               <Upload {...propsUdateImage}>

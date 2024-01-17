@@ -65,7 +65,6 @@ export default function ViewQuiz() {
         setIsLoading(false);
       })
       .catch((error) => {
-        
         setIsLoading(false);
       });
   }, [updateQuiz]);
@@ -83,7 +82,6 @@ export default function ViewQuiz() {
         setIsLoading(false);
       })
       .catch((error) => {
-        
         setIsLoading(false);
       });
   };
@@ -231,7 +229,6 @@ export default function ViewQuiz() {
         setIsLoading(false);
       })
       .catch((error) => {
-        
         setIsLoading(false);
       });
   };
@@ -271,7 +268,11 @@ export default function ViewQuiz() {
               ))}
             </Select> */}
             <div className="pb-3">
-              <Button className="custom-button" onClick={handleViewQuiz}>
+              <Button
+                type="primary"
+                className="custom-button"
+                onClick={handleViewQuiz}
+              >
                 Xem
               </Button>
             </div>

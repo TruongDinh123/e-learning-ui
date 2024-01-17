@@ -58,7 +58,7 @@ export default function CompleteLesson(props) {
             : "bg-green-500 hover:bg-green-700"
         }`}
       >
-        {isCompleted ? "Not complete" : "Mark as complete"}
+        {isCompleted ? "Chưa hoàn thành" : "Hoàn thành bài học"}
         <Icon
           className={`h-4 w-4 ml-2 ${
             isCompleted ? "text-black" : "text-white"

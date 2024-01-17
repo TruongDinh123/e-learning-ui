@@ -43,6 +43,7 @@ export default function Login() {
       dispatch(login(values))
         .then(unwrapResult)
         .then((res) => {
+          console.log("🚀 ~ res:", res);
           if (res.status) {
             messageApi
               .open({
@@ -68,7 +69,11 @@ export default function Login() {
                 );
                 localStorage.setItem(
                   "userName",
-                  JSON.stringify(res.metadata.account.lastName)
+                  JSON.stringify(
+                    (res.metadata.account?.firstName
+                      ? res.metadata.account?.firstName + " "
+                      : "") + res.metadata.account?.lastName
+                  )
                 );
 
                 // localStorage.setItem(

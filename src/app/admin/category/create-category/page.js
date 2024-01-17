@@ -67,7 +67,7 @@ export default function CreateCategory(props) {
   return (
     <React.Fragment>
       {contextHolder}
-      <Button onClick={showModal} className="me-3 custom-button">
+      <Button onClick={showModal} type="primary" className="me-3 custom-button">
         Tạo
       </Button>
       <Modal

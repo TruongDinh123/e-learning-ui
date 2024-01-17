@@ -37,6 +37,18 @@ export const viewLesson = createAsyncThunk(
   }
 );
 
+export const viewLessonStudent = createAsyncThunk(
+  "/e-learning/view-lesson-student/",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await lessonService.viewLesonStudent(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 export const updatelesson = createAsyncThunk(
   "/e-learning/update-lesson/",
   async (data, { rejectWithValue }) => {

@@ -57,19 +57,18 @@ export default function AdminHeader(props) {
       <Menu.Item key="1">
         <Link href={"/admin/users/change-password"}> Đổi mật khẩu</Link>
       </Menu.Item>
-      <Menu.Item>
-        {userState !== null && (
+      {userState !== null && (
+        <Menu.Item onClick={() => handleLogOut()}>
           <span
             title="Logout"
             className="text-red-500"
-            onClick={() => handleLogOut()}
             loading={isLoading}
             icon={<LogoutOutlined />}
           >
             Đăng xuất
           </span>
-        )}
-      </Menu.Item>
+        </Menu.Item>
+      )}
     </Menu>
   );
 

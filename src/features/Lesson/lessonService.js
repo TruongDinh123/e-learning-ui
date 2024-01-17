@@ -32,6 +32,15 @@ const viewLeson = async (data) => {
   return res;
 };
 
+const viewLesonStudent = async (data) => {
+  const res = await axiosInstance({
+    url: "/e-learning/lessons/" + data.courseId,
+    method: "GET",
+    data: data.values,
+  });
+  return res;
+};
+
 const updateLesson = async (data) => {
   const res = await axiosInstance({
     url: "/e-learning/lesson/" + data.lessonId,
@@ -80,4 +89,5 @@ export const lessonService = {
   deleteVdLesson,
   completeLesson,
   updateLesson,
+  viewLesonStudent,
 };

@@ -64,3 +64,8 @@ body {
   padding: 0 10px; /* Add padding to make cards smaller */
   width: 100%;
 }
+
+.carousel-slide {
+  width: 300px !important; 
+  margin: auto;
+}

@@ -166,7 +166,6 @@ export const createRole = createAsyncThunk(
 export const changePassword = createAsyncThunk(
   "/e-learning/change-password",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data);
     try {
       const response = await authService.changePassword(data);
       return response;

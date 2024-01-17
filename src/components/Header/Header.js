@@ -312,10 +312,9 @@ export default function Header() {
   );
 
   const [selectedCategory, setSelectedCategory] = useState(null);
-  console.log("🚀 ~ selectedCategory:", selectedCategory);
 
   const [categories, setCategories] = useState([]);
-  console.log("🚀 ~ categories:", categories);
+
   useEffect(() => {
     dispatch(getAllCategoryAndSubCourses())
       .then(unwrapResult)
@@ -327,71 +326,10 @@ export default function Header() {
       });
   }, [dispatch]);
 
-  // const categories = [
-  //   {
-  //     name: "Ngoại Ngữ",
-  //     courses: {
-  //       "Tiếng Anh": [
-  //         "Học Tiếng Anh Theo Chủ Đề",
-  //         "Tiếng Anh Giao Tiếp",
-  //         "Tiếng Anh Thương Mại",
-  //         "Phương Pháp Học Tiếng Anh",
-  //         "Từ Vựng Tiếng Anh",
-  //         "Luyện Thi Tiếng Anh",
-  //         "IELTS",
-  //         "Phát Âm Tiếng Anh",
-  //         "Ngữ Pháp Tiếng Anh",
-  //         "TOEIC",
-  //       ],
-  //       "Tiếng Trung": ["Tiếng Trung Giao Tiếp", "Chứng Chỉ Tiếng Trung"],
-  //       "Tiếng Nhật": ["Chứng Chỉ Tiếng Nhật", "Tiếng Nhật Cơ Bản"],
-  //       "Tiếng Hàn": ["Tự Học Tiếng Hàn", "Chứng Chỉ Tiếng Hàn"],
-  //       "Ngôn Ngữ Khác": [],
-  //     },
-  //   },
-  //   {
-  //     name: "Lập Trình - CNTT",
-  //     courses: {
-  //       "Tiếng Anh": [
-  //         "Học Tiếng Anh Theo Chủ Đề",
-  //         "Tiếng Anh Giao Tiếp",
-  //         "Tiếng Anh Thương Mại",
-  //         "Phương Pháp Học Tiếng Anh",
-  //         "Từ Vựng Tiếng Anh",
-  //         "Luyện Thi Tiếng Anh",
-  //         "IELTS",
-  //         "Phát Âm Tiếng Anh",
-  //         "Ngữ Pháp Tiếng Anh",
-  //         "TOEIC",
-  //       ],
-  //       "Tiếng Trung": ["Tiếng Trung Giao Tiếp", "Chứng Chỉ Tiếng Trung"],
-  //       "Tiếng Nhật": ["Chứng Chỉ Tiếng Nhật", "Tiếng Nhật Cơ Bản"],
-  //       "Tiếng Hàn": ["Tự Học Tiếng Hàn", "Chứng Chỉ Tiếng Hàn"],
-  //       "Ngôn Ngữ Khác": [],
-  //     },
-  //   },
-  //   {
-  //     name: "Phát triển bản thân",
-  //     courses: {
-  //       "Tiếng Anh": [
-  //         "Học Tiếng Anh Theo Chủ Đề",
-  //         "Tiếng Anh Giao Tiếp",
-  //         "Tiếng Anh Thương Mại",
-  //         "Phương Pháp Học Tiếng Anh",
-  //         "Từ Vựng Tiếng Anh",
-  //         "Luyện Thi Tiếng Anh",
-  //         "IELTS",
-  //         "Phát Âm Tiếng Anh",
-  //         "Ngữ Pháp Tiếng Anh",
-  //         "TOEIC",
-  //       ],
-  //       "Tiếng Trung": ["Tiếng Trung Giao Tiếp", "Chứng Chỉ Tiếng Trung"],
-  //       "Tiếng Nhật": ["Chứng Chỉ Tiếng Nhật", "Tiếng Nhật Cơ Bản"],
-  //       "Tiếng Hàn": ["Tự Học Tiếng Hàn", "Chứng Chỉ Tiếng Hàn"],
-  //       "Ngôn Ngữ Khác": [],
-  //     },
-  //   },
-  // ];
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
+  };
+
   return (
     <header className="bg-[#02354B] sticky top-0 z-20">
       {contextHolder}
@@ -399,9 +337,7 @@ export default function Header() {
         <nav className="flex items-center justify-between h-[75px]">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <Link href="/">
-                <img className="h-36 w-auto" src={logo3} alt="" />
-              </Link>
+              <img className="h-36 w-auto" src={logo3} alt="" />
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
@@ -436,13 +372,13 @@ export default function Header() {
                           <nav aria-label="Main navigation" className="w-3/6">
                             <ul className="space-y-1">
                               {categories.map((category) => (
-                                <li key={category.name}>
+                                <li key={category?._id}>
                                   <a
                                     className="flex justify-between items-center p-2 hover:bg-gray-100 rounded"
                                     href="#"
                                     onClick={(e) => {
                                       e.preventDefault();
-                                      setSelectedCategory(category);
+                                      handleCategorySelect(category);
                                     }}
                                   >
                                     {category.name}
@@ -454,27 +390,33 @@ export default function Header() {
                           </nav>
                           <div className="w-5/6 overflow-auto max-h-[500px]">
                             {selectedCategory && (
-                              <>
+                              <div key={selectedCategory?._id}>
                                 <h2 className="text-xl font-semibold mb-4">
                                   {selectedCategory.name}
                                 </h2>
-                                {selectedCategory.courses.map((course) => (
-                                  <div key={course.name} className="mb-6">
-                                    <h3 className="text-sm text-[#C89F65] font-medium mb-2">
-                                      {course.name}
-                                    </h3>
-                                    {/* <p>{course.title}</p> */}
-                                  </div>
-                                ))}
+                                {selectedCategory.courses
+                                  .filter(
+                                    (course) => course.showCourse === true
+                                  )
+                                  .map((course) => (
+                                    <div key={course?._id} className="mb-6">
+                                      <Link
+                                        className="text-sm text-[#C89F65] font-medium mb-2"
+                                        href={`/courses/lessons/${course?._id}`}
+                                      >
+                                        {course.name}
+                                      </Link>
+                                    </div>
+                                  ))}
                                 <div className="mt-4">
                                   <a
                                     className="text-blue-600 hover:underline"
                                     href="#"
                                   >
-                                    Tất cả &quot;{selectedCategory.name}&quot;
+                                    {/* Tất cả &quot;{selectedCategory.name}&quot; */}
                                   </a>
                                 </div>
-                              </>
+                              </div>
                             )}
                           </div>
                         </div>

@@ -10,8 +10,12 @@ import {
   Breadcrumb,
   Progress,
 } from "antd";
-import { useDispatch } from "react-redux";
-import { viewALesson, viewLesson } from "@/features/Lesson/lessonSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  viewALesson,
+  viewLesson,
+  viewLessonStudent,
+} from "@/features/Lesson/lessonSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { FolderOpenOutlined } from "@ant-design/icons";
 import { useMediaQuery } from "react-responsive";
@@ -42,9 +46,12 @@ export default function Lesson({ params }) {
     setCollapsed(collapsed);
   };
 
+  const isLoggedIn = useSelector((state) => !!state.user.userName);
+  console.log("🚀 ~ isLoggedIn:", isLoggedIn);
+
   useEffect(() => {
     setIsLoading(true);
-    dispatch(viewLesson({ courseId: params.id }))
+    dispatch(viewLessonStudent({ courseId: params.id }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
@@ -55,14 +62,22 @@ export default function Lesson({ params }) {
       .catch((error) => {
         setIsLoading(false);
       });
-    dispatch(getCourseCompletion({ courseId: params.id }))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setCompleteCourse(res.metadata);
-        }
-      })
-      .catch((error) => {});
+    if (isLoggedIn) {
+      setIsLoading(true);
+      dispatch(getCourseCompletion({ courseId: params.id }))
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            setCompleteCourse(res.metadata);
+          }
+        })
+        .catch((error) => {
+          // Xử lý lỗi ở đây
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
   }, [updateProgress]);
 
   const handleSelectLesson = (item) => {
@@ -177,10 +192,7 @@ export default function Lesson({ params }) {
 
                     {selectedLessonContent && (
                       <div className="pt-8">
-                        <div className="md:flex-row border rounded-md p-6 flex flex-col lg:flex-row items-center justify-between">
-                          <h2 className="text-2xl font-semibold mb-2">
-                            {selectedLessonContent}
-                          </h2>
+                        {/* <div className="md:flex-row border rounded-md p-6 flex flex-col lg:flex-row items-center justify-between">
                           {completeCourse && (
                             <CompleteLesson
                               lessonId={selectedLesson}
@@ -190,7 +202,7 @@ export default function Lesson({ params }) {
                               }
                             />
                           )}
-                        </div>
+                        </div> */}
                         <div className="lesson-content mt-4 border rounded-md p-6">
                           <h2 className="text-2xl font-bold mb-2">
                             Nội dung bài học
@@ -200,7 +212,7 @@ export default function Lesson({ params }) {
                       </div>
                     )}
 
-                    {selectedLesson && (
+                    {selectedLesson && isLoggedIn && (
                       <div className="mt-4">
                         <Button
                           type="primary"
