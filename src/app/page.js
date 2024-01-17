@@ -1,6 +1,5 @@
 "use client";
 import { getCoursePublic } from "@/features/Courses/courseSlice";
-import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Badge, Button, Carousel, Tabs } from "antd";

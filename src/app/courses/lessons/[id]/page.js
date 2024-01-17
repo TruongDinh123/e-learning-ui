@@ -13,7 +13,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   viewALesson,
-  viewLesson,
   viewLessonStudent,
 } from "@/features/Lesson/lessonSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -23,7 +22,6 @@ import "../[id]/page.css";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getCourseCompletion } from "@/features/Courses/courseSlice";
-import CompleteLesson from "@/components/complete-lesson";
 
 export default function Lesson({ params }) {
   const dispatch = useDispatch();
@@ -47,7 +45,6 @@ export default function Lesson({ params }) {
   };
 
   const isLoggedIn = useSelector((state) => !!state.user.userName);
-  console.log("🚀 ~ isLoggedIn:", isLoggedIn);
 
   useEffect(() => {
     setIsLoading(true);
@@ -133,7 +130,7 @@ export default function Lesson({ params }) {
               collapsedWidth={0}
               theme="dark"
             >
-              <Menu theme="light" defaultSelectedKeys={["1"]} mode="inline">
+              {/* <Menu theme="light" defaultSelectedKeys={["1"]} mode="inline">
                 {completeCourse && completeCourse.completionPercentage && (
                   <div className="p-8 bg-gray-100">
                     <Progress
@@ -148,7 +145,7 @@ export default function Lesson({ params }) {
                     </p>
                   </div>
                 )}
-              </Menu>
+              </Menu> */}
               <div className="logo" />
               <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
                 {lesson.map((i) =>

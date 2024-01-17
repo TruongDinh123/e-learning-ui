@@ -22,26 +22,6 @@ export default function RootLayout({ children }) {
   const [loading, setLoading] = useState(true);
 
   const shouldRenderFooter = !pathname.includes("/web-rtc/room");
-  // const checkAccess = () => {
-  //   const token = Cookies.get("Bearer");
-  //   const user = JSON.parse(localStorage.getItem("user"));
-  //   const isAdmin = user?.roles?.includes("Admin");
-  //   const isMentor = user?.roles?.includes("Mentor");
-
-  //   if (pathname === "/admin/courses" && !(isAdmin || isMentor)) {
-  //     router.push("/unauthorized");
-  //     return;
-  //   }
-
-  //   if (!token && pathname !== "/login" && pathname !== "/") {
-  //     router.push("/login");
-  //   } else if (pathname.includes("/admin") && !(isAdmin || isMentor)) {
-  //     router.push("/unauthorized");
-  //   }
-  // };
-
-  // // Gọi hàm checkAccess ngay khi component được render
-  // checkAccess();
 
   useEffect(() => {
     setLoading(false);
@@ -60,7 +40,9 @@ export default function RootLayout({ children }) {
       return; // Ngăn không chạy các đoạn mã phía dưới
     }
 
-    if (!loading) {
+    const isLessonPage = pathname.startsWith("/courses/lessons/");
+
+    if (!loading && !isLessonPage) {
       if (!token && pathname !== "/login" && pathname !== "/") {
         router.push("/login");
       } else if (pathname.includes("/admin") && !(isAdmin || isMentor)) {
