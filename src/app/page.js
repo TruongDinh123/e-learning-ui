@@ -10,12 +10,21 @@ import { useDispatch } from "react-redux";
 export default function Home() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
+  console.log("🚀 ~ course:", course);
   const [isLoading, setIsLoading] = useState(false);
 
   const { TabPane } = Tabs;
-  const categories = [...new Set(course
-    .filter((i) => course.filter((c) => c.category?.name === i.category?.name).length > 3)
-    .map((i) => i.category?.name))];
+  const categories = [
+    ...new Set(
+      course
+        .filter(
+          (i) =>
+            course.filter((c) => c.category?.name === i.category?.name).length >
+            3
+        )
+        .map((i) => i.category?.name)
+    ),
+  ];
 
   // Tạo một object để lưu trữ các refs, bao gồm cả ref cho tab "Tất cả"
   const carouselRefs = useRef({
@@ -135,7 +144,7 @@ export default function Home() {
                     width="150"
                     height="150"
                   />
-                  <h3 className="text-lg font-semibold mb-1">{course.title}</h3>
+                  <h3 className="text-lg font-semibold mb-1">{course.name}</h3>
                   <p className="text-sm text-gray-600 mb-4">
                     {course?.description}
                   </p>
