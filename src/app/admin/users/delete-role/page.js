@@ -34,8 +34,8 @@ export default function DelRole(props) {
     <React.Fragment>
       {contextHolder}
       <Popconfirm
-        title="Delete the Role"
-        description="Are you sure to delete this Role?"
+        title="Xóa vai trò"
+        description="Bạn có chắc muốn xóa vai trò?"
         okText="Có"
         cancelText="Không"
         className="me-3"

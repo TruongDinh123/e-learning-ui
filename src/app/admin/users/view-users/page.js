@@ -68,7 +68,6 @@ export default function ViewUsers() {
         setIsLoading(false);
       })
       .catch((error) => {
-        
         setIsLoading(false);
       });
   }, [updateUser, dispatch, messageApi]);
@@ -83,14 +82,14 @@ export default function ViewUsers() {
         </Menu.Item>
         <Menu.Item>
           <Popconfirm
-            title="Delete the user"
-            description="Are you sure to delete this user?"
+            title="Xóa người dùng"
+            description="Bạn có chắc muốn xóa người dùng?"
             okText="Có"
             okButtonProps={{ style: { backgroundColor: "red" } }}
             cancelText="Không"
             onConfirm={() => handleDeleteUser(i?._id)}
           >
-            <Button danger>Xóa</Button>
+            <Button danger style={{ width: "100%" }}>Xóa</Button>
           </Popconfirm>
         </Menu.Item>
       </Menu>
@@ -115,14 +114,16 @@ export default function ViewUsers() {
           <EditUser id={i?._id} refresh={() => setUpdateUser(updateUser + 1)} />
 
           <Popconfirm
-            title="Delete the user"
-            description="Are you sure to delete this user?"
+            title="Xóa người dùng"
+            description="Bạn có chắc muốn xóa người dùng?"
             okButtonProps={{ style: { backgroundColor: "red" } }}
             okText="Có"
             cancelText="Không"
             onConfirm={() => handleDeleteUser(i?._id)}
           >
-            <Button danger>Xóa</Button>
+            <Button danger style={{ width: "100%" }}>
+              Xóa
+            </Button>
           </Popconfirm>
         </Space>
       ),
@@ -146,9 +147,7 @@ export default function ViewUsers() {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
 
   return (

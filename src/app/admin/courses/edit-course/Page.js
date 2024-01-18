@@ -15,6 +15,7 @@ import CustomInput from "@/components/comman/CustomInput";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { UploadOutlined } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
 
 const CourseSchema = yup.object({
   title: yup.string().min(2).required("Nhập tiêu đề"),
@@ -24,13 +25,15 @@ const CourseSchema = yup.object({
 });
 
 export default function EditCourses(props) {
-  const { id, refresh, course, categoryId } = props;
+  const { id, refresh, course, categoryId, fetchCategories } = props;
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState(null);
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentCategory, setCurrentCategory] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     setData(course);
@@ -92,6 +95,7 @@ export default function EditCourses(props) {
       categoryId: currentCategory?._id || categoryId,
     },
     onSubmit: (values) => {
+      setIsLoading(true);
       dispatch(editCourse({ id: props?.id, values }))
         .then(unwrapResult)
         .then((res) => {
@@ -106,23 +110,36 @@ export default function EditCourses(props) {
                     content: "Đang thực hiện...",
                     duration: 2.5,
                   });
+                  fetchCategories();
+                  setIsLoading(false);
                 }
+                fetchCategories();
+                setIsLoading(false);
                 return res;
               });
           }
+          fetchCategories();
+          setIsLoading(false);
           return res;
         })
         .then((res) => {
           if (values.isPublic) {
+            fetchCategories();
+            setIsLoading(false);
             return dispatch(buttonPublicCourse(id));
           } else {
+            fetchCategories();
+
+            setIsLoading(false);
             return dispatch(buttonPriavteourse(id));
           }
         })
         .then(() => {
-          refresh();
+          fetchCategories();
+          setIsLoading(false);
         })
         .catch((error) => {
+          setIsLoading(false);
           message.error(error.response?.data?.message, 3.5);
         });
     },
@@ -136,6 +153,7 @@ export default function EditCourses(props) {
         onClick={showModal}
         className="me-3 custom-button"
         style={{ width: "100%" }}
+        loading={isLoading}
       >
         Cập nhật
       </Button>

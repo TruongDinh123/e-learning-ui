@@ -296,12 +296,11 @@ export default function Header() {
           <Link href="/admin/courses">Quản trị viên</Link>
         )}
       </Menu.Item>
-      <Menu.Item>
+      <Menu.Item onClick={logout}>
         {userState !== null && (
           <span
             title="Logout"
             className="text-red-500"
-            onClick={logout}
             icon={<LogoutOutlined />}
           >
             Đăng xuất
@@ -329,6 +328,11 @@ export default function Header() {
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
   };
+
+  //lấy ra các category có ít nhất 1 khóa học
+  const categoriesWithCourses = categories.filter(
+    (category) => category.courses && category.courses.length > 0
+  );
 
   return (
     <header className="bg-[#02354B] sticky top-0 z-20">
@@ -371,7 +375,7 @@ export default function Header() {
                         <div className="flex space-x-6 p-6 bg-white">
                           <nav aria-label="Main navigation" className="w-3/6">
                             <ul className="space-y-1">
-                              {categories.map((category) => (
+                              {categoriesWithCourses.map((category) => (
                                 <li key={category?._id}>
                                   <a
                                     className="flex justify-between items-center p-2 hover:bg-gray-100 rounded"
@@ -623,8 +627,8 @@ export default function Header() {
                     {userState !== null ? (
                       <span
                         title="Logout"
-                        onClick={logout}
                         icon={<LogoutOutlined />}
+                        onClick={logout}
                         className="cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                       >
                         <div className="flex items-center">

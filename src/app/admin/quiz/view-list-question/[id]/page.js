@@ -30,9 +30,7 @@ export default function ViewListQuestion({ params }) {
         } else {
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   }, [updateQuiz]);
 
   useEffect(() => {
@@ -43,9 +41,7 @@ export default function ViewListQuestion({ params }) {
           setScore(res.metadata);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   }, []);
 
   const handleDeleteQuiz = ({ quizId, questionId }) => {
@@ -59,9 +55,7 @@ export default function ViewListQuestion({ params }) {
         }
         setIsLoading(false);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
 
   return (
@@ -129,8 +123,8 @@ export default function ViewListQuestion({ params }) {
                                 </span>
                                 <div className="mt-3">
                                   <Popconfirm
-                                    title="Delete the quiz"
-                                    description="Are you sure to delete this Quiz?"
+                                    title="Xóa bài tập"
+                                    description="Bạn có chắc muốn xóa bài tập?"
                                     okText="Có"
                                     cancelText="Không"
                                     okButtonProps={{

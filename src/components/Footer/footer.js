@@ -1,7 +1,5 @@
-import { Col, Row } from "antd";
-import { usePathname, useRouter } from "next/navigation";
-import { Container } from "react-bootstrap";
-
+import { usePathname } from "next/navigation";
+import "../Footer/footer.css";
 export default function CustomFooter() {
   const pathname = usePathname();
 
@@ -15,15 +13,13 @@ export default function CustomFooter() {
           <div>
             <h5 className="font-bold mb-4 text-[#C89F65]">VỀ CHÚNG TÔI</h5>
             <ul className="space-y-2">
-              <li>
-                <a className="hover:underline" href="#">
+              <li className="">
+                <a className="" href="#">
                   Điều khoản
                 </a>
               </li>
               <li>
-                <a className="hover:underline" href="#">
-                  Chính sách bảo mật
-                </a>
+                <a href="#">Chính sách bảo mật</a>
               </li>
             </ul>
           </div>
@@ -31,19 +27,13 @@ export default function CustomFooter() {
             <h5 className="font-bold mb-4 text-[#C89F65]">CỘNG ĐỒNG</h5>
             <ul className="space-y-2">
               <li>
-                <a className="hover:underline" href="#">
-                  Chăm sóc khách hàng
-                </a>
+                <a href="#">Chăm sóc khách hàng</a>
               </li>
               <li>
-                <a className="hover:underline" href="#">
-                  Blog
-                </a>
+                <a href="#">Blog</a>
               </li>
               <li>
-                <a className="hover:underline" href="#">
-                  Danh mục
-                </a>
+                <a href="#">Danh mục</a>
               </li>
             </ul>
           </div>
@@ -51,20 +41,16 @@ export default function CustomFooter() {
             <h5 className="font-bold mb-4 text-[#C89F65]">ĐỊA CHỈ</h5>
             <ul className="space-y-2">
               <li>
-                <span className="hover:underline">
-                  95IDEAL TECHNOLOGY SOLUTIONS
-                </span>
+                <span>95IDEAL TECHNOLOGY SOLUTIONS</span>
               </li>
               <li>
-                <span className="hover:underline">MST: 12345678</span>
+                <span>MST: 12345678</span>
               </li>
               <li>
-                <span className="hover:underline">Địa chỉ: Hồ Chí Minh</span>
+                <span>Địa chỉ: Hồ Chí Minh</span>
               </li>
               <li>
-                <span className="hover:underline">
-                  Email: customerservice.95lab@gmail.com
-                </span>
+                <span>Email: customerservice.95lab@gmail.com</span>
               </li>
             </ul>
           </div>

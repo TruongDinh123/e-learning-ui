@@ -2,7 +2,7 @@
 import { getCoursePublic } from "@/features/Courses/courseSlice";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Badge, Button, Carousel, Tabs } from "antd";
+import { Badge, Button, Carousel, Image, Tabs } from "antd";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -13,7 +13,9 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
 
   const { TabPane } = Tabs;
-  const categories = [...new Set(course.map((i) => i.category?.name))];
+  const categories = [...new Set(course
+    .filter((i) => course.filter((c) => c.category?.name === i.category?.name).length > 3)
+    .map((i) => i.category?.name))];
 
   // Tạo một object để lưu trữ các refs, bao gồm cả ref cho tab "Tất cả"
   const carouselRefs = useRef({
@@ -213,16 +215,14 @@ export default function Home() {
                         <Badge className="mb-2" variant="secondary">
                           {course?.badge}
                         </Badge>
-                        <img
+                        <Image
                           alt={course.title}
-                          className="w-full h-auto rounded-lg mb-2"
+                          className="h-auto rounded-lg mb-2"
                           src={course.image_url}
                           style={{
                             aspectRatio: "150/150",
                             objectFit: "cover",
                           }}
-                          width="150"
-                          height="150"
                         />
                         <h3 className="text-lg font-semibold mb-1 line-clamp-1">
                           {course.title}

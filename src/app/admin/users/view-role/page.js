@@ -5,8 +5,6 @@ import { Button, Dropdown, Menu, Space, Spin, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import { getAllRole } from "@/features/User/userSlice";
 import EditRole from "../edit-role/page";
-import DelRole from "../delete-role/page";
-import CreateRole from "../create-role/page";
 import { useMediaQuery } from "react-responsive";
 
 export default function ViewRoles() {

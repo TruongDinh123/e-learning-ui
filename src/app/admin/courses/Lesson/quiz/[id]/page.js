@@ -146,8 +146,8 @@ export default function QuizCreator({ params }) {
         <Text strong>Answer: {question.answer}</Text>
         <div className="mt-3">
           <Popconfirm
-            title="Delete the Course"
-            description="Are you sure to delete this Course?"
+            title="Xóa khóa học"
+            description="Bạn có chắc muốn xóa khóa học?"
             okText="Có"
             cancelText="Không"
             okButtonProps={{

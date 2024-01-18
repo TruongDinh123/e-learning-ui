@@ -16,7 +16,7 @@ const logo3 = "/images/logo5.png";
 const { Sider } = Layout;
 
 export default function AdminSidebar(props) {
-  const { collapsed } = props;
+  const { collapsed, setCollapsed } = props;
   const router = useRouter();
   // const userState = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
@@ -151,12 +151,14 @@ export default function AdminSidebar(props) {
     >
       <div className="demo-logo-vertical d-flex justify-content-center align-items-center py-3">
         <div className="flex-shrink-0 pb-4">
-          <img
-            className="h-36 w-auto object-contain  absolute top-0 mt-[26px] transform -translate-y-1/2  fs-6 text-white text-decoration-none me-4"
-            style={{ left: "1rem", paddingLeft: "10px" }}
-            src={logo3}
-            alt=""
-          />
+          <a href="/admin/courses">
+            <img
+              className="h-36 w-auto object-contain  absolute top-0 mt-[26px] transform -translate-y-1/2  fs-6 text-white text-decoration-none me-4"
+              style={{ left: "1rem", paddingLeft: "10px" }}
+              src={logo3}
+              alt=""
+            />
+          </a>
         </div>
       </div>
       <Menu
@@ -166,6 +168,7 @@ export default function AdminSidebar(props) {
         defaultSelectedKeys={["1"]}
         onClick={({ key }) => {
           router.push(`/admin/${key}`);
+          props.setCollapsed(true);
         }}
         items={menuItems}
       />

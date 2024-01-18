@@ -170,8 +170,8 @@ export default function VideoLesson(propsComponent) {
               {data.map((item, itemIndex) => (
                 <React.Fragment key={itemIndex}>
                   <Popconfirm
-                    title="Delete video"
-                    description="Are you sure to delete video?"
+                    title="Xóa video"
+                    description="Bạn có chắc muốn xóa video bài học?"
                     okText="Có"
                     cancelText="Không"
                     okButtonProps={{ style: { backgroundColor: "red" } }}

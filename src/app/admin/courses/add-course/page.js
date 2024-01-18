@@ -28,11 +28,11 @@ const CourseSchema = yup.object({
     .required("Nhập tên")
     .trim("Name must not start or end with whitespace"),
   isPublic: yup.boolean().required("Visibility is required"),
-  categoryId: yup.string().required("Category is required"),
+  categoryId: yup.string().required("Chọn danh mục tương ứng"),
 });
 
 export default function AddCourse(props) {
-  const { refresh } = props;
+  const { refresh, fetchCategories } = props;
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -111,8 +111,10 @@ export default function AddCourse(props) {
               .then((res) => {
                 if (res.status) {
                   if (values.isPublic) {
+                    fetchCategories();
                     dispatch(buttonPublicCourse(courseId));
                   } else {
+                    fetchCategories();
                     dispatch(buttonPriavteourse(courseId));
                   }
                   setFile(null);
@@ -124,9 +126,9 @@ export default function AddCourse(props) {
                       duration: 2.5,
                     })
                     .then((res) => {
-                      router.push("/admin/courses");
                       message.success(res.message, 0.5);
                       refresh();
+                      fetchCategories();
                       setIsLoading(false);
                     })
                     .catch((error) => {
@@ -140,10 +142,13 @@ export default function AddCourse(props) {
               });
           } else {
             if (values.isPublic) {
+              fetchCategories();
               dispatch(buttonPublicCourse(courseId));
             } else {
+              fetchCategories();
               dispatch(buttonPriavteourse(courseId));
             }
+            fetchCategories();
             setIsLoading(false);
             messageApi
               .open({
@@ -152,10 +157,12 @@ export default function AddCourse(props) {
                 duration: 2.5,
               })
               .then((res) => {
-                router.push("/admin/courses");
                 message.success(res.message, 0.5);
                 refresh();
+                fetchCategories();
                 setIsLoading(false);
+                setIsModalOpen(false);
+                formik.resetForm();
               })
               .catch((error) => {
                 setIsLoading(false);

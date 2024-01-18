@@ -18,7 +18,7 @@ const Providers = dynamic(() => import("@/Provider"), { ssr: false });
 export default function RootLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [loading, setLoading] = useState(true);
 
   const shouldRenderFooter = !pathname.includes("/web-rtc/room");
@@ -56,36 +56,45 @@ export default function RootLayout({ children }) {
     <html>
       <body>
         <Providers>
-          <Suspense fallback={<Spin size="large"></Spin>}>
-            <Layout>
-              {pathname.includes("/admin") && (
-                <AdminSidebar collapsed={collapsed} />
-              )}
+          {loading ? (
+            <div className="flex justify-center items-center h-screen">
+              <Spin />
+            </div>
+          ) : (
+            <Suspense fallback={<Spin size="large"></Spin>}>
               <Layout>
-                {!pathname.includes("/admin") && pathname !== "/login" && (
-                  <Header />
-                )}
                 {pathname.includes("/admin") && (
-                  <AdminHeader
-                    setCollapsed={setCollapsed}
+                  <AdminSidebar
                     collapsed={collapsed}
+                    setCollapsed={setCollapsed}
                   />
                 )}
+                <Layout>
+                  {!pathname.includes("/admin") && pathname !== "/login" && (
+                    <Header />
+                  )}
+                  {pathname.includes("/admin") && (
+                    <AdminHeader
+                      setCollapsed={setCollapsed}
+                      collapsed={collapsed}
+                    />
+                  )}
 
-                <div
-                  className={pathname.includes("/admin") ? "p-3" : undefined}
-                >
-                  {children}
-                </div>
-                {shouldRenderFooter &&
-                  (!pathname.includes("/admin") && pathname !== "/login" ? (
-                    <CustomFooter />
-                  ) : (
-                    <AdminFooter />
-                  ))}
+                  <div
+                    className={pathname.includes("/admin") ? "p-3" : undefined}
+                  >
+                    {children}
+                  </div>
+                  {shouldRenderFooter &&
+                    (!pathname.includes("/admin") && pathname !== "/login" ? (
+                      <CustomFooter />
+                    ) : (
+                      <AdminFooter />
+                    ))}
+                </Layout>
               </Layout>
-            </Layout>
-          </Suspense>
+            </Suspense>
+          )}
         </Providers>
       </body>
     </html>

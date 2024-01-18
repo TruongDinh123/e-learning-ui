@@ -279,6 +279,7 @@ export default function UpdateInfoUser() {
           onClick={handleOk}
           loading={loading}
           className="ml-auto w-full custom-button"
+          type="primary"
         >
           Lưu
         </Button>

@@ -124,8 +124,8 @@ export default function Lesson({ params }) {
                             refresh={() => setUpdateLesson(updateLesson + 1)}
                           />
                           <Popconfirm
-                            title="Delete the Lesson"
-                            description="Are you sure to delete this Lesson?"
+                            title="Xóa bài học"
+                            description="Bạn có chắc muốn xóa bài học?"
                             okText="Có"
                             cancelText="Không"
                             okButtonProps={{
