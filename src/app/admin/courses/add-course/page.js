@@ -112,11 +112,14 @@ export default function AddCourse(props) {
                 if (res.status) {
                   if (values.isPublic) {
                     fetchCategories();
+                    refresh();
                     dispatch(buttonPublicCourse(courseId));
                   } else {
                     fetchCategories();
+                    refresh();
                     dispatch(buttonPriavteourse(courseId));
                   }
+                  refresh();
                   setFile(null);
                   setIsLoading(false);
                   messageApi
@@ -127,9 +130,11 @@ export default function AddCourse(props) {
                     })
                     .then((res) => {
                       message.success(res.message, 0.5);
-                      refresh();
                       fetchCategories();
                       setIsLoading(false);
+                      setIsModalOpen(false);
+                      refresh();
+                      formik.resetForm();
                     })
                     .catch((error) => {
                       setIsLoading(false);
@@ -143,12 +148,15 @@ export default function AddCourse(props) {
           } else {
             if (values.isPublic) {
               fetchCategories();
+              refresh();
               dispatch(buttonPublicCourse(courseId));
             } else {
               fetchCategories();
+              refresh();
               dispatch(buttonPriavteourse(courseId));
             }
             fetchCategories();
+            refresh();
             setIsLoading(false);
             messageApi
               .open({
@@ -158,10 +166,10 @@ export default function AddCourse(props) {
               })
               .then((res) => {
                 message.success(res.message, 0.5);
-                refresh();
                 fetchCategories();
                 setIsLoading(false);
                 setIsModalOpen(false);
+                refresh();
                 formik.resetForm();
               })
               .catch((error) => {

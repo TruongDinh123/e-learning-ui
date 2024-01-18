@@ -27,12 +27,14 @@ export default function Quizs({ params }) {
   const idQuiz = quiz.map((item) => item._id);
 
   const handleSubmit = () => {
-    const totalQuestions = quiz.reduce((totalQuestions, item) => totalQuestions + item.questions.length, 0);
+    const totalQuestions = quiz.reduce(
+      (totalQuestions, item) => totalQuestions + item.questions.length,
+      0
+    );
     if (Object.keys(selectedAnswers).length < totalQuestions) {
-      message.error('Vui lòng trả lời tất cả các câu hỏi trước khi nộp bài.');
+      message.error("Vui lòng trả lời tất cả các câu hỏi trước khi nộp bài.");
       return;
     }
-
 
     const formattedAnswers = Object.entries(selectedAnswers).map(
       ([questionId, answer]) => ({
@@ -57,9 +59,7 @@ export default function Quizs({ params }) {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
 
   useEffect(() => {
@@ -79,9 +79,7 @@ export default function Quizs({ params }) {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        
-      })
+      .catch((error) => {})
       .finally(() => {
         setLoading(false);
       });
@@ -107,9 +105,7 @@ export default function Quizs({ params }) {
           }
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   }, []);
 
   let submissionTime;
@@ -186,22 +182,27 @@ export default function Quizs({ params }) {
                     );
                   })}
                   <div className="p-4">
-                    <Button
-                      type="default"
-                      onClick={handleSubmit}
-                      disabled={isTimeExceeded || submitted || isComplete}
-                      className="mr-3 bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 rounded"
-                    >
-                      Submit
-                    </Button>
-                    {isComplete && (
-                      <div>Bạn đã hoàn thành bài kiểm tra này</div>
+                    {!isTimeExceeded && !submitted && !isComplete && (
+                      <Button
+                        type="primary"
+                        onClick={handleSubmit}
+                        className="mr-3 custom-button text-white font-bold px-4 rounded"
+                      >
+                        Nộp bài
+                      </Button>
                     )}
-                    {isTimeExceeded && <div>Thời gian làm bài đã hết</div>}
+                    {isComplete && (
+                      <div className="font-bold text-sm">Bạn đã hoàn thành bài kiểm tra này</div>
+                    )}
+                    {isTimeExceeded && (
+                      <div className="font-bold text-sm">
+                        Thời gian làm bài đã hết
+                      </div>
+                    )}
                   </div>
                   {submitted && (
                     <Link
-                      href="/courses/view-details"
+                      href="/"
                       className="mr-3 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
                     >
                       Trở về trang chủ

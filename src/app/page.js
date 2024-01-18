@@ -185,29 +185,28 @@ export default function Home() {
                 <Carousel
                   ref={carouselRefs.current[index]}
                   dots={false}
-                  slidesToShow={slidesToShow}
-                  slidesToScroll={slidesToShow}
-                  centerMode={slidesToShow}
+                  slidesToShow={4}
+                  slidesToScroll={4}
                   responsive={[
                     {
                       breakpoint: 1024,
                       settings: {
-                        slidesToShow: slidesToShow < 4.5 ? slidesToShow : 4.5,
-                        slidesToScroll: slidesToShow < 4.5 ? slidesToShow : 4.5,
+                        slidesToShow: 4,
+                        slidesToScroll: 4,
                       },
                     },
                     {
                       breakpoint: 600,
                       settings: {
-                        slidesToShow: slidesToShow < 2 ? slidesToShow : 2,
-                        slidesToScroll: slidesToShow < 2 ? slidesToShow : 2,
+                        slidesToShow: 2,
+                        slidesToScroll: 2,
                       },
                     },
                     {
                       breakpoint: 480,
                       settings: {
-                        slidesToShow: slidesToShow < 1 ? slidesToShow : 1,
-                        slidesToScroll: slidesToShow < 1 ? slidesToShow : 1,
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
                       },
                     },
                   ]}
@@ -223,17 +222,19 @@ export default function Home() {
                         <Badge className="mb-2" variant="secondary">
                           {course?.badge}
                         </Badge>
-                        <Image
+                        <img
                           alt={course.title}
-                          className="h-auto rounded-lg mb-2"
+                          className="w-full h-auto rounded-lg mb-2"
                           src={course.image_url}
                           style={{
                             aspectRatio: "150/150",
                             objectFit: "cover",
                           }}
+                          width="150"
+                          height="150"
                         />
                         <h3 className="text-lg font-semibold mb-1 line-clamp-1">
-                          {course.title}
+                          {course.name}
                         </h3>
                         <p className="text-sm text-gray-600 mb-4">
                           {course?.description}

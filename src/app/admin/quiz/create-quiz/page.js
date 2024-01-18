@@ -46,6 +46,7 @@ export default function QuizCreator() {
   const [selectedCourse, setSelectedCourse] = useState([]);
   const [courses, setCourses] = useState([]);
   const [studentsByCourse, setStudentsByCourse] = useState([]);
+  console.log("🚀 ~ studentsByCourse:", studentsByCourse);
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [isTemplateMode, setIsTemplateMode] = useState(false);
   const [quizTemplates, setQuizTemplates] = useState([]);
@@ -398,7 +399,7 @@ export default function QuizCreator() {
                             </Option>
                             {studentsByCourse.map((student) => (
                               <Option key={student._id} value={student._id}>
-                                {student.lastName}
+                                {student?.lastName} {student?.firstName}
                               </Option>
                             ))}
                           </>

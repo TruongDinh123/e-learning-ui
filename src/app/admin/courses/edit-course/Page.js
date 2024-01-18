@@ -111,31 +111,36 @@ export default function EditCourses(props) {
                     duration: 2.5,
                   });
                   fetchCategories();
+                  refresh();
                   setIsLoading(false);
                 }
                 fetchCategories();
+                refresh();
                 setIsLoading(false);
                 return res;
               });
           }
           fetchCategories();
+          refresh();
           setIsLoading(false);
           return res;
         })
         .then((res) => {
           if (values.isPublic) {
             fetchCategories();
+            refresh();
             setIsLoading(false);
             return dispatch(buttonPublicCourse(id));
           } else {
             fetchCategories();
-
+            refresh();
             setIsLoading(false);
             return dispatch(buttonPriavteourse(id));
           }
         })
         .then(() => {
           fetchCategories();
+          refresh();
           setIsLoading(false);
         })
         .catch((error) => {

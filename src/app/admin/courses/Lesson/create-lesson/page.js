@@ -86,6 +86,7 @@ export default function CreateLesson(props) {
                     content: "Đang thực hiện...",
                     duration: 2.5,
                   });
+                  refresh();
                 }
                 return res;
               });

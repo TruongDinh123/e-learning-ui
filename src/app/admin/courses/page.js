@@ -21,7 +21,9 @@ export default function Courses() {
   const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [loadingStates, setLoadingStates] = useState({});
   const [filteredCourses, setFilteredCourses] = useState([]);
+  console.log("🚀 ~ filteredCourses:", filteredCourses);
   const router = useRouter();
 
   const fetchCategories = () => {
@@ -40,10 +42,33 @@ export default function Courses() {
   }, [dispatch, selectedCategory]);
 
   // Lọc các khóa học theo danh mục được chọn
+  // useEffect(() => {
+  //   const newFilteredCourses = selectedCategory
+  //     ? categories.find((c) => c._id === selectedCategory)?.courses || []
+  //     : course;
+  //   setFilteredCourses(newFilteredCourses);
+  // }, [course, selectedCategory, categories]);
+
   useEffect(() => {
+    const currentTeacherId = localStorage.getItem("x-client-id");
+    const user = JSON.parse(localStorage?.getItem("user"));
+    const isAdmin = user?.roles?.includes("Admin");
+
+    let visibleCourses = course;
+    if (!isAdmin && currentTeacherId) {
+      visibleCourses = course.filter(
+        (course) => course.teacher === currentTeacherId
+      );
+    }
+
     const newFilteredCourses = selectedCategory
-      ? categories.find((c) => c._id === selectedCategory)?.courses || []
-      : course;
+      ? categories
+          .find((c) => c._id === selectedCategory)
+          ?.courses.filter(
+            (course) => isAdmin || course.teacher === currentTeacherId
+          ) || []
+      : visibleCourses;
+
     setFilteredCourses(newFilteredCourses);
   }, [course, selectedCategory, categories]);
 
@@ -99,6 +124,7 @@ export default function Courses() {
 
   //handleDeleteCourse
   const handleDeleteCourse = (id) => {
+    setLoadingStates((prev) => ({ ...prev, [id]: true }));
     dispatch(deleteCourse(id))
       .then(unwrapResult)
       .then((res) => {
@@ -111,6 +137,9 @@ export default function Courses() {
       })
       .catch((error) => {
         setIsLoading(false);
+      })
+      .finally(() => {
+        setLoadingStates((prev) => ({ ...prev, [id]: false }));
       });
   };
 
@@ -184,6 +213,7 @@ export default function Courses() {
                       <Button
                         danger
                         style={{ width: "100%" }}
+                        loading={loadingStates[item?._id]}
                       >
                         Xóa
                       </Button>
@@ -276,6 +306,7 @@ export default function Courses() {
                               <Button
                                 danger
                                 style={{ margin: 0 }}
+                                loading={loadingStates[item?._id]}
                               >
                                 Xóa
                               </Button>

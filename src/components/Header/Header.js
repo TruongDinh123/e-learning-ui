@@ -47,12 +47,12 @@ const products = [
     href: "/courses/view-score",
     icon: CursorArrowRaysIcon,
   },
-  {
-    name: "Tạo phòng học",
-    description: "Tạo phòng học để học tập cùng bạn bè",
-    href: "/web-rtc/lobby",
-    icon: FingerPrintIcon,
-  },
+  // {
+  //   name: "Tạo phòng học",
+  //   description: "Tạo phòng học để học tập cùng bạn bè",
+  //   href: "/web-rtc/lobby",
+  //   icon: FingerPrintIcon,
+  // },
 ];
 
 const UserLinks = () => {
@@ -341,7 +341,9 @@ export default function Header() {
         <nav className="flex items-center justify-between h-[75px]">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <img className="h-36 w-auto" src={logo3} alt="" />
+              <a href="/">
+                <img className="h-36 w-auto" src={logo3} alt="" />
+              </a>
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
@@ -371,7 +373,7 @@ export default function Header() {
                     leaveTo="opacity-0 translate-y-1"
                   >
                     <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-black/5">
-                      <div className="p-1">
+                      <div className="p-1" style={{ maxHeight: '500px', overflowY: 'auto' }}>
                         <div className="flex space-x-6 p-6 bg-white">
                           <nav aria-label="Main navigation" className="w-3/6">
                             <ul className="space-y-1">

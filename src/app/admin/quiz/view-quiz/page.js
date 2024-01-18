@@ -26,6 +26,7 @@ const { Option } = Select;
 export default function ViewQuiz() {
   const dispatch = useDispatch();
   const [quiz, setquiz] = useState([]);
+  console.log("🚀 ~ quiz:", quiz);
   const [updateQuiz, setUpdateQuiz] = useState(0);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedLesson, setSelectedLesson] = useState(null);
@@ -54,7 +55,6 @@ export default function ViewQuiz() {
     dispatch(viewCourses())
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           const user = JSON.parse(localStorage?.getItem("user"));
 
@@ -85,9 +85,26 @@ export default function ViewQuiz() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setquiz(res.metadata);
+          setquiz(res?.metadata);
           setUpdateQuiz(updateQuiz + 1);
         } else {
+        }
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+      });
+  };
+
+  const handleDeleteQuiz = ({ quizId }) => {
+    setIsLoading(true);
+
+    dispatch(deleteQuiz({ quizId }))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          const updatedQuizzes = quiz.filter(q => q._id !== quizId);
+          setquiz(updatedQuizzes);
         }
         setIsLoading(false);
       })
@@ -226,23 +243,6 @@ export default function ViewQuiz() {
     });
   });
 
-  const handleDeleteQuiz = ({ quizId }) => {
-    setIsLoading(true);
-
-    dispatch(deleteQuiz({ quizId }))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setUpdateQuiz(updateQuiz + 1);
-        } else {
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-      });
-  };
-
   return (
     <div className="">
       {isLoading ? (
@@ -265,18 +265,6 @@ export default function ViewQuiz() {
               ))}
             </Select>
 
-            {/* <Select
-              placeholder="Chọn bài học"
-              onChange={handleLessonChange}
-              value={selectedLesson}
-              className="me-3"
-            >
-              {selectedCourseLessons.map((lesson) => (
-                <Option key={lesson._id} value={lesson._id}>
-                  {lesson.name}
-                </Option>
-              ))}
-            </Select> */}
             <div className="pb-3">
               <Button
                 type="primary"

@@ -42,8 +42,9 @@ export default function ViewQuiz({ params }) {
     dispatch(getQuizzesByStudentAndCourse({ courseId: params?.id }))
       .then(unwrapResult)
       .then((res) => {
+        console.log("🚀 ~ res:", res);
         if (res?.status) {
-          setquiz(res?.metadata);
+          setquiz(res.data?.metadata);
         }
         setLoading(false);
       })
@@ -325,7 +326,9 @@ export default function ViewQuiz({ params }) {
         ? getTime(new Date(i?.submissionTime))
         : null;
 
+      console.log("🚀 ~ submissionTime:", submissionTime);
       const currentDate = getTime(new Date());
+      console.log("🚀 ~ currentDate:", currentDate);
 
       if (!submissionTime || submissionTime > currentDate) {
         nonExpiredCourses.push({
