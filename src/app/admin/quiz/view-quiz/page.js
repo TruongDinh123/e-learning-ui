@@ -54,12 +54,22 @@ export default function ViewQuiz() {
     dispatch(viewCourses())
       .then(unwrapResult)
       .then((res) => {
+        console.log("🚀 ~ res:", res);
         if (res.status) {
-          const teacherCourses = res.metadata.filter(
-            (course) => course.teacher === currentTeacherId
-          );
-          setCourses(teacherCourses);
-          setSelectedCourseLessons(res.data?.metadata[0]?.lessons || []);
+          const user = JSON.parse(localStorage?.getItem("user"));
+
+          const isAdmin = user?.roles?.includes("Admin");
+
+          let visibleCourses;
+          if (isAdmin) {
+            visibleCourses = res.metadata;
+          } else {
+            visibleCourses = res.metadata.filter(
+              (course) => course.teacher === currentTeacherId
+            );
+          }
+          setCourses(visibleCourses);
+          setSelectedCourseLessons(res?.metadata[0]?.lessons || []);
         } else {
         }
         setIsLoading(false);

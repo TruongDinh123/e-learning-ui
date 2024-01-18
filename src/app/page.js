@@ -10,7 +10,6 @@ import { useDispatch } from "react-redux";
 export default function Home() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
-  console.log("🚀 ~ course:", course);
   const [isLoading, setIsLoading] = useState(false);
 
   const { TabPane } = Tabs;
