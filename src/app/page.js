@@ -6,6 +6,8 @@ import { Badge, Button, Carousel, Image, Tabs } from "antd";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
+const thumnail1 = "/images/thumnail5.jpg";
+const thumnail2 = "/images/thumnail2.jpg";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -67,18 +69,10 @@ export default function Home() {
     <div className="max-w-[105rem] mx-auto px-4 sm:px-6 lg:px-8">
       <Carousel autoplay>
         <div>
-          <img
-            src="https://cdn2.topica.vn/b92eed95-8a0f-4ba6-bc37-aaa9205437f5/product/63b68ce8d45fde00262e81cd"
-            alt="First"
-            className="w-full"
-          />
+          <img src={thumnail1} alt="First" className="w-full" />
         </div>
         <div>
-          <img
-            src="https://cdn2.topica.vn/b92eed95-8a0f-4ba6-bc37-aaa9205437f5/product/63898019af47c60040e48ea7"
-            alt="Second"
-            className="w-full"
-          />
+          <img src={thumnail2} alt="Second" className="w-full" />
         </div>
       </Carousel>
       <div className="bg-white p-8">
