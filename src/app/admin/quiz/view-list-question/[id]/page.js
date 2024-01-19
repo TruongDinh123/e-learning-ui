@@ -71,7 +71,7 @@ export default function ViewListQuestion({ params }) {
               <Link href="/admin/quiz/view-quiz">Bài tập</Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              <Link href={`/admin/quiz/view-list-question`}>Chi tiết</Link>
+              <span className="font-medium">Chi tiết</span>
             </Breadcrumb.Item>
           </Breadcrumb>
           <Tabs defaultActiveKey="0">

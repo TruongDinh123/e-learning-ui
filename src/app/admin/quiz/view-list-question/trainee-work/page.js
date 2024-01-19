@@ -64,10 +64,12 @@ export default function StudentWork({ student }) {
                   ))}
                 </ul>
                 <div className="mt-2">
-                  <strong className="text-lg">Câu trả lời của học viên:</strong>{" "}
-                  <span className="text-blue-500">
-                    {studentAnswer[question._id]}
-                  </span>
+                  <strong className="text-lg">
+                    Câu trả lời của học viên:{" "}
+                    <span className="text-blue-500 font-medium">
+                      {studentAnswer[question._id]}
+                    </span>
+                  </strong>{" "}
                 </div>
               </div>
             );

@@ -105,7 +105,7 @@ const ScoreManagement = () => {
             </p>
           ))}
           <p className="pt-3 text-green-500 font-bold">
-            <span style={{ color: "red" }}>Your answer: {answer}</span>
+            <span style={{ color: "red" }}>Câu trả lời của bạn: {answer}</span>
           </p>
         </div>
       </List.Item>
@@ -224,7 +224,7 @@ const ScoreManagement = () => {
             <Option value="quiz">Bài tập</Option>
             <Option value="assignment">Bài kiểm tra</Option>
           </Select>
-          <Table columns={columns} dataSource={data} />
+          <Table columns={columns} dataSource={data} className="pb-36" />
         </div>
       )}
     </div>

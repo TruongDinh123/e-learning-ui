@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Radio, Button, message } from "antd";
+import { Card, Radio, Button, message, Spin } from "antd";
 import { getScore, submitQuiz, viewAQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
@@ -48,13 +48,10 @@ export default function Quizs({ params }) {
           messageApi
             .open({
               type: "Thành công",
-              content: "Đang thực hiện...",
-              duration: 2.5,
             })
             .then(() => {
               setSubmitted(true);
             })
-            .then(() => message.success(res.message, 1.5));
         } else {
           messageApi.error(res.message);
         }
@@ -71,10 +68,8 @@ export default function Quizs({ params }) {
             .open({
               type: "Thành công",
               content: "Đang thực hiện...",
-              duration: 2.5,
             })
             .then(() => setquiz(res.metadata))
-            .then(() => message.success(res.message, 1.5));
         } else {
           messageApi.error(res.message);
         }
@@ -122,7 +117,9 @@ export default function Quizs({ params }) {
       {contextHolder}
       <div className="w-full md:w-2/3">
         {loading ? (
-          <div>Loading...</div>
+          <div className="flex justify-center items-center h-screen">
+            <Spin />
+          </div>
         ) : (
           <React.Fragment>
             {quiz.map((item, index) => (
@@ -192,7 +189,9 @@ export default function Quizs({ params }) {
                       </Button>
                     )}
                     {isComplete && (
-                      <div className="font-bold text-sm">Bạn đã hoàn thành bài kiểm tra này</div>
+                      <div className="font-bold text-sm">
+                        Bạn đã hoàn thành bài kiểm tra này
+                      </div>
                     )}
                     {isTimeExceeded && (
                       <div className="font-bold text-sm">

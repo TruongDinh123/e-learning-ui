@@ -74,14 +74,14 @@ const UserLinks = () => {
           </span>
         </div>
       </Link>
-      <Link href="/web-rtc/lobby">
+      {/* <Link href="/web-rtc/lobby">
         <div className="flex items-center">
           <CameraIcon className="h-5 w-5 text-gray-600 mr-2" />
           <span className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
             Tạo phòng họp
           </span>
         </div>
-      </Link>
+      </Link> */}
     </>
   );
 };
@@ -274,12 +274,12 @@ export default function Header() {
   }, [getAUser, userName, userState]);
 
   const logout = useCallback(() => {
-    router.push("/");
     localStorage.clear();
     Cookies.remove("Bearer");
     dispatch(resetState());
     dispatch(setUserName(null));
     dispatch(setUser(null));
+    router.push("/");
   }, [dispatch, router]);
 
   const menu = (
@@ -373,7 +373,10 @@ export default function Header() {
                     leaveTo="opacity-0 translate-y-1"
                   >
                     <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-black/5">
-                      <div className="p-1" style={{ maxHeight: '500px', overflowY: 'auto' }}>
+                      <div
+                        className="p-1"
+                        style={{ maxHeight: "500px", overflowY: "auto" }}
+                      >
                         <div className="flex space-x-6 p-6 bg-white">
                           <nav aria-label="Main navigation" className="w-3/6">
                             <ul className="space-y-1">

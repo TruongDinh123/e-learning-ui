@@ -22,10 +22,17 @@ export default function ViewUsers() {
       dataIndex: "key",
     },
     {
-      title: "Tên",
+      title: "Họ",
       dataIndex: "lastName",
       onFilter: (value, record) => record.lastName.indexOf(value) === 0,
       sorter: (a, b) => a.lastName.localeCompare(b.lastName),
+      sortDirections: ["descend"],
+    },
+    {
+      title: "Tên",
+      dataIndex: "firstName",
+      onFilter: (value, record) => record.firstName.indexOf(value) === 0,
+      sorter: (a, b) => a.firstName.localeCompare(b.firstName),
       sortDirections: ["descend"],
     },
     {
@@ -89,7 +96,9 @@ export default function ViewUsers() {
             cancelText="Không"
             onConfirm={() => handleDeleteUser(i?._id)}
           >
-            <Button danger style={{ width: "100%" }}>Xóa</Button>
+            <Button danger style={{ width: "100%" }}>
+              Xóa
+            </Button>
           </Popconfirm>
         </Menu.Item>
       </Menu>
@@ -97,6 +106,7 @@ export default function ViewUsers() {
     data.push({
       key: index + 1,
       lastName: i?.lastName,
+      firstName: i?.firstName,
       email: i?.email,
       status: i?.status,
       roles: i?.roles,

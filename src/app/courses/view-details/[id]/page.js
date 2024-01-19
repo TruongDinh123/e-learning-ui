@@ -42,7 +42,6 @@ export default function ViewQuiz({ params }) {
     dispatch(getQuizzesByStudentAndCourse({ courseId: params?.id }))
       .then(unwrapResult)
       .then((res) => {
-        console.log("🚀 ~ res:", res);
         if (res?.status) {
           setquiz(res.data?.metadata);
         }

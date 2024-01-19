@@ -14,11 +14,19 @@ import React from "react";
 const Userchema = yup.object({
   lastName: yup
     .string()
-    .required("Name is required")
-    .trim("Name must not start or end with whitespace")
-    .min(3, "Name must be at least 3 characters long")
-    .matches(/^\S*$/, "Name must not contain whitespace"),
-  email: yup.string().email().required("email is required"),
+    .required("Tên là bắt buộc")
+    .trim("Tên không được bắt đầu hoặc kết thúc bằng khoảng trắng")
+    .min(3, "Tên phải có ít nhất 3 ký tự")
+    .matches(/^\S*$/, "Tên không được chứa khoảng trắng"),
+
+  firstName: yup
+    .string()
+    .required("Tên là bắt buộc")
+    .trim("Tên không được bắt đầu hoặc kết thúc bằng khoảng trắng")
+    .min(3, "Tên phải có ít nhất 3 ký tự")
+    .matches(/^\S*$/, "Tên không được chứa khoảng trắng"),
+
+  email: yup.string().email().required("Yêu cầu nhập email"),
 });
 
 export default function EditUser(props) {
@@ -58,9 +66,7 @@ export default function EditUser(props) {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
 
   const formik = useFormik({
@@ -68,6 +74,7 @@ export default function EditUser(props) {
     enableReinitialize: true,
     initialValues: {
       lastName: data?.lastName,
+      firstName: data?.firstName,
       email: data?.email,
     },
     onSubmit: (values) => {
@@ -85,9 +92,7 @@ export default function EditUser(props) {
               refresh();
             });
         })
-        .catch((error) => {
-          
-        });
+        .catch((error) => {});
     },
   });
 
@@ -98,7 +103,7 @@ export default function EditUser(props) {
         type="primary"
         onClick={showModal}
         className="me-3 custom-button"
-        style={{width: '100%'}}
+        style={{ width: "100%" }}
       >
         Cập nhật
       </Button>
@@ -125,7 +130,7 @@ export default function EditUser(props) {
       >
         <div>
           <label htmlFor="role" className="fs-6 fw-bold">
-            Tên
+            Họ
           </label>
           <CustomInput
             className="mb-3"
@@ -137,6 +142,24 @@ export default function EditUser(props) {
               formik.touched.lastName &&
               formik.errors.lastName
                 ? formik.errors.lastName
+                : null
+            }
+          />
+        </div>
+        <div>
+          <label htmlFor="role" className="fs-6 fw-bold">
+            Tên
+          </label>
+          <CustomInput
+            className="mb-3"
+            onChange={formik.handleChange("firstName")}
+            onBlur={formik.handleBlur("firstName")}
+            value={formik.values.firstName}
+            error={
+              formik.submitCount > 0 &&
+              formik.touched.firstName &&
+              formik.errors.firstName
+                ? formik.errors.firstName
                 : null
             }
           />

@@ -234,7 +234,7 @@ export default function EditUserForm() {
             </div>
             <div className="space-y-2">
               <label className="text-base" htmlFor="phoneNumber">
-                Phone Number
+                Số điện thoại
               </label>
               <CustomInput
                 className="mb-3"
@@ -252,7 +252,7 @@ export default function EditUserForm() {
             </div>
             <div className="space-y-2">
               <label className="text-base" htmlFor="gender">
-                Gender:
+                Giới tính:
               </label>
               <select
                 className="mb-3"
