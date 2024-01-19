@@ -23,7 +23,6 @@ export default function Courses() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loadingStates, setLoadingStates] = useState({});
   const [filteredCourses, setFilteredCourses] = useState([]);
-  console.log("🚀 ~ filteredCourses:", filteredCourses);
   const router = useRouter();
 
   const fetchCategories = () => {
