@@ -74,6 +74,15 @@ const changePassword = async (data) => {
   return res;
 };
 
+const forgotPassword = async (data) => {
+  const res = await axiosInstance({
+    url: "/e-learning/forgot-password",
+    method: "POST",
+    data: data,
+  });
+  return res;
+};
+
 const logOut = async (data) => {
   const res = await axiosInstance({
     url: "/e-learning/logout",
@@ -140,5 +149,6 @@ export const authService = {
   getAUser,
   logOut,
   changePassword,
+  forgotPassword,
   uploadImageUser,
 };

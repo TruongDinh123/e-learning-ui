@@ -175,6 +175,18 @@ export const changePassword = createAsyncThunk(
   }
 );
 
+export const forgotPassword = createAsyncThunk(
+  "/e-learning/forgot-password",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await authService.forgotPassword(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 let userFromLocalStorage = null;
 let userNameFromLocalStogare = null;
 

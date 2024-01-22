@@ -43,12 +43,17 @@ export default function ChangePasswordForm() {
   const [loading, setLoading] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const router = useRouter();
 
   const handleOk = () => {
-    setLoading(true);
-    formik.submitForm();
+    try {
+      setLoading(true);
+      formik.submitForm();
+    } finally {
+      setLoading(false);
+    }
   };
 
   const formik = useFormik({
@@ -85,7 +90,10 @@ export default function ChangePasswordForm() {
                     }
                   })
                   .catch((error) => {
-                    
+                    message.error(
+                      error.response?.data?.message || "Có lỗi xảy ra",
+                      3.5
+                    );
                   })
                   .finally(() => {
                     setLoading(false);
@@ -172,21 +180,21 @@ export default function ChangePasswordForm() {
                             onBlur={formik.handleBlur("newPassword")}
                             prefix={<RiLockPasswordLine />}
                             suffix={
-                              showPassword ? (
+                              showNewPassword ? (
                                 <BsEyeSlash
-                                  onClick={() => setShowPassword(false)}
+                                  onClick={() => setShowNewPassword(false)}
                                   style={{ cursor: "pointer" }}
                                 />
                               ) : (
                                 <BsEye
-                                  onClick={() => setShowPassword(true)}
+                                  onClick={() => setShowNewPassword(true)}
                                   style={{ cursor: "pointer" }}
                                 />
                               )
                             }
                             onChange={(e) => {
                               formik.handleChange("newPassword")(e);
-                              setPasswordValue(e.target.value);
+                              setShowNewPassword(e.target.value);
                             }}
                             value={formik.values.newPassword}
                             type={showPassword ? "text" : "password"}

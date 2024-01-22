@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { useState } from "react";
+import ForgotPassword from "../user/forgot-password/page";
 
 const loginSchema = yup.object({
   email: yup
@@ -32,6 +33,8 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
+  const [isForgotPass, setIsForgotPass] = useState(false);
+
   const formik = useFormik({
     validationSchema: loginSchema,
     initialValues: {
@@ -43,7 +46,6 @@ export default function Login() {
       dispatch(login(values))
         .then(unwrapResult)
         .then((res) => {
-          console.log("🚀 ~ res:", res);
           if (res.status) {
             messageApi
               .open({
@@ -104,6 +106,10 @@ export default function Login() {
     },
   });
 
+  const handleResetForm = () => {
+    setIsForgotPass(false);
+  };
+
   return (
     <div
       className="min-h-screen bg-no-repeat bg-cover bg-center relative
@@ -121,71 +127,99 @@ export default function Login() {
           </h1>
         </div>
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm md:max-w-md">
-          <h2 className="text-2xl font-semibold mb-6">Đăng nhập</h2>
-          <p className="text-sm mb-4">Xin hãy đăng nhập tài khoản của bạn.</p>
-          <form action="" onSubmit={formik.handleSubmit}>
-            <div className="flex flex-col space-y-4 mb-6">
-              <label className="flex flex-col" htmlFor="email">
-                <span className="text-sm font-medium">Email</span>
-                <CustomInput
-                  prefix={<AiOutlineMail />}
-                  placeholder="Địa chỉ email"
-                  onChange={formik.handleChange("email")}
-                  onBlur={formik.handleBlur("email")}
-                  value={formik.values.email}
-                  error={
-                    formik.submitCount > 0 &&
-                    formik.touched.email &&
-                    formik.errors.email
-                      ? formik.errors.email
-                      : null
-                  }
-                />
-              </label>
-              <label className="flex flex-col" htmlFor="password">
-                <span className="text-sm font-medium">Mật khẩu</span>
-                <CustomInput
-                  prefix={<RiLockPasswordLine />}
-                  suffix={
-                    showPassword ? (
-                      <BsEyeSlash
-                        onClick={() => setShowPassword(false)}
-                        style={{ cursor: "pointer" }}
-                      />
-                    ) : (
-                      <BsEye
-                        onClick={() => setShowPassword(true)}
-                        style={{ cursor: "pointer" }}
-                      />
-                    )
-                  }
-                  placeholder="Mật khẩu"
-                  onChange={(e) => {
-                    formik.handleChange("password")(e);
-                    setPasswordValue(e.target.value);
-                  }}
-                  onBlur={formik.handleBlur("password")}
-                  value={passwordValue}
-                  error={
-                    formik.submitCount > 0 &&
-                    formik.touched.password &&
-                    formik.errors.password
-                      ? formik.errors.password
-                      : null
-                  }
-                  type={showPassword ? "text" : "password"}
-                />
-              </label>
-            </div>
+          {isForgotPass ? (
+            <>
+              <ForgotPassword onResetForm={handleResetForm}  />
+              <div className="flex items-center justify-between mt-4">
+                <a
+                  href="#"
+                  className="text-xs text-blue-600 hover:underline hover:text-blue-800"
+                  onClick={() => setIsForgotPass(false)}
+                >
+                  Đăng nhập
+                </a>
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 className="text-2xl font-semibold mb-6">Đăng nhập</h2>
+              <p className="text-sm mb-4">
+                Xin hãy đăng nhập tài khoản của bạn.
+              </p>
+              <form action="" onSubmit={formik.handleSubmit}>
+                <div className="flex flex-col space-y-4 mb-6">
+                  <label className="flex flex-col" htmlFor="email">
+                    <span className="text-sm font-medium">Email</span>
+                    <CustomInput
+                      prefix={<AiOutlineMail />}
+                      placeholder="Địa chỉ email"
+                      onChange={formik.handleChange("email")}
+                      onBlur={formik.handleBlur("email")}
+                      value={formik.values.email}
+                      error={
+                        formik.submitCount > 0 &&
+                        formik.touched.email &&
+                        formik.errors.email
+                          ? formik.errors.email
+                          : null
+                      }
+                    />
+                  </label>
+                  <label className="flex flex-col" htmlFor="password">
+                    <span className="text-sm font-medium">Mật khẩu</span>
+                    <CustomInput
+                      prefix={<RiLockPasswordLine />}
+                      suffix={
+                        showPassword ? (
+                          <BsEyeSlash
+                            onClick={() => setShowPassword(false)}
+                            style={{ cursor: "pointer" }}
+                          />
+                        ) : (
+                          <BsEye
+                            onClick={() => setShowPassword(true)}
+                            style={{ cursor: "pointer" }}
+                          />
+                        )
+                      }
+                      placeholder="Mật khẩu"
+                      onChange={(e) => {
+                        formik.handleChange("password")(e);
+                        setPasswordValue(e.target.value);
+                      }}
+                      onBlur={formik.handleBlur("password")}
+                      value={passwordValue}
+                      error={
+                        formik.submitCount > 0 &&
+                        formik.touched.password &&
+                        formik.errors.password
+                          ? formik.errors.password
+                          : null
+                      }
+                      type={showPassword ? "text" : "password"}
+                    />
+                  </label>
+                </div>
 
-            <CustomButton
-              title={isLoading ? <Spin /> : "Đăng nhập"}
-              type="primary"
-              disabled={isLoading}
-              onClick={() => formik.handleSubmit()}
-              className="py-1 px-8 bg-blue-900 hover:bg-blue-400 text-white text-center inline-block text-lg my-1 mx-1 rounded-lg cursor-pointer border-none w-full"
-            />
-          </form>
+                <CustomButton
+                  title={isLoading ? <Spin /> : "Đăng nhập"}
+                  type="primary"
+                  disabled={isLoading}
+                  onClick={() => formik.handleSubmit()}
+                  className="py-1 px-8 bg-blue-900 hover:bg-blue-400 text-white text-center inline-block text-lg my-1 mx-1 rounded-lg cursor-pointer border-none w-full"
+                />
+                <div className="flex items-center justify-between mt-4">
+                  <a
+                    href="#"
+                    className="text-xs text-blue-600 hover:underline hover:text-blue-800"
+                    onClick={() => setIsForgotPass(true)}
+                  >
+                    Quên mật khẩu
+                  </a>
+                </div>
+              </form>
+            </>
+          )}
         </div>
       </div>
     </div>
