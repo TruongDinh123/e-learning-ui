@@ -194,10 +194,10 @@ export default function ChangePasswordForm() {
                             }
                             onChange={(e) => {
                               formik.handleChange("newPassword")(e);
-                              setShowNewPassword(e.target.value);
+                              setPasswordValue(e.target.value);
                             }}
                             value={formik.values.newPassword}
-                            type={showPassword ? "text" : "password"}
+                            type={showNewPassword ? "text" : "password"}
                             error={
                               formik.submitCount > 0 &&
                               formik.touched.newPassword &&

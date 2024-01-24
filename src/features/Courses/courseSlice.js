@@ -52,7 +52,6 @@ export const deleteCourse = createAsyncThunk(
 export const editCourse = createAsyncThunk(
   "/e-learning/update-course/",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data);
     try {
       const response = await courseService.editCourse(data);
       return response;
@@ -287,20 +286,6 @@ const courseSlice = createSlice({
         state.isSuccess = true;
       })
       .addCase(editCourse.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.isSuccess = false;
-        state.message = "Something went wrong!";
-      })
-      .addCase(getACourse.pending, (state, action) => {
-        state.isLoading = true;
-      })
-      .addCase(getACourse.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isError = false;
-        state.isSuccess = true;
-      })
-      .addCase(getACourse.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

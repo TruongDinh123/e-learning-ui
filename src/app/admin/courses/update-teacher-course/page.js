@@ -23,19 +23,21 @@ export default function UpdateTeacherToCourse(props) {
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setuser] = useState([]);
-
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5,
+  });
+  
   useEffect(() => {
     getAUserData();
   }, []);
 
   const getAUserData = () => {
-    dispatch(getAllUser())
+    dispatch(getAllUser({ page: pagination.current, limit: pagination.pageSize }))
       .then(unwrapResult)
       .then((res) => {
-        if (res.status) {
-          setuser(res.data.metadata);
-        } else {
-          messageApi.error(res.message);
+        if (res?.status) {
+          setuser(res?.metadata);
         }
       })
       .catch((error) => {

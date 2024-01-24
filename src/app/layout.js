@@ -11,6 +11,7 @@ import { Layout, Spin } from "antd";
 import React, { Suspense, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Cookies from "js-cookie";
+import { isAdmin, isMentor } from "@/middleware";
 // import { Providers } from "@/Provider";
 
 const Providers = dynamic(() => import("@/Provider"), { ssr: false });
@@ -31,11 +32,12 @@ export default function RootLayout({ children }) {
     // Check if the cookie exists
     const token = Cookies.get("Bearer");
     const user = JSON.parse(localStorage.getItem("user")); // Giả sử bạn lưu thông tin người dùng vào localStorage
-    const isAdmin = user?.roles?.includes("Admin");
-    const isMentor = user?.roles?.includes("Mentor");
+    // const isAdmin =
+    //   user?.roles?.includes("Admin") || user?.roles?.includes("Super-Admin");
+    // const isMentor = user?.roles?.includes("Mentor");
 
     // Ngay lập tức chuyển hướng nếu không phải Admin hoặc Mentor và cố gắng truy cập vào /admin/courses
-    if (pathname === "/admin/courses" && !(isAdmin || isMentor)) {
+    if (pathname === "/admin/courses" && !(isAdmin() || isMentor())) {
       router.push("/unauthorized");
       return; // Ngăn không chạy các đoạn mã phía dưới
     }
@@ -45,7 +47,7 @@ export default function RootLayout({ children }) {
     if (!loading && !isLessonPage) {
       if (!token && pathname !== "/login" && pathname !== "/") {
         router.push("/login");
-      } else if (pathname.includes("/admin") && !(isAdmin || isMentor)) {
+      } else if (pathname.includes("/admin") && !(isAdmin() || isMentor())) {
         router.push("/unauthorized");
       }
     }

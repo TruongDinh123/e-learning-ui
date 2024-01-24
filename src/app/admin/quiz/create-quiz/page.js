@@ -33,6 +33,7 @@ import { useRouter } from "next/navigation";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 import "./page.css";
+import { isAdmin } from "@/middleware";
 
 const { Option } = Select;
 
@@ -257,10 +258,10 @@ export default function QuizCreator() {
           const currentTeacherId = localStorage.getItem("x-client-id");
           const user = JSON.parse(localStorage?.getItem("user"));
 
-          const isAdmin = user?.roles?.includes("Admin");
+          // const isAdmin = user?.roles?.includes("Admin") || user?.roles?.includes("Super-Admin");
           let visibleCourses;
 
-          if (isAdmin) {
+          if (isAdmin()) {
             visibleCourses = res.metadata;
           } else {
             visibleCourses = res.metadata.filter(

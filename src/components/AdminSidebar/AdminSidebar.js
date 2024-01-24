@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { getAUser, logOut, resetState } from "@/features/User/userSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useEffect, useState } from "react";
+import { isMentor } from "@/middleware";
 const logo3 = "/images/logo5.png";
 
 const { Sider } = Layout;
@@ -18,16 +19,6 @@ const { Sider } = Layout;
 export default function AdminSidebar(props) {
   const { collapsed, setCollapsed } = props;
   const router = useRouter();
-  // const userState = useSelector((state) => state.user.user);
-  const dispatch = useDispatch();
-
-  const userState = JSON.parse(localStorage.getItem("user"));
-  const id = localStorage.getItem("x-client-id");
-
-  const userProfile = useSelector((state) => state.user.profile);
-  const [data, setData] = useState(null);
-
-  const userRole = userState?.roles[0];
 
   const menuItems = [
     {
@@ -78,7 +69,7 @@ export default function AdminSidebar(props) {
     },
   ];
 
-  if (userRole !== "Mentor") {
+  if (!isMentor()) {
     menuItems[2].children.push(
       {
         key: "users/view-users",
@@ -102,44 +93,6 @@ export default function AdminSidebar(props) {
       }
     );
   }
-
-  const handleLogOut = () => {
-    dispatch(logOut())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          // Clear any local storage or cookies that might persist state
-          localStorage.clear();
-          Cookies.remove("Bearer");
-
-          // Reset the Redux state
-          dispatch(resetState());
-
-          // Redirect to the login page
-          router.push("/login");
-        } else {
-          message.error(res.message, 2.5);
-        }
-      })
-      .catch((error) => {});
-  };
-
-  useEffect(() => {
-    getAUsereData();
-  }, []);
-
-  const getAUsereData = () => {
-    dispatch(getAUser(id))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setData(res.metadata);
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {});
-  };
 
   return (
     <Sider

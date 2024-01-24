@@ -10,6 +10,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { batch, useDispatch } from "react-redux";
 import AddStudentToCourse from "../../courses/add-student-course/page";
 import { getScoreByQuizId, viewQuiz } from "@/features/Quiz/quizSlice";
+import { isAdmin } from "@/middleware";
 
 const { Option } = Select;
 
@@ -46,9 +47,7 @@ export default function ViewStudentsCourse() {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
 
   useEffect(() => {
@@ -67,10 +66,12 @@ export default function ViewStudentsCourse() {
               const currentTeacherId = localStorage.getItem("x-client-id");
               const user = JSON.parse(localStorage?.getItem("user"));
 
-              const isAdmin = user?.roles?.includes("Admin");
+              // const isAdmin =
+              //   user?.roles?.includes("Admin") ||
+              //   user?.roles?.includes("Super-Admin");
               let visibleCourses;
 
-              if (isAdmin) {
+              if (isAdmin()) {
                 visibleCourses = res.metadata;
               } else {
                 visibleCourses = res.metadata.filter(
@@ -123,9 +124,7 @@ export default function ViewStudentsCourse() {
           });
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   }, [selectedCourse, dispatch, dataStudent]);
 
   const getACourseData = () => {
@@ -140,9 +139,7 @@ export default function ViewStudentsCourse() {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
 
   const quizColumns = useMemo(

@@ -15,7 +15,7 @@ import React from "@heroicons/react";
 import Link from "next/link";
 import { Avatar, Button, Dropdown, Menu, message } from "antd";
 import {
-  DownOutlined,
+  LockOutlined,
   LoginOutlined,
   LogoutOutlined,
   UserOutlined,
@@ -31,6 +31,7 @@ import {
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
+import { RiLockPasswordLine } from "react-icons/ri";
 
 const logo3 = "/images/logo5.png";
 
@@ -234,6 +235,13 @@ function UsersIcon(props) {
 
 export default function Header() {
   const userState = useSelector((state) => state.user?.user);
+  const isAdmin = userState?.roles?.some(
+    (role) =>
+      role.name === "Admin" ||
+      role.name === "Super-Admin" ||
+      role.name === "Mentor"
+  );
+
   const userProfile = useSelector((state) => state.user.profile);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -261,12 +269,6 @@ export default function Header() {
       .catch((error) => {});
   };
 
-  // useEffect(() => {
-  //   if (!userState) {
-  //     router.push("/login");
-  //   }
-  // }, [userState, router]);
-
   useEffect(() => {
     if (userState) {
       getAUsereData();
@@ -291,10 +293,7 @@ export default function Header() {
         <Link href="/user/change-password">Đổi mật khẩu</Link>
       </Menu.Item>
       <Menu.Item>
-        {(userState?.roles?.includes("Admin") ||
-          userState?.roles?.includes("Mentor")) && (
-          <Link href="/admin/courses">Quản trị viên</Link>
-        )}
+        {isAdmin && <Link href="/admin/courses">Quản trị viên</Link>}
       </Menu.Item>
       <Menu.Item onClick={logout}>
         {userState !== null && (
@@ -598,8 +597,7 @@ export default function Header() {
                           <>
                             <Disclosure.Button className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                               <span className="font-bold">{userName}</span>
-                              {(userState?.roles?.includes("Admin") ||
-                                userState?.roles?.includes("Mentor")) && (
+                              {isAdmin && (
                                 <Link href="/admin/courses">( Admin )</Link>
                               )}
                               <ChevronDownIcon
@@ -618,6 +616,14 @@ export default function Header() {
                               >
                                 <UserOutlined className="h-5 w-5 text-gray-600 mr-2" />
                                 Cập nhật thông tin
+                              </Disclosure.Button>
+                              <Disclosure.Button
+                                as="a"
+                                href="/user/change-password"
+                                className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                              >
+                                <LockOutlined className="h-5 w-5 text-gray-600 mr-2" />
+                                Đổi mật khẩu
                               </Disclosure.Button>
                             </Disclosure.Panel>
                           </>

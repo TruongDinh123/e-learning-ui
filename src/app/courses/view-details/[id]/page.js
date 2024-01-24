@@ -24,6 +24,7 @@ import { createNotification, getACourse } from "@/features/Courses/courseSlice";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
+import { isAdmin, isMentor } from "@/middleware";
 
 const { Sider, Content, Header } = Layout;
 
@@ -81,13 +82,16 @@ export default function ViewQuiz({ params }) {
   }, []);
 
   const userState = useSelector((state) => state?.user?.user);
+  const isAdminState = userState?.roles?.some(
+    (role) =>
+      role.name === "Admin" ||
+      role.name === "Super-Admin" ||
+      role.name === "Mentor"
+  );
 
   const checkUserRole = () => {
     try {
-      if (
-        userState?.roles.includes("Admin") ||
-        userState?.roles.includes("Mentor")
-      ) {
+      if (isAdminState) {
         setLoading(true);
         dispatch(getQuizsByCourse({ courseId: params?.id }))
           .then(unwrapResult)
@@ -169,8 +173,13 @@ export default function ViewQuiz({ params }) {
   // Component hiển thị thông báo
   const NotificationsComponent = () => {
     const textareaRef = useRef(null);
-    const isAdminOrMentor =
-      userState?.roles.includes("Admin") || userState?.roles.includes("Mentor");
+    const isAdminOrMentor = userState?.roles?.some(
+      (role) =>
+        role.name === "Admin" ||
+        role.name === "Super-Admin" ||
+        role.name === "Mentor"
+    );
+
     return (
       <>
         <div className="w-full p-2">

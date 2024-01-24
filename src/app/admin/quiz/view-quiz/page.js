@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import UpdateQuiz from "../update-quiz/page";
 import "../view-quiz/page.css";
 import { useMediaQuery } from "react-responsive";
+import { isAdmin } from "@/middleware";
 
 const { Option } = Select;
 
@@ -58,10 +59,10 @@ export default function ViewQuiz() {
         if (res.status) {
           const user = JSON.parse(localStorage?.getItem("user"));
 
-          const isAdmin = user?.roles?.includes("Admin");
+          // const isAdmin = user?.roles?.includes("Admin") || user?.roles?.includes("Super-Admin");
 
           let visibleCourses;
-          if (isAdmin) {
+          if (isAdmin()) {
             visibleCourses = res.metadata;
           } else {
             visibleCourses = res.metadata.filter(

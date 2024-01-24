@@ -207,13 +207,6 @@ export default function ChangePassword() {
             />
           </div>
           <div class="flex justify-between">
-            {/* <button
-              type="button"
-              onclick="discardChanges()"
-              class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring focus:border-blue-300"
-            >
-              Discard
-            </button> */}
             <Button
               onClick={handleOk}
               loading={loading}

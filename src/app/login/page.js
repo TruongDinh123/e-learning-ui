@@ -47,6 +47,8 @@ export default function Login() {
         .then(unwrapResult)
         .then((res) => {
           if (res.status) {
+            const roleNames = res.metadata.account.roles.map(role => role.name);
+
             messageApi
               .open({
                 type: "Thành công",
@@ -78,15 +80,11 @@ export default function Login() {
                   )
                 );
 
-                // localStorage.setItem(
-                //   "authorization",
-                //   res.metadata.tokens.accessToken
-                // );
-
                 localStorage.setItem("x-client-id", res.metadata.account._id);
                 if (
-                  res.metadata.account.roles.includes("Admin") ||
-                  res.metadata.account.roles.includes("Mentor")
+                  roleNames.includes("Admin") ||
+                  roleNames.includes("Super-Admin") ||
+                  roleNames.includes("Mentor")
                 ) {
                   router.push("/admin/courses");
                 } else {
@@ -129,7 +127,7 @@ export default function Login() {
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm md:max-w-md">
           {isForgotPass ? (
             <>
-              <ForgotPassword onResetForm={handleResetForm}  />
+              <ForgotPassword onResetForm={handleResetForm} />
               <div className="flex items-center justify-between mt-4">
                 <a
                   href="#"

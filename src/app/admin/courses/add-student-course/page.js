@@ -30,7 +30,7 @@ export default function AddStudentToCourse(props) {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setuser(res.data.metadata);
+          setuser(res.metadata);
         } else {
           messageApi.error(res.message);
         }

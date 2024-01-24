@@ -1,8 +1,7 @@
 "use client";
-import { editCourse, getACourse } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Modal, message } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button } from "antd";
 import CustomInput from "@/components/comman/CustomInput";

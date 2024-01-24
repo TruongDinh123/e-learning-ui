@@ -1,5 +1,4 @@
 "use client";
-import { editCourse, getACourse } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Modal, message } from "antd";
 import { useEffect, useState } from "react";
@@ -8,7 +7,12 @@ import { Button } from "antd";
 import CustomInput from "@/components/comman/CustomInput";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { getAUser, updateRole, updateUser } from "@/features/User/userSlice";
+import {
+  getAUser,
+  getAllRole,
+  updateUser,
+  updateUserRoles,
+} from "@/features/User/userSlice";
 import React from "react";
 
 const Userchema = yup.object({
@@ -35,6 +39,8 @@ export default function EditUser(props) {
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState(null);
+  const [selectedRoleId, setSelectedRoleId] = useState("");
+  const [roles, setRoles] = useState([]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -53,20 +59,27 @@ export default function EditUser(props) {
   };
 
   useEffect(() => {
-    getAUsereData();
-  }, []);
-
-  const getAUsereData = () => {
-    dispatch(getAUser(id))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setData(res.metadata);
+    Promise.all([
+      dispatch(getAUser(id)).then(unwrapResult),
+      dispatch(getAllRole()).then(unwrapResult),
+    ])
+      .then(([userRes, rolesRes]) => {
+        if (userRes.status && rolesRes.status) {
+          setData(userRes.metadata);
+          setRoles(rolesRes.metadata);
+          setSelectedRoleId(userRes.metadata.roles[0]?._id);
         } else {
-          messageApi.error(res.message);
+          if (!userRes.status) messageApi.error(userRes.message);
+          if (!rolesRes.status) messageApi.error(rolesRes.message);
         }
       })
-      .catch((error) => {});
+      .catch((error) => {
+        messageApi.error("Có lỗi xảy ra khi tải thông tin.");
+      });
+  }, [dispatch, id, messageApi]);
+
+  const handleRoleChange = (e) => {
+    setSelectedRoleId(e.target.value);
   };
 
   const formik = useFormik({
@@ -76,12 +89,32 @@ export default function EditUser(props) {
       lastName: data?.lastName,
       firstName: data?.firstName,
       email: data?.email,
+      roles: data?.roles.map((role) => role.name),
     },
     onSubmit: (values) => {
       values.lastName = values.lastName.trim();
       dispatch(updateUser({ id: id, values }))
         .then(unwrapResult)
         .then((res) => {
+          if (res.status) {
+            // Cập nhật vai trò người dùng
+            dispatch(updateUserRoles({ userId: id, roleId: selectedRoleId }))
+              .then(unwrapResult)
+              .then((roleRes) => {
+                if (roleRes.status) {
+                  messageApi.success(
+                    "Thông tin và vai trò người dùng đã được cập nhật."
+                  );
+                  setIsModalOpen(false);
+                  refresh();
+                } else {
+                  messageApi.error(roleRes.message);
+                }
+              });
+          } else {
+            messageApi.error(res.message);
+          }
+
           messageApi
             .open({
               type: "Thành công",
@@ -92,7 +125,9 @@ export default function EditUser(props) {
               refresh();
             });
         })
-        .catch((error) => {});
+        .catch((error) => {
+          messageApi.error("Có lỗi xảy ra khi cập nhật thông tin người dùng.");
+        });
     },
   });
 
@@ -181,6 +216,24 @@ export default function EditUser(props) {
                 : null
             }
           />
+        </div>
+
+        <div>
+          <label htmlFor="role" className="fs-6 fw-bold">
+            Danh sách vai trò:
+          </label>
+          <select
+            id="role"
+            className="mx-2"
+            value={selectedRoleId} // Set the value of the select to the selectedRoleId
+            onChange={handleRoleChange}
+          >
+            {roles.map((role) => (
+              <option key={role._id} value={role._id}>
+                {role.name}
+              </option>
+            ))}
+          </select>
         </div>
       </Modal>
     </React.Fragment>

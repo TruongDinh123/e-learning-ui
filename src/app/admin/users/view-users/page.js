@@ -15,6 +15,10 @@ export default function ViewUsers() {
   const [updateUser, setUpdateUser] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5,
+  });
 
   const columns = [
     {
@@ -64,11 +68,19 @@ export default function ViewUsers() {
   //viewUsers api
   useEffect(() => {
     setIsLoading(true);
-    dispatch(getAllUser())
+    dispatch(
+      getAllUser({ page: pagination.current, limit: pagination.pageSize })
+    )
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setUser(res.data.metadata);
+          setUser(res.metadata.users);
+          setPagination((prevPagination) => ({
+            ...prevPagination,
+            total: res.metadata.total,
+            current: res.metadata.currentPage,
+            pageSize: res.metadata.pageSize,
+          }));
         } else {
           messageApi.error(res.message);
         }
@@ -82,11 +94,12 @@ export default function ViewUsers() {
   //table data
   let data = [];
   user.forEach((i, index) => {
-    const menu = (
-      <Menu>
+    let menuItems = [];
+    if (!i?.roles.some(role => role.name === "Super-Admin")) {
+      menuItems.push(
         <Menu.Item>
           <EditUser id={i?._id} refresh={() => setUpdateUser(updateUser + 1)} />
-        </Menu.Item>
+        </Menu.Item>,
         <Menu.Item>
           <Popconfirm
             title="Xóa người dùng"
@@ -101,15 +114,18 @@ export default function ViewUsers() {
             </Button>
           </Popconfirm>
         </Menu.Item>
-      </Menu>
-    );
+      );
+    }
+
+    const menu = <Menu>{menuItems}</Menu>;
+
     data.push({
       key: index + 1,
       lastName: i?.lastName,
       firstName: i?.firstName,
       email: i?.email,
       status: i?.status,
-      roles: i?.roles,
+      roles: i?.roles.map((role) => role.name),
       action: isMobile ? (
         <Dropdown overlay={menu} placement="bottomCenter">
           <Button
@@ -121,20 +137,26 @@ export default function ViewUsers() {
         </Dropdown>
       ) : (
         <Space size={"middle"}>
-          <EditUser id={i?._id} refresh={() => setUpdateUser(updateUser + 1)} />
-
-          <Popconfirm
-            title="Xóa người dùng"
-            description="Bạn có chắc muốn xóa người dùng?"
-            okButtonProps={{ style: { backgroundColor: "red" } }}
-            okText="Có"
-            cancelText="Không"
-            onConfirm={() => handleDeleteUser(i?._id)}
-          >
-            <Button danger style={{ width: "100%" }}>
-              Xóa
-            </Button>
-          </Popconfirm>
+          {!i?.roles.some(role => role.name === "Super-Admin") && (
+            <>
+              <EditUser
+                id={i?._id}
+                refresh={() => setUpdateUser(updateUser + 1)}
+              />
+              <Popconfirm
+                title="Xóa người dùng"
+                description="Bạn có chắc muốn xóa người dùng?"
+                okButtonProps={{ style: { backgroundColor: "red" } }}
+                okText="Có"
+                cancelText="Không"
+                onConfirm={() => handleDeleteUser(i?._id)}
+              >
+                <Button danger style={{ width: "100%" }}>
+                  Xóa
+                </Button>
+              </Popconfirm>
+            </>
+          )}
         </Space>
       ),
     });
@@ -160,6 +182,41 @@ export default function ViewUsers() {
       .catch((error) => {});
   };
 
+  const handleTableChange = (newPagination, filters, sorter) => {
+    // Cập nhật state pagination với thông tin mới từ sự kiện
+    setPagination((prevPagination) => ({
+      ...prevPagination,
+      current: newPagination.current,
+      pageSize: newPagination.pageSize,
+    }));
+
+    // Gọi lại API với thông tin phân trang mới để lấy dữ liệu
+    fetchUsers(newPagination.current, newPagination.pageSize);
+  };
+
+  // Hàm để gọi API và lấy dữ liệu người dùng
+  const fetchUsers = (page, pageSize) => {
+    setIsLoading(true);
+    dispatch(getAllUser({ page, limit: pageSize }))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status === 200) {
+          setUser(res.metadata.users);
+          setPagination((prevPagination) => ({
+            ...prevPagination,
+            total: res.metadata.total,
+          }));
+        } else {
+          messageApi.error(res.message);
+        }
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        messageApi.error("An error occurred while fetching users.");
+        setIsLoading(false);
+      });
+  };
+
   return (
     <div>
       {contextHolder}
@@ -170,9 +227,20 @@ export default function ViewUsers() {
       ) : (
         <React.Fragment>
           <Table
+            title={() => (
+              <div className="flex justify-between">
+                <h1 className="text-3xl font-medium">Danh sách người dùng</h1>
+              </div>
+            )}
             columns={columns}
             dataSource={data}
-            pagination={{ pageSize: 5, position: ["bottomLeft"] }}
+            pagination={{
+              current: pagination.current,
+              pageSize: pagination.pageSize,
+              total: pagination.total,
+              position: ["bottomLeft"],
+            }}
+            onChange={handleTableChange}
             className="grid-container"
           />
         </React.Fragment>

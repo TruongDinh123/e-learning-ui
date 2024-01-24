@@ -18,12 +18,12 @@ const registerAUser = async (data) => {
   return res.data;
 };
 
-const getAllUser = async () => {
+const getAllUser = async (page, limit) => {
   const res = await axiosInstance({
-    url: "/e-learning/users",
+    url: `/e-learning/users?page=${page}&limit=${limit}`,
     method: "GET",
   });
-  return res;
+  return res.data;
 };
 
 const getAUser = async (data) => {
@@ -97,7 +97,7 @@ const getAllRole = async () => {
     url: "/e-learning/role",
     method: "GET",
   });
-  return res;
+  return res.data;
 };
 
 const updateUserRoles = async (data) => {

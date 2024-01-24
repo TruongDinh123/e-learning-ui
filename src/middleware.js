@@ -7,3 +7,14 @@ export function middleware(request) {
     if (!session) return NextResponse.redirect(`${origin}/login`);
   }
 }
+
+export function isAdmin() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  return user?.roles?.some(role => role.name === "Admin" || role.name === "Super-Admin");
+}
+
+
+export function isMentor() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  return user?.roles?.some(role => role.name === "Mentor");
+}

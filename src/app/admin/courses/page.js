@@ -13,6 +13,7 @@ import AddCourse from "./add-course/page";
 import { Col } from "react-bootstrap";
 import "../courses/page.css";
 import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
+import { isAdmin } from "@/middleware";
 
 export default function Courses() {
   const dispatch = useDispatch();
@@ -51,10 +52,10 @@ export default function Courses() {
   useEffect(() => {
     const currentTeacherId = localStorage.getItem("x-client-id");
     const user = JSON.parse(localStorage?.getItem("user"));
-    const isAdmin = user?.roles?.includes("Admin");
+    // const isAdmin = user?.roles?.includes("Admin") || user?.roles?.includes("Super-Admin");
 
     let visibleCourses = course;
-    if (!isAdmin && currentTeacherId) {
+    if (!isAdmin() && currentTeacherId) {
       visibleCourses = course.filter(
         (course) => course.teacher === currentTeacherId
       );
@@ -86,10 +87,12 @@ export default function Courses() {
           const currentTeacherId = localStorage.getItem("x-client-id");
           const user = JSON.parse(localStorage?.getItem("user"));
 
-          const isAdmin = user?.roles?.includes("Admin");
+          // const isAdmin =
+          //   user?.roles?.includes("Admin") ||
+          //   user?.roles?.includes("Super-Admin");
           let visibleCourses;
 
-          if (isAdmin) {
+          if (isAdmin()) {
             visibleCourses = res.metadata;
           } else {
             visibleCourses = res.metadata.filter(

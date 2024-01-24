@@ -27,9 +27,9 @@ export const registerUser = createAsyncThunk(
 
 export const getAllUser = createAsyncThunk(
   "/e-learning/users",
-  async (data, { rejectWithValue }) => {
+  async ({ page, limit }, { rejectWithValue }) => {
     try {
-      const response = await authService.getAllUser();
+      const response = await authService.getAllUser(page, limit);
       return response;
     } catch (err) {
       return rejectWithValue(err);
@@ -107,7 +107,7 @@ export const getAllRole = createAsyncThunk(
   "/e-learning/role",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await authService.getAllRole();
+      const response = await authService.getAllRole(data);
       return response;
     } catch (err) {
       return rejectWithValue(err);
@@ -268,11 +268,6 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-      })
-      .addCase(getAllUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.isSuccess = false;
       })
       .addCase(deleteUser.pending, (state, action) => {
         state.isLoading = true;

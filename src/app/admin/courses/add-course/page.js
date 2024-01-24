@@ -17,6 +17,7 @@ import React, { useEffect, useState } from "react";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import CustomButton from "@/components/comman/CustomBtn";
 import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
+import { isAdmin } from "@/middleware";
 
 const CourseSchema = yup.object({
   title: yup
@@ -42,7 +43,7 @@ export default function AddCourse(props) {
 
   const user = JSON.parse(localStorage?.getItem("user"));
 
-  const isAdmin = user?.roles?.includes("Admin");
+  // const isAdmin = user?.roles?.includes("Admin") || user?.roles?.includes("Super-Admin");
 
   useEffect(() => {
     dispatch(getAllCategoryAndSubCourses())
@@ -184,7 +185,7 @@ export default function AddCourse(props) {
   return (
     <React.Fragment>
       {contextHolder}
-      {isAdmin && (
+      {isAdmin() && (
         <CustomButton
           type="primary"
           title={
