@@ -27,9 +27,9 @@ export const registerUser = createAsyncThunk(
 
 export const getAllUser = createAsyncThunk(
   "/e-learning/users",
-  async ({ page, limit }, { rejectWithValue }) => {
+  async ({ page, limit, search, role }, { rejectWithValue }) => {
     try {
-      const response = await authService.getAllUser(page, limit);
+      const response = await authService.getAllUser(page, limit, search, role);
       return response;
     } catch (err) {
       return rejectWithValue(err);

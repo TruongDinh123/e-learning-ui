@@ -7,7 +7,7 @@ import {
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Button, Empty, Modal, Popconfirm, Select, Table, message } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { batch, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import AddStudentToCourse from "../../courses/add-student-course/page";
 import { getScoreByQuizId, viewQuiz } from "@/features/Quiz/quizSlice";
 import { isAdmin } from "@/middleware";
@@ -30,12 +30,11 @@ export default function ViewStudentsCourse() {
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
     const selectedCourse = courses.find((course) => course._id === value);
-    // setSelectedCourseDetails(null); // Reset giá trị của selectedCourseDetails
   };
 
   const handleViewCourse = useCallback(() => {
     getACourseData(selectedCourse);
-  }, [selectedCourse]); // Sử dụng useCallback và thêm selectedCourse vào dependencies
+  }, [selectedCourse]);
 
   const handleDeleteStudent = ({ courseId, userId }) => {
     dispatch(removeStudentFromCourse({ courseId, userId }))
@@ -221,7 +220,7 @@ export default function ViewStudentsCourse() {
           placeholder="Chọn khóa học"
           onChange={handleCourseChange}
           value={selectedCourse}
-          className="me-3"
+          className="me-3 w-full sm:w-64 mb-3 md:mb-0"
         >
           {courses.map((course) => (
             <Option key={course._id} value={course._id}>

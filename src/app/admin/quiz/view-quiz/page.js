@@ -104,7 +104,7 @@ export default function ViewQuiz() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          const updatedQuizzes = quiz.filter(q => q._id !== quizId);
+          const updatedQuizzes = quiz.filter((q) => q._id !== quizId);
           setquiz(updatedQuizzes);
         }
         setIsLoading(false);
@@ -257,7 +257,7 @@ export default function ViewQuiz() {
               placeholder="Chọn khóa học"
               onChange={handleCourseChange}
               value={selectedCourse}
-              className="me-3"
+              className="me-3 w-full sm:w-64 mb-3 md:mb-0"
             >
               {courses.map((course) => (
                 <Option key={course._id} value={course._id}>

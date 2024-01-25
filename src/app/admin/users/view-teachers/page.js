@@ -69,6 +69,12 @@ export default function ViewTeachersCourse() {
   //   getACourseData();
   // }, [update]);
 
+  // Định nghĩa một hàm mới để tái sử dụng cho việc cập nhật dữ liệu
+  const refreshCourseData = () => {
+    setUpdate(update + 1);
+    getACourseData(selectedCourse);
+  };
+
   const handleViewCourse = () => {
     if (selectedCourse) {
       getACourseData(selectedCourse);
@@ -236,7 +242,7 @@ export default function ViewTeachersCourse() {
           placeholder="Chọn khóa học"
           onChange={handleCourseChange}
           value={selectedCourse}
-          className="me-3"
+          className="me-3 w-full sm:w-64 mb-3 md:mb-0"
           optionLabelProp="label"
         >
           {courses.map((course) => (
@@ -264,14 +270,14 @@ export default function ViewTeachersCourse() {
             </div>
             <UpdateTeacherToCourse
               courseId={selectedCourse}
-              refresh={() => setUpdate(update + 1)}
+              refresh={refreshCourseData}
             />
           </div>
         ) : (
           <div className="border p-4 rounded-md my-4 flex flex-col items-center justify-center space-y-4">
             <AddTeacherToCourse
               courseId={selectedCourse}
-              refresh={() => setUpdate(update + 1)}
+              refresh={refreshCourseData}
             >
               Thêm giáo viên
             </AddTeacherToCourse>

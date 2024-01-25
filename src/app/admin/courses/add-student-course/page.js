@@ -20,13 +20,19 @@ export default function AddStudentToCourse(props) {
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setuser] = useState([]);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5,
+  });
 
   useEffect(() => {
     getAUserData();
   }, []);
 
   const getAUserData = () => {
-    dispatch(getAllUser())
+    dispatch(
+      getAllUser({ page: pagination.current, limit: pagination.pageSize })
+    )
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
@@ -82,11 +88,7 @@ export default function AddStudentToCourse(props) {
   return (
     <React.Fragment>
       {contextHolder}
-      <Button
-        type="primary"
-        onClick={showModal}
-        className="me-3 custom-button"
-      >
+      <Button type="primary" onClick={showModal} className="me-3 custom-button">
         Thêm học viên
       </Button>
       <Modal

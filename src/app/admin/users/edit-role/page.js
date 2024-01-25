@@ -14,6 +14,7 @@ const RoleSchema = yup.object({
   name: yup
     .string()
     .required("Name is required")
+    .oneOf(['Admin-Super', 'Admin', 'Mentor', 'Trainee'], 'Tên vai trò không hợp lệ')
     .trim("Name must not start or end with whitespace")
     .matches(/^\S*$/, "Name must not contain whitespace"),
 });

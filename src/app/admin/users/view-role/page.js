@@ -39,13 +39,12 @@ export default function ViewRoles() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setRole(res.data.metadata);
+          setRole(res.metadata);
         } else {
         }
         setIsLoading(false);
       })
       .catch((error) => {
-        
         setIsLoading(false);
       });
   }, [dispatch, updateRole]);

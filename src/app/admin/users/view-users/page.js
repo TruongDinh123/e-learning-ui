@@ -1,13 +1,23 @@
 "use client";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import { Dropdown, Menu, Space, Spin, Table, message } from "antd";
+import {
+  Dropdown,
+  Input,
+  Menu,
+  Select,
+  Space,
+  Spin,
+  Table,
+  message,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import { Button, Popconfirm } from "antd";
-import { deleteUser, getAllUser } from "@/features/User/userSlice";
+import { deleteUser, getAllRole, getAllUser } from "@/features/User/userSlice";
 import EditUser from "../edit-user-modal/page";
 import { useMediaQuery } from "react-responsive";
 import "../view-users/page.css";
+import { Option } from "antd/es/mentions";
 export default function ViewUsers() {
   const dispatch = useDispatch();
   const [user, setUser] = useState([]);
@@ -19,6 +29,27 @@ export default function ViewUsers() {
     current: 1,
     pageSize: 5,
   });
+  const { Option } = Select;
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterRole, setFilterRole] = useState("");
+  const [roles, setRoles] = useState([]);
+
+  // Hàm xử lý sự kiện thay đổi cho trường tìm kiếm
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    fetchUsers(
+      pagination.current,
+      pagination.pageSize,
+      e.target.value,
+      filterRole
+    );
+  };
+
+  // Hàm xử lý sự kiện thay đổi cho trường lọc vai trò
+  const handleRoleFilterChange = (value) => {
+    setFilterRole(value);
+    fetchUsers(pagination.current, pagination.pageSize, searchTerm, value);
+  };
 
   const columns = [
     {
@@ -91,11 +122,26 @@ export default function ViewUsers() {
       });
   }, [updateUser, dispatch, messageApi]);
 
+  useEffect(() => {
+    dispatch(getAllRole())
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setRoles(res.metadata);
+        } else {
+          messageApi.error(res.message);
+        }
+      })
+      .catch((error) => {
+        messageApi.error("An error occurred while fetching roles.");
+      });
+  }, [dispatch]);
+
   //table data
   let data = [];
   user.forEach((i, index) => {
     let menuItems = [];
-    if (!i?.roles.some(role => role.name === "Super-Admin")) {
+    if (!i?.roles.some((role) => role.name === "Super-Admin")) {
       menuItems.push(
         <Menu.Item>
           <EditUser id={i?._id} refresh={() => setUpdateUser(updateUser + 1)} />
@@ -137,7 +183,7 @@ export default function ViewUsers() {
         </Dropdown>
       ) : (
         <Space size={"middle"}>
-          {!i?.roles.some(role => role.name === "Super-Admin") && (
+          {!i?.roles.some((role) => role.name === "Super-Admin") && (
             <>
               <EditUser
                 id={i?._id}
@@ -194,10 +240,10 @@ export default function ViewUsers() {
     fetchUsers(newPagination.current, newPagination.pageSize);
   };
 
-  // Hàm để gọi API và lấy dữ liệu người dùng
-  const fetchUsers = (page, pageSize) => {
+  // Cập nhật hàm fetchUsers để chấp nhận các tham số tìm kiếm và lọc
+  const fetchUsers = (page, pageSize, search = "", role = "") => {
     setIsLoading(true);
-    dispatch(getAllUser({ page, limit: pageSize }))
+    dispatch(getAllUser({ page, limit: pageSize, search, role }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status === 200) {
@@ -220,6 +266,45 @@ export default function ViewUsers() {
   return (
     <div>
       {contextHolder}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-start space-y-2 md:space-y-0 md:space-x-2">
+        <div className="flex flex-col">
+          <label
+            htmlFor="userSearch"
+            className="mb-1 text-sm font-medium text-gray-700"
+          >
+            Tìm kiếm người dùng
+          </label>
+          <Input
+            title="Tìm kiếm người dùng"
+            placeholder="Tìm kiếm người dùng"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="mb-2 sm:mb-0 w-full sm:w-64"
+          />
+        </div>
+        <div className="flex flex-col">
+          <label
+            htmlFor="roleSelect"
+            className="mb-1 text-sm font-medium text-gray-700"
+          >
+            Lọc theo vai trò
+          </label>
+          <Select
+            showSearch
+            placeholder="Lọc theo vai trò"
+            onChange={handleRoleFilterChange}
+            value={filterRole}
+            className="w-full sm:w-64 mb-2"
+          >
+            <Option value="">Tất cả vai trò</Option>
+            {roles.map((role) => (
+              <Option key={role._id} value={role._id}>
+                {role.name}
+              </Option>
+            ))}
+          </Select>
+        </div>
+      </div>
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />
