@@ -75,6 +75,7 @@ export default function Home() {
           <img src={thumnail2} alt="Second" className="w-full" />
         </div>
       </Carousel>
+
       <div className="bg-white p-8">
         <h2 className="text-3xl font-bold">Khóa học nổi bật</h2>
         <p className="mt-2 text-sm text-gray-600">
@@ -121,7 +122,7 @@ export default function Home() {
                 <Link
                   href={`/courses/lessons/${course?._id}`}
                   key={course?._id}
-                  className="bg-[#f7f7f7] p-4 rounded-lg shadow-md"
+                  className="bg-[#f7f7f7] p-4 rounded-lg shadow-md cursor-pointer flex flex-col items-center min-w-0"
                 >
                   <Badge className="mb-2" variant="secondary">
                     {course?.badge}
@@ -137,9 +138,9 @@ export default function Home() {
                     width="150"
                     height="150"
                   />
-                  <h3 className="text-lg font-semibold mb-1">{course.name}</h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    {course?.description}
+                  <h3 className="text-lg font-semibold mb-1 line-clamp-1">{course.name}</h3>
+                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                    {course?.title}
                   </p>
                   <div className="text-green-600 text-xl font-bold mb-1">
                     {course?.price}
@@ -230,8 +231,8 @@ export default function Home() {
                         <h3 className="text-lg font-semibold mb-1 line-clamp-1">
                           {course.name}
                         </h3>
-                        <p className="text-sm text-gray-600 mb-4">
-                          {course?.description}
+                        <p className="text-sm text-gray-600 mb-4 line-clamp-1">
+                          {course?.title}
                         </p>
                         <div className="text-green-600 text-xl font-bold mb-1">
                           {course?.price}

@@ -111,8 +111,8 @@ export default function ViewStudentsCourse() {
                     setScores((prevScores) => ({
                       ...prevScores,
                       [quizId]: res.metadata.map((item) => ({
-                        userId: item.user._id,
-                        score: item.score,
+                        userId: item.user?._id,
+                        score: item?.score,
                       })),
                     }));
                   } else {
