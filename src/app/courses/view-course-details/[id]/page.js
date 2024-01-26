@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getACourse } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { List } from "@material-tailwind/react";
 import { useRouter } from "next/navigation";
 
 export default function CourseDetails({ params }) {
@@ -107,7 +106,7 @@ export default function CourseDetails({ params }) {
           </div>
           {/* card */}
           <div
-            className="MuiGrid-root MuiGrid-item MuiGrid-grid-md-3 relative flex justify-center z-[1000] hidden md:flex lg:flex"
+            className="MuiGrid-root MuiGrid-item MuiGrid-grid-md-3 relative flex justify-center z-[1] hidden md:flex lg:flex"
             style={{ marginTop: "-335px" }}
           >
             <div className="jss1195">
