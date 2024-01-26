@@ -115,11 +115,6 @@ export default function ChangePassword() {
       {contextHolder}
       <div class="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
         <div class="flex items-center space-x-2 mb-6">
-          <img
-            src="https://unsplash.it/40/40?image=883"
-            alt="Lock Icon"
-            class="rounded-full"
-          />
           <h1 class="text-xl font-semibold">Đổi mật khẩu</h1>
         </div>
         <p class="text-sm text-gray-600 mb-6">

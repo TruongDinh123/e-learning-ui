@@ -120,13 +120,10 @@ export default function Home() {
             >
               {course.map((course) => (
                 <Link
-                  href={`/courses/lessons/${course?._id}`}
+                  href={`/courses/view-course-details/${course?._id}`}
                   key={course?._id}
                   className="bg-[#f7f7f7] p-4 rounded-lg shadow-md cursor-pointer flex flex-col items-center min-w-0"
                 >
-                  <Badge className="mb-2" variant="secondary">
-                    {course?.badge}
-                  </Badge>
                   <img
                     alt={course.title}
                     className="w-full h-auto rounded-lg mb-2"
@@ -138,16 +135,26 @@ export default function Home() {
                     width="150"
                     height="150"
                   />
-                  <h3 className="text-lg font-semibold mb-1 line-clamp-1">{course.name}</h3>
+                  <div className="text-yellow-500 text-lg font-semibold mb-1">
+                    {course.category?.name}
+                  </div>
+                  <h3 className="text-lg font-semibold text-blue-950 mb-1 line-clamp-1">
+                    {course.name}
+                  </h3>
                   <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                    {course?.title}
+                    {course?.title || "Thông tin khóa học chưa được cập nhật"}
                   </p>
-                  <div className="text-green-600 text-xl font-bold mb-1">
-                    {course?.price}
+                  <p className="text-sm text-gray-900 font-medium mb-4 line-clamp-1">
+                    {course?.teacher?.lastName
+                      ? `${course.teacher.lastName} ${course.teacher.firstName}`
+                      : "Chưa có giáo viên"}
+                  </p>
+                  {/* <div className="text-green-600 text-xl font-bold mb-1">
+                    {course?.price || "Giá chưa được xác định"}
                   </div>
                   <div className="text-gray-400 text-sm line-through">
-                    {course?.originalPrice}
-                  </div>
+                    {course?.originalPrice || "Giá gốc chưa được xác định"}
+                  </div> */}
                 </Link>
               ))}
             </Carousel>
@@ -211,12 +218,9 @@ export default function Home() {
                     .map((course) => (
                       <Link
                         key={course?._id}
-                        href={`/courses/lessons/${course?._id}`}
+                        href={`/courses/view-course-details/${course?._id}`}
                         className="bg-[#f7f7f7] p-4 rounded-lg shadow-md cursor-pointer"
                       >
-                        <Badge className="mb-2" variant="secondary">
-                          {course?.badge}
-                        </Badge>
                         <img
                           alt={course.title}
                           className="w-full h-auto rounded-lg mb-2"
@@ -228,11 +232,20 @@ export default function Home() {
                           width="150"
                           height="150"
                         />
-                        <h3 className="text-lg font-semibold mb-1 line-clamp-1">
+                        <div className="text-yellow-500 text-lg font-semibold mb-1">
+                          {course.category?.name}
+                        </div>
+                        <h3 className="text-lg font-semibold text-blue-950 mb-1 line-clamp-1">
                           {course.name}
                         </h3>
-                        <p className="text-sm text-gray-600 mb-4 line-clamp-1">
-                          {course?.title}
+                        <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                          {course?.title ||
+                            "Thông tin khóa học chưa được cập nhật"}
+                        </p>
+                        <p className="text-sm text-gray-900 font-medium mb-4 line-clamp-1">
+                          {course?.teacher?.lastName
+                            ? `${course.teacher.lastName} ${course.teacher.firstName}`
+                            : "Chưa có giáo viên"}
                         </p>
                         <div className="text-green-600 text-xl font-bold mb-1">
                           {course?.price}

@@ -1,6 +1,6 @@
 "use client";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Modal, message } from "antd";
+import { Modal, Select, message } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button } from "antd";
@@ -18,16 +18,12 @@ import React from "react";
 const Userchema = yup.object({
   lastName: yup
     .string()
-    .required("Tên là bắt buộc")
     .trim("Tên không được bắt đầu hoặc kết thúc bằng khoảng trắng")
-    .min(3, "Tên phải có ít nhất 3 ký tự")
     .matches(/^\S*$/, "Tên không được chứa khoảng trắng"),
 
   firstName: yup
     .string()
-    .required("Tên là bắt buộc")
     .trim("Tên không được bắt đầu hoặc kết thúc bằng khoảng trắng")
-    .min(3, "Tên phải có ít nhất 3 ký tự")
     .matches(/^\S*$/, "Tên không được chứa khoảng trắng"),
 
   email: yup.string().email().required("Yêu cầu nhập email"),
@@ -78,8 +74,8 @@ export default function EditUser(props) {
       });
   }, [dispatch, id, messageApi]);
 
-  const handleRoleChange = (e) => {
-    setSelectedRoleId(e.target.value);
+  const handleRoleChange = (value) => {
+    setSelectedRoleId(value);
   };
 
   const formik = useFormik({
@@ -92,7 +88,6 @@ export default function EditUser(props) {
       roles: data?.roles.map((role) => role.name),
     },
     onSubmit: (values) => {
-      values.lastName = values.lastName.trim();
       dispatch(updateUser({ id: id, values }))
         .then(unwrapResult)
         .then((res) => {
@@ -222,18 +217,19 @@ export default function EditUser(props) {
           <label htmlFor="role" className="fs-6 fw-bold">
             Danh sách vai trò:
           </label>
-          <select
+          <Select
             id="role"
             className="mx-2"
-            value={selectedRoleId} // Set the value of the select to the selectedRoleId
+            value={selectedRoleId}
             onChange={handleRoleChange}
+            style={{ width: '100%' }} // Adjust width as needed
           >
             {roles.map((role) => (
-              <option key={role._id} value={role._id}>
+              <Select.Option key={role._id} value={role._id}>
                 {role.name}
-              </option>
+              </Select.Option>
             ))}
-          </select>
+          </Select>
         </div>
       </Modal>
     </React.Fragment>

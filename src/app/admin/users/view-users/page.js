@@ -17,7 +17,6 @@ import { deleteUser, getAllRole, getAllUser } from "@/features/User/userSlice";
 import EditUser from "../edit-user-modal/page";
 import { useMediaQuery } from "react-responsive";
 import "../view-users/page.css";
-import { Option } from "antd/es/mentions";
 export default function ViewUsers() {
   const dispatch = useDispatch();
   const [user, setUser] = useState([]);

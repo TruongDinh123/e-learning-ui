@@ -24,7 +24,6 @@ import { getCourseCompletion } from "@/features/Courses/courseSlice";
 export default function Lesson({ params }) {
   const dispatch = useDispatch();
   const [lesson, setLesson] = useState([]);
-  console.log("🚀 ~ lesson:", lesson);
   const [updateProgress, setUpdateProgress] = useState(0);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedLesson, setSelectedLesson] = useState(null);
@@ -115,16 +114,22 @@ export default function Lesson({ params }) {
           </Breadcrumb.Item>
         )}
         <Breadcrumb.Item>
-          <span href={`/courses/Lesson/${params?.id}`}>
+          <a
+            className="font-bold"
+            href={`/courses/view-course-details/${params?.id}`}
+          >
             {lesson[0]?.name.slice(0, 20)}
             {lesson[0]?.name.length > 20 ? "..." : ""}
-          </span>
+          </a>
         </Breadcrumb.Item>
       </Breadcrumb>
       <div className="pt-4">
         <Row gutter={16}>
           <Layout style={{ minHeight: "100vh" }}>
-            {lesson.some(lessonItem => lessonItem.lessons && lessonItem.lessons.length > 0) ? (
+            {lesson.some(
+              (lessonItem) =>
+                lessonItem.lessons && lessonItem.lessons.length > 0
+            ) ? (
               <>
                 <Sider
                   collapsible
