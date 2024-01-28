@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 export default function Course() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
+  console.log("🚀 ~ course:", course);
   const [isLoading, setIsLoading] = useState(false);
 
   //viewCourses api
@@ -54,8 +55,11 @@ export default function Course() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 pb-28">
               {course &&
                 course.map((item, index) => (
-                  <Link href={`/courses/lessons/${item?._id}`} key={index}>
-                    <div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 min-h-[100px]">
+                  <div
+                    key={index}
+                    className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 min-h-[100px]"
+                  >
+                    <Link href={`/courses/view-course-details/${item?._id}`}>
                       <div className="relative w-full aspect-video rounded-md overflow-hidden">
                         <Image
                           width={380}
@@ -66,26 +70,33 @@ export default function Course() {
                           src={item?.image_url}
                         />
                       </div>
-                      <div className="flex flex-col pt-2">
-                        <div className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2">
+                    </Link>
+
+                    <div className="flex flex-col pt-2">
+                      <Link href={`/courses/view-course-details/${item?._id}`}>
+                        <h3 className="text-lg md:text-xl font-semibold group-hover:text-sky-600 transition duration-300 ease-in-out line-clamp-2">
                           {item.name}
-                        </div>
-                        <div className="text-xs text-[#6B7280] font-normal md:text-sm group-hover:text-sky-700 transition line-clamp-1">
+                        </h3>
+                        <p className="text-sm text-gray-600 font-light md:text-base group-hover:text-sky-600 transition duration-300 ease-in-out line-clamp-1 mt-1">
                           Mô tả: {item.title}
-                        </div>
-                        <p className="text-xs font-bold text-muted-foreground">
+                        </p>
+                        <p className="text-xs font-medium text-gray-500 mt-2">
                           Giáo viên: {item.teacher?.lastName}
                         </p>
-                        <div className="my-3 flex items-center gap-x-2 text-sm md:text-xs">
-                          <div className="flex items-center gap-x-1 text-slate-500">
-                            <BookOutlined />
-                            <span>lessons: {item.lessons.length}</span>
-                          </div>
-                          <div className="flex items-center gap-x-1 text-slate-500"></div>
+                      </Link>
+
+                      <div className="mt-4 flex items-center gap-x-4 text-sm md:text-xs">
+                        <div className="flex items-center gap-x-1 text-gray-500">
+                          <BookOutlined className="text-sky-500" />
+                          <span>Bài học: {item.lessons.length}</span>
+                        </div>
+                        <div className="flex items-center gap-x-1 text-gray-500">
+                          <FolderOpenOutlined className="text-sky-500" />
+                          <span>Bài tập: {item.quizzes?.length}</span>
                         </div>
                       </div>
                     </div>
-                  </Link>
+                  </div>
                 ))}
             </div>
           )}

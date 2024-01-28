@@ -1,20 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Row,
-  Col,
-  Spin,
-  Upload,
-  Tabs,
-  Button,
-  message,
-  Drawer,
-  List,
-  Input,
-  Avatar,
-  Tooltip,
-} from "antd";
-import { current, unwrapResult } from "@reduxjs/toolkit";
+import { Row, Col, Spin, Upload, Button, message, Drawer, Breadcrumb } from "antd";
+import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { UploadOutlined } from "@ant-design/icons";
 import {
@@ -25,6 +12,8 @@ import {
 } from "@/features/Quiz/quizSlice";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
+import moment from "moment";
+import Link from "next/link";
 
 const ReactQuill = dynamic(
   () => import("react-quill").then((mod) => mod.default),
@@ -57,8 +46,6 @@ export default function HandleSubmitEssay({ params }) {
   };
 
   const handleCommentSubmit = () => {
-    // Add the new comment to the list of comments.
-    // In a real application, you would also send the comment to the server here.
     setComments([
       ...comments,
       {
@@ -69,7 +56,6 @@ export default function HandleSubmitEssay({ params }) {
       },
     ]);
 
-    // Clear the comment input field.
     setComment("");
   };
 
@@ -94,9 +80,7 @@ export default function HandleSubmitEssay({ params }) {
           setScore(res.metadata);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   }, [score]);
 
   const handleSubmitEssay = () => {
@@ -133,7 +117,6 @@ export default function HandleSubmitEssay({ params }) {
             message.success(res.message, 1.5);
           })
           .catch((error) => {
-            
             setIsLoading(false);
             message.error(error.response?.data?.message, 3.5);
           });
@@ -153,8 +136,6 @@ export default function HandleSubmitEssay({ params }) {
       })
       .catch((error) => {
         setIsLoading(false);
-
-        
       });
   }, [update]);
 
@@ -178,8 +159,14 @@ export default function HandleSubmitEssay({ params }) {
           <React.Fragment>
             {quiz?.map((quiz, quizIndex) => {
               const currentScore = score.find((s) => s.quiz?._id === quiz?._id);
+              const courseName =
+                quiz.courseIds[0]?.name || quiz.lessonId?.courseId?.name;
               return (
-                <Row gutter={16} key={quizIndex}>
+                <Row
+                  gutter={16}
+                  key={quizIndex}
+                  className="bg-white shadow-md rounded-lg p-6 mb-4"
+                >
                   <Col xs={24} md={16}>
                     <div className="flex justify-between items-stretch">
                       <div className="flex-1 mx-3">
@@ -187,15 +174,23 @@ export default function HandleSubmitEssay({ params }) {
                           <div className="border-2 border-gray-300 p-4 rounded-md">
                             <div className="flex items-center">
                               <div>
-                                <h1 className="text-3xl font-bold mb-5">
+                                <h1 className="text-3xl font-bold mb-3 text-blue-700">
                                   Nội dung bài làm:
                                 </h1>
-
-                                <h2 className="text-2xl font-bold mb-5">
+                                <h2 className="text-2xl font-bold mb-5 text-blue-600">
                                   {quiz.essay?.title}
                                 </h2>
+                                <p className="text-blue-600">
+                                  Tên khóa học: {courseName}
+                                </p>
+                                <p className="text-blue-600">
+                                  Thời gian hoàn thành:{" "}
+                                  {moment(quiz.submissionTime).format(
+                                    "DD/MM/YYYY HH:mm"
+                                  )}
+                                </p>
                                 <div
-                                  className="mb-5"
+                                  className="mb-5 text-gray-700"
                                   dangerouslySetInnerHTML={{
                                     __html: quiz.essay?.content,
                                   }}
@@ -243,7 +238,9 @@ export default function HandleSubmitEssay({ params }) {
                             Nộp bài
                           </Button>
                           {isTimeExceeded && (
-                            <div>Thời gian làm bài đã hết</div>
+                            <div className="text-red-500 ml-4">
+                              Thời gian làm bài đã hết
+                            </div>
                           )}
                         </div>
                       </div>
@@ -252,7 +249,10 @@ export default function HandleSubmitEssay({ params }) {
                   <Col xs={8} md={8} className="right-0">
                     <div className="border-2 border-gray-300 rounded-md">
                       <div className="mb-4 border-gray-300 p-4 pb-4 rounded-md">
-                        <Button onClick={() => setDrawerVisible(true)}>
+                        <Button
+                          onClick={() => setDrawerVisible(true)}
+                          className="bg-blue-500 text-white"
+                        >
                           Xem nội dung làm bài của bạn
                         </Button>
                         <Drawer
@@ -294,7 +294,7 @@ export default function HandleSubmitEssay({ params }) {
                             </div>
                           </div>
                           <div>
-                            <h4 className="text-2xl font-bold mb-5">
+                            <h4 className="text-2xl font-bold mb-5 text-blue-600">
                               Điểm của bạn: {currentScore?.score}
                             </h4>
                             {currentScore?.score ? (

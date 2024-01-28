@@ -1,16 +1,16 @@
 "use client";
 import {
   Button,
-  Table,
   Spin,
   Layout,
   Menu,
   Breadcrumb,
   theme,
   Image,
+  Badge,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   getQuizsByCourse,
   getQuizzesByStudentAndCourse,
@@ -24,8 +24,6 @@ import { createNotification, getACourse } from "@/features/Courses/courseSlice";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
-import { isAdmin, isMentor } from "@/middleware";
-
 const { Sider, Content, Header } = Layout;
 
 export default function ViewQuiz({ params }) {
@@ -36,6 +34,8 @@ export default function ViewQuiz({ params }) {
   const [isLoading, setLoading] = useState([]);
   const [selectedMenu, setSelectedMenu] = useState("1");
   const [collapsed, setCollapsed] = useState(false);
+  const [nonExpiredCount, setNonExpiredCount] = useState(0);
+  const [expiredCount, setExpiredCount] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function ViewQuiz({ params }) {
     dispatch(getQuizzesByStudentAndCourse({ courseId: params?.id }))
       .then(unwrapResult)
       .then((res) => {
-        if (res?.status) {
+        if (res.status) {
           setquiz(res.data?.metadata);
         }
         setLoading(false);
@@ -294,30 +294,32 @@ export default function ViewQuiz({ params }) {
       }
     });
 
+    useEffect(() => {
+      setExpiredCount(expiredCourses.length);
+    }, [expiredCourses]);
+
     return (
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-2">
         {expiredCourses.map((item, index) => (
           <div
             key={index}
-            className="bg-white rounded-lg card-shadow border-t border-b border-l border-r border-gray-300 w-full"
+            className="bg-white rounded-lg card-shadow border border-gray-300 w-full overflow-hidden"
           >
-            <div className="flex items-center justify-between p-4">
-              <div className="flex items-center">
-                {/* <div className="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center">
-                  <i className="fas fa-book-open text-white"></i>
-                </div> */}
-                <div className="ml-4">
-                  <p className="text-sm">Bài tập mới: {item.name}</p>
-                  <p className="text-xs text-gray-600">
-                    Hạn nộp bài: {item?.submissionTime}
-                  </p>
-                </div>
+            <div className="p-4">
+              <h5 className="text-lg font-semibold mb-2">{item.name}</h5>
+              <p className="text-sm text-gray-500 mb-4">
+                Hạn nộp bài: {item?.submissionTime}
+              </p>
+              <div className="flex items-center justify-between mb-4">
+                <Badge
+                  status={
+                    item.isComplete === "Đã hoàn thành" ? "success" : "error"
+                  }
+                  text={item.isComplete}
+                />
               </div>
-              <div className="text-gray-600">
-                <i className="fas fa-ellipsis-v"></i>
-              </div>
+              <div className="text-right">{item.questions}</div>
             </div>
-            <div className="mt-4 border-t pt-4 p-4">{item.questions}</div>
           </div>
         ))}
       </div>
@@ -334,11 +336,10 @@ export default function ViewQuiz({ params }) {
         ? getTime(new Date(i?.submissionTime))
         : null;
 
-      console.log("🚀 ~ submissionTime:", submissionTime);
       const currentDate = getTime(new Date());
-      console.log("🚀 ~ currentDate:", currentDate);
 
       if (!submissionTime || submissionTime > currentDate) {
+        const isLessonQuiz = i?.lessonId ? true : false;
         nonExpiredCourses.push({
           key: index + 1,
           name: i?.name,
@@ -352,6 +353,7 @@ export default function ViewQuiz({ params }) {
               : "Chưa hoàn thành"
             : "Chưa hoàn thành",
           type: i?.type,
+          isLessonQuiz,
           questions: (
             <Button
               className="me-3"
@@ -371,30 +373,39 @@ export default function ViewQuiz({ params }) {
       }
     });
 
+    useEffect(() => {
+      setNonExpiredCount(nonExpiredCourses.length);
+    }, [nonExpiredCourses]);
+
     return (
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-2">
         {nonExpiredCourses.map((item, index) => (
           <div
             key={index}
-            className="bg-white rounded-lg card-shadow border-t border-b border-l border-r border-gray-300 w-full"
+            className="bg-white rounded-lg card-shadow border border-gray-300 w-full overflow-hidden"
           >
-            <div className="flex items-center justify-between p-4">
-              <div className="flex items-center">
-                {/* <div className="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center">
-                  <i className="fas fa-book-open text-white"></i>
-                </div> */}
-                <div className="ml-4">
-                  <p className="text-sm">Bài tập mới: {item.name}</p>
-                  <p className="text-xs text-gray-600">
-                    Hạn nộp bài: {item?.submissionTime}
-                  </p>
-                </div>
+            <div className="p-4">
+              <h5 className="text-lg font-semibold mb-2">{item.name}</h5>
+              <p className="text-sm text-gray-500 mb-4">
+                Hạn nộp bài: {item?.submissionTime}
+              </p>
+              <div className="flex items-center justify-between mb-4">
+                <span
+                  className={`text-xs font-semibold ${
+                    item.isLessonQuiz ? "text-blue-500" : "text-green-500"
+                  }`}
+                >
+                  {item.isLessonQuiz ? "Bài tập bài học" : "Bài tập khóa học"}
+                </span>
+                <Badge
+                  status={
+                    item.isComplete === "Đã hoàn thành" ? "success" : "error"
+                  }
+                  text={item.isComplete}
+                />
               </div>
-              <div className="text-gray-600">
-                <i className="fas fa-ellipsis-v"></i>
-              </div>
+              <div className="text-right">{item.questions}</div>
             </div>
-            <div className="mt-4 border-t pt-4 p-4">{item.questions}</div>
           </div>
         ))}
       </div>
@@ -456,8 +467,12 @@ export default function ViewQuiz({ params }) {
           >
             <Menu.Item key="1">Thông báo</Menu.Item>
             <Menu.SubMenu key="sub1" title="Bài tập">
-              <Menu.Item key="2">Hết hạn</Menu.Item>
-              <Menu.Item key="3">Chưa hết hạn</Menu.Item>
+              <Menu.Item key="2">
+                Hết hạn {expiredCount > 0 ? `[${expiredCount}]` : ""}
+              </Menu.Item>
+              <Menu.Item key="3">
+                Chưa hết hạn {nonExpiredCount > 0 ? `[${nonExpiredCount}]` : ""}
+              </Menu.Item>
             </Menu.SubMenu>
           </Menu>
         </Sider>

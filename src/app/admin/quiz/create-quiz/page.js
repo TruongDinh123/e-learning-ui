@@ -45,9 +45,10 @@ const ReactQuill = dynamic(
 export default function QuizCreator() {
   const [messageApi, contextHolder] = message.useMessage();
   const [selectedCourse, setSelectedCourse] = useState([]);
+  const [selectedLesson, setSelectedLesson] = useState(null);
+  const [selectedCourseLessons, setSelectedCourseLessons] = useState([]);
   const [courses, setCourses] = useState([]);
   const [studentsByCourse, setStudentsByCourse] = useState([]);
-  console.log("🚀 ~ studentsByCourse:", studentsByCourse);
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [isTemplateMode, setIsTemplateMode] = useState(false);
   const [quizTemplates, setQuizTemplates] = useState([]);
@@ -86,7 +87,13 @@ export default function QuizCreator() {
     } else if (value.length === 1) {
       const selectedCourse = courses.find((course) => course._id === value[0]);
       setStudentsByCourse(selectedCourse?.students || []);
+      setSelectedCourseLessons(selectedCourse?.lessons || []);
     }
+  };
+
+  // Hàm xử lý khi chọn bài học
+  const handleLessonChange = (value) => {
+    setSelectedLesson(value);
   };
 
   // Hàm xử lý khi chọn học viên
@@ -210,6 +217,19 @@ export default function QuizCreator() {
       }
     }
 
+    if (selectedLesson) {
+      formattedValues = {
+        ...formattedValues,
+        lessonId: selectedLesson, // Add lessonId to the payload
+        courseIds: [], // Clear courseIds since the quiz is associated with a lesson
+      };
+    } else {
+      formattedValues = {
+        ...formattedValues,
+        courseIds: selectedCourse, // Keep courseIds in the payload
+      };
+    }
+
     dispatch(
       createQuiz({
         formattedValues,
@@ -247,6 +267,14 @@ export default function QuizCreator() {
             setIsLoading(false);
             message.error(error.response?.data?.message, 3.5);
           });
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        if (error.status === 403 && error.name === 'BadRequestError') {
+          message.error('A quiz for this lesson already exists.', 3.5);
+        } else {
+          message.error(error.response?.data?.message || 'An error occurred while saving the quiz.', 3.5);
+        }
       });
   };
 
@@ -366,6 +394,28 @@ export default function QuizCreator() {
                         {courses.map((course) => (
                           <Option key={course._id} value={course._id}>
                             {course.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={12} md={8} lg={6}>
+                    <Form.Item
+                      name="lessonId"
+                      label="Chọn bài học:"
+                      labelCol={{ span: 24 }}
+                      wrapperCol={{ span: 24 }}
+                    >
+                      <Select
+                        placeholder="Chọn bài học"
+                        onChange={handleLessonChange}
+                        value={selectedLesson}
+                        className="me-3 w-full sm:w-64 mb-3 md:mb-0"
+                      >
+                        <Option value="">Không chọn</Option>
+                        {selectedCourseLessons.map((lesson) => (
+                          <Option key={lesson._id} value={lesson._id}>
+                            {lesson.name}
                           </Option>
                         ))}
                       </Select>

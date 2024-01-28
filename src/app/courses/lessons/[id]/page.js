@@ -24,9 +24,11 @@ import { getCourseCompletion } from "@/features/Courses/courseSlice";
 export default function Lesson({ params }) {
   const dispatch = useDispatch();
   const [lesson, setLesson] = useState([]);
+  console.log("🚀 ~ lesson:", lesson);
   const [updateProgress, setUpdateProgress] = useState(0);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedLesson, setSelectedLesson] = useState(null);
+  console.log("🚀 ~ selectedLesson:", selectedLesson);
   const [selectedLessonContent, setSelectedLessonContent] = useState(null);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -77,7 +79,7 @@ export default function Lesson({ params }) {
 
   const handleSelectLesson = (item) => {
     setIsLoading(true);
-    setSelectedLesson(item._id);
+    setSelectedLesson(item);
     setSelectedLessonContent(item.content);
     dispatch(viewALesson({ lessonId: item._id }))
       .then(unwrapResult)
@@ -95,7 +97,7 @@ export default function Lesson({ params }) {
   let isCompleted = false;
   if (completeCourse && completeCourse.userLessonInfo) {
     const currentLesson = completeCourse.userLessonInfo.find(
-      (lesson) => lesson.lesson === selectedLesson
+      (lesson) => lesson.lesson === selectedLesson._id
     );
     if (currentLesson) {
       isCompleted = currentLesson.completed;
@@ -170,6 +172,20 @@ export default function Lesson({ params }) {
                         </Menu.Item>
                       ))
                     )}
+
+                    <Menu.ItemGroup key="g1" title="Bài tập khóa học">
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        className="custom-button me-3 font-bold py-2 button-container"
+                        onClick={() =>
+                          router.push(`/courses/view-details/${params.id}`)
+                        }
+                      >
+                        <FolderOpenOutlined />
+                        Bài tập khóa học
+                      </Button>
+                    </Menu.ItemGroup>
                   </Menu>
                 </Sider>
                 <Layout style={{ paddingLeft: collapsed ? "0px" : "50px" }}>
@@ -219,19 +235,26 @@ export default function Lesson({ params }) {
 
                         {selectedLesson && isLoggedIn && (
                           <div className="mt-4">
-                            <Button
-                              type="primary"
-                              htmlType="submit"
-                              className="custom-button me-3 font-bold py-2 button-container"
-                              onClick={() =>
-                                router.push(
-                                  `/courses/view-details/${params.id}`
-                                )
-                              }
-                            >
-                              <FolderOpenOutlined />
-                              Làm bài tập
-                            </Button>
+                            {selectedLesson.quizzes.map((quiz, index) => (
+                              <Button
+                                key={index}
+                                type="primary"
+                                htmlType="submit"
+                                className="custom-button me-3 font-bold py-2 button-container"
+                                onClick={() =>
+                                  quiz?.type === "multiple_choice"
+                                    ? router.push(
+                                        `/courses/view-details/submit-quiz/${quiz?._id}`
+                                      )
+                                    : router.push(
+                                        `/courses/view-details/handle-submit-essay/${quiz?._id}`
+                                      )
+                                }
+                              >
+                                <FolderOpenOutlined />
+                                Làm bài tập cuối bài học
+                              </Button>
+                            ))}
                           </div>
                         )}
                       </React.Fragment>

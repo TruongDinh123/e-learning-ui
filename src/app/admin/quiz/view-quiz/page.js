@@ -266,6 +266,19 @@ export default function ViewQuiz() {
               ))}
             </Select>
 
+            {/* <Select
+              placeholder="Chọn bài học"
+              onChange={handleLessonChange}
+              value={selectedLesson}
+              className="me-3 w-full sm:w-64 mb-3 md:mb-0"
+            >
+              {selectedCourseLessons.map((lesson) => (
+                <Option key={lesson._id} value={lesson._id}>
+                  {lesson.name}
+                </Option>
+              ))}
+            </Select> */}
+
             <div className="pb-3">
               <Button
                 type="primary"

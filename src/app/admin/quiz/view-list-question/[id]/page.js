@@ -13,10 +13,12 @@ import Link from "next/link";
 import TabPane from "antd/es/tabs/TabPane";
 import ViewListScore from "../score-trainee/page";
 import "../[id]/page.css";
+import moment from "moment";
 
 export default function ViewListQuestion({ params }) {
   const dispatch = useDispatch();
   const [quiz, setquiz] = useState([]);
+  console.log("🚀 ~ quiz:", quiz);
   const [score, setScore] = useState([]);
   const [updateQuiz, setUpdateQuiz] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -78,6 +80,21 @@ export default function ViewListQuestion({ params }) {
             {quiz?.map((quiz, quizIndex) => (
               <>
                 <TabPane tab={`Câu hỏi`} key={quizIndex}>
+                  <div className="mb-4 bg-blue-100 p-4 rounded-md shadow-md">
+                    <h2 className="text-2xl font-bold text-blue-700">
+                      Tên khóa học: {quiz.courseIds[0]?.name}
+                    </h2>
+                    <p className="text-blue-600">
+                      Thời gian hoàn thành:{" "}
+                      {moment(quiz.submissionTime).format("DD/MM/YYYY HH:mm")}
+                    </p>
+                    <p className="text-blue-600">
+                      Loại bài tập:{" "}
+                      {quiz.type === "multiple_choice"
+                        ? "Trắc nghiệm"
+                        : "Tự luận"}
+                    </p>
+                  </div>
                   {quiz.type === "multiple_choice" ? (
                     <div className="grid-container">
                       <div className="flex flex-col sm:flex-row justify-between items-center">

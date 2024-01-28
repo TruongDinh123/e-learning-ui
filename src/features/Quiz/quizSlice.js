@@ -4,6 +4,7 @@ import { QuizService } from "./quizService";
 export const createQuiz = createAsyncThunk(
   "/e-learning/create-quiz",
   async (data, { rejectWithValue }) => {
+    console.log(data);
     try {
       const response = await QuizService.createQuiz(data);
       return response;
