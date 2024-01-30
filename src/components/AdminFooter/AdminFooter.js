@@ -11,7 +11,6 @@ function AdminFooter() {
         style={{
           backgroundColor: "#111111",
           bottom: 0,
-          position: "fixed",
           width: "100%",
           height: "auto",
         }}

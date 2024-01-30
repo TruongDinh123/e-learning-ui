@@ -148,7 +148,7 @@ export default function Courses() {
   return (
     <>
       <div
-        className="max-w-screen-2xl mx-auto min-h-screen relative"
+        className="max-w-screen-2xl mx-auto min-h-screen relative p-3"
         style={{
           paddingBottom: "100px", // Adjust this value to match the footer's height
         }}

@@ -235,9 +235,9 @@ export default function ViewTeachersCourse() {
   });
 
   return (
-    <React.Fragment>
+    <div className="p-3">
       {contextHolder}
-      <div className="py-3">
+      <div className="p-7">
         <Select
           placeholder="Chọn khóa học"
           onChange={handleCourseChange}
@@ -298,6 +298,6 @@ export default function ViewTeachersCourse() {
           className="grid-container"
         />
       )}
-    </React.Fragment>
+    </div>
   );
 }

@@ -342,7 +342,7 @@ export default function QuizCreator() {
   };
 
   return (
-    <div>
+    <div className="p-3">
       {contextHolder}
       <div className="overflow-y-auto h-screen pb-28 scrollbar-thin justify-center items-center grid-container">
         <h1 className="text-2xl">

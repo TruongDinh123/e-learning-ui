@@ -27,7 +27,6 @@ const { Option } = Select;
 export default function ViewQuiz() {
   const dispatch = useDispatch();
   const [quiz, setquiz] = useState([]);
-  console.log("🚀 ~ quiz:", quiz);
   const [updateQuiz, setUpdateQuiz] = useState(0);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedLesson, setSelectedLesson] = useState(null);
@@ -245,14 +244,17 @@ export default function ViewQuiz() {
   });
 
   return (
-    <React.Fragment>
+    <div className="p-3">
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />
         </div>
       ) : (
         <React.Fragment>
-          <div style={{ display: "flex", paddingBottom: "10px" }} className="pt-6">
+          <div
+            style={{ display: "flex", paddingBottom: "10px" }}
+            className="pt-6"
+          >
             <Select
               placeholder="Chọn khóa học"
               onChange={handleCourseChange}
@@ -297,6 +299,6 @@ export default function ViewQuiz() {
           />
         </React.Fragment>
       )}
-    </React.Fragment>
+    </div>
   );
 }

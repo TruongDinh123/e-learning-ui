@@ -18,10 +18,10 @@ import moment from "moment";
 export default function ViewListQuestion({ params }) {
   const dispatch = useDispatch();
   const [quiz, setquiz] = useState([]);
-  console.log("🚀 ~ quiz:", quiz);
   const [score, setScore] = useState([]);
   const [updateQuiz, setUpdateQuiz] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+
 
   useEffect(() => {
     dispatch(viewAQuiz({ quizId: params?.id }))
@@ -61,7 +61,7 @@ export default function ViewListQuestion({ params }) {
   };
 
   return (
-    <div className="mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="mx-auto px-4 sm:px-6 lg:px-8 p-3">
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />
@@ -82,7 +82,8 @@ export default function ViewListQuestion({ params }) {
                 <TabPane tab={`Câu hỏi`} key={quizIndex}>
                   <div className="mb-4 bg-blue-100 p-4 rounded-md shadow-md">
                     <h2 className="text-2xl font-bold text-blue-700">
-                      Tên khóa học: {quiz.courseIds[0]?.name}
+                      Tên khóa học: {quiz.courseIds[0]?.name}{" "}
+                        {quiz.lessonId?.courseId?.name}
                     </h2>
                     <p className="text-blue-600">
                       Thời gian hoàn thành:{" "}

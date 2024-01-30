@@ -102,7 +102,8 @@ export default function AdminSidebar(props) {
       breakpoint="lg"
       collapsedWidth="0"
       style={{
-        height: "calc(100vh + 432px)",
+        // height: "calc(100vh + 432px)",
+        height: "calc(100vh + 610px)",
       }}
     >
       <div className="demo-logo-vertical d-flex justify-content-center align-items-center py-3">

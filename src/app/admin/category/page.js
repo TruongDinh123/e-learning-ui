@@ -141,7 +141,7 @@ export default function ViewCategories() {
   });
 
   return (
-    <div>
+    <div className="p-3">
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />
