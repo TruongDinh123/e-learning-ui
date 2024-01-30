@@ -103,6 +103,31 @@ export default function Quizs({ params }) {
       .catch((error) => {});
   }, []);
 
+  useEffect(() => {
+    const preventCopy = (event) => {
+      event.preventDefault();
+      message.error("Sao chép nội dung không được phép!");
+    };
+  
+    const preventInspect = (event) => {
+      if (event.keyCode === 123 || (event.ctrlKey && event.shiftKey && (event.keyCode === 73 || event.keyCode === 74))) {
+        event.preventDefault();
+        message.error("Không được phép kiểm tra!");
+        return false;
+      }
+    };
+  
+    document.addEventListener("copy", preventCopy);
+    document.addEventListener("contextmenu", preventCopy);
+    document.addEventListener("keydown", preventInspect);
+  
+    return () => {
+      document.removeEventListener("copy", preventCopy);
+      document.removeEventListener("contextmenu", preventCopy);
+      document.removeEventListener("keydown", preventInspect);
+    };
+  }, []);
+
   let submissionTime;
   if (quiz[0] && quiz[0]?.submissionTime) {
     submissionTime = new Date(quiz[0]?.submissionTime);
@@ -113,7 +138,7 @@ export default function Quizs({ params }) {
   const isTimeExceeded = currentTime > submissionTime;
 
   return (
-    <div className="pt-24 pb-48 flex justify-center items-center overflow-auto bg-gray-200">
+    <div className="pt-24 pb-48 flex justify-center items-center overflow-auto bg-gray-200 noCopy">
       {contextHolder}
       <div className="w-full md:w-2/3">
         {loading ? (
