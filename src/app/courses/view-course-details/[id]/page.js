@@ -3,7 +3,7 @@ import { Avatar, Breadcrumb, Button, Collapse } from "antd";
 import "../[id]/page.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getACourse } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useRouter } from "next/navigation";
@@ -14,6 +14,8 @@ export default function CourseDetails({ params }) {
   const { Panel } = Collapse;
   const [dataCourse, setDataCourse] = useState([]);
   const router = useRouter();
+
+  const isLoggedIn = useSelector((state) => !!state.user.userName);
 
   useEffect(() => {
     dispatch(getACourse(params?.id))
@@ -116,7 +118,7 @@ export default function CourseDetails({ params }) {
                   <div className="jss1634">
                     <img
                       // src="https://storage.googleapis.com/topica-media/811e34a8-702e-4d32-9137-4bf4df38488a/product/62e1ef2c2386b30026fdd90f"
-                      src={avatar}
+                      src={dataCourse?.teacher?.image_url || avatar}
                       className="jss1628 jss1636"
                     />
                     <div className="jss1638"></div>
@@ -142,31 +144,33 @@ export default function CourseDetails({ params }) {
                   </div>
                 </div>
                 <div></div>
-                {/* <div className="courseDetails">
-                  <ul className="MuiList-root overviewList">
-                    <h2 className="text-lg font-bold">Danh sách bài tập</h2>
-                    {dataCourse?.quizzes?.slice(0, 3).map((quiz, index) => (
-                      <li
-                        className="MuiListItem-root overviewListItem MuiListItem-gutters"
-                        key={index}
-                      >
-                        <div className="MuiListItemText-root overviewName">
-                          <span className="MuiTypography-root MuiListItemText-primary MuiTypography-body1 MuiTypography-displayBlock">
-                            {`Quiz ${index + 1}: ${quiz.name}`}
-                          </span>
-                        </div>
-                      </li>
-                    ))}
-                    {dataCourse?.quizzes?.length > 3 && (
-                      <Link
-                        href={`/courses/view-details/${dataCourse?._id}`}
-                        className="pl-4 text-blue-500"
-                      >
-                        Xem tất cả
-                      </Link>
-                    )}
-                  </ul>
-                </div> */}
+                {isLoggedIn && (
+                  <div className="courseDetails">
+                    <ul className="MuiList-root overviewList">
+                      <h2 className="text-lg font-bold">Danh sách bài tập</h2>
+                      {dataCourse?.quizzes?.slice(0, 3).map((quiz, index) => (
+                        <li
+                          className="MuiListItem-root overviewListItem MuiListItem-gutters"
+                          key={index}
+                        >
+                          <div className="MuiListItemText-root overviewName">
+                            <span className="MuiTypography-root MuiListItemText-primary MuiTypography-body1 MuiTypography-displayBlock">
+                              {`Bài tập ${index + 1}: ${quiz.name}`}
+                            </span>
+                          </div>
+                        </li>
+                      ))}
+                      {dataCourse?.quizzes?.length > 3 && (
+                        <Link
+                          href={`/courses/view-details/${dataCourse?._id}`}
+                          className="pl-4 text-blue-500"
+                        >
+                          Xem tất cả
+                        </Link>
+                      )}
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
           </div>

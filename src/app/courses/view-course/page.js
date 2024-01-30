@@ -4,6 +4,7 @@ import { BookOutlined, FolderOpenOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Breadcrumb, Image, Spin } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -11,7 +12,7 @@ export default function Course() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const router = useRouter();
   //viewCourses api
   useEffect(() => {
     setIsLoading(true);
@@ -27,6 +28,10 @@ export default function Course() {
         setIsLoading(false);
       });
   }, [dispatch]);
+
+  const navigateToNonExpiredCourses = (courseId) => {
+    router.push(`/courses/view-details/${courseId}`);
+  };
 
   return (
     <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -89,7 +94,7 @@ export default function Course() {
                           <BookOutlined className="text-sky-500" />
                           <span>Bài học: {item.lessons.length}</span>
                         </div>
-                        <div className="flex items-center gap-x-1 text-gray-500">
+                        <div className="flex items-center gap-x-1 text-gray-500  cursor-pointer" onClick={() => navigateToNonExpiredCourses(item._id)}>
                           <FolderOpenOutlined className="text-sky-500" />
                           <span>Bài tập: {item.quizzes?.length}</span>
                         </div>

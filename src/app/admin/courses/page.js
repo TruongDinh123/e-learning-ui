@@ -149,9 +149,6 @@ export default function Courses() {
     <>
       <div
         className="max-w-screen-2xl mx-auto min-h-screen relative p-3"
-        style={{
-          paddingBottom: "100px", // Adjust this value to match the footer's height
-        }}
       >
         <AddCourse
           refresh={() => setUpdateCourse(updateCourse + 1)}

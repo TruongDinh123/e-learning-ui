@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 import Cookies from "js-cookie";
 import { isAdmin, isMentor } from "@/middleware";
 import styled from "styled-components";
+import { Content } from "antd/es/layout/layout";
 // import { Providers } from "@/Provider";
 
 const Providers = dynamic(() => import("@/Provider"), { ssr: false });
@@ -44,8 +45,11 @@ export default function RootLayout({ children }) {
     }
 
     const isLessonPage = pathname.startsWith("/courses/lessons/");
+    const isCourseDetailnPage = pathname.startsWith(
+      "/courses/view-course-details/"
+    );
 
-    if (!loading && !isLessonPage) {
+    if (!loading && !isLessonPage && !isCourseDetailnPage) {
       if (!token && pathname !== "/login" && pathname !== "/") {
         router.push("/login");
       } else if (pathname.includes("/admin") && !(isAdmin() || isMentor())) {
@@ -85,7 +89,7 @@ export default function RootLayout({ children }) {
 
                   <div
                     className={
-                      pathname.includes("/admin") ? "pb-[100vh]" : undefined
+                      pathname.includes("/admin") ? "" : undefined
                     }
                   >
                     {children}
@@ -94,7 +98,7 @@ export default function RootLayout({ children }) {
                     (!pathname.includes("/admin") ? (
                       <CustomFooter />
                     ) : (
-                      <AdminFooter />
+                      <AdminFooter sidebarCollapsed={!collapsed} />
                     ))}
                 </Layout>
               </Layout>

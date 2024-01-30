@@ -81,6 +81,10 @@ export default function ViewQuiz({ params }) {
       });
   }, []);
 
+  useEffect(() => {
+    setSelectedMenu("3");
+  }, [router]);
+
   const userState = useSelector((state) => state?.user?.user);
   const isAdminState = userState?.roles?.some(
     (role) =>
@@ -306,7 +310,7 @@ export default function ViewQuiz({ params }) {
             className="bg-white rounded-lg card-shadow border border-gray-300 w-full overflow-hidden"
           >
             <div className="p-4">
-              <h5 className="text-lg font-semibold mb-2">{item.name}</h5>
+              <h5 className="text-lg font-semibold mb-2 line-clamp-2">{item.name}</h5>
               <p className="text-sm text-gray-500 mb-4">
                 Hạn nộp bài: {item?.submissionTime}
               </p>
@@ -385,7 +389,7 @@ export default function ViewQuiz({ params }) {
             className="bg-white rounded-lg card-shadow border border-gray-300 w-full overflow-hidden"
           >
             <div className="p-4">
-              <h5 className="text-lg font-semibold mb-2">{item.name}</h5>
+              <h5 className="text-lg font-semibold mb-2 line-clamp-2">{item.name}</h5>
               <p className="text-sm text-gray-500 mb-4">
                 Hạn nộp bài: {item?.submissionTime}
               </p>
@@ -459,7 +463,7 @@ export default function ViewQuiz({ params }) {
           <div className="demo-logo-vertical" />
           <Menu
             mode="inline"
-            defaultSelectedKeys={["1"]}
+            selectedKeys={[selectedMenu]}
             onSelect={({ key }) => setSelectedMenu(key)}
             style={{
               height: "100%",

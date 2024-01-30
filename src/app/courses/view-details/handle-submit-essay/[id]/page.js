@@ -1,6 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Row, Col, Spin, Upload, Button, message, Drawer, Breadcrumb } from "antd";
+import {
+  Row,
+  Col,
+  Spin,
+  Upload,
+  Button,
+  message,
+  Drawer,
+  Breadcrumb,
+} from "antd";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { UploadOutlined } from "@ant-design/icons";
@@ -22,6 +31,7 @@ const ReactQuill = dynamic(
 
 export default function HandleSubmitEssay({ params }) {
   const [quiz, setquiz] = useState([]);
+  console.log("🚀 ~ quiz:", quiz);
   const [score, setScore] = useState([]);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -161,6 +171,11 @@ export default function HandleSubmitEssay({ params }) {
               const currentScore = score.find((s) => s.quiz?._id === quiz?._id);
               const courseName =
                 quiz.courseIds[0]?.name || quiz.lessonId?.courseId?.name;
+
+              const teacherName =
+                quiz.lessonId?.courseId?.teacher.lastName +
+                " " +
+                quiz.lessonId?.courseId?.teacher.firstName;
               return (
                 <Row
                   gutter={16}
@@ -181,7 +196,13 @@ export default function HandleSubmitEssay({ params }) {
                                   {quiz.essay?.title}
                                 </h2>
                                 <p className="text-blue-600">
+                                  Tên giáo viên: {teacherName}
+                                </p>
+                                <p className="text-blue-600">
                                   Tên khóa học: {courseName}
+                                </p>
+                                <p className="text-blue-600">
+                                  Tên bài học: {quiz.lessonId?.name}
                                 </p>
                                 <p className="text-blue-600">
                                   Thời gian hoàn thành:{" "}
