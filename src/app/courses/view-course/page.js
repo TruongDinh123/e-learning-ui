@@ -10,7 +10,6 @@ import { useDispatch } from "react-redux";
 export default function Course() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
-  console.log("🚀 ~ course:", course);
   const [isLoading, setIsLoading] = useState(false);
 
   //viewCourses api

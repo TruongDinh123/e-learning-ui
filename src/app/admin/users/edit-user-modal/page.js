@@ -219,7 +219,6 @@ export default function EditUser(props) {
           </label>
           <Select
             id="role"
-            className="mx-2"
             value={selectedRoleId}
             onChange={handleRoleChange}
             style={{ width: '100%' }} // Adjust width as needed

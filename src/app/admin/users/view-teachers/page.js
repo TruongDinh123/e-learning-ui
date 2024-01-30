@@ -237,7 +237,7 @@ export default function ViewTeachersCourse() {
   return (
     <React.Fragment>
       {contextHolder}
-      <div className="pb-3">
+      <div className="py-3">
         <Select
           placeholder="Chọn khóa học"
           onChange={handleCourseChange}

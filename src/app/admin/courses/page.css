@@ -1,4 +1,4 @@
 .grid-container-courses {
-  max-height: calc(100vh - 275px);
+  max-height: calc(100vh - 70px);
   overflow-y: auto;
 }

@@ -110,7 +110,7 @@ export default function Login() {
 
   return (
     <div
-      className="min-h-screen bg-no-repeat bg-cover bg-center relative
+      className="min-h-screen relative bg-no-repeat bg-cover bg-center
       flex items-center justify-center"
       style={{
         backgroundImage:

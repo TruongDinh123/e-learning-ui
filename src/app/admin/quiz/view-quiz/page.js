@@ -245,14 +245,14 @@ export default function ViewQuiz() {
   });
 
   return (
-    <div className="">
+    <React.Fragment>
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />
         </div>
       ) : (
         <React.Fragment>
-          <div style={{ display: "flex", paddingBottom: "10px" }}>
+          <div style={{ display: "flex", paddingBottom: "10px" }} className="pt-6">
             <Select
               placeholder="Chọn khóa học"
               onChange={handleCourseChange}
@@ -279,7 +279,7 @@ export default function ViewQuiz() {
               ))}
             </Select> */}
 
-            <div className="pb-3">
+            <div className="">
               <Button
                 type="primary"
                 className="custom-button"
@@ -297,6 +297,6 @@ export default function ViewQuiz() {
           />
         </React.Fragment>
       )}
-    </div>
+    </React.Fragment>
   );
 }

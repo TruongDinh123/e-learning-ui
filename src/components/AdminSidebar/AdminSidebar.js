@@ -102,12 +102,12 @@ export default function AdminSidebar(props) {
       breakpoint="lg"
       collapsedWidth="0"
       style={{
-    height: 'calc(100vh + 300px)'
-  }}
+        height: "calc(100vh + 432px)",
+      }}
     >
       <div className="demo-logo-vertical d-flex justify-content-center align-items-center py-3">
         <div className="flex-shrink-0 pb-4">
-          <a href="/admin/courses">
+          <a href="/">
             <img
               className="h-36 w-auto object-contain  absolute top-0 mt-[26px] transform -translate-y-1/2  fs-6 text-white text-decoration-none me-4"
               style={{ left: "1rem", paddingLeft: "10px" }}

@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { getACourse } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useRouter } from "next/navigation";
+const avatar = "/images/imagedefault.jpg";
 
 export default function CourseDetails({ params }) {
   const dispatch = useDispatch();
@@ -114,7 +115,8 @@ export default function CourseDetails({ params }) {
                 <div className="courseImg">
                   <div className="jss1634">
                     <img
-                      src="https://storage.googleapis.com/topica-media/811e34a8-702e-4d32-9137-4bf4df38488a/product/62e1ef2c2386b30026fdd90f"
+                      // src="https://storage.googleapis.com/topica-media/811e34a8-702e-4d32-9137-4bf4df38488a/product/62e1ef2c2386b30026fdd90f"
+                      src={avatar}
                       className="jss1628 jss1636"
                     />
                     <div className="jss1638"></div>
@@ -140,7 +142,7 @@ export default function CourseDetails({ params }) {
                   </div>
                 </div>
                 <div></div>
-                <div className="courseDetails">
+                {/* <div className="courseDetails">
                   <ul className="MuiList-root overviewList">
                     <h2 className="text-lg font-bold">Danh sách bài tập</h2>
                     {dataCourse?.quizzes?.slice(0, 3).map((quiz, index) => (
@@ -164,7 +166,7 @@ export default function CourseDetails({ params }) {
                       </Link>
                     )}
                   </ul>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

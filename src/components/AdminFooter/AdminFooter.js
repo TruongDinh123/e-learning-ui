@@ -7,15 +7,16 @@ function AdminFooter() {
 
   return (
     !isMobile && (
-      <Footer
+      <footer
         style={{
           backgroundColor: "#111111",
           bottom: 0,
-          width: '100%',
-          height: 'auto',
+          position: "fixed",
+          width: "100%",
+          height: "auto",
         }}
       >
-        <div className="max-w-[105rem] mx-auto px-4 sm:px-6 lg:px-8 text-white">
+        <div className="max-w-[105rem] mx-auto pt-10 sm:px-6 lg:px-8 text-white">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             <div>
               <h5 className="font-bold mb-4 text-[#C89F65]">VỀ CHÚNG TÔI</h5>
@@ -62,7 +63,7 @@ function AdminFooter() {
               </ul>
             </div>
           </div>
-          <div className="flex flex-col md:flex-row justify-between items-center mt-8 border-t border-gray-700 pt-4">
+          <div className="flex flex-col md:flex-row justify-between items-center border-t border-gray-700 pt-4">
             <div className="flex items-center space-x-4 mb-4 md:mb-0">
               <span>Đã đăng ký Bộ Công Thương</span>
             </div>
@@ -71,11 +72,11 @@ function AdminFooter() {
               <YoutubeIcon className="h-6 w-6" />
             </div>
           </div>
-          <p className="text-center mt-8">
+          <p className="text-center">
             © 2024 95IDEAL TECHNOLOGY SOLUTIONS
           </p>
         </div>
-      </Footer>
+      </footer>
     )
   );
 

@@ -122,7 +122,7 @@ export default function AdminHeader(props) {
               }}
             />
             <div className="flex-shrink-0">
-              <a href="/admin/courses">
+              <a href="/">
                 <img className="h-36 w-auto" src={logo3} alt="" />
               </a>
             </div>

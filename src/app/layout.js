@@ -88,7 +88,7 @@ export default function RootLayout({ children }) {
                     {children}
                   </div>
                   {shouldRenderFooter &&
-                    (!pathname.includes("/admin") && pathname !== "/login" ? (
+                    (!pathname.includes("/admin") ? (
                       <CustomFooter />
                     ) : (
                       <AdminFooter />

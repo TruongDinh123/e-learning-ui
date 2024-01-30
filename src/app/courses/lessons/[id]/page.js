@@ -235,7 +235,7 @@ export default function Lesson({ params }) {
 
                         {selectedLesson && isLoggedIn && (
                           <div className="mt-4">
-                            {selectedLesson.quizzes.map((quiz, index) => (
+                            {selectedLesson.quizzes?.map((quiz, index) => (
                               <Button
                                 key={index}
                                 type="primary"
