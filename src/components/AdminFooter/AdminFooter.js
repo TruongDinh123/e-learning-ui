@@ -135,7 +135,7 @@ function AdminFooter() {
       <Footer
         style={{
           backgroundColor: "#111111",
-          color: "white",
+          color: "#C89F65",
           textAlign: "center",
           position: "fixed",
           bottom: "0",
