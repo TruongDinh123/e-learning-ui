@@ -90,7 +90,7 @@ export default function Lesson({ params }) {
   };
 
   return (
-    <div className="">
+    <div className="p-3">
       <Breadcrumb>
         <Breadcrumb.Item>
           <Link href="/admin/courses">Courses</Link>

@@ -263,7 +263,7 @@ export default function ViewUsers() {
   };
 
   return (
-    <div>
+    <div className="p-3">
       {contextHolder}
       <div className="flex flex-col md:flex-row md:items-center md:justify-start space-y-2 md:space-y-0 md:space-x-2">
         <div className="flex flex-col">

@@ -32,7 +32,6 @@ export default function TeamplateQuiz() {
         setIsLoading(false);
       })
       .catch((error) => {
-        
         setIsLoading(false);
       });
   }, [updateQuizTemplate]);
@@ -61,7 +60,6 @@ export default function TeamplateQuiz() {
         setIsLoading(false);
       })
       .catch((error) => {
-        
         setIsLoading(false);
       });
   };
@@ -79,7 +77,7 @@ export default function TeamplateQuiz() {
     });
   });
   return (
-    <>
+    <div className="p-3">
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />
@@ -197,6 +195,6 @@ export default function TeamplateQuiz() {
           ))}
         </div>
       </Drawer>
-    </>
+    </div>
   );
 }

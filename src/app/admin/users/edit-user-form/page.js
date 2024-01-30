@@ -120,7 +120,7 @@ export default function EditUserForm() {
     },
   });
   return (
-    <div className="mx-auto max-w-md space-y-6 overflow-x-hidden grid-container">
+    <div className="mx-auto max-w-md space-y-6 overflow-x-hidden grid-container pt-3">
       {contextHolder}
       <div className="space-y-2 text-center">
         <h1 className="text-3xl font-bold">Thông tin của bạn</h1>

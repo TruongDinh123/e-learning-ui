@@ -213,7 +213,7 @@ export default function ViewStudentsCourse() {
   );
 
   return (
-    <React.Fragment>
+    <div className="p-3">
       {contextHolder}
       <div className="py-3">
         <Select
@@ -271,6 +271,6 @@ export default function ViewStudentsCourse() {
           className="text-center text-sm text-muted-foreground mt-10"
         ></Empty>
       )}
-    </React.Fragment>
+    </div>
   );
 }

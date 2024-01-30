@@ -102,7 +102,7 @@ export default function LessonDetails({ params }) {
   }, [videoLesson]);
 
   return (
-    <React.Fragment>
+    <div className="p-3">
       <Breadcrumb>
         <Breadcrumb.Item>
           <Link href="/admin/courses">Courses</Link>
@@ -129,9 +129,7 @@ export default function LessonDetails({ params }) {
                   type="primary"
                   onClick={handleSave}
                   className={`mt-2 mb-2 me-3 custom-button ${
-                    isVideoEmpty && file
-                      ? "custom-button"
-                      : "#ccc"
+                    isVideoEmpty && file ? "custom-button" : "#ccc"
                   }`}
                   disabled={!isVideoEmpty || !file}
                   loading={isLoading}
@@ -204,6 +202,6 @@ export default function LessonDetails({ params }) {
           </div>
         </main>
       </div>
-    </React.Fragment>
+    </div>
   );
 }
