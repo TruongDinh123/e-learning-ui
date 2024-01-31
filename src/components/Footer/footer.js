@@ -44,9 +44,6 @@ export default function CustomFooter() {
                 <span>95IDEAL TECHNOLOGY SOLUTIONS</span>
               </li>
               <li>
-                <span>MST: 12345678</span>
-              </li>
-              <li>
                 <span>Địa chỉ: Hồ Chí Minh</span>
               </li>
               <li>

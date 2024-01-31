@@ -247,7 +247,7 @@ export default function ViewStudentsCourse() {
             {teacher && (
               <div className="border p-4 rounded-md my-4">
                 <h2 className="font-bold text-lg">
-                  Giáo viên: {teacher?.lastName}
+                  Giáo viên: {teacher?.firstName}
                 </h2>
                 <p className="text-sm">Email: {teacher?.email}</p>
               </div>
