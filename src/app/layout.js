@@ -12,9 +12,6 @@ import React, { Suspense, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Cookies from "js-cookie";
 import { isAdmin, isMentor } from "@/middleware";
-import styled from "styled-components";
-import { Content } from "antd/es/layout/layout";
-// import { Providers } from "@/Provider";
 
 const Providers = dynamic(() => import("@/Provider"), { ssr: false });
 

@@ -195,14 +195,6 @@ if (typeof window !== "undefined") {
   userNameFromLocalStogare = JSON.parse(localStorage?.getItem("userName"));
 }
 
-// let getUserFromLocalStorage = () => {
-//   if (typeof window !== "undefined") {
-//     const user = localStorage?.getItem("user");
-//     return JSON.parse(user);
-//   }
-//   return null;
-// };
-
 const initialState = {
   user: userFromLocalStorage,
   userName: userNameFromLocalStogare,

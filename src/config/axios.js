@@ -36,19 +36,16 @@ axiosInstance.interceptors.request.use(
 // Add a response interceptor
 axiosInstance.interceptors.response.use(
   function (response) {
-    // If the response is successful, just return it
     return response;
   },
   function (error) {
-    // If the response has a status of 500 and the message is 'invalid signature'
     if (
       error.response.status === 500 &&
       error.response.data.message === "invalid signature"
     ) {
-      // Remove the invalid token from localStorage
-      // localStorage.removeItem("authorization");
-      localStorage.removeItem("x-client-id");
+      localStorage.clear();
       Cookies.remove("Bearer");
+      window.location.href = '/login';
     }
 
     return Promise.reject(error);

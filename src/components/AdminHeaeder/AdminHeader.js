@@ -80,20 +80,14 @@ export default function AdminHeader(props) {
     </Menu>
   );
 
+
   const handleLogOut = () => {
     setIsLoading(true);
     dispatch(logOut())
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          // Clear any local storage or cookies that might persist state
-          localStorage.clear();
-          Cookies.remove("Bearer");
-
-          // Reset the Redux state
-          dispatch(resetState());
-          setIsLoading(false);
-          // Redirect to the login page
+          clearAuthState();
           router.push("/login");
         } else {
           setIsLoading(false);
@@ -101,8 +95,23 @@ export default function AdminHeader(props) {
         }
       })
       .catch((error) => {
-        setIsLoading(false);
+        if (error.message === "Invalid client id" || error.response?.status === 401 || error.response?.status === 403) {
+          clearAuthState();
+          router.push("/login");
+        } else {
+          setIsLoading(false);
+          // Hiển thị thông báo lỗi nếu có
+          message.error("Đã có lỗi xảy ra", 2.5);
+        }
       });
+  };
+  
+  // Hàm để xóa trạng thái xác thực của người dùng
+  const clearAuthState = () => {
+    localStorage.clear();
+    Cookies.remove("Bearer");
+    dispatch(resetState());
+    setIsLoading(false);
   };
 
   return (
