@@ -21,13 +21,6 @@ export default function Quizs({ params }) {
   const [showCountdown, setShowCountdown] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // const handleAnswer = (questionId, answer) => {
-  //   setSelectedAnswers((prevAnswers) => ({
-  //     ...prevAnswers,
-  //     [questionId]: answer,
-  //   }));
-  // };
-
   // Lưu trạng thái khi người dùng chọn câu trả lời
   const handleAnswer = (questionId, answer) => {
     setSelectedAnswers((prevAnswers) => {
@@ -133,51 +126,6 @@ export default function Quizs({ params }) {
     fetchQuizInfo();
   }, [params?.id, dispatch]);
 
-  // useEffect(() => {
-  //   dispatch(viewAQuiz({ quizId: params?.id }))
-  //     .then(unwrapResult)
-  //     .then((res) => {
-  //       if (res.status) {
-  //         messageApi
-  //           .open({
-  //             type: "Thành công",
-  //             content: "Đang thực hiện...",
-  //           })
-  //           .then(() => setquiz(res.metadata));
-  //       } else {
-  //         messageApi.error(res.message);
-  //       }
-  //     })
-  //     .catch((error) => {})
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-  // }, []);
-
-  // useEffect(() => {
-  //   dispatch(getScore())
-  //     .then(unwrapResult)
-  //     .then((res) => {
-  //       if (res.status) {
-  //         setScore(res.metadata);
-  //         setStartTime(res.metadata[0]?.startTime);
-  //         const completedQuiz = res.metadata.find(
-  //           (quiz) => quiz.quiz?._id === params?.id
-  //         );
-  //         if (completedQuiz) {
-  //           setIsComplete(completedQuiz.isComplete);
-  //           const answersObject = completedQuiz.answers.reduce((obj, item) => {
-  //             const [key, value] = Object.entries(item)[0];
-  //             obj[key] = value;
-  //             return obj;
-  //           }, {});
-  //           setStudentAnswers(answersObject);
-  //         }
-  //       }
-  //     })
-  //     .catch((error) => {});
-  // }, []);
-
   useEffect(() => {
     if (quiz.length > 0 && startTime) {
       const startTimeDate = new Date(startTime).getTime();
@@ -191,35 +139,35 @@ export default function Quizs({ params }) {
     }
   }, [quiz, startTime]);
 
-  // useEffect(() => {
-  //   const preventCopy = (event) => {
-  //     event.preventDefault();
-  //     message.error("Sao chép nội dung không được phép!");
-  //   };
+  useEffect(() => {
+    const preventCopy = (event) => {
+      event.preventDefault();
+      message.error("Sao chép nội dung không được phép!");
+    };
 
-  //   const preventInspect = (event) => {
-  //     if (
-  //       event.keyCode === 123 ||
-  //       (event.ctrlKey &&
-  //         event.shiftKey &&
-  //         (event.keyCode === 73 || event.keyCode === 74))
-  //     ) {
-  //       event.preventDefault();
-  //       message.error("Không được phép kiểm tra!");
-  //       return false;
-  //     }
-  //   };
+    const preventInspect = (event) => {
+      if (
+        event.keyCode === 123 ||
+        (event.ctrlKey &&
+          event.shiftKey &&
+          (event.keyCode === 73 || event.keyCode === 74))
+      ) {
+        event.preventDefault();
+        message.error("Không được phép kiểm tra!");
+        return false;
+      }
+    };
 
-  //   document.addEventListener("copy", preventCopy);
-  //   document.addEventListener("contextmenu", preventCopy);
-  //   document.addEventListener("keydown", preventInspect);
+    document.addEventListener("copy", preventCopy);
+    document.addEventListener("contextmenu", preventCopy);
+    document.addEventListener("keydown", preventInspect);
 
-  //   return () => {
-  //     document.removeEventListener("copy", preventCopy);
-  //     document.removeEventListener("contextmenu", preventCopy);
-  //     document.removeEventListener("keydown", preventInspect);
-  //   };
-  // }, []);
+    return () => {
+      document.removeEventListener("copy", preventCopy);
+      document.removeEventListener("contextmenu", preventCopy);
+      document.removeEventListener("keydown", preventInspect);
+    };
+  }, []);
 
   let submissionTime;
   if (quiz[0] && quiz[0]?.submissionTime) {
@@ -229,8 +177,6 @@ export default function Quizs({ params }) {
   const currentTime = new Date();
 
   const isTimeExceeded = currentTime > submissionTime;
-
-  // ... (các useEffect khác giữ nguyên)
 
   return (
     <div className="pt-24 pb-48 flex justify-center items-center overflow-auto bg-gray-200 noCopy">
