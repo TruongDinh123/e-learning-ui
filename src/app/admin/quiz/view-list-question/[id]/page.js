@@ -18,10 +18,10 @@ import moment from "moment";
 export default function ViewListQuestion({ params }) {
   const dispatch = useDispatch();
   const [quiz, setquiz] = useState([]);
+  console.log("🚀 ~ quiz:", quiz);
   const [score, setScore] = useState([]);
   const [updateQuiz, setUpdateQuiz] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-
 
   useEffect(() => {
     dispatch(viewAQuiz({ quizId: params?.id }))
@@ -63,7 +63,7 @@ export default function ViewListQuestion({ params }) {
   return (
     <div className="mx-auto px-4 sm:px-6 lg:px-8 p-3">
       {isLoading ? (
-        <div className="flex justify-center items-center h-screen">
+        <div className="flex justify-center items-center">
           <Spin />
         </div>
       ) : (
@@ -83,7 +83,7 @@ export default function ViewListQuestion({ params }) {
                   <div className="mb-4 bg-blue-100 p-4 rounded-md shadow-md">
                     <h2 className="text-2xl font-bold text-blue-700">
                       Tên khóa học: {quiz.courseIds[0]?.name}{" "}
-                        {quiz.lessonId?.courseId?.name}
+                      {quiz.lessonId?.courseId?.name}
                     </h2>
                     <p className="text-blue-600">
                       Thời gian hoàn thành:{" "}
@@ -97,7 +97,7 @@ export default function ViewListQuestion({ params }) {
                     </p>
                   </div>
                   {quiz.type === "multiple_choice" ? (
-                    <div className="grid-container">
+                    <div className="grid-container scrollbar scrollbar-thin">
                       <div className="flex flex-col sm:flex-row justify-between items-center">
                         <div className="border-gray-300">
                           <span className="pr-4 text-green-600 block sm:inline">
@@ -126,12 +126,19 @@ export default function ViewListQuestion({ params }) {
                                     Câu {questionIndex + 1}: {question.question}
                                   </span>
                                 </div>
+                                <div className="mb-2">
+                                  <img
+                                    src={question.image_url}
+                                    alt={`Câu hỏi ${questionIndex + 1}`}
+                                    className="max-w-auto"
+                                  />
+                                </div>
                                 {question.options.map((option, optionIndex) => (
                                   <label
                                     className="block mb-2"
                                     key={optionIndex}
                                   >
-                                    <span>
+                                    <span className="font-mono">
                                       Câu {optionIndex + 1}: {option}
                                     </span>
                                   </label>

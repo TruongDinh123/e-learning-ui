@@ -15,6 +15,7 @@ import {
   getQuizsByCourse,
   getQuizzesByStudentAndCourse,
   getScore,
+  startQuiz,
 } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import React from "react";
@@ -174,6 +175,28 @@ export default function ViewQuiz({ params }) {
     });
   });
 
+  const handleStartQuiz = async (quizId, quizType) => {
+    setLoading(true);
+    try {
+      const response = await dispatch(startQuiz({ quizId })).then(unwrapResult);
+      if (response.status) {
+        const quizPage =
+          quizType === "multiple_choice"
+            ? "submit-quiz"
+            : "handle-submit-essay";
+        const path = `/courses/view-details/${quizPage}/${quizId}`;
+        router.push(path);
+        setLoading(false);
+      } else {
+        console.error("Không thể bắt đầu quiz");
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Lỗi khi bắt đầu quiz:", error);
+      setLoading(false);
+    }
+  };
+
   // Component hiển thị thông báo
   const NotificationsComponent = () => {
     const textareaRef = useRef(null);
@@ -310,7 +333,9 @@ export default function ViewQuiz({ params }) {
             className="bg-white rounded-lg card-shadow border border-gray-300 w-full overflow-hidden"
           >
             <div className="p-4">
-              <h5 className="text-lg font-semibold mb-2 line-clamp-2">{item.name}</h5>
+              <h5 className="text-lg font-semibold mb-2 line-clamp-2">
+                {item.name}
+              </h5>
               <p className="text-sm text-gray-500 mb-4">
                 Hạn nộp bài: {item?.submissionTime}
               </p>
@@ -362,13 +387,8 @@ export default function ViewQuiz({ params }) {
             <Button
               className="me-3"
               style={{ width: "100%" }}
-              onClick={() =>
-                i?.type === "multiple_choice"
-                  ? router.push(`/courses/view-details/submit-quiz/${i?._id}`)
-                  : router.push(
-                      `/courses/view-details/handle-submit-essay/${i?._id}`
-                    )
-              }
+              loading={isLoading}
+              onClick={() => handleStartQuiz(i?._id, i?.type)}
             >
               Xem chi tiết
             </Button>
@@ -389,7 +409,9 @@ export default function ViewQuiz({ params }) {
             className="bg-white rounded-lg card-shadow border border-gray-300 w-full overflow-hidden"
           >
             <div className="p-4">
-              <h5 className="text-lg font-semibold mb-2 line-clamp-2">{item.name}</h5>
+              <h5 className="text-lg font-semibold mb-2 line-clamp-2">
+                {item.name}
+              </h5>
               <p className="text-sm text-gray-500 mb-4">
                 Hạn nộp bài: {item?.submissionTime}
               </p>

@@ -14,6 +14,7 @@ import {
   Tooltip,
   Upload,
   Grid,
+  InputNumber,
 } from "antd";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
@@ -22,6 +23,7 @@ import { viewCourses } from "@/features/Courses/courseSlice";
 import {
   createQuiz,
   uploadFileQuiz,
+  uploadQuestionImage,
   viewQuizTemplates,
 } from "@/features/Quiz/quizSlice";
 import {
@@ -56,12 +58,23 @@ export default function QuizCreator() {
   const [isLoading, setIsLoading] = useState(false);
   const [quizType, setQuizType] = useState("multiple_choice");
   const [file, setFile] = useState(null);
+  const [fileQuestion, setFileQuestion] = useState(null);
   const [form] = Form.useForm();
   const router = useRouter();
 
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
   const datePickerPlacement = screens.xs ? "bottomRight" : "bottomLeft";
+
+  const [questionImages, setQuestionImages] = useState([]);
+
+  const handleImageUpload = (event, index) => {
+    setQuestionImages((prevState) => {
+      const newState = [...prevState];
+      newState[index] = fileQuestion;
+      return newState;
+    });
+  };
 
   const dispatch = useDispatch();
 
@@ -105,6 +118,7 @@ export default function QuizCreator() {
     }
   };
 
+  // Hàm xử lý khi thêm câu hỏi
   const handleAddQuestion = () => {
     const questions = form.getFieldValue("questions") || [];
     // Kiểm tra xem câu hỏi mới có trùng với câu hỏi mẫu không
@@ -130,6 +144,7 @@ export default function QuizCreator() {
     }
   };
 
+  // Hàm xử lý khi xóa câu hỏi
   const handleRemoveQuestion = (index) => {
     const questions = form.getFieldValue("questions") || [];
     const newQuestions = [...questions];
@@ -137,6 +152,7 @@ export default function QuizCreator() {
     form.setFieldsValue({ questions: newQuestions });
   };
 
+  //props xử lý file
   const props = {
     onRemove: () => {
       setFile(null);
@@ -148,6 +164,18 @@ export default function QuizCreator() {
     fileList: file ? [file] : [],
   };
 
+  const propsQuestion = {
+    onRemove: () => {
+      setFileQuestion(null);
+    },
+    beforeUpload: (file) => {
+      setFileQuestion(file);
+      return false;
+    },
+    fileList: fileQuestion ? [fileQuestion] : [],
+  };
+
+  //hàm xử lý save quiz
   const handleSaveQuiz = (values) => {
     setIsLoading(true);
 
@@ -160,6 +188,7 @@ export default function QuizCreator() {
     let questions = values.questions || [];
 
     if (selectedQuizTemplate) {
+      // Xử lý cho trường hợp sử dụng bài tập mẫu
       const quizTemplate = quizTemplates.find(
         (template) => template._id === selectedQuizTemplate
       );
@@ -187,6 +216,7 @@ export default function QuizCreator() {
         studentIds: studentIds,
         questions: combinedQuestions,
         submissionTime: values?.submissionTime?.toISOString(),
+        timeLimit: values?.timeLimit,
       };
     } else {
       // Xử lý cho trường hợp không sử dụng bài tập mẫu
@@ -197,6 +227,7 @@ export default function QuizCreator() {
           submissionTime: values?.submissionTime?.toISOString(),
           courseIds: selectedCourse,
           studentIds: studentIds,
+          timeLimit: values?.timeLimit,
           questions: values.questions.map((question) => ({
             ...question,
             options: question.options.map((option) => option.option),
@@ -226,7 +257,7 @@ export default function QuizCreator() {
     } else {
       formattedValues = {
         ...formattedValues,
-        courseIds: selectedCourse, // Keep courseIds in the payload
+        courseIds: selectedCourse,
       };
     }
 
@@ -236,8 +267,10 @@ export default function QuizCreator() {
       })
     )
       .then(unwrapResult)
-      .then((res) => {
+      .then(async (res) => {
         const quizId = res.metadata?._id;
+        const questionIds = res.metadata?.questions?.map((q) => q._id);
+
         if (file) {
           dispatch(uploadFileQuiz({ quizId: quizId, filename: file })).then(
             (res) => {
@@ -248,6 +281,28 @@ export default function QuizCreator() {
             }
           );
         }
+
+        if (fileQuestion) {
+          questionImages.forEach((imageFile, index) => {
+            if (imageFile && questionIds[index]) {
+              dispatch(
+                uploadQuestionImage({
+                  quizId: quizId,
+                  questionId: questionIds[index],
+                  filename: fileQuestion,
+                })
+              ).catch((error) => {
+                console.log("🚀 ~ error:", error);
+                message.error(
+                  error.response?.data?.message ||
+                    "An error occurred while uploading the question image.",
+                  3.5
+                );
+              });
+            }
+          });
+        }
+
         messageApi
           .open({
             type: "Thành công",
@@ -269,15 +324,21 @@ export default function QuizCreator() {
           });
       })
       .catch((error) => {
+        console.log("🚀 ~ error:", error);
         setIsLoading(false);
-        if (error.status === 403 && error.name === 'BadRequestError') {
-          message.error('A quiz for this lesson already exists.', 3.5);
+        if (error.status === 403 && error.name === "BadRequestError") {
+          message.error("A quiz for this lesson already exists.", 3.5);
         } else {
-          message.error(error.response?.data?.message || 'An error occurred while saving the quiz.', 3.5);
+          message.error(
+            error.response?.data?.message ||
+              "An error occurred while saving the quiz.",
+            3.5
+          );
         }
       });
   };
 
+  // Fetch courses when the component mounts
   useEffect(() => {
     dispatch(viewCourses())
       .then(unwrapResult)
@@ -525,25 +586,38 @@ export default function QuizCreator() {
                     </Form.Item>
                   </Col>
                   {!isTemplateMode && (
-                    <Col xs={24} sm={12} md={8} lg={6}>
-                      <Form.Item
-                        label="Thời hạn nộp"
-                        name="submissionTime"
-                        className="pl-2"
-                      >
-                        <DatePicker
-                          showTime
-                          style={{ width: "100%" }}
-                          placement={datePickerPlacement}
-                          disabledDate={(current) => {
-                            // Không cho phép chọn ngày trước ngày hiện tại
-                            let currentDate = new Date();
-                            currentDate.setHours(0, 0, 0, 0); // Đặt thời gian về 00:00:00
-                            return current && current.toDate() < currentDate;
-                          }}
-                        />
-                      </Form.Item>
-                    </Col>
+                    <>
+                      <Col xs={24} sm={12} md={8} lg={6}>
+                        <Form.Item
+                          label="Thời hạn nộp"
+                          name="submissionTime"
+                          className="px-2"
+                        >
+                          <DatePicker
+                            showTime
+                            style={{ width: "100%" }}
+                            placement={datePickerPlacement}
+                            disabledDate={(current) => {
+                              // Không cho phép chọn ngày trước ngày hiện tại
+                              let currentDate = new Date();
+                              currentDate.setHours(0, 0, 0, 0); // Đặt thời gian về 00:00:00
+                              return current && current.toDate() < currentDate;
+                            }}
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} sm={12} md={8} lg={6}>
+                        <Form.Item
+                          name="timeLimit"
+                          label="Thời gian làm bài (phút)"
+                        >
+                          <InputNumber
+                            min={1}
+                            placeholder="Nhập thời gian làm bài"
+                          />
+                        </Form.Item>
+                      </Col>
+                    </>
                   )}
                 </Row>
                 <Form.List name="questions">
@@ -575,6 +649,21 @@ export default function QuizCreator() {
                               ]}
                             >
                               <Input placeholder="Câu hỏi" />
+                            </Form.Item>
+                            <Form.Item
+                              label="Hình ảnh"
+                              name={[field.name, "image"]}
+                            >
+                              <Upload
+                                {...propsQuestion}
+                                onChange={(event) =>
+                                  handleImageUpload(event, index)
+                                }
+                              >
+                                <Button icon={<UploadOutlined />}>
+                                  Thêm tệp
+                                </Button>
+                              </Upload>
                             </Form.Item>
                             <Form.List name={[field.name, "options"]}>
                               {(subFields, subMeta) => (

@@ -4,9 +4,21 @@ import { QuizService } from "./quizService";
 export const createQuiz = createAsyncThunk(
   "/e-learning/create-quiz",
   async (data, { rejectWithValue }) => {
-    console.log(data);
+    console.log("🚀 ~ data:", data);
     try {
       const response = await QuizService.createQuiz(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const startQuiz = createAsyncThunk(
+  "/e-learning/start-quiz",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await QuizService.startQuiz(data);
       return response;
     } catch (err) {
       return rejectWithValue(err);
@@ -77,8 +89,22 @@ export const getScoreByQuizId = createAsyncThunk(
 export const uploadFileQuiz = createAsyncThunk(
   "/e-learning/upload-file-quiz",
   async (data, { rejectWithValue }) => {
+    console.log("🚀 ~ data:", data);
     try {
       const response = await QuizService.uploadFileQuiz(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const uploadQuestionImage = createAsyncThunk(
+  "/e-learning/upload-image-question",
+  async (data, { rejectWithValue }) => {
+    console.log("🚀 ~ uploadQuestionImage:", data);
+    try {
+      const response = await QuizService.uploadQuestionImage(data);
       return response;
     } catch (err) {
       return rejectWithValue(err);

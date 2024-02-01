@@ -43,6 +43,14 @@ const viewQuiz = async (data) => {
   return res.data;
 };
 
+const startQuiz = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/quiz/${data.quizId}/start`,
+    method: "POST",
+  });
+  return res.data;
+};
+
 const getQuizzesByStudentAndCourse = async (data) => {
   try {
     const res = await axiosInstance({
@@ -63,6 +71,20 @@ const uploadFileQuiz = async (data) => {
     url: `/e-learning/quiz/${data.quizId}/upload-file`,
     method: "POST",
     data: formData,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res.data;
+};
+
+const uploadQuestionImage = async (data) => {
+  const formData = new FormData();
+  formData.append("filename", data.filename);
+  const res = await axiosInstance({
+    url: `/e-learning/quiz/upload-image-question`,
+    method: "POST",
+    data: data,
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -207,4 +229,6 @@ export const QuizService = {
   viewAQuizTemplate,
   deleteQuizTempplate,
   updateQuizTemplate,
+  startQuiz,
+  uploadQuestionImage,
 };

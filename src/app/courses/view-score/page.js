@@ -95,7 +95,7 @@ const ScoreManagement = () => {
     const QuestionItem = ({ question, idxQuestion, answer }) => (
       <List.Item>
         <div className="p-3">
-          <h3 className="font-bold">{`Question ${idxQuestion + 1}`}</h3>
+          <h3 className="font-bold">{`Câu ${idxQuestion + 1}`}</h3>
           <h3 className="font-semibold py-3">
             {idxQuestion + 1}.{question.question}
           </h3>
@@ -153,7 +153,7 @@ const ScoreManagement = () => {
               title="Details Score"
               open={isDrawerOpen[index]}
               onClose={() => onClose(index)}
-              width={720}
+              width={1000}
             >
               <Collapse accordion>
                 {i?.quiz?.type === "multiple_choice" && (
@@ -169,11 +169,11 @@ const ScoreManagement = () => {
                       return (
                         <List.Item>
                           <div className="p-3">
-                            <h3 className="font-bold">{`Question ${
+                            {/* <h3 className="font-bold">{`Câu ${
                               idxQuestion + 1
-                            }`}</h3>
+                            }`}</h3> */}
                             <h3 className="font-semibold py-3">
-                              {idxQuestion + 1}.{question.question}
+                              {question.question}
                             </h3>
                             {question.options.map((option, idxOption) => (
                               <p key={idxOption}>
@@ -224,7 +224,7 @@ const ScoreManagement = () => {
             <Option value="quiz">Bài tập</Option>
             <Option value="assignment">Bài kiểm tra</Option>
           </Select>
-          <Table columns={columns} dataSource={data} className="pb-36" />
+          <Table columns={columns} dataSource={data} className="pb-56" />
         </div>
       )}
     </div>
