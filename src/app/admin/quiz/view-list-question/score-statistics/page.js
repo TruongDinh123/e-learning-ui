@@ -1,3 +1,4 @@
+"use client";
 import { getScoreByQuizId } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Empty, Table, message } from "antd";
