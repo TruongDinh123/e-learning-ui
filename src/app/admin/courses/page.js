@@ -147,9 +147,7 @@ export default function Courses() {
 
   return (
     <>
-      <div
-        className="max-w-screen-2xl mx-auto min-h-screen relative p-3"
-      >
+      <div className="max-w-screen-2xl mx-auto min-h-screen relative p-3">
         <AddCourse
           refresh={() => setUpdateCourse(updateCourse + 1)}
           fetchCategories={fetchCategories}
@@ -331,7 +329,7 @@ export default function Courses() {
           ) : (
             filteredCourses?.length === 0 && (
               <Empty className="text-center text-sm text-muted-foreground mt-10">
-                Khóa học không tồn tại
+                Không có khóa học nào
               </Empty>
             )
           )}

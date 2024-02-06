@@ -277,26 +277,30 @@ export default function ViewQuiz({ params }) {
 
   // Component hiển thị khóa học hết hạn
   const ExpiredCoursesComponent = () => {
-    const notCompletedQuizzes = quiz?.filter((i) => {
-      const correspondingScore = score.find((s) => s.quiz?._id === i?._id);
-      return !correspondingScore?.isComplete;
-    }).map((i, index) => ({
-      key: index + 1,
-      name: i?.name,
-      submissionTime: i?.submissionTime ? format(new Date(i?.submissionTime), "dd/MM/yyyy HH:mm:ss") : null,
-      isComplete: "Chưa hoàn thành",
-      type: i?.type,
-      questions: (
-        <Button
-          className="me-3"
-          style={{ width: "100%" }}
-          loading={isLoading}
-          onClick={() => handleStartQuiz(i?._id, i?.type)}
-        >
-          Xem chi tiết
-        </Button>
-      ),
-    }));
+    const notCompletedQuizzes = quiz
+      ?.filter((i) => {
+        const correspondingScore = score.find((s) => s.quiz?._id === i?._id);
+        return !correspondingScore?.isComplete;
+      })
+      .map((i, index) => ({
+        key: index + 1,
+        name: i?.name,
+        submissionTime: i?.submissionTime
+          ? format(new Date(i?.submissionTime), "dd/MM/yyyy HH:mm:ss")
+          : null,
+        isComplete: "Chưa hoàn thành",
+        type: i?.type,
+        questions: (
+          <Button
+            className="me-3"
+            style={{ width: "100%" }}
+            loading={isLoading}
+            onClick={() => handleStartQuiz(i?._id, i?.type)}
+          >
+            Xem chi tiết
+          </Button>
+        ),
+      }));
 
     useEffect(() => {
       setExpiredCount(notCompletedQuizzes.length);
@@ -334,29 +338,35 @@ export default function ViewQuiz({ params }) {
 
   // Component hiển thị khóa học chưa hết hạn
   const NonExpiredCoursesComponent = () => {
-    const completedQuizzes = quiz?.filter((i) => {
-      const correspondingScore = score.find((s) => s.quiz?._id === i?._id);
-      return correspondingScore?.isComplete;
-    }).map((i, index) => ({
-      key: index + 1,
-      name: i?.name,
-      submissionTime: i?.submissionTime ? format(new Date(i?.submissionTime), "dd/MM/yyyy HH:mm:ss") : null,
-      isComplete: "Đã hoàn thành",
-      type: i?.type,
-      questions: (
-        <Button
-          className="me-3"
-          style={{ width: "100%" }}
-          onClick={() =>
-            i?.type === "multiple_choice"
-              ? router.push(`/courses/view-details/submit-quiz/${i?._id}`)
-              : router.push(`/courses/view-details/handle-submit-essay/${i?._id}`)
-          }
-        >
-          Xem chi tiết
-        </Button>
-      ),
-    }));
+    const completedQuizzes = quiz
+      ?.filter((i) => {
+        const correspondingScore = score.find((s) => s.quiz?._id === i?._id);
+        return correspondingScore?.isComplete;
+      })
+      .map((i, index) => ({
+        key: index + 1,
+        name: i?.name,
+        submissionTime: i?.submissionTime
+          ? format(new Date(i?.submissionTime), "dd/MM/yyyy HH:mm:ss")
+          : null,
+        isComplete: "Đã hoàn thành",
+        type: i?.type,
+        questions: (
+          <Button
+            className="me-3"
+            style={{ width: "100%" }}
+            onClick={() =>
+              i?.type === "multiple_choice"
+                ? router.push(`/courses/view-details/submit-quiz/${i?._id}`)
+                : router.push(
+                    `/courses/view-details/handle-submit-essay/${i?._id}`
+                  )
+            }
+          >
+            Xem chi tiết
+          </Button>
+        ),
+      }));
     useEffect(() => {
       setNonExpiredCount(completedQuizzes.length);
     }, [completedQuizzes]);
@@ -413,14 +423,21 @@ export default function ViewQuiz({ params }) {
     >
       <Breadcrumb className="my-9">
         <Breadcrumb.Item>
-          <Link href="/courses/view-course">Khóa học</Link>
+          <Link href="/">Trang chủ</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Link href={`/courses/lessons/${params.id}`}>Bài học</Link>
+          <Link href={`/courses/view-course`}>
+            Khóa học của tôi
+          </Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <span href={`/courses/view-details/${params?.id}`}>
+          <Link href={`/courses/view-details/${params?.id}`}>
             {dataCourse.name}
+          </Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <span className="font-medium">
+            Danh sách bài tập
           </span>
         </Breadcrumb.Item>
       </Breadcrumb>

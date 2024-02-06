@@ -63,20 +63,23 @@ export default function Quizs({ params }) {
   };
 
   const handleSubmit = () => {
+    console.log("Submitting quiz answers...");
     const totalQuestions = quiz.reduce(
       (totalQuestions, item) => totalQuestions + item.questions.length,
       0
     );
-    if (Object.keys(selectedAnswers).length < totalQuestions) {
-      message.error("Vui lòng trả lời tất cả các câu hỏi trước khi nộp bài.");
-      return;
-    }
 
-    const formattedAnswers = Object.entries(selectedAnswers).map(
+    const savedAnswers =
+      Object.keys(selectedAnswers).length === 0
+        ? JSON.parse(localStorage.getItem("quizAnswers")) || {}
+        : selectedAnswers;
+
+    const formattedAnswers = Object.entries(savedAnswers).map(
       ([questionId, answer]) => ({
         [questionId]: answer,
       })
     );
+    console.log("Formatted Answers:", formattedAnswers);
     setSubmitting(true);
     dispatch(submitQuiz({ quizId: idQuiz, answer: formattedAnswers }))
       .then(unwrapResult)
@@ -155,35 +158,35 @@ export default function Quizs({ params }) {
     }
   }, [quiz, startTime]);
 
-  useEffect(() => {
-    const preventCopy = (event) => {
-      event.preventDefault();
-      message.error("Sao chép nội dung không được phép!");
-    };
+  // useEffect(() => {
+  //   const preventCopy = (event) => {
+  //     event.preventDefault();
+  //     message.error("Sao chép nội dung không được phép!");
+  //   };
 
-    const preventInspect = (event) => {
-      if (
-        event.keyCode === 123 ||
-        (event.ctrlKey &&
-          event.shiftKey &&
-          (event.keyCode === 73 || event.keyCode === 74))
-      ) {
-        event.preventDefault();
-        message.error("Không được phép kiểm tra!");
-        return false;
-      }
-    };
+  //   const preventInspect = (event) => {
+  //     if (
+  //       event.keyCode === 123 ||
+  //       (event.ctrlKey &&
+  //         event.shiftKey &&
+  //         (event.keyCode === 73 || event.keyCode === 74))
+  //     ) {
+  //       event.preventDefault();
+  //       message.error("Không được phép kiểm tra!");
+  //       return false;
+  //     }
+  //   };
 
-    document.addEventListener("copy", preventCopy);
-    document.addEventListener("contextmenu", preventCopy);
-    document.addEventListener("keydown", preventInspect);
+  //   document.addEventListener("copy", preventCopy);
+  //   document.addEventListener("contextmenu", preventCopy);
+  //   document.addEventListener("keydown", preventInspect);
 
-    return () => {
-      document.removeEventListener("copy", preventCopy);
-      document.removeEventListener("contextmenu", preventCopy);
-      document.removeEventListener("keydown", preventInspect);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("copy", preventCopy);
+  //     document.removeEventListener("contextmenu", preventCopy);
+  //     document.removeEventListener("keydown", preventInspect);
+  //   };
+  // }, []);
 
   let submissionTime;
   if (quiz[0] && quiz[0]?.submissionTime) {
@@ -195,159 +198,161 @@ export default function Quizs({ params }) {
   const isTimeExceeded = currentTime > submissionTime;
 
   return (
-    <div className="pt-24 pb-48 flex justify-center items-center overflow-auto bg-gray-200 noCopy">
-      {contextHolder}
-      <div className="w-full md:w-2/3">
-        {loading ? (
-          <div className="flex justify-center items-center h-screen">
-            <Spin />
-          </div>
-        ) : (
-          <React.Fragment>
-            <Breadcrumb className="pb-2">
-              <Breadcrumb.Item>
-                <Link href="/">Trang chủ</Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <Link href="/courses/view-course">Khóa học của bạn</Link>
-              </Breadcrumb.Item>
-              {quiz?.map((quiz, quizIndex) => (
-                <>
-                  <Breadcrumb.Item key={quizIndex}>
-                    <Link
-                      className="font-bold"
-                      href={`/courses/view-course-details/${
-                        quiz.courseIds[0]?._id || quiz.lessonId?.courseId?._id
-                      }`}
-                    >
-                      {quiz.courseIds[0]?.name || quiz.lessonId?.courseId?.name}
-                    </Link>
-                  </Breadcrumb.Item>
-                </>
-              ))}
-            </Breadcrumb>
-            {quiz.map((item, index) => (
-              <React.Fragment key={index}>
-                <Card
-                  key={item._id}
-                  title={item.name}
-                  className="border-2 border-blue-500"
-                >
-                  {showCountdown && !isComplete && deadline && (
-                    <Statistic.Countdown
-                      title="Thời gian còn lại"
-                      value={deadline}
-                      onFinish={handleSubmit}
-                    />
-                  )}
-                  {item.questions.map((question, questionIndex) => {
-                    const studentAnswer = isComplete
-                      ? studentAnswers[question._id]
-                      : selectedAnswers[question._id];
-                    const isCorrectAnswer = studentAnswer === question.answer;
-                    const showAnswer = submitted && isCorrectAnswer;
-                    const showWrongAnswer = submitted && !isCorrectAnswer;
-                    return (
-                      <div key={questionIndex} className="border p-4 mb-4">
-                        <div key={question._id} className="mb-4 p-2">
-                          <h4
-                            className={`mb-2 font-medium ${
-                              showAnswer
-                                ? "text-green-500"
-                                : showWrongAnswer
-                                ? "text-red-500"
-                                : "text-black"
+    <div className="bg-gray-200 p-4">
+      <Breadcrumb className="pb-2">
+        <Breadcrumb.Item>
+          <Link href="/">Trang chủ</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <Link href="/courses/view-course">Khóa học của bạn</Link>
+        </Breadcrumb.Item>
+        {quiz?.map((quiz, quizIndex) => (
+          <>
+            <Breadcrumb.Item key={quizIndex}>
+              <Link
+                className="font-bold"
+                href={`/courses/view-course-details/${
+                  quiz.courseIds[0]?._id || quiz.lessonId?.courseId?._id
+                }`}
+              >
+                {quiz.courseIds[0]?.name || quiz.lessonId?.courseId?.name}
+              </Link>
+            </Breadcrumb.Item>
+          </>
+        ))}
+      </Breadcrumb>
+      <div className="pt-24 pb-48 flex justify-center items-center overflow-auto bg-gray-200 noCopy">
+        <div className="w-full md:w-2/3">
+          {contextHolder}
+          {loading ? (
+            <div className="flex justify-center items-center h-screen">
+              <Spin />
+            </div>
+          ) : (
+            <React.Fragment>
+              {quiz.map((item, index) => (
+                <React.Fragment key={index}>
+                  <Card
+                    key={item._id}
+                    title={item.name}
+                    className="border-2 border-blue-500"
+                  >
+                    {showCountdown && !isComplete && deadline && (
+                      <Statistic.Countdown
+                        title="Thời gian còn lại"
+                        value={deadline}
+                        onFinish={handleSubmit}
+                      />
+                    )}
+                    {item.questions.map((question, questionIndex) => {
+                      const studentAnswer = isComplete
+                        ? studentAnswers[question._id]
+                        : selectedAnswers[question._id];
+                      const isCorrectAnswer = studentAnswer === question.answer;
+                      const showAnswer = submitted && isCorrectAnswer;
+                      const showWrongAnswer = submitted && !isCorrectAnswer;
+                      return (
+                        <div key={questionIndex} className="border p-4 mb-4">
+                          <div key={question._id} className="mb-4 p-2">
+                            <h4
+                              className={`mb-2 font-medium ${
+                                showAnswer
+                                  ? "text-green-500"
+                                  : showWrongAnswer
+                                  ? "text-red-500"
+                                  : "text-black"
+                              }`}
+                            >
+                              Câu {questionIndex + 1}: {question.question}
+                              {showAnswer && " ✔️"}
+                              {showWrongAnswer && "❌"}
+                            </h4>
+                            {question.image_url && (
+                              <div className="mb-2">
+                                <img
+                                  src={question.image_url}
+                                  alt={`Câu hỏi ${questionIndex + 1}`}
+                                  className="max-w-auto h-64"
+                                />
+                              </div>
+                            )}
+                            <Radio.Group
+                              onChange={(e) =>
+                                handleAnswer(question._id, e.target.value)
+                              }
+                              value={studentAnswer}
+                              disabled={submitted || isComplete}
+                              className="space-y-2"
+                            >
+                              {question.options.map((option) => (
+                                <div key={option} className="pl-4">
+                                  <Radio
+                                    value={option}
+                                    checked={option === studentAnswer}
+                                  >
+                                    {option}
+                                  </Radio>
+                                </div>
+                              ))}
+                            </Radio.Group>
+                          </div>
+                          <span className="text-blue-500 text-lg px-2">
+                            Câu trả lời của bạn: {studentAnswer}
+                          </span>
+                        </div>
+                      );
+                    })}
+                    <div className="p-4">
+                      {!isTimeExceeded && !submitted && !isComplete && (
+                        <Button
+                          type="primary"
+                          onClick={handleSubmit}
+                          loading={submitting}
+                          className="mr-3 custom-button text-white font-bold px-4 rounded"
+                        >
+                          Nộp bài
+                        </Button>
+                      )}
+                      {isComplete && (
+                        <div className="font-bold text-sm text-blue-500">
+                          Bạn đã hoàn thành bài kiểm tra
+                          {/* <a className="text-red-500">{score?.score} Điểm</a> */}
+                        </div>
+                      )}
+                      {isTimeExceeded && (
+                        <div className="font-bold text-sm">
+                          Thời gian làm bài đã hết
+                        </div>
+                      )}
+                    </div>
+                    {submitted && (
+                      <>
+                        {quiz?.map((quiz, quizIndex) => (
+                          <Link
+                            key={quizIndex}
+                            className="mr-3 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                            href={`/courses/view-details/${
+                              quiz.courseIds[0]?._id ||
+                              quiz.lessonId?.courseId?._id
                             }`}
                           >
-                            Câu {questionIndex + 1}: {question.question}
-                            {showAnswer && " ✔️"}
-                            {showWrongAnswer && "❌"}
-                          </h4>
-                          {question.image_url && (
-                            <div className="mb-2">
-                              <img
-                                src={question.image_url}
-                                alt={`Câu hỏi ${questionIndex + 1}`}
-                                className="max-w-auto h-64"
-                              />
-                            </div>
-                          )}
-                          <Radio.Group
-                            onChange={(e) =>
-                              handleAnswer(question._id, e.target.value)
-                            }
-                            value={studentAnswer}
-                            disabled={submitted || isComplete}
-                            className="space-y-2"
-                          >
-                            {question.options.map((option) => (
-                              <div key={option} className="pl-4">
-                                <Radio
-                                  value={option}
-                                  checked={option === studentAnswer}
-                                >
-                                  {option}
-                                </Radio>
-                              </div>
-                            ))}
-                          </Radio.Group>
-                        </div>
-                        <span className="text-blue-500 text-lg px-2">
-                          Câu trả lời của bạn: {studentAnswer}
-                        </span>
-                      </div>
-                    );
-                  })}
-                  <div className="p-4">
-                    {!isTimeExceeded && !submitted && !isComplete && (
-                      <Button
-                        type="primary"
-                        onClick={handleSubmit}
-                        loading={submitting}
-                        className="mr-3 custom-button text-white font-bold px-4 rounded"
-                      >
-                        Nộp bài
-                      </Button>
-                    )}
-                    {isComplete && (
-                      <div className="font-bold text-sm text-blue-500">
-                        Bạn đã hoàn thành bài kiểm tra này với tổng số điểm là:{" "}
-                        <a className="text-red-500">{score[0]?.score} Điểm</a>
-                      </div>
-                    )}
-                    {isTimeExceeded && (
-                      <div className="font-bold text-sm">
-                        Thời gian làm bài đã hết
-                      </div>
-                    )}
-                  </div>
-                  {submitted && (
-                    <>
-                      {quiz?.map((quiz, quizIndex) => (
+                            Danh sách bài tập
+                          </Link>
+                        ))}
                         <Link
-                          key={quizIndex}
-                          className="mr-3 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                          href={`/courses/view-details/${
-                            quiz.courseIds[0]?._id ||
-                            quiz.lessonId?.courseId?._id
-                          }`}
+                          href="/courses/view-score"
+                          className="mr-3 custom-button text-white font-bold py-2 px-4 rounded"
                         >
-                          Danh sách bài tập
+                          Xem điểm
                         </Link>
-                      ))}
-                      <Link
-                        href="/courses/view-score"
-                        className="mr-3 custom-button text-white font-bold py-2 px-4 rounded"
-                      >
-                        Xem điểm
-                      </Link>
-                    </>
-                  )}
-                </Card>
-              </React.Fragment>
-            ))}
-          </React.Fragment>
-        )}
+                      </>
+                    )}
+                  </Card>
+                </React.Fragment>
+              ))}
+            </React.Fragment>
+          )}
+        </div>
       </div>
     </div>
   );

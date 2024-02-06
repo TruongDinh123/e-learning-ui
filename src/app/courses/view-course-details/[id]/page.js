@@ -137,7 +137,6 @@ export default function CourseDetails({ params }) {
             </div>
           </div>
           <div className="space-y-2">
-            <h2 className="text-lg font-semibold">Bài tập khóa học</h2>
             <ul className="list-disc list-inside space-y-1">
               {isLoggedIn && (
                 <>
@@ -164,7 +163,7 @@ export default function CourseDetails({ params }) {
         </div>
       </header>
       <main className="flex flex-col md:flex-row flex-1 overflow-auto">
-        <div className="flex flex-col w-full md:w-1/3 border-r md:border-r border-gray-200 dark:border-gray-800 p-4 overflow-auto">
+        <div className="flex flex-col w-full md:w-1/3 border-r md:border-r border-gray-200 dark:border-gray-200 p-4 overflow-auto">
           <h2 className="font-semibold mb-4">Bài học:</h2>
           <div className="space-y-4">
             {dataCourse?.lessons?.map((lesson, index) => (
@@ -197,7 +196,6 @@ export default function CourseDetails({ params }) {
           </div>
         </div>
         <div className="flex flex-col w-full md:w-2/3 p-4">
-          <h2 className="font-semibold mb-4">Video bài học:</h2>
           {selectedLesson?.videos?.length > 0 ? (
             selectedLesson.videos.map((video, index) => (
               <div className="space-y-4 overflow-auto" key={index}>
@@ -226,7 +224,7 @@ export default function CourseDetails({ params }) {
               </div>
             ))
           ) : (
-            <div className="aspect-[16/9] bg-gray-200 rounded overflow-hidden items-center justify-center">
+            <div className="aspect-[16/9] bg-gray-200 rounded overflow-hidden flex items-center justify-center">
               <Empty description="Hãy chọn bài học để xem video nếu có." />
             </div>
           )}

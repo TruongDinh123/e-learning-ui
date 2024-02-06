@@ -45,9 +45,6 @@ export default function Course() {
           </Link>
         </Breadcrumb.Item>
       </Breadcrumb>
-      <h1 className="mt-2 pl-5 text-3xl font-extrabold tracking-tight text-gray-900">
-        Khóa học của tôi
-      </h1>
 
       <div className="flex p-4">
         <div className="content flex-1">

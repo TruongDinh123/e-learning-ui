@@ -210,6 +210,7 @@ export const getQuizsByCourse = createAsyncThunk(
 export const submitQuiz = createAsyncThunk(
   "/e-learning/submit-quiz",
   async (data, { rejectWithValue }) => {
+    console.log("🚀 ~ data:", data);
     try {
       const response = await QuizService.submitQuiz(data);
       return response;
