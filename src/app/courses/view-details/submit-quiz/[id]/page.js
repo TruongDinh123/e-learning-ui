@@ -155,35 +155,35 @@ export default function Quizs({ params }) {
     }
   }, [quiz, startTime]);
 
-  // useEffect(() => {
-  //   const preventCopy = (event) => {
-  //     event.preventDefault();
-  //     message.error("Sao chép nội dung không được phép!");
-  //   };
+  useEffect(() => {
+    const preventCopy = (event) => {
+      event.preventDefault();
+      message.error("Sao chép nội dung không được phép!");
+    };
 
-  //   const preventInspect = (event) => {
-  //     if (
-  //       event.keyCode === 123 ||
-  //       (event.ctrlKey &&
-  //         event.shiftKey &&
-  //         (event.keyCode === 73 || event.keyCode === 74))
-  //     ) {
-  //       event.preventDefault();
-  //       message.error("Không được phép kiểm tra!");
-  //       return false;
-  //     }
-  //   };
+    const preventInspect = (event) => {
+      if (
+        event.keyCode === 123 ||
+        (event.ctrlKey &&
+          event.shiftKey &&
+          (event.keyCode === 73 || event.keyCode === 74))
+      ) {
+        event.preventDefault();
+        message.error("Không được phép kiểm tra!");
+        return false;
+      }
+    };
 
-  //   document.addEventListener("copy", preventCopy);
-  //   document.addEventListener("contextmenu", preventCopy);
-  //   document.addEventListener("keydown", preventInspect);
+    document.addEventListener("copy", preventCopy);
+    document.addEventListener("contextmenu", preventCopy);
+    document.addEventListener("keydown", preventInspect);
 
-  //   return () => {
-  //     document.removeEventListener("copy", preventCopy);
-  //     document.removeEventListener("contextmenu", preventCopy);
-  //     document.removeEventListener("keydown", preventInspect);
-  //   };
-  // }, []);
+    return () => {
+      document.removeEventListener("copy", preventCopy);
+      document.removeEventListener("contextmenu", preventCopy);
+      document.removeEventListener("keydown", preventInspect);
+    };
+  }, []);
 
   let submissionTime;
   if (quiz[0] && quiz[0]?.submissionTime) {

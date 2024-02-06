@@ -76,8 +76,6 @@ export default function StudentWork({ student }) {
           })}
         </div>
       );
-    } else {
-      return <Empty description="Dữ liệu chưa có" />;
     }
   };
 

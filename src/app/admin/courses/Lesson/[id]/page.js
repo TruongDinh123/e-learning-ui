@@ -90,13 +90,15 @@ export default function Lesson({ params }) {
   };
 
   return (
-    <div className="p-3">
+    <div className="p-4">
       <Breadcrumb>
         <Breadcrumb.Item>
           <Link href="/admin/courses">Courses</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Link href={`/admin/courses/Lesson/${params?.id}`}>
+          <Link
+            href={`/admin/courses/Lesson/${params?.id}`}
+          >
             {lesson[0]?.name}
           </Link>
         </Breadcrumb.Item>

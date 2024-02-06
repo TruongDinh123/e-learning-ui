@@ -102,7 +102,6 @@ export const uploadFileQuiz = createAsyncThunk(
 export const uploadQuestionImage = createAsyncThunk(
   "/e-learning/upload-image-question",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ uploadQuestionImage:", data);
     try {
       const response = await QuizService.uploadQuestionImage(data);
       return response;

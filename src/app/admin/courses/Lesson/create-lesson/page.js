@@ -112,7 +112,7 @@ export default function CreateLesson(props) {
       <Button
         type="primary"
         onClick={showModal}
-        className="me-3 mt-2 custom-button"
+        className="me-3 mt-3 custom-button"
       >
         Tạo bài học
       </Button>

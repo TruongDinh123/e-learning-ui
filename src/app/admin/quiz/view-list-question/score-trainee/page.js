@@ -73,7 +73,6 @@ export default function ViewListScore(props) {
       })
       .catch((error) => {
         setIsLoading(false);
-        
       });
   };
 
@@ -89,30 +88,34 @@ export default function ViewListScore(props) {
       })
       .catch((error) => {
         setIsLoading(false);
-        
       });
   }, [update]);
 
   return (
     <div>
       {contextHolder}
-      <div style={{ marginBottom: 25 }}>
-        <Button
-          type="primary"
-          style={{ color: "#fff", backgroundColor: "#1890ff" }}
-          onClick={handleReturnWork}
-          loading={isLoading}
-        >
-          Trả bài cho học viên
-        </Button>
-      </div>
-      <Checkbox
-        checked={selectAll}
-        onChange={handleCheckAll}
-        className="font-bold"
-      >
-        Chọn tất cả học viên
-      </Checkbox>
+      {score.length > 0 && (
+        <>
+          <div style={{ marginBottom: 25 }}>
+            <Button
+              type="primary"
+              style={{ color: "#fff", backgroundColor: "#1890ff" }}
+              onClick={handleReturnWork}
+              loading={isLoading}
+            >
+              Trả bài cho học viên
+            </Button>
+          </div>
+          <Checkbox
+            checked={selectAll}
+            onChange={handleCheckAll}
+            className="font-bold"
+          >
+            Chọn tất cả học viên
+          </Checkbox>
+        </>
+      )}
+
       <div className="flex grid-container">
         {score.length > 0 ? (
           <Tabs tabPosition={"left"} className="tabs-container">
@@ -163,7 +166,12 @@ export default function ViewListScore(props) {
             ))}
           </Tabs>
         ) : (
-          <Empty description="Dữ liệu chưa có" />
+          <div
+            className="flex justify-center items-center"
+            style={{ height: "100%" }}
+          >
+            <Empty description="Hiện tại chưa có học viên nộp bài" />
+          </div>
         )}
 
         {selectedStudent && <StudentWork student={selectedStudent} />}

@@ -14,6 +14,7 @@ import TabPane from "antd/es/tabs/TabPane";
 import ViewListScore from "../score-trainee/page";
 import "../[id]/page.css";
 import moment from "moment";
+import ScoreStatisticsCourse from "../score-statistics/page";
 
 export default function ViewListQuestion({ params }) {
   const dispatch = useDispatch();
@@ -67,7 +68,7 @@ export default function ViewListQuestion({ params }) {
         </div>
       ) : (
         <React.Fragment>
-          <Breadcrumb>
+          <Breadcrumb className="py-4">
             <Breadcrumb.Item>
               <Link href="/admin/quiz/view-quiz">Bài tập</Link>
             </Breadcrumb.Item>
@@ -227,6 +228,9 @@ export default function ViewListQuestion({ params }) {
                 </TabPane>
                 <TabPane tab={`Điểm học viên`} key={quizIndex + 1}>
                   <ViewListScore quizId={params?.id} />
+                </TabPane>
+                <TabPane tab={`Thống kê điểm`}>
+                  <ScoreStatisticsCourse quizId={params?.id} />
                 </TabPane>
               </>
             ))}

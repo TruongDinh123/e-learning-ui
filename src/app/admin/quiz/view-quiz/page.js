@@ -28,11 +28,14 @@ export default function ViewQuiz() {
   const dispatch = useDispatch();
   const [quiz, setquiz] = useState([]);
   const [updateQuiz, setUpdateQuiz] = useState(0);
-  const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [selectedCourseLessons, setSelectedCourseLessons] = useState([]);
   const [courses, setCourses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [selectedCourse, setSelectedCourse] = useState(() => {
+    return localStorage.getItem("selectedCourseId") || null;
+  });
 
   const router = useRouter();
 
@@ -41,6 +44,7 @@ export default function ViewQuiz() {
     setSelectedCourse(value);
     const selectedCourse = courses.find((course) => course._id === value);
     setSelectedCourseLessons(selectedCourse?.lessons || []);
+    localStorage.setItem("selectedCourseId", value);
   };
 
   // Hàm xử lý khi chọn bài học
@@ -56,10 +60,6 @@ export default function ViewQuiz() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          const user = JSON.parse(localStorage?.getItem("user"));
-
-          // const isAdmin = user?.roles?.includes("Admin") || user?.roles?.includes("Super-Admin");
-
           let visibleCourses;
           if (isAdmin()) {
             visibleCourses = res.metadata;
@@ -95,6 +95,12 @@ export default function ViewQuiz() {
         setIsLoading(false);
       });
   };
+
+  useEffect(() => {
+    if (selectedCourse) {
+      handleViewQuiz();
+    }
+  }, [selectedCourse]);
 
   const handleDeleteQuiz = ({ quizId }) => {
     setIsLoading(true);

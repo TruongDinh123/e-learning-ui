@@ -97,7 +97,7 @@ export default function CourseDetails({ params }) {
             "linear-gradient(180deg, rgba(201, 144, 30, 0) 0%, rgba(255, 192, 67, 0.108) 100%)",
         }}
       >
-        <div className="flex flex-col md:w-1/2 space-y-2 border-r md:border-r border-gray-200 dark:border-gray-300">
+        <div className="flex flex-col md:w-1/2 space-y-2 border-gray-200 dark:border-gray-300">
           <Breadcrumb className="pb-2">
             <Breadcrumb.Item>
               <Link href="/">Trang chủ</Link>
@@ -116,7 +116,7 @@ export default function CourseDetails({ params }) {
             {dataCourse?.title}
           </p>
         </div>
-        <div className="flex flex-col md:w-1/2 space-y-4 md:space-y-2 mt-4 md:mt-0 pl-2">
+        <div className="flex flex-col md:w-1/2 space-y-4 md:space-y-2 mt-4 md:mt-0 pl-2 justify-center items-center">
           <div className="flex items-center gap-3">
             <img
               alt="Teacher's avatar"
@@ -145,9 +145,7 @@ export default function CourseDetails({ params }) {
                     <li key={index}>
                       <a
                         className="text-blue-500 hover:underline cursor-pointer"
-                        onClick={() =>
-                          handleStartQuiz(quiz?._id, quiz?.type)
-                        }
+                        onClick={() => handleStartQuiz(quiz?._id, quiz?.type)}
                       >{`Bài tập ${index + 1}: ${quiz.name}`}</a>
                     </li>
                   ))}
