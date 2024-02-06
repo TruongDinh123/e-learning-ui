@@ -18,7 +18,6 @@ import moment from "moment";
 export default function ViewListQuestion({ params }) {
   const dispatch = useDispatch();
   const [quiz, setquiz] = useState([]);
-  console.log("🚀 ~ quiz:", quiz);
   const [score, setScore] = useState([]);
   const [updateQuiz, setUpdateQuiz] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -76,28 +75,33 @@ export default function ViewListQuestion({ params }) {
               <span className="font-medium">Chi tiết</span>
             </Breadcrumb.Item>
           </Breadcrumb>
+          <div className="sticky">
+            {quiz?.map((quiz, quizIndex) => (
+              <div
+                className="bg-blue-100 p-4 rounded-md shadow-md"
+                key={quizIndex}
+              >
+                <h2 className="text-2xl font-bold text-blue-700">
+                  Tên khóa học: {quiz.courseIds[0]?.name}{" "}
+                  {quiz.lessonId?.courseId?.name}
+                </h2>
+                <p className="text-blue-600">
+                  Thời gian hoàn thành:{" "}
+                  {moment(quiz.submissionTime).format("DD/MM/YYYY HH:mm")}
+                </p>
+                <p className="text-blue-600">
+                  Loại bài tập:{" "}
+                  {quiz.type === "multiple_choice" ? "Trắc nghiệm" : "Tự luận"}
+                </p>
+              </div>
+            ))}
+          </div>
           <Tabs defaultActiveKey="0">
             {quiz?.map((quiz, quizIndex) => (
               <>
                 <TabPane tab={`Câu hỏi`} key={quizIndex}>
-                  <div className="mb-4 bg-blue-100 p-4 rounded-md shadow-md">
-                    <h2 className="text-2xl font-bold text-blue-700">
-                      Tên khóa học: {quiz.courseIds[0]?.name}{" "}
-                      {quiz.lessonId?.courseId?.name}
-                    </h2>
-                    <p className="text-blue-600">
-                      Thời gian hoàn thành:{" "}
-                      {moment(quiz.submissionTime).format("DD/MM/YYYY HH:mm")}
-                    </p>
-                    <p className="text-blue-600">
-                      Loại bài tập:{" "}
-                      {quiz.type === "multiple_choice"
-                        ? "Trắc nghiệm"
-                        : "Tự luận"}
-                    </p>
-                  </div>
                   {quiz.type === "multiple_choice" ? (
-                    <div className="grid-container scrollbar scrollbar-thin">
+                    <div className="">
                       <div className="flex flex-col sm:flex-row justify-between items-center">
                         <div className="border-gray-300">
                           <span className="pr-4 text-green-600 block sm:inline">
@@ -126,13 +130,15 @@ export default function ViewListQuestion({ params }) {
                                     Câu {questionIndex + 1}: {question.question}
                                   </span>
                                 </div>
-                                <div className="mb-2">
-                                  <img
-                                    src={question.image_url}
-                                    alt={`Câu hỏi ${questionIndex + 1}`}
-                                    className="max-w-auto"
-                                  />
-                                </div>
+                                {question?.image_url && (
+                                  <div className="mb-2">
+                                    <img
+                                      src={question.image_url}
+                                      alt={`Câu hỏi ${questionIndex + 1}`}
+                                      className="max-w-auto"
+                                    />
+                                  </div>
+                                )}
                                 {question.options.map((option, optionIndex) => (
                                   <label
                                     className="block mb-2"

@@ -1,6 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Radio, Button, message, Spin, Statistic } from "antd";
+import {
+  Card,
+  Radio,
+  Button,
+  message,
+  Spin,
+  Statistic,
+  Breadcrumb,
+} from "antd";
 import { getScore, submitQuiz, viewAQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
@@ -21,7 +29,6 @@ export default function Quizs({ params }) {
   const [showCountdown, setShowCountdown] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // Lưu trạng thái khi người dùng chọn câu trả lời
   const handleAnswer = (questionId, answer) => {
     setSelectedAnswers((prevAnswers) => {
       const newAnswers = { ...prevAnswers, [questionId]: answer };
@@ -31,13 +38,11 @@ export default function Quizs({ params }) {
   };
 
   useEffect(() => {
-    // Khôi phục trạng thái câu trả lời từ localStorage
     const savedAnswers = JSON.parse(localStorage.getItem("quizAnswers"));
     if (savedAnswers) {
       setSelectedAnswers(savedAnswers);
     }
 
-    // Khôi phục thời gian bắt đầu từ localStorage
     const startTime =
       localStorage.getItem("quizStartTime") || new Date().toISOString();
     localStorage.setItem("quizStartTime", startTime);
@@ -45,6 +50,17 @@ export default function Quizs({ params }) {
   }, []);
 
   const idQuiz = quiz.map((item) => item._id);
+
+  const fetchScore = async () => {
+    try {
+      const scoreResult = await dispatch(getScore()).then(unwrapResult);
+      if (scoreResult.status) {
+        setScore(scoreResult.metadata);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleSubmit = () => {
     const totalQuestions = quiz.reduce(
@@ -75,6 +91,7 @@ export default function Quizs({ params }) {
               setSubmitted(true);
               setShowCountdown(false);
               localStorage.removeItem("quizAnswers");
+              fetchScore();
               localStorage.removeItem("quizStartTime");
             });
         } else {
@@ -85,7 +102,6 @@ export default function Quizs({ params }) {
   };
 
   useEffect(() => {
-    // Fetch thông tin quiz
     const fetchQuizInfo = async () => {
       setLoading(true);
       try {
@@ -139,35 +155,35 @@ export default function Quizs({ params }) {
     }
   }, [quiz, startTime]);
 
-  useEffect(() => {
-    const preventCopy = (event) => {
-      event.preventDefault();
-      message.error("Sao chép nội dung không được phép!");
-    };
+  // useEffect(() => {
+  //   const preventCopy = (event) => {
+  //     event.preventDefault();
+  //     message.error("Sao chép nội dung không được phép!");
+  //   };
 
-    const preventInspect = (event) => {
-      if (
-        event.keyCode === 123 ||
-        (event.ctrlKey &&
-          event.shiftKey &&
-          (event.keyCode === 73 || event.keyCode === 74))
-      ) {
-        event.preventDefault();
-        message.error("Không được phép kiểm tra!");
-        return false;
-      }
-    };
+  //   const preventInspect = (event) => {
+  //     if (
+  //       event.keyCode === 123 ||
+  //       (event.ctrlKey &&
+  //         event.shiftKey &&
+  //         (event.keyCode === 73 || event.keyCode === 74))
+  //     ) {
+  //       event.preventDefault();
+  //       message.error("Không được phép kiểm tra!");
+  //       return false;
+  //     }
+  //   };
 
-    document.addEventListener("copy", preventCopy);
-    document.addEventListener("contextmenu", preventCopy);
-    document.addEventListener("keydown", preventInspect);
+  //   document.addEventListener("copy", preventCopy);
+  //   document.addEventListener("contextmenu", preventCopy);
+  //   document.addEventListener("keydown", preventInspect);
 
-    return () => {
-      document.removeEventListener("copy", preventCopy);
-      document.removeEventListener("contextmenu", preventCopy);
-      document.removeEventListener("keydown", preventInspect);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("copy", preventCopy);
+  //     document.removeEventListener("contextmenu", preventCopy);
+  //     document.removeEventListener("keydown", preventInspect);
+  //   };
+  // }, []);
 
   let submissionTime;
   if (quiz[0] && quiz[0]?.submissionTime) {
@@ -188,6 +204,28 @@ export default function Quizs({ params }) {
           </div>
         ) : (
           <React.Fragment>
+            <Breadcrumb className="pb-2">
+              <Breadcrumb.Item>
+                <Link href="/">Trang chủ</Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                <Link href="/courses/view-course">Khóa học của bạn</Link>
+              </Breadcrumb.Item>
+              {quiz?.map((quiz, quizIndex) => (
+                <>
+                  <Breadcrumb.Item key={quizIndex}>
+                    <Link
+                      className="font-bold"
+                      href={`/courses/view-course-details/${
+                        quiz.courseIds[0]?._id || quiz.lessonId?.courseId?._id
+                      }`}
+                    >
+                      {quiz.courseIds[0]?.name || quiz.lessonId?.courseId?.name}
+                    </Link>
+                  </Breadcrumb.Item>
+                </>
+              ))}
+            </Breadcrumb>
             {quiz.map((item, index) => (
               <React.Fragment key={index}>
                 <Card
@@ -285,12 +323,18 @@ export default function Quizs({ params }) {
                   </div>
                   {submitted && (
                     <>
-                      <Link
-                        href="/"
-                        className="mr-3 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                      >
-                        Trở về trang chủ
-                      </Link>
+                      {quiz?.map((quiz, quizIndex) => (
+                        <Link
+                          key={quizIndex}
+                          className="mr-3 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                          href={`/courses/view-details/${
+                            quiz.courseIds[0]?._id ||
+                            quiz.lessonId?.courseId?._id
+                          }`}
+                        >
+                          Danh sách bài tập
+                        </Link>
+                      ))}
                       <Link
                         href="/courses/view-score"
                         className="mr-3 custom-button text-white font-bold py-2 px-4 rounded"

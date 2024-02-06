@@ -324,7 +324,6 @@ export default function QuizCreator() {
           });
       })
       .catch((error) => {
-        console.log("🚀 ~ error:", error);
         setIsLoading(false);
         if (error.status === 403 && error.name === "BadRequestError") {
           message.error("A quiz for this lesson already exists.", 3.5);
@@ -660,7 +659,11 @@ export default function QuizCreator() {
                                   handleImageUpload(event, index)
                                 }
                               >
-                                <Button icon={<UploadOutlined />}>
+                                <Button
+                                  className="custom-button"
+                                  type="primary"
+                                  icon={<UploadOutlined />}
+                                >
                                   Thêm tệp
                                 </Button>
                               </Upload>
@@ -688,7 +691,10 @@ export default function QuizCreator() {
                                           },
                                         ]}
                                       >
-                                        <Input placeholder="Option" />
+                                        <Input.TextArea
+                                          autoSize={{ minRows: 1, maxRows: 6 }}
+                                          placeholder="Option"
+                                        />
                                       </Form.Item>
                                       <CloseOutlined
                                         onClick={() => subMeta.remove(subIndex)}
@@ -744,6 +750,21 @@ export default function QuizCreator() {
               </>
             ) : (
               <>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Form.Item
+                    label="Tên bài tập"
+                    name="name"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập tên bài tập.",
+                      },
+                    ]}
+                    className="w-full"
+                  >
+                    <Input placeholder="Tên bài" className="w-full" />
+                  </Form.Item>
+                </Col>
                 <Form.Item
                   label="Tiêu đề"
                   name="essayTitle"

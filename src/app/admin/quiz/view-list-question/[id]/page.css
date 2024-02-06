@@ -28,6 +28,13 @@
   }
 }
 
+.sticky {
+  position: -webkit-sticky; 
+  position: sticky;
+  top: 0; 
+  z-index: 1000;
+}
+
 .grid-container {
   max-height: calc(100vh - 200px);
 }

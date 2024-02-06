@@ -2,24 +2,19 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
 import {
-  ArrowPathIcon,
   Bars3Icon,
   ChartPieIcon,
   ChevronRightIcon,
   CursorArrowRaysIcon,
-  FingerPrintIcon,
-  SquaresPlusIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import React from "@heroicons/react";
 import Link from "next/link";
-import { Avatar, Button, Dropdown, Menu, message } from "antd";
+import { Avatar, Dropdown, Menu, message } from "antd";
 import {
   LockOutlined,
   LoginOutlined,
   LogoutOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,7 +28,6 @@ import {
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
-import { RiLockPasswordLine } from "react-icons/ri";
 
 const logo3 = "/images/logo5.png";
 
@@ -77,14 +71,6 @@ const UserLinks = () => {
           </span>
         </div>
       </Link>
-      {/* <Link href="/web-rtc/lobby">
-        <div className="flex items-center">
-          <CameraIcon className="h-5 w-5 text-gray-600 mr-2" />
-          <span className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-            Tạo phòng họp
-          </span>
-        </div>
-      </Link> */}
     </>
   );
 };
@@ -412,7 +398,7 @@ export default function Header() {
                                     <div key={course?._id} className="mb-6">
                                       <Link
                                         className="text-sm text-[#C89F65] font-medium mb-2"
-                                        href={`/courses/lessons/${course?._id}`}
+                                        href={`/courses/view-course-details/${course?._id}`}
                                       >
                                         {course.name}
                                       </Link>

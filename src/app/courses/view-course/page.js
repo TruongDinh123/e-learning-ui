@@ -2,7 +2,7 @@
 import { getStudentCourses } from "@/features/Courses/courseSlice";
 import { BookOutlined, FolderOpenOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Breadcrumb, Image, Spin } from "antd";
+import { Breadcrumb, Empty, Image, Spin } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -55,7 +55,7 @@ export default function Course() {
             <div className="flex justify-center items-center h-screen">
               <Spin />
             </div>
-          ) : (
+          ) : course?.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 pb-28">
               {course &&
                 course.map((item, index) => (
@@ -94,7 +94,10 @@ export default function Course() {
                           <BookOutlined className="text-sky-500" />
                           <span>Bài học: {item.lessons.length}</span>
                         </div>
-                        <div className="flex items-center gap-x-1 text-gray-500  cursor-pointer" onClick={() => navigateToNonExpiredCourses(item._id)}>
+                        <div
+                          className="flex items-center gap-x-1 text-gray-500  cursor-pointer"
+                          onClick={() => navigateToNonExpiredCourses(item._id)}
+                        >
                           <FolderOpenOutlined className="text-sky-500" />
                           <span>Bài tập: {item.quizzes?.length}</span>
                         </div>
@@ -102,6 +105,10 @@ export default function Course() {
                     </div>
                   </div>
                 ))}
+            </div>
+          ) : (
+            <div className="flex justify-center items-center h-screen">
+              <Empty description="Bạn chưa có khóa học" />
             </div>
           )}
         </div>

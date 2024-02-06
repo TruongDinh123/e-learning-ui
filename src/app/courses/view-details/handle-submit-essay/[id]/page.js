@@ -31,7 +31,6 @@ const ReactQuill = dynamic(
 
 export default function HandleSubmitEssay({ params }) {
   const [quiz, setquiz] = useState([]);
-  console.log("🚀 ~ quiz:", quiz);
   const [score, setScore] = useState([]);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -40,34 +39,6 @@ export default function HandleSubmitEssay({ params }) {
   const [messageApi, contextHolder] = message.useMessage();
   const [update, setUpdate] = useState(0);
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [comment, setComment] = useState("");
-  const [comments, setComments] = useState([
-    {
-      author: "John Doe",
-      avatar: "https://example.com/avatar.jpg",
-      content: "Great post!",
-      datetime: "2021-09-01",
-    },
-    // More comments...
-  ]);
-
-  const handleCommentChange = (e) => {
-    setComment(e.target.value);
-  };
-
-  const handleCommentSubmit = () => {
-    setComments([
-      ...comments,
-      {
-        author: "You",
-        avatar: "https://example.com/your-avatar.jpg",
-        content: comment,
-        datetime: new Date().toISOString(),
-      },
-    ]);
-
-    setComment("");
-  };
 
   const props = {
     onRemove: () => {
@@ -161,6 +132,30 @@ export default function HandleSubmitEssay({ params }) {
     <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 overflow-auto pb-28">
         {contextHolder}
+        <Breadcrumb className="pb-2">
+          <Breadcrumb.Item>
+            <Link href="/">Trang chủ</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <Link href="/courses/view-course">Khóa học của bạn</Link>
+          </Breadcrumb.Item>
+          {quiz?.map((quiz, quizIndex) => (
+            <>
+              <Breadcrumb.Item key={quizIndex}>
+                <Link
+                  href={`/courses/view-course-details/${
+                    quiz.courseIds[0]?._id || quiz.lessonId?.courseId?._id
+                  }`}
+                >
+                  {quiz.courseIds[0]?.name || quiz.lessonId?.courseId?.name}
+                </Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                <span className="font-bold"> {quiz.essay?.title}</span>
+              </Breadcrumb.Item>
+            </>
+          ))}
+        </Breadcrumb>
         {isLoading ? (
           <div className="flex justify-center items-center h-screen">
             <Spin />
@@ -172,10 +167,15 @@ export default function HandleSubmitEssay({ params }) {
               const courseName =
                 quiz.courseIds[0]?.name || quiz.lessonId?.courseId?.name;
 
-              const teacherName =
-                quiz.lessonId?.courseId?.teacher.lastName +
-                " " +
+              const teacherLastName = quiz.lessonId?.courseId?.teacher.lastName;
+              const teacherFirstName =
                 quiz.lessonId?.courseId?.teacher.firstName;
+
+              const teacherName =
+                teacherLastName && teacherFirstName
+                  ? teacherLastName + " " + teacherFirstName
+                  : "Tên giáo viên không có sẵn";
+
               return (
                 <Row
                   gutter={16}
@@ -324,7 +324,7 @@ export default function HandleSubmitEssay({ params }) {
                               </div>
                             ) : (
                               <div className="text-red-500">
-                                Giáo viên chưa chấp điểm.
+                                Giáo viên chưa chấm điểm.
                               </div>
                             )}
                           </div>

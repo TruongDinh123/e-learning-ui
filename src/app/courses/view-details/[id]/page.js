@@ -277,57 +277,34 @@ export default function ViewQuiz({ params }) {
 
   // Component hiển thị khóa học hết hạn
   const ExpiredCoursesComponent = () => {
-    const expiredCourses = [];
-
-    quiz?.forEach((i, index) => {
+    const notCompletedQuizzes = quiz?.filter((i) => {
       const correspondingScore = score.find((s) => s.quiz?._id === i?._id);
-
-      const submissionTime = i?.submissionTime
-        ? getTime(new Date(i?.submissionTime))
-        : null;
-
-      const currentDate = getTime(new Date());
-
-      if (submissionTime < currentDate) {
-        expiredCourses.push({
-          key: index + 1,
-          name: i?.name,
-          submissionTime: format(
-            new Date(submissionTime),
-            "dd/MM/yyyy HH:mm:ss"
-          ),
-          isComplete: correspondingScore
-            ? correspondingScore.isComplete
-              ? "Đã hoàn thành"
-              : "Chưa hoàn thành"
-            : "Chưa hoàn thành",
-          type: i?.type,
-          questions: (
-            <Button
-              className="me-3"
-              style={{ width: "100%" }}
-              onClick={() =>
-                i?.type === "multiple_choice"
-                  ? router.push(`/courses/view-details/submit-quiz/${i?._id}`)
-                  : router.push(
-                      `/courses/view-details/handle-submit-essay/${i?._id}`
-                    )
-              }
-            >
-              Xem chi tiết
-            </Button>
-          ),
-        });
-      }
-    });
+      return !correspondingScore?.isComplete;
+    }).map((i, index) => ({
+      key: index + 1,
+      name: i?.name,
+      submissionTime: i?.submissionTime ? format(new Date(i?.submissionTime), "dd/MM/yyyy HH:mm:ss") : null,
+      isComplete: "Chưa hoàn thành",
+      type: i?.type,
+      questions: (
+        <Button
+          className="me-3"
+          style={{ width: "100%" }}
+          loading={isLoading}
+          onClick={() => handleStartQuiz(i?._id, i?.type)}
+        >
+          Xem chi tiết
+        </Button>
+      ),
+    }));
 
     useEffect(() => {
-      setExpiredCount(expiredCourses.length);
-    }, [expiredCourses]);
+      setExpiredCount(notCompletedQuizzes.length);
+    }, [notCompletedQuizzes]);
 
     return (
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-2">
-        {expiredCourses.map((item, index) => (
+        {notCompletedQuizzes.map((item, index) => (
           <div
             key={index}
             className="bg-white rounded-lg card-shadow border border-gray-300 w-full overflow-hidden"
@@ -357,53 +334,36 @@ export default function ViewQuiz({ params }) {
 
   // Component hiển thị khóa học chưa hết hạn
   const NonExpiredCoursesComponent = () => {
-    const nonExpiredCourses = [];
-    quiz?.forEach((i, index) => {
+    const completedQuizzes = quiz?.filter((i) => {
       const correspondingScore = score.find((s) => s.quiz?._id === i?._id);
-
-      const submissionTime = i?.submissionTime
-        ? getTime(new Date(i?.submissionTime))
-        : null;
-
-      const currentDate = getTime(new Date());
-
-      if (!submissionTime || submissionTime > currentDate) {
-        const isLessonQuiz = i?.lessonId ? true : false;
-        nonExpiredCourses.push({
-          key: index + 1,
-          name: i?.name,
-          submissionTime: format(
-            new Date(submissionTime),
-            "dd/MM/yyyy HH:mm:ss"
-          ),
-          isComplete: correspondingScore
-            ? correspondingScore.isComplete
-              ? "Đã hoàn thành"
-              : "Chưa hoàn thành"
-            : "Chưa hoàn thành",
-          type: i?.type,
-          isLessonQuiz,
-          questions: (
-            <Button
-              className="me-3"
-              style={{ width: "100%" }}
-              loading={isLoading}
-              onClick={() => handleStartQuiz(i?._id, i?.type)}
-            >
-              Xem chi tiết
-            </Button>
-          ),
-        });
-      }
-    });
-
+      return correspondingScore?.isComplete;
+    }).map((i, index) => ({
+      key: index + 1,
+      name: i?.name,
+      submissionTime: i?.submissionTime ? format(new Date(i?.submissionTime), "dd/MM/yyyy HH:mm:ss") : null,
+      isComplete: "Đã hoàn thành",
+      type: i?.type,
+      questions: (
+        <Button
+          className="me-3"
+          style={{ width: "100%" }}
+          onClick={() =>
+            i?.type === "multiple_choice"
+              ? router.push(`/courses/view-details/submit-quiz/${i?._id}`)
+              : router.push(`/courses/view-details/handle-submit-essay/${i?._id}`)
+          }
+        >
+          Xem chi tiết
+        </Button>
+      ),
+    }));
     useEffect(() => {
-      setNonExpiredCount(nonExpiredCourses.length);
-    }, [nonExpiredCourses]);
+      setNonExpiredCount(completedQuizzes.length);
+    }, [completedQuizzes]);
 
     return (
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-2">
-        {nonExpiredCourses.map((item, index) => (
+        {completedQuizzes.map((item, index) => (
           <div
             key={index}
             className="bg-white rounded-lg card-shadow border border-gray-300 w-full overflow-hidden"
@@ -494,10 +454,10 @@ export default function ViewQuiz({ params }) {
             <Menu.Item key="1">Thông báo</Menu.Item>
             <Menu.SubMenu key="sub1" title="Bài tập">
               <Menu.Item key="2">
-                Hết hạn {expiredCount > 0 ? `[${expiredCount}]` : ""}
+                Chưa hoàn thành {expiredCount > 0 ? `[${expiredCount}]` : ""}
               </Menu.Item>
               <Menu.Item key="3">
-                Chưa hết hạn {nonExpiredCount > 0 ? `[${nonExpiredCount}]` : ""}
+                Hoàn thành {nonExpiredCount > 0 ? `[${nonExpiredCount}]` : ""}
               </Menu.Item>
             </Menu.SubMenu>
           </Menu>

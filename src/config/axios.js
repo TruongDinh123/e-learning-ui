@@ -33,7 +33,6 @@ axiosInstance.interceptors.request.use(
 );
 
 // Add a response interceptor
-// Add a response interceptor
 axiosInstance.interceptors.response.use(
   function (response) {
     return response;
