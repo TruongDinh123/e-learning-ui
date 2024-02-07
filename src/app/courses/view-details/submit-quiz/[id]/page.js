@@ -158,35 +158,35 @@ export default function Quizs({ params }) {
     }
   }, [quiz, startTime]);
 
-  // useEffect(() => {
-  //   const preventCopy = (event) => {
-  //     event.preventDefault();
-  //     message.error("Sao chép nội dung không được phép!");
-  //   };
+  useEffect(() => {
+    const preventCopy = (event) => {
+      event.preventDefault();
+      message.error("Sao chép nội dung không được phép!");
+    };
 
-  //   const preventInspect = (event) => {
-  //     if (
-  //       event.keyCode === 123 ||
-  //       (event.ctrlKey &&
-  //         event.shiftKey &&
-  //         (event.keyCode === 73 || event.keyCode === 74))
-  //     ) {
-  //       event.preventDefault();
-  //       message.error("Không được phép kiểm tra!");
-  //       return false;
-  //     }
-  //   };
+    const preventInspect = (event) => {
+      if (
+        event.keyCode === 123 ||
+        (event.ctrlKey &&
+          event.shiftKey &&
+          (event.keyCode === 73 || event.keyCode === 74))
+      ) {
+        event.preventDefault();
+        message.error("Không được phép kiểm tra!");
+        return false;
+      }
+    };
 
-  //   document.addEventListener("copy", preventCopy);
-  //   document.addEventListener("contextmenu", preventCopy);
-  //   document.addEventListener("keydown", preventInspect);
+    document.addEventListener("copy", preventCopy);
+    document.addEventListener("contextmenu", preventCopy);
+    document.addEventListener("keydown", preventInspect);
 
-  //   return () => {
-  //     document.removeEventListener("copy", preventCopy);
-  //     document.removeEventListener("contextmenu", preventCopy);
-  //     document.removeEventListener("keydown", preventInspect);
-  //   };
-  // }, []);
+    return () => {
+      document.removeEventListener("copy", preventCopy);
+      document.removeEventListener("contextmenu", preventCopy);
+      document.removeEventListener("keydown", preventInspect);
+    };
+  }, []);
 
   let submissionTime;
   if (quiz[0] && quiz[0]?.submissionTime) {
@@ -217,6 +217,9 @@ export default function Quizs({ params }) {
               >
                 {quiz.courseIds[0]?.name || quiz.lessonId?.courseId?.name}
               </Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <span className="font-bold"> {quiz.name}</span>
             </Breadcrumb.Item>
           </>
         ))}
@@ -304,19 +307,46 @@ export default function Quizs({ params }) {
                     })}
                     <div className="p-4">
                       {!isTimeExceeded && !submitted && !isComplete && (
-                        <Button
-                          type="primary"
-                          onClick={handleSubmit}
-                          loading={submitting}
-                          className="mr-3 custom-button text-white font-bold px-4 rounded"
-                        >
-                          Nộp bài
-                        </Button>
+                        <>
+                          <Button
+                            type="primary"
+                            onClick={handleSubmit}
+                            loading={submitting}
+                            className="mr-3 custom-button text-white font-bold px-4 rounded"
+                          >
+                            Nộp bài
+                          </Button>
+                          <>
+                            {quiz?.map((quiz, quizIndex) => (
+                              <Link
+                                key={quizIndex}
+                                className="mr-3 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                                href={`/courses/view-details/${
+                                  quiz.courseIds[0]?._id ||
+                                  quiz.lessonId?.courseId?._id
+                                }`}
+                              >
+                                Danh sách bài tập
+                              </Link>
+                            ))}
+                          </>
+                        </>
                       )}
                       {isComplete && (
                         <div className="font-bold text-sm text-blue-500">
                           Bạn đã hoàn thành bài kiểm tra
-                          {/* <a className="text-red-500">{score?.score} Điểm</a> */}
+                          {quiz?.map((quiz, quizIndex) => (
+                            <Link
+                              key={quizIndex}
+                              className="ml-3 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                              href={`/courses/view-details/${
+                                quiz.courseIds[0]?._id ||
+                                quiz.lessonId?.courseId?._id
+                              }`}
+                            >
+                              Danh sách bài tập
+                            </Link>
+                          ))}
                         </div>
                       )}
                       {isTimeExceeded && (

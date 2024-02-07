@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Checkbox, Empty, Tabs, message } from "antd";
+import { Button, Checkbox, Empty, Spin, Tabs, message } from "antd";
 import StudentWork from "../trainee-work/page";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -94,26 +94,41 @@ export default function ViewListScore(props) {
   return (
     <div>
       {contextHolder}
-      {score.length > 0 && (
-        <>
-          <div style={{ marginBottom: 25 }}>
-            <Button
-              type="primary"
-              style={{ color: "#fff", backgroundColor: "#1890ff" }}
-              onClick={handleReturnWork}
-              loading={isLoading}
+      {isLoading ? (
+        <div className="flex justify-center items-center">
+          <Spin />
+        </div>
+      ) : (
+        <React.Fragment>
+          {score.length > 0 ? (
+            <>
+              <div style={{ marginBottom: 25 }}>
+                <Button
+                  type="primary"
+                  style={{ color: "#fff", backgroundColor: "#1890ff" }}
+                  onClick={handleReturnWork}
+                  loading={isLoading}
+                >
+                  Trả bài cho học viên
+                </Button>
+              </div>
+              <Checkbox
+                checked={selectAll}
+                onChange={handleCheckAll}
+                className="font-bold"
+              >
+                Chọn tất cả học viên
+              </Checkbox>
+            </>
+          ) : (
+            <div
+              className="flex justify-center items-center"
+              style={{ height: "100%" }}
             >
-              Trả bài cho học viên
-            </Button>
-          </div>
-          <Checkbox
-            checked={selectAll}
-            onChange={handleCheckAll}
-            className="font-bold"
-          >
-            Chọn tất cả học viên
-          </Checkbox>
-        </>
+              <Empty description="Hiện tại chưa có học viên nộp bài" />
+            </div>
+          )}
+        </React.Fragment>
       )}
 
       <div className="flex grid-container">
@@ -165,14 +180,7 @@ export default function ViewListScore(props) {
               />
             ))}
           </Tabs>
-        ) : (
-          <div
-            className="flex justify-center items-center"
-            style={{ height: "100%" }}
-          >
-            <Empty description="Hiện tại chưa có học viên nộp bài" />
-          </div>
-        )}
+        ) : null}
 
         {selectedStudent && <StudentWork student={selectedStudent} />}
       </div>

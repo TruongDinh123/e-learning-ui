@@ -153,7 +153,7 @@ export default function ViewListQuestion({ params }) {
                                 <span className="text-sm text-green-700 font-bold text-center mb-5">
                                   Đáp án: {question.answer}
                                 </span>
-                                <div className="mt-3">
+                                {/* <div className="mt-3">
                                   <Popconfirm
                                     title="Xóa bài tập"
                                     description="Bạn có chắc muốn xóa bài tập?"
@@ -171,7 +171,7 @@ export default function ViewListQuestion({ params }) {
                                   >
                                     <Button danger>Xóa</Button>
                                   </Popconfirm>
-                                </div>
+                                </div> */}
                               </li>
                             </ul>
                           ))}

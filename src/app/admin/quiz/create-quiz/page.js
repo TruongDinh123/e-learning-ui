@@ -173,13 +173,30 @@ export default function QuizCreator() {
       return false;
     },
     fileList: fileQuestion ? [fileQuestion] : [],
+    accept: ".jpg, .jpeg, .png",
   };
 
   //hàm xử lý save quiz
   const handleSaveQuiz = (values) => {
     setIsLoading(true);
 
+    const questionWithoutOptionsIndex = values.questions.findIndex(
+      (q) => !q.options || q.options.length === 0
+    );
+
+    if (questionWithoutOptionsIndex !== -1) {
+      message.error(
+        `Câu hỏi số ${
+          questionWithoutOptionsIndex + 1
+        } phải có ít nhất một lựa chọn.`,
+        3.5
+      );
+      setIsLoading(false);
+      return;
+    }
+
     let formattedValues;
+
     let studentIds = selectedStudents;
     if (selectedStudents.includes("all")) {
       studentIds = studentsByCourse.map((student) => student._id);
@@ -327,12 +344,14 @@ export default function QuizCreator() {
         setIsLoading(false);
         if (error.status === 403 && error.name === "BadRequestError") {
           message.error("A quiz for this lesson already exists.", 3.5);
+          setIsLoading(false);
         } else {
           message.error(
             error.response?.data?.message ||
               "An error occurred while saving the quiz.",
             3.5
           );
+          setIsLoading(false);
         }
       });
   };

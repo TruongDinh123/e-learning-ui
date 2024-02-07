@@ -11,6 +11,7 @@ import {
   DatePicker,
   Upload,
   Spin,
+  InputNumber,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -18,6 +19,7 @@ import { CloseOutlined, UploadOutlined } from "@ant-design/icons";
 import {
   updateQuiz,
   uploadFileQuiz,
+  uploadQuestionImage,
   viewAQuiz,
   viewQuiz,
 } from "@/features/Quiz/quizSlice";
@@ -38,12 +40,14 @@ export default function UpdateQuiz(props) {
   const [quiz, setquiz] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState(null);
+  const [fileQuestion, setFileQuestion] = useState(null);
+  const [questionImages, setQuestionImages] = useState([]);
 
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const router = useRouter();
 
-  const propUpdate = {
+  const propUpdateEssay = {
     onRemove: () => {
       setFile(null);
     },
@@ -52,6 +56,18 @@ export default function UpdateQuiz(props) {
       return false;
     },
     fileList: file ? [file] : [],
+  };
+
+  const propsQuestion = {
+    onRemove: () => {
+      setFileQuestion(null);
+    },
+    beforeUpload: (file) => {
+      setFileQuestion(file);
+      return false;
+    },
+    fileList: fileQuestion ? [fileQuestion] : [],
+    accept: ".jpg, .jpeg, .png",
   };
 
   const showModal = () => {
@@ -74,6 +90,14 @@ export default function UpdateQuiz(props) {
     form.setFieldsValue({ questions: newQuestions });
   };
 
+  const handleImageUpload = (event, index) => {
+    setQuestionImages((prevState) => {
+      const newState = [...prevState];
+      newState[index] = fileQuestion;
+      return newState;
+    });
+  };
+
   const handleUpdateQuiz = (values) => {
     setIsLoading(true);
     let formattedValues;
@@ -84,6 +108,7 @@ export default function UpdateQuiz(props) {
       formattedValues = {
         ...values,
         submissionTime: values?.submissionTime?.toISOString(),
+        timeLimit: values?.timeLimit,
 
         questions: values.questions.map((question) => ({
           ...question,
@@ -105,6 +130,8 @@ export default function UpdateQuiz(props) {
     dispatch(updateQuiz({ quizId: quizId, formattedValues }))
       .then(unwrapResult)
       .then((res) => {
+        const questionIds = res.metadata?.questions?.map((q) => q._id);
+
         if (file) {
           dispatch(uploadFileQuiz({ quizId: quizId, filename: file })).then(
             (res) => {
@@ -114,6 +141,25 @@ export default function UpdateQuiz(props) {
               setIsLoading(false);
             }
           );
+        }
+        if (fileQuestion) {
+          questionImages.forEach((imageFile, index) => {
+            if (imageFile && questionIds[index]) {
+              dispatch(
+                uploadQuestionImage({
+                  quizId: quizId,
+                  questionId: questionIds[index],
+                  filename: fileQuestion,
+                })
+              ).catch((error) => {
+                message.error(
+                  error.response?.data?.message ||
+                    "An error occurred while uploading the question image.",
+                  3.5
+                );
+              });
+            }
+          });
         }
         messageApi
           .open({
@@ -130,7 +176,6 @@ export default function UpdateQuiz(props) {
         setIsLoading(false);
       })
       .catch((error) => {
-        
         message.error(error.response?.data?.message, 3.5);
         setIsLoading(false);
       });
@@ -148,6 +193,7 @@ export default function UpdateQuiz(props) {
               (quiz) => quiz._id === quizId
             );
             if (quizToUpdate) {
+              console.log("🚀 ~ quizToUpdate:", quizToUpdate)
               form.setFieldsValue({
                 name: quizToUpdate.name,
                 type: quizToUpdate.type,
@@ -162,8 +208,10 @@ export default function UpdateQuiz(props) {
                     option: option,
                   })),
                   answer: question.answer,
+                  image: question?.image_url,
                 })),
                 submissionTime: dayjs(quizToUpdate?.submissionTime),
+                timeLimit: quizToUpdate.timeLimit,
               });
             }
             setIsLoading(false);
@@ -171,9 +219,7 @@ export default function UpdateQuiz(props) {
             setIsLoading(false);
           }
         })
-        .catch((error) => {
-          
-        });
+        .catch((error) => {});
     }
   }, [courseIds, quizId, isModalOpen]);
 
@@ -231,6 +277,9 @@ export default function UpdateQuiz(props) {
             </Form.Item>
             {form.getFieldValue("type") === "multiple_choice" ? (
               <>
+                <Form.Item name="timeLimit" label="Thời gian làm bài (phút)">
+                  <InputNumber min={1} placeholder="Nhập thời gian làm bài" />
+                </Form.Item>
                 <Form.Item
                   label="Tên bài tập"
                   name="name"
@@ -263,11 +312,45 @@ export default function UpdateQuiz(props) {
                           >
                             <Input placeholder="Câu hỏi" />
                           </Form.Item>
+                          <Form.Item
+                            label="Hình ảnh"
+                            name={[field.name, "image"]}
+                          >
+                            <Upload
+                              {...propsQuestion}
+                              onChange={(event) =>
+                                handleImageUpload(event, index)
+                              }
+                            >
+                              <Button
+                                className="custom-button"
+                                type="primary"
+                                icon={<UploadOutlined />}
+                              >
+                                Thêm tệp
+                              </Button>
+                            </Upload>
+                            {form.getFieldValue([
+                              "questions",
+                              index,
+                              "image",
+                            ]) && (
+                              <img
+                                src={form.getFieldValue([
+                                  "questions",
+                                  index,
+                                  "image",
+                                ])}
+                                alt={`Question ${index + 1}`}
+                                className="max-w-auto h-40"
+                              />
+                            )}
+                          </Form.Item>
                           <Form.List name={[field.name, "options"]}>
                             {(subFields, subMeta) => (
                               <div>
                                 {subFields.map((subField, subIndex) => (
-                                  <Space key={subField.key}>
+                                  <Space key={subField.key} style={{ display: 'flex', marginBottom: 8 }} align="start">
                                     <Form.Item
                                       noStyle
                                       name={[subField.name, "option"]}
@@ -278,7 +361,7 @@ export default function UpdateQuiz(props) {
                                         },
                                       ]}
                                     >
-                                      <Input placeholder="Thêm lựa chọn" />
+                                      <Input.TextArea placeholder="Thêm lựa chọn" autoSize={{ minRows: 1, maxRows: 6 }} />
                                     </Form.Item>
                                     <CloseOutlined
                                       onClick={() => subMeta.remove(subIndex)}
@@ -340,12 +423,15 @@ export default function UpdateQuiz(props) {
                     </a>
                   </div>
                 )}
-                <Upload {...propUpdate}>
+                <Upload {...propUpdateEssay}>
                   <Button icon={<UploadOutlined />}>Select File</Button>
                 </Upload>
               </>
             )}
-            <div className="pt-2 text-end">
+            <div className="pt-4 text-end">
+              <Button type="default" className="mr-4" onClick={handleCancel}>
+                Hủy
+              </Button>
               <Button
                 type="primary"
                 htmlType="submit"

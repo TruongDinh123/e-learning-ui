@@ -129,33 +129,34 @@ export default function HandleSubmitEssay({ params }) {
   const isTimeExceeded = currentTime > submissionTime;
 
   return (
-    <>
+    <div className="p-4">
+      <Breadcrumb className="pb-2">
+        <Breadcrumb.Item>
+          <Link href="/">Trang chủ</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <Link href="/courses/view-course">Khóa học của bạn</Link>
+        </Breadcrumb.Item>
+        {quiz?.map((quiz, quizIndex) => (
+          <>
+            <Breadcrumb.Item key={quizIndex}>
+              <Link
+                href={`/courses/view-course-details/${
+                  quiz.courseIds[0]?._id || quiz.lessonId?.courseId?._id
+                }`}
+              >
+                {quiz.courseIds[0]?.name || quiz.lessonId?.courseId?.name}
+              </Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <span className="font-bold"> {quiz.essay?.title}</span>
+            </Breadcrumb.Item>
+          </>
+        ))}
+      </Breadcrumb>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 overflow-auto pb-28">
         {contextHolder}
-        <Breadcrumb className="pb-2">
-          <Breadcrumb.Item>
-            <Link href="/">Trang chủ</Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>
-            <Link href="/courses/view-course">Khóa học của bạn</Link>
-          </Breadcrumb.Item>
-          {quiz?.map((quiz, quizIndex) => (
-            <>
-              <Breadcrumb.Item key={quizIndex}>
-                <Link
-                  href={`/courses/view-course-details/${
-                    quiz.courseIds[0]?._id || quiz.lessonId?.courseId?._id
-                  }`}
-                >
-                  {quiz.courseIds[0]?.name || quiz.lessonId?.courseId?.name}
-                </Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <span className="font-bold"> {quiz.essay?.title}</span>
-              </Breadcrumb.Item>
-            </>
-          ))}
-        </Breadcrumb>
+
         {isLoading ? (
           <div className="flex justify-center items-center h-screen">
             <Spin />
@@ -269,19 +270,28 @@ export default function HandleSubmitEssay({ params }) {
                   </Col>
                   <Col xs={8} md={8} className="right-0">
                     <div className="border-2 border-gray-300 rounded-md">
-                      <div className="mb-4 border-gray-300 p-4 pb-4 rounded-md">
+                      <div className=" border-gray-300 p-4 pb-4 rounded-md">
                         <Button
                           onClick={() => setDrawerVisible(true)}
-                          className="bg-blue-500 text-white"
+                          className="bg-blue-500 text-white w-full mb-4"
                         >
                           Xem nội dung làm bài của bạn
                         </Button>
+                        <Link
+                          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full text-center block"
+                          href={`/courses/view-details/${
+                            quiz.courseIds[0]?._id ||
+                            quiz.lessonId?.courseId?._id
+                          }`}
+                        >
+                          Danh sách bài tập
+                        </Link>
                         <Drawer
                           title="Nội dung làm bài của bạn"
                           placement="right"
                           closable={true}
                           onClose={() => setDrawerVisible(false)}
-                          visible={drawerVisible}
+                          open={drawerVisible}
                           width={window.innerWidth < 768 ? "100%" : "50%"}
                         >
                           <div className="border-2 border-gray-300 p-4 rounded-md">
@@ -330,62 +340,6 @@ export default function HandleSubmitEssay({ params }) {
                           </div>
                         </Drawer>
                       </div>
-                      {/* <div>
-                        <h4 className="text-2xl font-bold mb-2">Bình luận:</h4>
-                        <List
-                          className="comment-list"
-                          itemLayout="horizontal"
-                          dataSource={comments}
-                          renderItem={(item) => (
-                            <li>
-                              <div
-                                style={{
-                                  border: "1px solid #ccc",
-                                  margin: "10px",
-                                  padding: "10px",
-                                  borderRadius: "5px",
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                  }}
-                                >
-                                  <Avatar src={item.avatar} alt={item.author} />
-                                  <h3 style={{ marginLeft: "10px" }}>
-                                    {item.author}
-                                  </h3>
-                                </div>
-                                <p>{item.content}</p>
-                                <p>
-                                  <small>{item.datetime}</small>
-                                </p>
-                              </div>
-                            </li>
-                          )}
-                        />
-                        <div
-                          style={{
-                            marginTop: "20px",
-                            marginBottom: "20px",
-                            padding: "10px",
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Input.TextArea
-                            value={comment}
-                            onChange={handleCommentChange}
-                            placeholder="Viết bình luận của bạn ở đây..."
-                            autoSize={{ minRows: 3, maxRows: 5 }}
-                            style={{ marginRight: "10px" }}
-                          />
-                          <Button type="default" onClick={handleCommentSubmit}>
-                            Comment
-                          </Button>
-                        </div>
-                      </div> */}
                     </div>
                   </Col>
                 </Row>
@@ -394,6 +348,6 @@ export default function HandleSubmitEssay({ params }) {
           </React.Fragment>
         )}
       </div>
-    </>
+    </div>
   );
 }

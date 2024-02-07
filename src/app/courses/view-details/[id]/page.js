@@ -54,6 +54,13 @@ export default function ViewQuiz({ params }) {
       });
   }, []);
 
+  const filteredQuizzes = quiz.filter(
+    (quiz) =>
+      quiz?.courseIds.includes(params?.id) ||
+      quiz?.lessonId?.courseId._id === params?.id
+  );
+  console.log(filteredQuizzes);
+
   useEffect(() => {
     dispatch(getScore())
       .then(unwrapResult)
@@ -230,7 +237,7 @@ export default function ViewQuiz({ params }) {
                   type="primary"
                   shape="round"
                   size="large"
-                  style={{ color: "#fff", backgroundColor: "#1890ff" }}
+                  className="custom-button"
                   onClick={(e) => {
                     handleNoti({ message: textareaRef.current.value });
                     textareaRef.current.value = "";
@@ -277,7 +284,7 @@ export default function ViewQuiz({ params }) {
 
   // Component hiển thị khóa học hết hạn
   const ExpiredCoursesComponent = () => {
-    const notCompletedQuizzes = quiz
+    const notCompletedQuizzes = filteredQuizzes
       ?.filter((i) => {
         const correspondingScore = score.find((s) => s.quiz?._id === i?._id);
         return !correspondingScore?.isComplete;
@@ -338,7 +345,7 @@ export default function ViewQuiz({ params }) {
 
   // Component hiển thị khóa học chưa hết hạn
   const NonExpiredCoursesComponent = () => {
-    const completedQuizzes = quiz
+    const completedQuizzes = filteredQuizzes
       ?.filter((i) => {
         const correspondingScore = score.find((s) => s.quiz?._id === i?._id);
         return correspondingScore?.isComplete;
@@ -373,37 +380,49 @@ export default function ViewQuiz({ params }) {
 
     return (
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-2">
-        {completedQuizzes.map((item, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-lg card-shadow border border-gray-300 w-full overflow-hidden"
-          >
-            <div className="p-4">
-              <h5 className="text-lg font-semibold mb-2 line-clamp-2">
-                {item.name}
-              </h5>
-              <p className="text-sm text-gray-500 mb-4">
-                Hạn nộp bài: {item?.submissionTime}
-              </p>
-              <div className="flex items-center justify-between mb-4">
-                <span
-                  className={`text-xs font-semibold ${
-                    item.isLessonQuiz ? "text-blue-500" : "text-green-500"
-                  }`}
-                >
-                  {item.isLessonQuiz ? "Bài tập bài học" : "Bài tập khóa học"}
-                </span>
-                <Badge
-                  status={
-                    item.isComplete === "Đã hoàn thành" ? "success" : "error"
-                  }
-                  text={item.isComplete}
-                />
-              </div>
-              <div className="text-right">{item.questions}</div>
-            </div>
+        {isLoading ? (
+          <div className="flex justify-center items-center h-screen">
+            <Spin />
           </div>
-        ))}
+        ) : (
+          <>
+            {completedQuizzes.map((item, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg card-shadow border border-gray-300 w-full overflow-hidden"
+              >
+                <div className="p-4">
+                  <h5 className="text-lg font-semibold mb-2 line-clamp-2">
+                    {item.name}
+                  </h5>
+                  <p className="text-sm text-gray-500 mb-4">
+                    Hạn nộp bài: {item?.submissionTime}
+                  </p>
+                  <div className="flex items-center justify-between mb-4">
+                    <span
+                      className={`text-xs font-semibold ${
+                        item.isLessonQuiz ? "text-blue-500" : "text-green-500"
+                      }`}
+                    >
+                      {item.isLessonQuiz
+                        ? "Bài tập bài học"
+                        : "Bài tập khóa học"}
+                    </span>
+                    <Badge
+                      status={
+                        item.isComplete === "Đã hoàn thành"
+                          ? "success"
+                          : "error"
+                      }
+                      text={item.isComplete}
+                    />
+                  </div>
+                  <div className="text-right">{item.questions}</div>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
       </div>
     );
   };
@@ -426,9 +445,7 @@ export default function ViewQuiz({ params }) {
           <Link href="/">Trang chủ</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Link href={`/courses/view-course`}>
-            Khóa học của tôi
-          </Link>
+          <Link href={`/courses/view-course`}>Khóa học của tôi</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
           <Link href={`/courses/view-details/${params?.id}`}>
@@ -436,9 +453,7 @@ export default function ViewQuiz({ params }) {
           </Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <span className="font-medium">
-            Danh sách bài tập
-          </span>
+          <span className="font-medium">Danh sách bài tập</span>
         </Breadcrumb.Item>
       </Breadcrumb>
       <Layout
