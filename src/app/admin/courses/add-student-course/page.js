@@ -1,5 +1,5 @@
 "use client";
-import { addStudentToCourse, getACourse } from "@/features/Courses/courseSlice";
+import { addStudentToCourse } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Modal, message } from "antd";
 import React, { useEffect, useState } from "react";
@@ -8,7 +8,6 @@ import { Button } from "antd";
 import CustomInput from "@/components/comman/CustomInput";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { getAllUser } from "@/features/User/userSlice";
 
 const EmailSchema = yup.object({
   email: yup.string().email().required("email is required"),
@@ -19,33 +18,6 @@ export default function AddStudentToCourse(props) {
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [user, setuser] = useState([]);
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 5,
-  });
-
-  useEffect(() => {
-    getAUserData();
-  }, []);
-
-  const getAUserData = () => {
-    dispatch(
-      getAllUser({ page: pagination.current, limit: pagination.pageSize })
-    )
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setuser(res.metadata);
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {
-        message.error(error.response?.data?.message, 3.5);
-      });
-  };
-
   const showModal = () => {
     setIsModalOpen(true);
   };

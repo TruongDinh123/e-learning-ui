@@ -27,9 +27,27 @@ export const uploadImageCourse = createAsyncThunk(
 
 export const viewCourses = createAsyncThunk(
   "/e-learning/get-courses",
-  async (data, { rejectWithValue }) => {
+  async (data, { getState, rejectWithValue }) => {
+    const coursesFromStore = getState().course.courses;
+
+    if (coursesFromStore.length > 0) {
+      return coursesFromStore;
+    }
+
     try {
       const response = await courseService.viewCourse(data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const selectCourse = createAsyncThunk(
+  "/e-learning/select-course",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await courseService.selectCourse(data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error);
@@ -66,6 +84,18 @@ export const getACourse = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await courseService.getACourse(data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getACourseByInfo = createAsyncThunk(
+  "/e-learning/single/get-info-course/",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await courseService.getACourseByInfo(data);
       return response;
     } catch (error) {
       return rejectWithValue(error);
@@ -221,6 +251,8 @@ export const getAllSubCoursesById = createAsyncThunk(
 const initialState = {
   course: "",
   subCourses: [],
+  courses: [],
+  Acourse: {},
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -256,6 +288,7 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        state.courses = action.payload;
       })
       .addCase(viewCourses.rejected, (state, action) => {
         state.isLoading = false;
@@ -301,6 +334,35 @@ const courseSlice = createSlice({
         state.subCourses = action.payload;
       })
       .addCase(getAllSubCourses.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
+      .addCase(getACourse.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getACourse.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+      })
+      .addCase(getACourse.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
+      .addCase(getACourseByInfo.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getACourseByInfo.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.Acourse = action.payload;
+      })
+      .addCase(getACourseByInfo.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

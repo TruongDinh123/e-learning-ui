@@ -43,6 +43,14 @@ const viewQuiz = async (data) => {
   return res.data;
 };
 
+const viewQuizInfo = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/course/${data.courseIds}/info-quizz`,
+    method: "GET",
+  });
+  return res.data;
+};
+
 const startQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}/start`,
@@ -190,6 +198,16 @@ const getScore = async (data) => {
   return res.data;
 };
 
+
+const getScoreByInfo = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/info-score`,
+    method: "GET",
+    data: data,
+  });
+  return res.data;
+};
+
 const getScoreByUserId = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/${data.quizId}/${data.userId}/score`,
@@ -218,6 +236,7 @@ export const QuizService = {
   submitQuiz,
   getScore,
   getScoreByUserId,
+  getScoreByInfo,
   viewAQuiz,
   getQuizzesByStudentAndCourse,
   uploadFileQuiz,
@@ -231,4 +250,5 @@ export const QuizService = {
   updateQuizTemplate,
   startQuiz,
   uploadQuestionImage,
+  viewQuizInfo,
 };

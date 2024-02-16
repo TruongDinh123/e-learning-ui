@@ -32,6 +32,15 @@ const viewCourse = async (data) => {
   return res;
 };
 
+const selectCourse = async (data) => {
+  const res = await axiosInstance({
+    url: "/e-learning/select-course",
+    method: "GET",
+    data: data,
+  });
+  return res;
+};
+
 const deleteCourse = async (data) => {
   const res = await axiosInstance({
     url: "/e-learning/course/" + data,
@@ -52,6 +61,14 @@ const editCourse = async (data) => {
 const getACourse = async (data) => {
   const res = await axiosInstance({
     url: "/e-learning/course/" + data,
+    method: "GET",
+  });
+  return res.data;
+};
+
+const getACourseByInfo = async (data) => {
+  const res = await axiosInstance({
+    url: "/e-learning/get-info-course/" + data,
     method: "GET",
   });
   return res.data;
@@ -177,4 +194,6 @@ export const courseService = {
   updateCourseTeacher,
   getAllSubCourses,
   getAllSubCoursesById,
+  selectCourse,
+  getACourseByInfo,
 };

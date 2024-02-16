@@ -38,6 +38,18 @@ export const viewQuiz = createAsyncThunk(
   }
 );
 
+export const viewInfoQuiz = createAsyncThunk(
+  "/e-learning/view-quiz-info",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await QuizService.viewQuizInfo(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 export const viewQuizTemplates = createAsyncThunk(
   "/e-learning/view-quiz-templates",
   async (data, { rejectWithValue }) => {
@@ -89,7 +101,6 @@ export const getScoreByQuizId = createAsyncThunk(
 export const uploadFileQuiz = createAsyncThunk(
   "/e-learning/upload-file-quiz",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data);
     try {
       const response = await QuizService.uploadFileQuiz(data);
       return response;
@@ -128,7 +139,7 @@ export const getQuizzesByStudentAndCourse = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await QuizService.getQuizzesByStudentAndCourse(data);
-      return response;
+      return response.data;
     } catch (err) {
       return rejectWithValue(err);
     }
@@ -210,7 +221,6 @@ export const getQuizsByCourse = createAsyncThunk(
 export const submitQuiz = createAsyncThunk(
   "/e-learning/submit-quiz",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data);
     try {
       const response = await QuizService.submitQuiz(data);
       return response;
@@ -244,6 +254,18 @@ export const getScore = createAsyncThunk(
   }
 );
 
+export const getScoreByInfo = createAsyncThunk(
+  "/e-learning/get-info-score",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await QuizService.getScoreByInfo(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 export const getScoreByUserId = createAsyncThunk(
   "/e-learning/get-score-userId",
   async (data, { rejectWithValue }) => {
@@ -270,6 +292,8 @@ export const updateScore = createAsyncThunk(
 
 const initialState = {
   quiz: "",
+  getQuizzesByStudentAndCourse: [],
+  getScoreState: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -377,6 +401,36 @@ const quizSlice = createSlice({
         state.isSuccess = true;
       })
       .addCase(getScore.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
+      .addCase(getScoreByInfo.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getScoreByInfo.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.getScoreState = action.payload;
+      })
+      .addCase(getScoreByInfo.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
+      .addCase(getQuizzesByStudentAndCourse.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getQuizzesByStudentAndCourse.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.getQuizzesByStudentAndCourse = action.payload;
+      })
+      .addCase(getQuizzesByStudentAndCourse.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

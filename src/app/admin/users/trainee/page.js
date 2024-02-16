@@ -7,7 +7,7 @@ import {
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Button, Empty, Modal, Popconfirm, Select, Table, message } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import AddStudentToCourse from "../../courses/add-student-course/page";
 import { getScoreByQuizId, viewQuiz } from "@/features/Quiz/quizSlice";
 import { isAdmin } from "@/middleware";
@@ -49,45 +49,37 @@ export default function ViewStudentsCourse() {
       .catch((error) => {});
   };
 
+  const coursesFromStore = useSelector((state) => state.course.courses);
+
   useEffect(() => {
-    setLoading(true);
-    dispatch(viewCourses())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          messageApi
-            .open({
-              type: "Thành công",
-              content: "Đang thực hiện...",
-              duration: 0.5,
-            })
-            .then(() => {
-              const currentTeacherId = localStorage.getItem("x-client-id");
-              const user = JSON.parse(localStorage?.getItem("user"));
+    if (coursesFromStore.length === 0) {
+      setLoading(true);
+      dispatch(viewCourses())
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            const currentTeacherId = localStorage.getItem("x-client-id");
+            const user = JSON.parse(localStorage?.getItem("user"));
+            let visibleCourses;
 
-              // const isAdmin =
-              //   user?.roles?.includes("Admin") ||
-              //   user?.roles?.includes("Super-Admin");
-              let visibleCourses;
-
-              if (isAdmin()) {
-                visibleCourses = res.metadata;
-              } else {
-                visibleCourses = res.metadata.filter(
-                  (course) => course.teacher === currentTeacherId
-                );
-              }
-              setCourses(visibleCourses);
-              setLoading(true);
-            });
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        messageApi.error(error);
-      });
+            if (isAdmin()) {
+              visibleCourses = res.metadata;
+            } else {
+              visibleCourses = res.metadata.filter(
+                (course) => course.teacher === currentTeacherId
+              );
+            }
+            setCourses(visibleCourses);
+            setLoading(true);
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+        });
+    } else {
+      // Sử dụng dữ liệu từ store
+      setCourses(coursesFromStore.metadata);
+    }
   }, []);
 
   useEffect(() => {

@@ -10,9 +10,9 @@ import {
   Space,
   Col,
 } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { deleteQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
+import { deleteQuiz, viewInfoQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { viewCourses } from "@/features/Courses/courseSlice";
 import React from "react";
@@ -29,13 +29,14 @@ export default function ViewQuiz() {
   const [quiz, setquiz] = useState([]);
   const [updateQuiz, setUpdateQuiz] = useState(0);
   const [selectedLesson, setSelectedLesson] = useState(null);
-  const [selectedCourseLessons, setSelectedCourseLessons] = useState([]);
   const [courses, setCourses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const [selectedCourse, setSelectedCourse] = useState(() => {
-    return localStorage.getItem("selectedCourseId") || null;
+    return localStorage?.getItem("selectedCourseId") || null;
   });
+
+  const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
 
   const router = useRouter();
 
@@ -43,45 +44,45 @@ export default function ViewQuiz() {
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
     const selectedCourse = courses.find((course) => course._id === value);
-    setSelectedCourseLessons(selectedCourse?.lessons || []);
     localStorage.setItem("selectedCourseId", value);
   };
 
-  // Hàm xử lý khi chọn bài học
-  const handleLessonChange = (value) => {
-    setSelectedLesson(value);
-  };
 
   const currentTeacherId = localStorage.getItem("x-client-id");
+  const coursesFromStore = useSelector((state) => state.course.courses);
 
   useEffect(() => {
-    setIsLoading(true);
-    dispatch(viewCourses())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          let visibleCourses;
-          if (isAdmin()) {
-            visibleCourses = res.metadata;
+    if (coursesFromStore.length === 0) {
+      setIsLoading(true);
+      dispatch(viewCourses())
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            let visibleCourses;
+            if (isAdmin()) {
+              visibleCourses = res.metadata;
+            } else {
+              visibleCourses = res.metadata.filter(
+                (course) => course.teacher === currentTeacherId
+              );
+            }
+            setCourses(visibleCourses);
           } else {
-            visibleCourses = res.metadata.filter(
-              (course) => course.teacher === currentTeacherId
-            );
           }
-          setCourses(visibleCourses);
-          setSelectedCourseLessons(res?.metadata[0]?.lessons || []);
-        } else {
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-      });
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+        });
+    } else {
+      // Sử dụng dữ liệu từ store
+      setCourses(coursesFromStore.metadata);
+    }
   }, [updateQuiz]);
 
   const handleViewQuiz = () => {
     setIsLoading(true);
-    dispatch(viewQuiz({ courseIds: selectedCourse }))
+    dispatch(viewInfoQuiz({ courseIds: selectedCourse }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
@@ -151,7 +152,6 @@ export default function ViewQuiz() {
     },
   ];
 
-  const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
 
   let data = [];
   quiz?.forEach((i, index) => {

@@ -16,10 +16,10 @@ import {
   Grid,
   InputNumber,
 } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { viewCourses } from "@/features/Courses/courseSlice";
+import { selectCourse, viewCourses } from "@/features/Courses/courseSlice";
 import {
   createQuiz,
   uploadFileQuiz,
@@ -309,7 +309,6 @@ export default function QuizCreator() {
                   filename: fileQuestion,
                 })
               ).catch((error) => {
-                console.log("🚀 ~ error:", error);
                 message.error(
                   error.response?.data?.message ||
                     "An error occurred while uploading the question image.",
@@ -356,31 +355,35 @@ export default function QuizCreator() {
       });
   };
 
+  const coursesFromStore = useSelector((state) => state.course.courses);
+
   // Fetch courses when the component mounts
   useEffect(() => {
-    dispatch(viewCourses())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          const currentTeacherId = localStorage.getItem("x-client-id");
-          const user = JSON.parse(localStorage?.getItem("user"));
+    if (coursesFromStore.length === 0) {
+      dispatch(selectCourse())
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            const currentTeacherId = localStorage.getItem("x-client-id");
+            let visibleCourses;
 
-          // const isAdmin = user?.roles?.includes("Admin") || user?.roles?.includes("Super-Admin");
-          let visibleCourses;
-
-          if (isAdmin()) {
-            visibleCourses = res.metadata;
+            if (isAdmin()) {
+              visibleCourses = res.metadata;
+            } else {
+              visibleCourses = res.metadata.filter(
+                (course) => course.teacher === currentTeacherId
+              );
+            }
+            setCourses(visibleCourses);
           } else {
-            visibleCourses = res.metadata.filter(
-              (course) => course.teacher === currentTeacherId
-            );
+            messageApi.error(res.message);
           }
-          setCourses(visibleCourses);
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {});
+        })
+        .catch((error) => {});
+    } else {
+      // Sử dụng dữ liệu từ store
+      setCourses(coursesFromStore.metadata);
+    }
   }, []);
 
   // Fetch quiz templates when the component mounts
@@ -666,7 +669,10 @@ export default function QuizCreator() {
                                 },
                               ]}
                             >
-                              <Input placeholder="Câu hỏi" />
+                              <Input.TextArea
+                                placeholder="Nhập câu hỏi tại đây"
+                                autoSize={{ minRows: 2, maxRows: 5 }}
+                              />
                             </Form.Item>
                             <Form.Item
                               label="Hình ảnh"
@@ -688,16 +694,16 @@ export default function QuizCreator() {
                               </Upload>
                             </Form.Item>
                             <Form.List name={[field.name, "options"]}>
-                              {(subFields, subMeta) => (
+                              {(subFields, { add, remove }) => (
                                 <div>
                                   {subFields.map((subField, subIndex) => (
-                                    <Space
+                                    <div
                                       key={subField.key}
                                       style={{
                                         display: "flex",
                                         marginBottom: 8,
+                                        alignItems: "center",
                                       }}
-                                      align="baseline"
                                     >
                                       <Form.Item
                                         {...subField}
@@ -709,20 +715,29 @@ export default function QuizCreator() {
                                             message: "Vui lòng nhập lựa chọn",
                                           },
                                         ]}
+                                        style={{ flex: 1, marginRight: 8 }}
                                       >
                                         <Input.TextArea
-                                          autoSize={{ minRows: 1, maxRows: 6 }}
-                                          placeholder="Option"
+                                          placeholder="Lựa chọn"
+                                          autoSize={{ minRows: 1, maxRows: 5 }}
+                                          style={{ width: "100%" }}
                                         />
                                       </Form.Item>
                                       <CloseOutlined
-                                        onClick={() => subMeta.remove(subIndex)}
+                                        onClick={() => remove(subIndex)}
+                                        style={{
+                                          color: "red",
+                                          cursor: "pointer",
+                                          fontSize: '16px',
+                                          marginBottom: 8,
+                                          alignSelf: 'center'
+                                        }}
                                       />
-                                    </Space>
+                                    </div>
                                   ))}
                                   <Button
                                     type="dashed"
-                                    onClick={() => subMeta.add()}
+                                    onClick={() => add()}
                                     block
                                   >
                                     + Thêm lựa chọn
@@ -740,7 +755,7 @@ export default function QuizCreator() {
                                 },
                               ]}
                             >
-                              <Input placeholder="Đáp án" />
+                              <Input.TextArea autoSize={{ minRows: 1, maxRows: 3 }} placeholder="Đáp án" />
                             </Form.Item>
                           </Card>
                         </div>

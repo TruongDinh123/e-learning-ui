@@ -123,7 +123,7 @@ export default function ViewListScore(props) {
           ) : (
             <div
               className="flex justify-center items-center"
-              style={{ height: "100%" }}
+              style={{ height: '100vh' }}
             >
               <Empty description="Hiện tại chưa có học viên nộp bài" />
             </div>

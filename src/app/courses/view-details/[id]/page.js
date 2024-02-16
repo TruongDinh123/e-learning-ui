@@ -12,16 +12,18 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import {
-  getQuizsByCourse,
   getQuizzesByStudentAndCourse,
-  getScore,
+  getScoreByInfo,
   startQuiz,
 } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { format, getTime } from "date-fns";
-import { createNotification, getACourse } from "@/features/Courses/courseSlice";
+import { format } from "date-fns";
+import {
+  createNotification,
+  getACourseByInfo,
+} from "@/features/Courses/courseSlice";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
@@ -39,93 +41,55 @@ export default function ViewQuiz({ params }) {
   const [expiredCount, setExpiredCount] = useState(0);
   const router = useRouter();
 
-  useEffect(() => {
-    setLoading(true);
-    dispatch(getQuizzesByStudentAndCourse({ courseId: params?.id }))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setquiz(res.data?.metadata);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-      });
-  }, []);
-
-  const filteredQuizzes = quiz.filter(
-    (quiz) =>
-      quiz?.courseIds.includes(params?.id) ||
-      quiz?.lessonId?.courseId._id === params?.id
+  const quizzesByStudentState = useSelector(
+    (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
   );
-  console.log(filteredQuizzes);
+  const getScoreState = useSelector((state) => state.quiz.getScoreState.metadata);
+  const getACourseState = useSelector((state) => state.course.Acourse.metadata);
 
   useEffect(() => {
-    dispatch(getScore())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setScore(res.metadata);
+    const fetchData = async () => {
+      console.time("fetchDataTime");
+      setLoading(true);
+  
+      try {
+        const [quizzesResult, scoreResult, courseResult] = await Promise.all([
+          quizzesByStudentState ? Promise.resolve({ status: true, metadata: quizzesByStudentState }) : dispatch(getQuizzesByStudentAndCourse({ courseId: params?.id })).then(unwrapResult),
+          getScoreState ? Promise.resolve({ status: true, metadata: getScoreState }) : dispatch(getScoreByInfo()).then(unwrapResult),
+          getACourseState ? Promise.resolve({ status: true, metadata: getACourseState }) : dispatch(getACourseByInfo(params?.id)).then(unwrapResult),
+        ]);
+  
+        if (quizzesResult.status) {
+          setquiz(quizzesResult.metadata);
         }
-      })
-      .catch((error) => {});
-  }, []);
-
-  useEffect(() => {
-    setLoading(true);
-    dispatch(getACourse(params?.id))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setDataCourse(res?.metadata);
-          setLoading(false);
-        } else {
+  
+        if (scoreResult.status) {
+          setScore(scoreResult.metadata);
         }
+  
+        if (courseResult.status) {
+          setDataCourse(courseResult.metadata);
+        }
+      } catch (error) {
+        // Xử lý lỗi nếu có
+      } finally {
         setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-      });
-  }, []);
+        console.timeEnd("fetchDataTime");
+      }
+    };
+  
+    fetchData();
+  }, [
+    dispatch,
+    params?.id,
+    quizzesByStudentState,
+    getScoreState,
+    getACourseState,
+  ]);
 
   useEffect(() => {
     setSelectedMenu("3");
   }, [router]);
-
-  const userState = useSelector((state) => state?.user?.user);
-  const isAdminState = userState?.roles?.some(
-    (role) =>
-      role.name === "Admin" ||
-      role.name === "Super-Admin" ||
-      role.name === "Mentor"
-  );
-
-  const checkUserRole = () => {
-    try {
-      if (isAdminState) {
-        setLoading(true);
-        dispatch(getQuizsByCourse({ courseId: params?.id }))
-          .then(unwrapResult)
-          .then((res) => {
-            if (res.status) {
-              setquiz(res.metadata);
-            } else {
-            }
-            setLoading(false);
-          })
-          .catch((error) => {
-            setLoading(false);
-          });
-      }
-    } catch (error) {
-      window.location.reload();
-    }
-  };
-
-  useEffect(() => {
-    checkUserRole();
-  }, [userState]);
 
   const handleNoti = ({ message }) => {
     dispatch(createNotification({ courseId: params?.id, message }))
@@ -148,39 +112,11 @@ export default function ViewQuiz({ params }) {
       });
   };
 
-  let data = [];
-  quiz?.forEach((i, index) => {
-    const correspondingScore = score.find((s) => s.quiz?._id === i?._id);
-
-    data.push({
-      key: index + 1,
-      name: i?.name,
-      submissionTime: i?.submissionTime
-        ? format(new Date(i?.submissionTime), "dd/MM/yyyy HH:mm:ss")
-        : "Không có hạn",
-      isComplete: correspondingScore
-        ? correspondingScore.isComplete
-          ? "Đã hoàn thành"
-          : "Chưa hoàn thành"
-        : "Chưa hoàn thành",
-      type: i?.type,
-      questions: (
-        <Button
-          className="me-3"
-          style={{ width: "100%" }}
-          onClick={() =>
-            i?.type === "multiple_choice"
-              ? router.push(`/courses/view-details/submit-quiz/${i?._id}`)
-              : router.push(
-                  `/courses/view-details/handle-submit-essay/${i?._id}`
-                )
-          }
-        >
-          Xem chi tiết
-        </Button>
-      ),
-    });
-  });
+  const filteredQuizzes = quiz.filter(
+    (quiz) =>
+      quiz?.courseIds.some((course) => course._id === params?.id) ||
+      quiz?.lessonId?.courseId._id === params?.id
+  );
 
   const handleStartQuiz = async (quizId, quizType) => {
     setLoading(true);
@@ -204,6 +140,7 @@ export default function ViewQuiz({ params }) {
     }
   };
 
+  const userState = useSelector((state) => state?.user?.user);
   // Component hiển thị thông báo
   const NotificationsComponent = () => {
     const textareaRef = useRef(null);
@@ -469,7 +406,7 @@ export default function ViewQuiz({ params }) {
           }}
           breakpoint="lg"
           collapsedWidth="0"
-          width={200}
+          width={250}
           trigger={null}
           collapsible
           collapsed={collapsed}

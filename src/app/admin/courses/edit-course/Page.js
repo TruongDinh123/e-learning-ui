@@ -3,7 +3,6 @@ import {
   buttonPriavteourse,
   buttonPublicCourse,
   editCourse,
-  getACourse,
   uploadImageCourse,
 } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";

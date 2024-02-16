@@ -20,7 +20,6 @@ export default function Quizs({ params }) {
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [submitted, setSubmitted] = useState(false);
-  const [score, setScore] = useState([]);
   const [isComplete, setIsComplete] = useState(false);
   const [loading, setLoading] = useState(true);
   const [studentAnswers, setStudentAnswers] = useState({});
@@ -51,24 +50,8 @@ export default function Quizs({ params }) {
 
   const idQuiz = quiz.map((item) => item._id);
 
-  const fetchScore = async () => {
-    try {
-      const scoreResult = await dispatch(getScore()).then(unwrapResult);
-      if (scoreResult.status) {
-        setScore(scoreResult.metadata);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const handleSubmit = () => {
-    console.log("Submitting quiz answers...");
-    const totalQuestions = quiz.reduce(
-      (totalQuestions, item) => totalQuestions + item.questions.length,
-      0
-    );
-
     const savedAnswers =
       Object.keys(selectedAnswers).length === 0
         ? JSON.parse(localStorage.getItem("quizAnswers")) || {}
@@ -79,7 +62,6 @@ export default function Quizs({ params }) {
         [questionId]: answer,
       })
     );
-    console.log("Formatted Answers:", formattedAnswers);
     setSubmitting(true);
     dispatch(submitQuiz({ quizId: idQuiz, answer: formattedAnswers }))
       .then(unwrapResult)
@@ -88,13 +70,12 @@ export default function Quizs({ params }) {
           messageApi
             .open({
               type: "Thành công",
-              content: "Đang thực hiện...",
+              content: "Đang nộp bài...",
             })
             .then(() => {
               setSubmitted(true);
               setShowCountdown(false);
               localStorage.removeItem("quizAnswers");
-              fetchScore();
               localStorage.removeItem("quizStartTime");
             });
         } else {
@@ -113,14 +94,12 @@ export default function Quizs({ params }) {
         ).then(unwrapResult);
         if (quizResult.status) {
           setquiz(quizResult.metadata);
-          messageApi.open({ type: "Thành công", content: "Đang thực hiện..." });
         } else {
           messageApi.error(quizResult.message);
         }
 
         const scoreResult = await dispatch(getScore()).then(unwrapResult);
         if (scoreResult.status) {
-          setScore(scoreResult.metadata);
           setStartTime(scoreResult.metadata[0]?.startTime);
           const completedQuiz = scoreResult.metadata.find(
             (quiz) => quiz.quiz?._id === params?.id
@@ -145,6 +124,7 @@ export default function Quizs({ params }) {
     fetchQuizInfo();
   }, [params?.id, dispatch]);
 
+  //countdount queries
   useEffect(() => {
     if (quiz.length > 0 && startTime) {
       const startTimeDate = new Date(startTime).getTime();
@@ -158,6 +138,7 @@ export default function Quizs({ params }) {
     }
   }, [quiz, startTime]);
 
+//không cho copy
   useEffect(() => {
     const preventCopy = (event) => {
       event.preventDefault();

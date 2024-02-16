@@ -3,7 +3,7 @@ import { deleteCourse, viewCourses } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Menu, Dropdown, Spin, Image, Space, Empty, Select } from "antd";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Popconfirm } from "antd";
 import EditCourses from "./edit-course/Page";
 import { useRouter } from "next/navigation";
@@ -14,6 +14,7 @@ import { Col } from "react-bootstrap";
 import "../courses/page.css";
 import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
 import { isAdmin } from "@/middleware";
+import useCoursesData from "@/hooks/useCoursesData";
 
 export default function Courses() {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ export default function Courses() {
   const [loadingStates, setLoadingStates] = useState({});
   const [filteredCourses, setFilteredCourses] = useState([]);
   const router = useRouter();
+  const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
 
   const fetchCategories = () => {
     dispatch(getAllCategoryAndSubCourses())
@@ -41,18 +43,8 @@ export default function Courses() {
     fetchCategories();
   }, [dispatch, selectedCategory]);
 
-  // Lọc các khóa học theo danh mục được chọn
-  // useEffect(() => {
-  //   const newFilteredCourses = selectedCategory
-  //     ? categories.find((c) => c._id === selectedCategory)?.courses || []
-  //     : course;
-  //   setFilteredCourses(newFilteredCourses);
-  // }, [course, selectedCategory, categories]);
-
   useEffect(() => {
     const currentTeacherId = localStorage.getItem("x-client-id");
-    const user = JSON.parse(localStorage?.getItem("user"));
-    // const isAdmin = user?.roles?.includes("Admin") || user?.roles?.includes("Super-Admin");
 
     let visibleCourses = course;
     if (!isAdmin() && currentTeacherId) {
@@ -77,38 +69,42 @@ export default function Courses() {
     setSelectedCategory(value);
   };
 
+  const courses = useCoursesData();
+
   // viewCourses api
   useEffect(() => {
-    setIsLoading(true);
-    dispatch(viewCourses())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          const currentTeacherId = localStorage.getItem("x-client-id");
-          const user = JSON.parse(localStorage?.getItem("user"));
+    let isFetchingFromAPI = false;
 
-          // const isAdmin =
-          //   user?.roles?.includes("Admin") ||
-          //   user?.roles?.includes("Super-Admin");
-          let visibleCourses;
-
-          if (isAdmin()) {
-            visibleCourses = res.metadata;
-          } else {
-            visibleCourses = res.metadata.filter(
-              (course) => course.teacher === currentTeacherId
-            );
+    if (courses.length === 0) {
+      isFetchingFromAPI = true;
+      setIsLoading(true);
+      dispatch(viewCourses())
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            const currentTeacherId = localStorage.getItem("x-client-id");
+            let visibleCourses;
+            if (isAdmin()) {
+              visibleCourses = res.metadata;
+            } else {
+              visibleCourses = res.metadata.filter(
+                (course) => course.teacher === currentTeacherId
+              );
+            }
+            setCourses(visibleCourses);
           }
-          setCourses(visibleCourses);
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-      });
-  }, [updateCourse]);
-
-  const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else {
+      setCourses(courses.metadata);
+    }
+  }, [updateCourse, courses, dispatch]);
 
   //table data
   let data = [];
