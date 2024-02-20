@@ -118,44 +118,48 @@ export default function Home() {
                 },
               ]}
             >
-              {course.map((course) => (
-                <Link
-                  href={`/courses/view-course-details/${course?._id}`}
-                  key={course?._id}
+              {course && course.map((course, index) => (
+                <div
                   className="bg-[#f7f7f7] p-4 rounded-lg shadow-md cursor-pointer flex flex-col items-center min-w-0"
+                  key={index}
                 >
-                  <img
-                    alt={course.title}
-                    className="w-full h-auto rounded-lg mb-2"
-                    src={course.image_url}
-                    style={{
-                      aspectRatio: "150/150",
-                      objectFit: "cover",
-                    }}
-                    width="150"
-                    height="150"
-                  />
-                  <div className="text-yellow-500 text-lg font-semibold mb-1">
-                    {course.category?.name}
-                  </div>
-                  <h3 className="text-lg font-semibold text-blue-950 mb-1 line-clamp-1">
-                    {course.name}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                    {course?.title || "Thông tin khóa học chưa được cập nhật"}
-                  </p>
-                  <p className="text-sm text-gray-900 font-medium mb-4 line-clamp-1">
-                    {course?.teacher?.lastName
-                      ? `${course.teacher.lastName} ${course.teacher.firstName}`
-                      : "Chưa có giáo viên"}
-                  </p>
-                  {/* <div className="text-green-600 text-xl font-bold mb-1">
+                  <Link
+                    href={`/courses/view-course-details/${course._id}`}
+                    className="cursor-pointer"
+                  >
+                    <img
+                      alt={course.title}
+                      className="w-full h-auto rounded-lg mb-2"
+                      src={course.image_url}
+                      style={{
+                        aspectRatio: "150/150",
+                        objectFit: "cover",
+                      }}
+                      width="150"
+                      height="150"
+                    />
+                    <div className="text-yellow-500 text-lg font-semibold mb-1">
+                      {course.category?.name}
+                    </div>
+                    <h3 className="text-lg font-semibold text-blue-950 mb-1 line-clamp-1">
+                      {course.name}
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                      {course?.title || "Thông tin khóa học chưa được cập nhật"}
+                    </p>
+                    <p className="text-sm text-gray-900 font-medium mb-4 line-clamp-1">
+                      {course?.teacher?.lastName
+                        ? `${course.teacher.lastName} ${course.teacher.firstName}`
+                        : "Chưa có giáo viên"}
+                    </p>
+                    {/* <div className="text-green-600 text-xl font-bold mb-1">
                     {course?.price || "Giá chưa được xác định"}
                   </div>
                   <div className="text-gray-400 text-sm line-through">
                     {course?.originalPrice || "Giá gốc chưa được xác định"}
                   </div> */}
-                </Link>
+                  </Link>
+                </div>
               ))}
             </Carousel>
             <Button
@@ -213,47 +217,48 @@ export default function Home() {
                     },
                   ]}
                 >
-                  {course
+                  {course && course
                     .filter((course) => course.category?.name === category)
-                    .map((course) => (
-                      <Link
-                        key={course?._id}
-                        href={`/courses/view-course-details/${course?._id}`}
-                        className="bg-[#f7f7f7] p-4 rounded-lg shadow-md cursor-pointer"
-                      >
-                        <img
-                          alt={course.title}
-                          className="w-full h-auto rounded-lg mb-2"
-                          src={course.image_url}
-                          style={{
-                            aspectRatio: "150/150",
-                            objectFit: "cover",
-                          }}
-                          width="150"
-                          height="150"
-                        />
-                        <div className="text-yellow-500 text-lg font-semibold mb-1">
-                          {course.category?.name}
-                        </div>
-                        <h3 className="text-lg font-semibold text-blue-950 mb-1 line-clamp-1">
-                          {course.name}
-                        </h3>
-                        <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                          {course?.title ||
-                            "Thông tin khóa học chưa được cập nhật"}
-                        </p>
-                        <p className="text-sm text-gray-900 font-medium mb-4 line-clamp-1">
-                          {course?.teacher?.lastName
-                            ? `${course.teacher.lastName} ${course.teacher.firstName}`
-                            : "Chưa có giáo viên"}
-                        </p>
-                        <div className="text-green-600 text-xl font-bold mb-1">
-                          {course?.price}
-                        </div>
-                        <div className="text-gray-400 text-sm line-through">
-                          {course?.originalPrice}
-                        </div>
-                      </Link>
+                    .map((course, index) => (
+                      <div key={index}>
+                        <Link
+                          href={`/courses/view-course-details/${course?._id}`}
+                          className="bg-[#f7f7f7] p-4 rounded-lg shadow-md cursor-pointer"
+                        >
+                          <img
+                            alt={course.title}
+                            className="w-full h-auto rounded-lg mb-2"
+                            src={course.image_url}
+                            style={{
+                              aspectRatio: "150/150",
+                              objectFit: "cover",
+                            }}
+                            width="150"
+                            height="150"
+                          />
+                          <div className="text-yellow-500 text-lg font-semibold mb-1">
+                            {course.category?.name}
+                          </div>
+                          <h3 className="text-lg font-semibold text-blue-950 mb-1 line-clamp-1">
+                            {course.name}
+                          </h3>
+                          <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                            {course?.title ||
+                              "Thông tin khóa học chưa được cập nhật"}
+                          </p>
+                          <p className="text-sm text-gray-900 font-medium mb-4 line-clamp-1">
+                            {course?.teacher?.lastName
+                              ? `${course.teacher.lastName} ${course.teacher.firstName}`
+                              : "Chưa có giáo viên"}
+                          </p>
+                          <div className="text-green-600 text-xl font-bold mb-1">
+                            {course?.price}
+                          </div>
+                          <div className="text-gray-400 text-sm line-through">
+                            {course?.originalPrice}
+                          </div>
+                        </Link>
+                      </div>
                     ))}
                 </Carousel>
                 <Button

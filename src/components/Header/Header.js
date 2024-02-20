@@ -437,14 +437,22 @@ export default function Header() {
             </div>
           </div>
           <div className="flex lg:hidden">
-            <button
-              type="button"
-              className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-white"
-              onClick={() => setMobileMenuOpen(true)}
-            >
-              <span className="sr-only">Open main menu</span>
-              <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-            </button>
+            {!userState ? (
+              <Link href="/login">
+                <span className="cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-white">
+                  Đăng nhập
+                </span>
+              </Link>
+            ) : (
+              <button
+                type="button"
+                className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-white"
+                onClick={() => setMobileMenuOpen(true)}
+              >
+                <span className="sr-only">Open main menu</span>
+                <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+              </button>
+            )}
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
@@ -623,25 +631,17 @@ export default function Header() {
                     </div>
                   </div>
                   <div className="space-y-2 py-6">
-                    {userState !== null ? (
-                      <span
-                        title="Logout"
-                        icon={<LogoutOutlined />}
-                        onClick={logout}
-                        className="cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                      >
-                        <div className="flex items-center">
-                          <LogOutIcon className="h-5 w-5 text-gray-600 mr-2" />
-                          <span>Đăng xuất</span>
-                        </div>
-                      </span>
-                    ) : (
-                      <Link href="/login" icon={<LoginOutlined />}>
-                        <span className="cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                          Đăng nhập
-                        </span>
-                      </Link>
-                    )}
+                    <span
+                      title="Logout"
+                      icon={<LogoutOutlined />}
+                      onClick={logout}
+                      className="cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      <div className="flex items-center">
+                        <LogOutIcon className="h-5 w-5 text-gray-600 mr-2" />
+                        <a href="/login">Đăng xuất</a>
+                      </div>
+                    </span>
                   </div>
                 </div>
               </div>

@@ -356,7 +356,6 @@ export default function QuizCreator() {
   };
 
   const coursesFromStore = useSelector((state) => state.course.courses);
-
   // Fetch courses when the component mounts
   useEffect(() => {
     if (coursesFromStore.length === 0) {

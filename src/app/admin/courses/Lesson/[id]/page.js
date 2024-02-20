@@ -91,7 +91,7 @@ export default function Lesson({ params }) {
 
   return (
     <div className="p-4">
-      <Breadcrumb>
+      <Breadcrumb className="pt-4">
         <Breadcrumb.Item>
           <Link href="/admin/courses">Khóa học</Link>
         </Breadcrumb.Item>

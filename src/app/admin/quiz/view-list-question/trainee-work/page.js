@@ -48,9 +48,8 @@ export default function StudentWork({ student }) {
             {quiz?.name}
           </Title>
           {quiz.questions.map((question, index) => {
-            // Tìm câu trả lời của học viên cho câu hỏi này
-            const studentAnswer = answers.find((answer) =>
-              answer.hasOwnProperty(question._id)
+            const studentAnswer = answers?.find((answer) =>
+              answer?.hasOwnProperty(question?._id)
             );
             return (
               <div key={question._id} className="mb-4">
@@ -66,8 +65,10 @@ export default function StudentWork({ student }) {
                 <div className="mt-2">
                   <strong className="text-lg">
                     Câu trả lời của học viên:{" "}
-                    <span className="text-blue-500 font-medium">
-                      {studentAnswer[question._id]}
+                    <span className={`font-medium ${studentAnswer ? "text-blue-500" : "text-red-500"}`}>
+                      {studentAnswer
+                        ? studentAnswer[question._id]
+                        : "Không có câu trả lời"}
                     </span>
                   </strong>{" "}
                 </div>
@@ -88,6 +89,7 @@ export default function StudentWork({ student }) {
         <Modal
           title="Bài làm của học viên"
           visible={isModalVisible}
+          onCancel={handleCancel}
           footer={
             <div>
               <Button
@@ -112,6 +114,6 @@ export default function StudentWork({ student }) {
       </div>
     );
   } else {
-    return renderContent();
+    return <div className="max-w-[1300px] m-auto">{renderContent()}</div>;
   }
 }

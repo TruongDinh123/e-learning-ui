@@ -9,6 +9,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { createLesson, createVdLesson } from "@/features/Lesson/lessonSlice";
 import { UploadOutlined } from "@ant-design/icons";
+import { viewCourses } from "@/features/Courses/courseSlice";
 
 const CreateLessonSchema = yup.object({
   content: yup
@@ -73,34 +74,36 @@ export default function CreateLesson(props) {
         .then(unwrapResult)
         .then((res) => {
           const lessonId = res.metadata.lesson._id;
-          if (file) {
-            return dispatch(
-              createVdLesson({ lessonId: lessonId, filename: file })
-            )
-              .then(unwrapResult)
-              .then((res) => {
-                if (res.status) {
-                  setFile(null);
-                  messageApi.open({
-                    type: "Thành công",
-                    content: "Đang thực hiện...",
-                    duration: 2.5,
-                  });
-                  refresh();
-                }
-                return res;
+          dispatch(viewCourses()).then(() => {
+            if (file) {
+              return dispatch(
+                createVdLesson({ lessonId: lessonId, filename: file })
+              )
+                .then(unwrapResult)
+                .then((res) => {
+                  if (res.status) {
+                    setFile(null);
+                    messageApi.open({
+                      type: "Thành công",
+                      content: "Đang thực hiện...",
+                      duration: 2.5,
+                    });
+                    refresh();
+                  }
+                  return res;
+                });
+            }
+            messageApi
+              .open({
+                type: "Thành công",
+                content: "Đang thực hiện...",
+                duration: 2.5,
+              })
+              .then(() => {
+                message.success(res.message, 1.5);
+                refresh();
               });
-          }
-          messageApi
-            .open({
-              type: "Thành công",
-              content: "Đang thực hiện...",
-              duration: 2.5,
-            })
-            .then(() => {
-              message.success(res.message, 1.5);
-              refresh();
-            });
+          });
         })
         .catch((error) => {});
     },

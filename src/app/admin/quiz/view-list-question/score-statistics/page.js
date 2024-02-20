@@ -68,7 +68,7 @@ export default function ScoreStatisticsCourse(props) {
       {score.length === 0 ? (
         <div
           className="flex justify-center items-center"
-          style={{ height: "100vh" }}
+          style={{ height: "45vh" }}
         >
           {loading ? (
             <div className="flex justify-center items-center">

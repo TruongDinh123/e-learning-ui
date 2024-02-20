@@ -17,14 +17,10 @@ import React from "react";
 
 const Userchema = yup.object({
   lastName: yup
-    .string()
-    .trim("Tên không được bắt đầu hoặc kết thúc bằng khoảng trắng")
-    .matches(/^\S*$/, "Tên không được chứa khoảng trắng"),
+    .string(),
 
   firstName: yup
-    .string()
-    .trim("Tên không được bắt đầu hoặc kết thúc bằng khoảng trắng")
-    .matches(/^\S*$/, "Tên không được chứa khoảng trắng"),
+    .string(),
 
   email: yup.string().email().required("Yêu cầu nhập email"),
 });

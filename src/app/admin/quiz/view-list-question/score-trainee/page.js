@@ -123,7 +123,7 @@ export default function ViewListScore(props) {
           ) : (
             <div
               className="flex justify-center items-center"
-              style={{ height: '100vh' }}
+              style={{ height: "45vh" }}
             >
               <Empty description="Hiện tại chưa có học viên nộp bài" />
             </div>
@@ -132,57 +132,61 @@ export default function ViewListScore(props) {
       )}
 
       <div className="flex grid-container">
-        {score.length > 0 ? (
-          <Tabs tabPosition={"left"} className="tabs-container">
-            {score.map((student, index) => (
-              <TabPane
-                tab={
-                  <li
-                    className="px-4 py-4 flex items-center sm:px-6"
-                    onClick={() => setSelectedStudent(student)}
-                  >
-                    <input
-                      type="checkbox"
-                      className="mr-4 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                      checked={student.selected}
-                      onChange={(e) =>
-                        handleStudentCheck(student._id, e.target.checked)
-                      }
-                    />
-                    <img
-                      class="h-10 w-10 rounded-full mr-4"
-                      src="https://placehold.co/100x100"
-                      alt="Placeholder avatar for student"
-                    />
-                    <div class="min-w-0 flex-1">
-                      <p class="text-sm font-medium text-gray-900 truncate">
-                        {student?.user?.lastName}
-                      </p>
-                    </div>
-                    <div class="ml-4 flex-shrink-0">
+        <div className="flex-1">
+          {score.length > 0 ? (
+            <Tabs tabPosition={"left"} className="tabs-container">
+              {score.map((student, index) => (
+                <TabPane
+                  tab={
+                    <li
+                      className="px-4 py-4 flex items-center sm:px-6"
+                      onClick={() => setSelectedStudent(student)}
+                    >
                       <input
-                        type="number"
-                        class="text-sm text-gray-500 border-l-2 pl-4"
-                        value={student?.updateScore ?? student?.score ?? ""}
+                        type="checkbox"
+                        className="mr-4 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                        checked={student.selected}
                         onChange={(e) =>
-                          handleScoreChange(student._id, e.target.value)
+                          handleStudentCheck(student._id, e.target.checked)
                         }
-                        placeholder="_"
                       />
+                      <img
+                        class="h-10 w-10 rounded-full mr-4"
+                        src="https://placehold.co/100x100"
+                        alt="Placeholder avatar for student"
+                      />
+                      <div class="min-w-0 flex-1">
+                        <p class="text-sm font-medium text-gray-900 truncate">
+                          {student?.user?.lastName}
+                        </p>
+                      </div>
+                      <div class="ml-4 flex-shrink-0">
+                        <input
+                          type="number"
+                          class="text-sm text-gray-500 border-l-2 pl-4"
+                          value={student?.updateScore ?? student?.score ?? ""}
+                          onChange={(e) =>
+                            handleScoreChange(student._id, e.target.value)
+                          }
+                          placeholder="_"
+                        />
 
-                      <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
-                        /10
-                      </span>
-                    </div>
-                  </li>
-                }
-                key={index}
-              />
-            ))}
-          </Tabs>
-        ) : null}
+                        <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+                          /10
+                        </span>
+                      </div>
+                    </li>
+                  }
+                  key={index}
+                />
+              ))}
+            </Tabs>
+          ) : null}
+        </div>
 
-        {selectedStudent && <StudentWork student={selectedStudent} />}
+        <div className="flex-2">
+          {selectedStudent && <StudentWork student={selectedStudent} />}
+        </div>
       </div>
     </div>
   );

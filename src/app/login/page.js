@@ -71,14 +71,8 @@ export default function Login() {
                   "user",
                   JSON.stringify(res.metadata.account)
                 );
-                localStorage.setItem(
-                  "userName",
-                  JSON.stringify(
-                    (res.metadata.account?.firstName
-                      ? res.metadata.account?.firstName + " "
-                      : "") + res.metadata.account?.lastName
-                  )
-                );
+                const userName = (res.metadata.account?.firstName ? res.metadata.account?.firstName + " " : "") + (res.metadata.account?.lastName ? res.metadata.account?.lastName : "");
+                localStorage.setItem("userName", JSON.stringify(userName));
 
                 localStorage.setItem("x-client-id", res.metadata.account._id);
                 if (

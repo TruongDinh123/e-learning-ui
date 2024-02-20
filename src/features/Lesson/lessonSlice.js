@@ -1,12 +1,13 @@
 import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { lessonService } from "./lessonService";
+import { updateCoursesAfterLessonCreation } from "../Courses/courseSlice";
 
 export const createLesson = createAsyncThunk(
   "/e-learning/create-lesson",
   async (data, { rejectWithValue }) => {
     try {
       const response = await lessonService.createLesson(data);
-      return response;
+      return response
     } catch (err) {
       return rejectWithValue(err);
     }
@@ -181,20 +182,6 @@ const lessonSlice = createSlice({
         state.isSuccess = false;
         state.message = "Something went wrong!";
       })
-      // .addCase(viewALesson.pending, (state, action) => {
-      //   state.isLoading = true;
-      // })
-      // .addCase(viewALesson.fulfilled, (state, action) => {
-      //   state.isLoading = false;
-      //   state.isError = false;
-      //   state.isSuccess = true;
-      // })
-      // .addCase(viewALesson.rejected, (state, action) => {
-      //   state.isLoading = false;
-      //   state.isError = true;
-      //   state.isSuccess = false;
-      //   state.message = "Something went wrong!";
-      // })
       .addCase(resetState, () => initialState);
   },
 });

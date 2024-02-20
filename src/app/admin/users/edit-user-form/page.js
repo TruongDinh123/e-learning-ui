@@ -82,7 +82,6 @@ export default function EditUserForm() {
       gender: data?.gender,
     },
     onSubmit: (values) => {
-      values.lastName = values.lastName.trim();
       dispatch(updateUser({ id: id, values }))
         .then(unwrapResult)
         .then((res) => {

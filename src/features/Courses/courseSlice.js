@@ -261,6 +261,7 @@ const initialState = {
 
 export const resetState = createAction("Reset_all");
 
+
 const courseSlice = createSlice({
   name: "course",
   initialState,
