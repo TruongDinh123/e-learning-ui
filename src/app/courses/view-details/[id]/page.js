@@ -385,7 +385,7 @@ export default function ViewQuiz({ params }) {
           <Link href={`/courses/view-course`}>Khóa học của tôi</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Link href={`/courses/view-details/${params?.id}`}>
+          <Link href={`/courses/view-course-details/${params?.id}`}>
             {dataCourse.name}
           </Link>
         </Breadcrumb.Item>

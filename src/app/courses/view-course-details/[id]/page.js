@@ -22,13 +22,11 @@ const avatar = "/images/imagedefault.jpg";
 export default function CourseDetails({ params }) {
   const dispatch = useDispatch();
   const [dataCourse, setDataCourse] = useState([]);
-  console.log("🚀 ~ dataCourse:", dataCourse);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const userState = useSelector((state) => state.user);
-  console.log("🚀 ~ userState:", userState);
   const isLoggedIn = userState.user?.status === 200 || !!userState.userName; 
 
   const fetchData = useCallback(async () => {
