@@ -262,7 +262,7 @@ export default function ViewQuiz({ params }) {
                 {item.name}
               </h5>
               <p className="text-sm text-gray-500 mb-4">
-                Hạn nộp bài: {item?.submissionTime}
+                Hạn nộp bài: {item?.submissionTime ? item.submissionTime : "Hết hạn"}
               </p>
               <div className="flex items-center justify-between mb-4">
                 <Badge
@@ -333,7 +333,7 @@ export default function ViewQuiz({ params }) {
                     {item.name}
                   </h5>
                   <p className="text-sm text-gray-500 mb-4">
-                    Hạn nộp bài: {item?.submissionTime}
+                    Hạn nộp bài: {item?.submissionTime ? item.submissionTime : "Không có"}
                   </p>
                   <div className="flex items-center justify-between mb-4">
                     <span
