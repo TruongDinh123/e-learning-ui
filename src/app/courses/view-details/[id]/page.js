@@ -8,6 +8,7 @@ import {
   theme,
   Image,
   Badge,
+  Empty,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
@@ -27,6 +28,7 @@ import {
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
+import { isAdmin, isMentor } from "@/middleware";
 const { Sider, Content, Header } = Layout;
 
 export default function ViewQuiz({ params }) {
@@ -39,45 +41,56 @@ export default function ViewQuiz({ params }) {
   const [collapsed, setCollapsed] = useState(false);
   const [nonExpiredCount, setNonExpiredCount] = useState(0);
   const [expiredCount, setExpiredCount] = useState(0);
+  const [allCourseCount, setAllCourse] = useState(0);
+  const [isAdminOrMentorSidebar, setIsAdminOrMentor] = useState(false);
   const router = useRouter();
 
   const quizzesByStudentState = useSelector(
     (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
   );
-  const getScoreState = useSelector((state) => state.quiz.getScoreState.metadata);
+  const getScoreState = useSelector(
+    (state) => state.quiz.getScoreState.metadata
+  );
   const getACourseState = useSelector((state) => state.course.Acourse.metadata);
+
+
+
 
   useEffect(() => {
     const fetchData = async () => {
-      console.time("fetchDataTime");
       setLoading(true);
-  
       try {
         const [quizzesResult, scoreResult, courseResult] = await Promise.all([
-          quizzesByStudentState ? Promise.resolve({ status: true, metadata: quizzesByStudentState }) : dispatch(getQuizzesByStudentAndCourse({ courseId: params?.id })).then(unwrapResult),
-          getScoreState ? Promise.resolve({ status: true, metadata: getScoreState }) : dispatch(getScoreByInfo()).then(unwrapResult),
-          getACourseState ? Promise.resolve({ status: true, metadata: getACourseState }) : dispatch(getACourseByInfo(params?.id)).then(unwrapResult),
+          quizzesByStudentState
+            ? Promise.resolve({ status: true, metadata: quizzesByStudentState })
+            : dispatch(
+                getQuizzesByStudentAndCourse({ courseId: params?.id })
+              ).then(unwrapResult),
+          getScoreState
+            ? Promise.resolve({ status: true, metadata: getScoreState })
+            : dispatch(getScoreByInfo()).then(unwrapResult),
+          getACourseState
+            ? Promise.resolve({ status: true, metadata: getACourseState })
+            : dispatch(getACourseByInfo(params?.id)).then(unwrapResult),
         ]);
-  
+
         if (quizzesResult.status) {
           setquiz(quizzesResult.metadata);
         }
-  
+
         if (scoreResult.status) {
           setScore(scoreResult.metadata);
         }
-  
+
         if (courseResult.status) {
           setDataCourse(courseResult.metadata);
         }
       } catch (error) {
-        // Xử lý lỗi nếu có
       } finally {
         setLoading(false);
-        console.timeEnd("fetchDataTime");
       }
     };
-  
+
     fetchData();
   }, [
     dispatch,
@@ -86,6 +99,11 @@ export default function ViewQuiz({ params }) {
     getScoreState,
     getACourseState,
   ]);
+
+  useEffect(() => {
+    dispatch(getQuizzesByStudentAndCourse({ courseId: params?.id }));
+    dispatch(getScoreByInfo());
+  }, [dispatch, params?.id]);
 
   useEffect(() => {
     setSelectedMenu("3");
@@ -123,13 +141,15 @@ export default function ViewQuiz({ params }) {
     try {
       const response = await dispatch(startQuiz({ quizId })).then(unwrapResult);
       if (response.status) {
-        const quizPage =
-          quizType === "multiple_choice"
-            ? "submit-quiz"
-            : "handle-submit-essay";
-        const path = `/courses/view-details/${quizPage}/${quizId}`;
-        router.push(path);
         setLoading(false);
+        setTimeout(() => {
+          const quizPage =
+            quizType === "multiple_choice"
+              ? "submit-quiz"
+              : "handle-submit-essay";
+          const path = `/courses/view-details/${quizPage}/${quizId}`;
+          router.push(path);
+        }, 500);
       } else {
         console.error("Không thể bắt đầu quiz");
         setLoading(false);
@@ -141,6 +161,18 @@ export default function ViewQuiz({ params }) {
   };
 
   const userState = useSelector((state) => state?.user?.user);
+
+  useEffect(() => {
+    // Cập nhật trạng thái isAdminOrMentor mỗi khi thông tin người dùng thay đổi
+    const checkIsAdminOrMentor = userState?.roles?.some(
+      (role) =>
+        role.name === "Admin" ||
+        role.name === "Super-Admin" ||
+        role.name === "Mentor"
+    );
+    setIsAdminOrMentor(checkIsAdminOrMentor);
+  }, [userState]); // Theo dõi sự thay đổi của userState
+
   // Component hiển thị thông báo
   const NotificationsComponent = () => {
     const textareaRef = useRef(null);
@@ -219,7 +251,7 @@ export default function ViewQuiz({ params }) {
     );
   };
 
-  // Component hiển thị khóa học hết hạn
+  // Component hiển thị khóa học chưa hoàn thành
   const ExpiredCoursesComponent = () => {
     const notCompletedQuizzes = filteredQuizzes
       ?.filter((i) => {
@@ -238,7 +270,6 @@ export default function ViewQuiz({ params }) {
           <Button
             className="me-3"
             style={{ width: "100%" }}
-            loading={isLoading}
             onClick={() => handleStartQuiz(i?._id, i?.type)}
           >
             Xem chi tiết
@@ -250,7 +281,7 @@ export default function ViewQuiz({ params }) {
       setExpiredCount(notCompletedQuizzes.length);
     }, [notCompletedQuizzes]);
 
-    return (
+    return notCompletedQuizzes.length > 0 ? (
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-2">
         {notCompletedQuizzes.map((item, index) => (
           <div
@@ -262,7 +293,8 @@ export default function ViewQuiz({ params }) {
                 {item.name}
               </h5>
               <p className="text-sm text-gray-500 mb-4">
-                Hạn nộp bài: {item?.submissionTime ? item.submissionTime : "Hết hạn"}
+                Hạn nộp bài:{" "}
+                {item?.submissionTime ? item.submissionTime : "Không có"}
               </p>
               <div className="flex items-center justify-between mb-4">
                 <Badge
@@ -277,10 +309,17 @@ export default function ViewQuiz({ params }) {
           </div>
         ))}
       </div>
+    ) : (
+      <div
+        className="flex justify-center items-center"
+        style={{ minHeight: "calc(50vh)" }}
+      >
+        <Empty description="Không có bài tập" />
+      </div>
     );
   };
 
-  // Component hiển thị khóa học chưa hết hạn
+  // Component hiển thị khóa học hoàn thành
   const NonExpiredCoursesComponent = () => {
     const completedQuizzes = filteredQuizzes
       ?.filter((i) => {
@@ -311,11 +350,12 @@ export default function ViewQuiz({ params }) {
           </Button>
         ),
       }));
+
     useEffect(() => {
       setNonExpiredCount(completedQuizzes.length);
     }, [completedQuizzes]);
 
-    return (
+    return completedQuizzes.length > 0 ? (
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-2">
         {isLoading ? (
           <div className="flex justify-center items-center h-screen">
@@ -333,7 +373,8 @@ export default function ViewQuiz({ params }) {
                     {item.name}
                   </h5>
                   <p className="text-sm text-gray-500 mb-4">
-                    Hạn nộp bài: {item?.submissionTime ? item.submissionTime : "Không có"}
+                    Hạn nộp bài:{" "}
+                    {item?.submissionTime ? item.submissionTime : "Không có"}
                   </p>
                   <div className="flex items-center justify-between mb-4">
                     <span
@@ -361,7 +402,106 @@ export default function ViewQuiz({ params }) {
           </>
         )}
       </div>
+    ) : (
+      <div
+        className="flex justify-center items-center"
+        style={{ minHeight: "calc(50vh)" }}
+      >
+        <Empty description="Không có bài tập nào hoàn thành" />
+      </div>
     );
+  };
+
+  const AllQuizzesComponent = ({ quizzes }) => {
+    // Lấy ra thông tin của tất cả các khóa học từ store
+    const allCourses = useSelector((state) => state.course.courses.metadata);
+
+    // Tìm khóa học tương ứng dựa vào params?.id
+    const currentCourse = allCourses.find(
+      (course) => course._id === params?.id
+    );
+
+    // Lấy ra danh sách các bài quiz của khóa học tương ứng
+    const courseQuizzes = currentCourse ? currentCourse.quizzes : [];
+
+    useEffect(() => {
+      setAllCourse(courseQuizzes.length);
+    }, [courseQuizzes]);
+
+    return courseQuizzes.length > 0 ? (
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-2">
+        {isLoading ? (
+          <div className="flex justify-center items-center h-screen">
+            <Spin />
+          </div>
+        ) : (
+          <>
+            {courseQuizzes.map((item, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg card-shadow border border-gray-300 w-full overflow-hidden"
+              >
+                <div className="p-4">
+                  <h5 className="text-lg font-semibold mb-2 line-clamp-2">
+                    {item.name}
+                  </h5>
+                  <p className="text-sm text-gray-500 mb-4">
+                    Hạn nộp bài:{" "}
+                    {item?.submissionTime ? item.submissionTime : "Không có"}
+                  </p>
+                  <div className="flex items-center justify-between mb-4">
+                    <span
+                      className={`text-xs font-semibold ${
+                        item.isLessonQuiz ? "text-blue-500" : "text-green-500"
+                      }`}
+                    >
+                      {item.isLessonQuiz
+                        ? "Bài tập bài học"
+                        : "Bài tập khóa học"}
+                    </span>
+                    <Badge
+                      status={
+                        item.isComplete === "Đã hoàn thành"
+                          ? "success"
+                          : "error"
+                      }
+                      text={item.isComplete}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+    ) : (
+      <div
+        className="flex justify-center items-center"
+        style={{ minHeight: "calc(50vh)" }}
+      >
+        <Empty description="Không có bài tập nào" />
+      </div>
+    );
+  };
+
+  const renderContentBasedOnRole = () => {
+    const isAdminOrMentor = userState?.roles?.some(
+      (role) =>
+        role.name === "Admin" ||
+        role.name === "Super-Admin" ||
+        role.name === "Mentor"
+    );
+    if (isAdminOrMentor) {
+      // Hiển thị tất cả bài quiz cho Admin hoặc Mentor
+      return <AllQuizzesComponent quizzes={quiz} />;
+    } else {
+      // Hiển thị dựa trên menu được chọn cho người dùng khác
+      return {
+        1: (collapsed || !isMobile) && <NotificationsComponent />,
+        2: (collapsed || !isMobile) && <ExpiredCoursesComponent />,
+        3: (collapsed || !isMobile) && <NonExpiredCoursesComponent />,
+      }[selectedMenu];
+    }
   };
 
   const {
@@ -369,6 +509,8 @@ export default function ViewQuiz({ params }) {
   } = theme.useToken();
 
   const isMobile = useMediaQuery({ maxWidth: "768px" });
+
+
 
   return (
     <Content
@@ -422,12 +564,22 @@ export default function ViewQuiz({ params }) {
           >
             <Menu.Item key="1">Thông báo</Menu.Item>
             <Menu.SubMenu key="sub1" title="Bài tập">
-              <Menu.Item key="2">
-                Chưa hoàn thành {expiredCount > 0 ? `[${expiredCount}]` : ""}
-              </Menu.Item>
-              <Menu.Item key="3">
-                Hoàn thành {nonExpiredCount > 0 ? `[${nonExpiredCount}]` : ""}
-              </Menu.Item>
+              {isAdminOrMentorSidebar ? (
+                <Menu.Item key="2">
+                  Tất cả {allCourseCount > 0 ? `[${allCourseCount}]` : ""}
+                </Menu.Item>
+              ) : (
+                <>
+                  <Menu.Item key="2">
+                    Chưa hoàn thành{" "}
+                    {expiredCount > 0 ? `[${expiredCount}]` : ""}
+                  </Menu.Item>
+                  <Menu.Item key="3">
+                    Hoàn thành{" "}
+                    {nonExpiredCount > 0 ? `[${nonExpiredCount}]` : ""}
+                  </Menu.Item>
+                </>
+              )}
             </Menu.SubMenu>
           </Menu>
         </Sider>
@@ -461,12 +613,7 @@ export default function ViewQuiz({ params }) {
                 <Spin />
               </div>
             ) : (
-              // Hiển thị nội dung dựa trên mục menu được chọn
-              {
-                1: (collapsed || !isMobile) && <NotificationsComponent />,
-                2: (collapsed || !isMobile) && <ExpiredCoursesComponent />,
-                3: (collapsed || !isMobile) && <NonExpiredCoursesComponent />,
-              }[selectedMenu]
+              renderContentBasedOnRole()
             )}
           </Content>
         </Layout>

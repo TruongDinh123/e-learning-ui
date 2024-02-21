@@ -16,6 +16,7 @@ export const createCourse = createAsyncThunk(
 export const uploadImageCourse = createAsyncThunk(
   "/e-learning/upload-image-course",
   async (data, { rejectWithValue }) => {
+    console.log(data)
     try {
       const response = await courseService.uploadImageCourse(data);
       return response;
@@ -265,7 +266,41 @@ export const resetState = createAction("Reset_all");
 const courseSlice = createSlice({
   name: "course",
   initialState,
-  reducers: {},
+  reducers: {
+    updateCourseImage: (state, action) => {
+      const { courseId, imageUrl } = action.payload;
+      const courseIndex = state.courses.metadata.findIndex(course => course._id === courseId);
+      if (courseIndex !== -1) {
+        state.courses.metadata[courseIndex].image_url = imageUrl;
+      }
+    },
+    addStudentToCourseSuccess: (state, action) => {
+      const { courseId, studentInfo } = action.payload;
+      const courseIndex = state.courses.metadata.findIndex(course => course._id === courseId);
+      if (courseIndex !== -1) {
+        const student = {
+          _id: studentInfo._id,
+          firstName: studentInfo.firstName,
+          lastName: studentInfo.lastName,
+        };
+        const existingStudentIndex = state.courses.metadata[courseIndex].students.findIndex(student => student._id === studentInfo._id);
+        if (existingStudentIndex === -1) {
+          // Nếu học viên chưa tồn tại, thêm vào mảng students
+          if (!state.courses.metadata[courseIndex].students) {
+            state.courses.metadata[courseIndex].students = [];
+          }
+          state.courses.metadata[courseIndex].students.push(student);
+        }
+      }
+    },
+    removeStudentFromCourseSuccess: (state, action) => {
+      const { courseId, studentId } = action.payload;
+      const courseIndex = state.courses.metadata.findIndex(course => course._id === courseId);
+      if (courseIndex !== -1) {
+        state.courses.metadata[courseIndex].students = state.courses.metadata[courseIndex].students.filter(student => student._id !== studentId);
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createCourse.pending, (state, action) => {
@@ -275,6 +310,18 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        const newCourse = {
+          _id: action.payload.metadata._id,
+          name: action.payload.metadata.name,
+          title: action.payload.metadata.title,
+          category: action.payload.metadata.category,
+          quizzes: action.payload.metadata.quizzes,
+          lessons: action.payload.metadata.lessons,
+          students: action.payload.metadata.students,
+          showCourse: action.payload.metadata.showCourse,
+          image_url: action.payload.metadata.image_url,
+        };
+        state.courses.metadata.push(newCourse) || state.courses.push(newCourse);
       })
       .addCase(createCourse.rejected, (state, action) => {
         state.isLoading = false;
@@ -304,6 +351,7 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        state.courses.metadata = state.courses.metadata.filter(course => course._id !== action.meta.arg);
       })
       .addCase(deleteCourse.rejected, (state, action) => {
         state.isLoading = false;
@@ -318,6 +366,10 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        const index = state.courses.metadata.findIndex(course => course.id === action.payload.id);
+        if (index !== -1) {
+          state.courses[index] = action.payload;
+        }
       })
       .addCase(editCourse.rejected, (state, action) => {
         state.isLoading = false;
@@ -372,5 +424,7 @@ const courseSlice = createSlice({
       .addCase(resetState, () => initialState);
   },
 });
+
+export const { updateCourseImage, addStudentToCourseSuccess, removeStudentFromCourseSuccess } = courseSlice.actions;
 
 export default courseSlice.reducer;

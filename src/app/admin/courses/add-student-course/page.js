@@ -1,5 +1,5 @@
 "use client";
-import { addStudentToCourse } from "@/features/Courses/courseSlice";
+import { addStudentToCourse, addStudentToCourseSuccess } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Modal, message } from "antd";
 import React, { useEffect, useState } from "react";
@@ -40,6 +40,13 @@ export default function AddStudentToCourse(props) {
       dispatch(addStudentToCourse({ courseId: courseId, values }))
         .then(unwrapResult)
         .then((res) => {
+          const studentInfo = {
+            _id: res.metadata._id,
+            firstName: res.metadata.firstName,
+            lastName: res.metadata.lastName,
+          };
+          // Dispatch action để cập nhật thông tin học viên vào store
+          dispatch(addStudentToCourseSuccess({ courseId, studentInfo }));
           messageApi
             .open({
               type: "Thành công",

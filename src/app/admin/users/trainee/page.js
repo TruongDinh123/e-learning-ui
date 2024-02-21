@@ -2,6 +2,7 @@
 import {
   getACourse,
   removeStudentFromCourse,
+  removeStudentFromCourseSuccess,
   viewCourses,
 } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -10,7 +11,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddStudentToCourse from "../../courses/add-student-course/page";
 import { getScoreByQuizId, viewQuiz } from "@/features/Quiz/quizSlice";
-import { isAdmin } from "@/middleware";
+import { isAdmin, isMentor } from "@/middleware";
 
 const { Option } = Select;
 
@@ -40,6 +41,7 @@ export default function ViewStudentsCourse() {
     dispatch(removeStudentFromCourse({ courseId, userId }))
       .then(unwrapResult)
       .then((res) => {
+        dispatch(removeStudentFromCourseSuccess({ courseId, studentId: userId }));
         if (res.status) {
           setUpdate(update + 1);
         } else {
@@ -52,16 +54,14 @@ export default function ViewStudentsCourse() {
   const coursesFromStore = useSelector((state) => state.course.courses);
 
   useEffect(() => {
+    const currentTeacherId = localStorage.getItem("x-client-id");
+    let visibleCourses;
     if (coursesFromStore.length === 0) {
       setLoading(true);
       dispatch(viewCourses())
         .then(unwrapResult)
         .then((res) => {
           if (res.status) {
-            const currentTeacherId = localStorage.getItem("x-client-id");
-            const user = JSON.parse(localStorage?.getItem("user"));
-            let visibleCourses;
-
             if (isAdmin()) {
               visibleCourses = res.metadata;
             } else {
@@ -77,8 +77,15 @@ export default function ViewStudentsCourse() {
           setLoading(false);
         });
     } else {
-      // Sử dụng dữ liệu từ store
-      setCourses(coursesFromStore.metadata);
+      // Áp dụng lọc cũng cho dữ liệu từ store
+      if (isAdmin()) {
+        visibleCourses = coursesFromStore.metadata;
+      } else if (isMentor()) {
+        visibleCourses = coursesFromStore.metadata.filter(
+          (course) => course.teacher === currentTeacherId
+        );
+      }
+      setCourses(visibleCourses);
     }
   }, []);
 

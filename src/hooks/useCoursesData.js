@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 
 const useCoursesData = () => {
   const courses = useSelector((state) => state.course.courses);
-
   return courses;
 };
 

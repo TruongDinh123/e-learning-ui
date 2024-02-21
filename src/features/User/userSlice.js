@@ -55,7 +55,7 @@ export const updateUser = createAsyncThunk(
     try {
       const response = await authService.updateUser(data);
       if (response.status) {
-        const userName = response.data?.metadata.lastName;
+        const userName = (response.data?.metadata.firstName ? response.data?.metadata.firstName + " " : "") + (response.data?.metadata.lastName ? response.data?.metadata.lastName : "");
         localStorage.setItem("userName", JSON.stringify(userName));
       }
       return response.data;

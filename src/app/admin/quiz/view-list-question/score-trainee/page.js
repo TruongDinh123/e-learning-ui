@@ -132,7 +132,7 @@ export default function ViewListScore(props) {
       )}
 
       <div className="flex grid-container">
-        <div className="flex-1">
+        <div className="flex-2">
           {score.length > 0 ? (
             <Tabs tabPosition={"left"} className="tabs-container">
               {score.map((student, index) => (
@@ -184,7 +184,7 @@ export default function ViewListScore(props) {
           ) : null}
         </div>
 
-        <div className="flex-2">
+        <div className="flex-1">
           {selectedStudent && <StudentWork student={selectedStudent} />}
         </div>
       </div>

@@ -34,7 +34,7 @@ const ReactQuill = dynamic(
 );
 
 export default function UpdateQuiz(props) {
-  const { quizId, courseIds, questionId, refresh } = props;
+  const { quizId, courseIds, refresh } = props;
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quiz, setquiz] = useState([]);
@@ -193,7 +193,6 @@ export default function UpdateQuiz(props) {
               (quiz) => quiz._id === quizId
             );
             if (quizToUpdate) {
-              console.log("🚀 ~ quizToUpdate:", quizToUpdate)
               form.setFieldsValue({
                 name: quizToUpdate.name,
                 type: quizToUpdate.type,

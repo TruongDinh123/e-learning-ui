@@ -114,6 +114,6 @@ export default function StudentWork({ student }) {
       </div>
     );
   } else {
-    return <div className="max-w-[1300px] m-auto">{renderContent()}</div>;
+    return <div className="m-auto">{renderContent()}</div>;
   }
 }

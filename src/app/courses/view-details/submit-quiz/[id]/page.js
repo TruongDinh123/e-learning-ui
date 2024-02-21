@@ -11,12 +11,13 @@ import {
 } from "antd";
 import { getScore, submitQuiz, viewAQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 
 export default function Quizs({ params }) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [quiz, setquiz] = useState([]);
+  console.log("🚀 ~ quiz:", quiz);
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [submitted, setSubmitted] = useState(false);
@@ -28,6 +29,60 @@ export default function Quizs({ params }) {
   const [showCountdown, setShowCountdown] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
+  const quizzesByStudentState = useSelector(
+    (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
+  );
+  //fetch API
+  useEffect(() => {
+    const fetchQuizInfo = async () => {
+      setLoading(true);
+      try {
+        const storedQuiz = quizzesByStudentState.find(
+          (quiz) => quiz._id === params?.id
+        );
+        if (storedQuiz) {
+          console.log("Lấy dữ liệu quiz từ store");
+          setquiz([storedQuiz]); // Đảm bảo dữ liệu được đặt trong một mảng
+        } else {
+          // Nếu không có trong store, fetch từ API
+          console.log("Gọi API để lấy dữ liệu quiz");
+          const quizResult = await dispatch(
+            viewAQuiz({ quizId: params?.id })
+          ).then(unwrapResult);
+          if (quizResult.status) {
+            setquiz(quizResult.metadata);
+          } else {
+            messageApi.error(quizResult.message);
+          }
+        }
+
+        const scoreResult = await dispatch(getScore()).then(unwrapResult);
+        if (scoreResult.status) {
+          const completedQuiz = scoreResult.metadata.find(
+            (quiz) => quiz.quiz?._id === params?.id
+          );
+          if (completedQuiz) {
+            setStartTime(completedQuiz.startTime);
+            setIsComplete(completedQuiz.isComplete);
+            const answersObject = completedQuiz.answers.reduce((obj, item) => {
+              const [key, value] = Object.entries(item)[0];
+              obj[key] = value;
+              return obj;
+            }, {});
+            setStudentAnswers(answersObject);
+          }
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuizInfo();
+  }, [params?.id, dispatch]);
+
   const handleAnswer = (questionId, answer) => {
     setSelectedAnswers((prevAnswers) => {
       const newAnswers = { ...prevAnswers, [questionId]: answer };
@@ -37,19 +92,16 @@ export default function Quizs({ params }) {
   };
 
   useEffect(() => {
-    const savedAnswers = JSON.parse(localStorage.getItem("quizAnswers"));
-    if (savedAnswers) {
-      setSelectedAnswers(savedAnswers);
+    if (isComplete) {
+      localStorage.removeItem("quizStartTime");
+    } else {
+      const startTime = localStorage.getItem("quizStartTime") || new Date().toISOString();
+      localStorage.setItem("quizStartTime", startTime);
+      setStartTime(startTime);
     }
-
-    const startTime =
-      localStorage.getItem("quizStartTime") || new Date().toISOString();
-    localStorage.setItem("quizStartTime", startTime);
-    setStartTime(startTime);
-  }, []);
+  }, [isComplete]);
 
   const idQuiz = quiz.map((item) => item._id);
-
 
   const handleSubmit = () => {
     const savedAnswers =
@@ -81,93 +133,64 @@ export default function Quizs({ params }) {
         } else {
           messageApi.error(res.message);
         }
-      })
-      .catch((error) => {});
+      });
   };
-
-  useEffect(() => {
-    const fetchQuizInfo = async () => {
-      setLoading(true);
-      try {
-        const quizResult = await dispatch(
-          viewAQuiz({ quizId: params?.id })
-        ).then(unwrapResult);
-        if (quizResult.status) {
-          setquiz(quizResult.metadata);
-        } else {
-          messageApi.error(quizResult.message);
-        }
-
-        const scoreResult = await dispatch(getScore()).then(unwrapResult);
-        if (scoreResult.status) {
-          setStartTime(scoreResult.metadata[0]?.startTime);
-          const completedQuiz = scoreResult.metadata.find(
-            (quiz) => quiz.quiz?._id === params?.id
-          );
-          if (completedQuiz) {
-            setIsComplete(completedQuiz.isComplete);
-            const answersObject = completedQuiz.answers.reduce((obj, item) => {
-              const [key, value] = Object.entries(item)[0];
-              obj[key] = value;
-              return obj;
-            }, {});
-            setStudentAnswers(answersObject);
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchQuizInfo();
-  }, [params?.id, dispatch]);
 
   //countdount queries
   useEffect(() => {
-    if (quiz.length > 0 && startTime) {
+    if (quiz.length > 0 && startTime && !isComplete) {
       const startTimeDate = new Date(startTime).getTime();
       const timeLimitMs = quiz[0]?.timeLimit * 60000;
       if (!isNaN(timeLimitMs) && timeLimitMs > 0) {
         const deadlineTime = startTimeDate + timeLimitMs;
-        setDeadline(deadlineTime);
+        const currentTime = new Date().getTime();
+        const remainingTime = deadlineTime - currentTime;
+        if (remainingTime > 0) {
+          setDeadline(deadlineTime);
+        } else {
+          setDeadline(null);
+          setShowCountdown(false);
+            messageApi.error(
+              "Thời gian làm bài đã hết. Bài quiz của bạn sẽ được tự động nộp."
+            );
+            handleSubmit();
+        }
       } else {
         setDeadline(null);
       }
     }
-  }, [quiz, startTime]);
+  }, [quiz, startTime, isComplete]);
 
-//không cho copy
-  useEffect(() => {
-    const preventCopy = (event) => {
-      event.preventDefault();
-      message.error("Sao chép nội dung không được phép!");
-    };
+  //không cho copy
+  // useEffect(() => {
+  //   const preventCopy = (event) => {
+  //     event.preventDefault();
+  //     message.error("Sao chép nội dung không được phép!");
+  //   };
 
-    const preventInspect = (event) => {
-      if (
-        event.keyCode === 123 ||
-        (event.ctrlKey &&
-          event.shiftKey &&
-          (event.keyCode === 73 || event.keyCode === 74))
-      ) {
-        event.preventDefault();
-        message.error("Không được phép kiểm tra!");
-        return false;
-      }
-    };
+  //   const preventInspect = (event) => {
+  //     if (
+  //       event.keyCode === 123 ||
+  //       (event.ctrlKey &&
+  //         event.shiftKey &&
+  //         (event.keyCode === 73 || event.keyCode === 74))
+  //     ) {
+  //       event.preventDefault();
+  //       message.error("Không được phép kiểm tra!");
+  //       return false;
+  //     }
+  //   };
 
-    document.addEventListener("copy", preventCopy);
-    document.addEventListener("contextmenu", preventCopy);
-    document.addEventListener("keydown", preventInspect);
+  //   document.addEventListener("copy", preventCopy);
+  //   document.addEventListener("contextmenu", preventCopy);
+  //   document.addEventListener("keydown", preventInspect);
 
-    return () => {
-      document.removeEventListener("copy", preventCopy);
-      document.removeEventListener("contextmenu", preventCopy);
-      document.removeEventListener("keydown", preventInspect);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("copy", preventCopy);
+  //     document.removeEventListener("contextmenu", preventCopy);
+  //     document.removeEventListener("keydown", preventInspect);
+  //   };
+  // }, []);
 
   let submissionTime;
   if (quiz[0] && quiz[0]?.submissionTime) {
@@ -222,11 +245,20 @@ export default function Quizs({ params }) {
                     className="border-2 border-blue-500"
                   >
                     {showCountdown && !isComplete && deadline && (
-                      <Statistic.Countdown
-                        title="Thời gian còn lại"
-                        value={deadline}
-                        onFinish={handleSubmit}
-                      />
+                      <>
+                        <Statistic.Countdown
+                          title="Thời gian còn lại"
+                          value={deadline}
+                          onFinish={handleSubmit}
+                        />
+                        <span className="text-red-500 block mt-2">
+                          Lưu ý: Đừng thoát ra khỏi trang khi thời gian làm bài
+                          chưa kết thúc.
+                        </span>
+                        <span className="text-red-500 block mt-2">
+                          Khi hết thời gian sẽ tự động nộp bài.
+                        </span>
+                      </>
                     )}
                     {item.questions.map((question, questionIndex) => {
                       const studentAnswer = isComplete
@@ -297,23 +329,9 @@ export default function Quizs({ params }) {
                           >
                             Nộp bài
                           </Button>
-                          <>
-                            {quiz?.map((quiz, quizIndex) => (
-                              <Link
-                                key={quizIndex}
-                                className="mr-3 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                                href={`/courses/view-details/${
-                                  quiz.courseIds[0]?._id ||
-                                  quiz.lessonId?.courseId?._id
-                                }`}
-                              >
-                                Danh sách bài tập
-                              </Link>
-                            ))}
-                          </>
                         </>
                       )}
-                      {isComplete && (
+                      {isComplete ? (
                         <div className="font-bold text-sm text-blue-500">
                           Bạn đã hoàn thành bài kiểm tra
                           {quiz?.map((quiz, quizIndex) => (
@@ -329,6 +347,31 @@ export default function Quizs({ params }) {
                             </Link>
                           ))}
                         </div>
+                      ) : (
+                        <>
+                          {submitted && (
+                            <>
+                              {quiz?.map((quiz, quizIndex) => (
+                                <Link
+                                  key={quizIndex}
+                                  className="mr-3 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                                  href={`/courses/view-details/${
+                                    quiz.courseIds[0]?._id ||
+                                    quiz.lessonId?.courseId?._id
+                                  }`}
+                                >
+                                  Danh sách bài tập
+                                </Link>
+                              ))}
+                              <Link
+                                href="/courses/view-score"
+                                className="mr-3 custom-button text-white font-bold py-2 px-4 rounded"
+                              >
+                                Xem điểm
+                              </Link>
+                            </>
+                          )}
+                        </>
                       )}
                       {isTimeExceeded && (
                         <div className="font-bold text-sm">
@@ -336,28 +379,6 @@ export default function Quizs({ params }) {
                         </div>
                       )}
                     </div>
-                    {submitted && (
-                      <>
-                        {quiz?.map((quiz, quizIndex) => (
-                          <Link
-                            key={quizIndex}
-                            className="mr-3 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                            href={`/courses/view-details/${
-                              quiz.courseIds[0]?._id ||
-                              quiz.lessonId?.courseId?._id
-                            }`}
-                          >
-                            Danh sách bài tập
-                          </Link>
-                        ))}
-                        <Link
-                          href="/courses/view-score"
-                          className="mr-3 custom-button text-white font-bold py-2 px-4 rounded"
-                        >
-                          Xem điểm
-                        </Link>
-                      </>
-                    )}
                   </Card>
                 </React.Fragment>
               ))}

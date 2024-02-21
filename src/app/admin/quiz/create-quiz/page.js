@@ -35,7 +35,7 @@ import { useRouter } from "next/navigation";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 import "./page.css";
-import { isAdmin } from "@/middleware";
+import { isAdmin, isMentor } from "@/middleware";
 
 const { Option } = Select;
 
@@ -179,20 +179,21 @@ export default function QuizCreator() {
   //hàm xử lý save quiz
   const handleSaveQuiz = (values) => {
     setIsLoading(true);
-
-    const questionWithoutOptionsIndex = values.questions.findIndex(
-      (q) => !q.options || q.options.length === 0
-    );
-
-    if (questionWithoutOptionsIndex !== -1) {
-      message.error(
-        `Câu hỏi số ${
-          questionWithoutOptionsIndex + 1
-        } phải có ít nhất một lựa chọn.`,
-        3.5
+    if(quizType === "multiple_choice") {
+      const questionWithoutOptionsIndex = values?.questions?.findIndex(
+        (q) => !q?.options || q?.options?.length === 0
       );
-      setIsLoading(false);
-      return;
+  
+      if (questionWithoutOptionsIndex !== -1) {
+        message.error(
+          `Câu hỏi số ${
+            questionWithoutOptionsIndex + 1
+          } phải có ít nhất một lựa chọn.`,
+          3.5
+        );
+        setIsLoading(false);
+        return;
+      }
     }
 
     let formattedValues;
@@ -356,19 +357,18 @@ export default function QuizCreator() {
   };
 
   const coursesFromStore = useSelector((state) => state.course.courses);
-  // Fetch courses when the component mounts
   useEffect(() => {
+    const currentTeacherId = localStorage.getItem("x-client-id");
+    let visibleCourses;
+
     if (coursesFromStore.length === 0) {
       dispatch(selectCourse())
         .then(unwrapResult)
         .then((res) => {
           if (res.status) {
-            const currentTeacherId = localStorage.getItem("x-client-id");
-            let visibleCourses;
-
             if (isAdmin()) {
               visibleCourses = res.metadata;
-            } else {
+            } else if (isMentor()) {
               visibleCourses = res.metadata.filter(
                 (course) => course.teacher === currentTeacherId
               );
@@ -377,13 +377,19 @@ export default function QuizCreator() {
           } else {
             messageApi.error(res.message);
           }
-        })
-        .catch((error) => {});
+        });
     } else {
-      // Sử dụng dữ liệu từ store
-      setCourses(coursesFromStore.metadata);
+      // Áp dụng lọc cũng cho dữ liệu từ store
+      if (isAdmin()) {
+        visibleCourses = coursesFromStore.metadata;
+      } else if (isMentor()) {
+        visibleCourses = coursesFromStore.metadata.filter(
+          (course) => course.teacher === currentTeacherId
+        );
+      }
+      setCourses(visibleCourses);
     }
-  }, []);
+  }, [coursesFromStore, dispatch]);
 
   // Fetch quiz templates when the component mounts
   useEffect(() => {
@@ -727,9 +733,9 @@ export default function QuizCreator() {
                                         style={{
                                           color: "red",
                                           cursor: "pointer",
-                                          fontSize: '16px',
+                                          fontSize: "16px",
                                           marginBottom: 8,
-                                          alignSelf: 'center'
+                                          alignSelf: "center",
                                         }}
                                       />
                                     </div>
@@ -754,7 +760,10 @@ export default function QuizCreator() {
                                 },
                               ]}
                             >
-                              <Input.TextArea autoSize={{ minRows: 1, maxRows: 3 }} placeholder="Đáp án" />
+                              <Input.TextArea
+                                autoSize={{ minRows: 1, maxRows: 3 }}
+                                placeholder="Đáp án"
+                              />
                             </Form.Item>
                           </Card>
                         </div>

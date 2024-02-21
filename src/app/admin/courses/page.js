@@ -70,11 +70,10 @@ export default function Courses() {
   };
 
   const courses = useCoursesData();
-
+  console.log("🚀 ~ courses:", courses);
   // viewCourses api
   useEffect(() => {
     let isFetchingFromAPI = false;
-
     if (courses.length === 0) {
       isFetchingFromAPI = true;
       setIsLoading(true);
@@ -102,7 +101,7 @@ export default function Courses() {
           setIsLoading(false);
         });
     } else {
-      setCourses(courses.metadata);
+      setCourses(courses?.metadata || courses);
     }
   }, [updateCourse, courses, dispatch]);
 
@@ -324,9 +323,12 @@ export default function Courses() {
             </div>
           ) : (
             filteredCourses?.length === 0 && (
-              <Empty className="text-center text-sm text-muted-foreground mt-10">
+              <Empty
+                className="text-center text-sm text-muted-foreground mt-10"
+                description="
                 Không có khóa học nào
-              </Empty>
+              "
+              />
             )
           )}
         </div>

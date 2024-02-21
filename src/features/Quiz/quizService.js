@@ -155,6 +155,14 @@ const deleteQuiz = async (data) => {
   return res.data;
 };
 
+const deleteScorebyQuiz = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/score/${data.scoreId}/delete-score`,
+    method: "DELETE",
+  });
+  return res.data;
+};
+
 const getQuizsByCourse = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/course/${data.courseId}/quizzes`,
@@ -197,7 +205,6 @@ const getScore = async (data) => {
   });
   return res.data;
 };
-
 
 const getScoreByInfo = async (data) => {
   const res = await axiosInstance({
@@ -251,4 +258,5 @@ export const QuizService = {
   startQuiz,
   uploadQuestionImage,
   viewQuizInfo,
+  deleteScorebyQuiz,
 };

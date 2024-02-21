@@ -190,7 +190,7 @@ const ScoreManagement = () => {
                         </List.Item>
                       );
                     }}
-                    style={{ maxHeight: "400px", overflow: "auto" }}
+                    style={{ maxHeight: "85vh", overflow: "auto" }}
                   />
                 )}
                 {i?.quiz?.type === "essay" && (

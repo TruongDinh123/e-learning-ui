@@ -5,12 +5,11 @@ import { useFormik } from "formik";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as yup from "yup";
 import { Button, Modal, Radio, Upload, message } from "antd";
-import { useRouter } from "next/navigation";
 import {
   buttonPriavteourse,
   buttonPublicCourse,
   createCourse,
-  getAllSubCourses,
+  updateCourseImage,
   uploadImageCourse,
 } from "@/features/Courses/courseSlice";
 import React, { useEffect, useState } from "react";
@@ -34,16 +33,12 @@ const CourseSchema = yup.object({
 
 export default function AddCourse(props) {
   const { refresh, fetchCategories } = props;
-  const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState(null);
   const dispatch = useDispatch();
 
-  const user = JSON.parse(localStorage?.getItem("user"));
-
-  // const isAdmin = user?.roles?.includes("Admin") || user?.roles?.includes("Super-Admin");
 
   useEffect(() => {
     dispatch(getAllCategoryAndSubCourses())
@@ -110,7 +105,12 @@ export default function AddCourse(props) {
             dispatch(uploadImageCourse({ courseId: courseId, filename: file }))
               .then(unwrapResult)
               .then((res) => {
+                console.log("res", res);
                 if (res.status) {
+                  const imageUrl = res.metadata?.findCourse?.image_url;
+                  console.log("imageUrl", imageUrl);
+                  dispatch(updateCourseImage({ courseId, imageUrl }));
+
                   if (values.isPublic) {
                     fetchCategories();
                     refresh();
@@ -213,6 +213,7 @@ export default function AddCourse(props) {
             </Button>
             <Button
               key="save"
+              type="primary"
               className="custom-button"
               onClick={handleOk}
               loading={isLoading}

@@ -164,7 +164,7 @@ export default function CourseDetails({ params }) {
                             onClick={() =>
                               handleStartQuiz(quiz?._id, quiz?.type)
                             }
-                          >{`Bài tập ${index + 1}: ${quiz.name}`}</a>
+                          >{`Bài tập chung ${index + 1}: ${quiz.name}`}</a>
                         </li>
                       ))}
                       {dataCourse.quizzes.length > 3 && (
@@ -201,7 +201,7 @@ export default function CourseDetails({ params }) {
                             key={quizIndex}
                             className="text-sm text-gray-500 dark:text-gray-400"
                           >
-                            Bài tập {quizIndex + 1}: {quiz.name}
+                            Bài tập bài {quizIndex + 1}: {quiz.name}
                           </li>
                         ))}
                       </ul>

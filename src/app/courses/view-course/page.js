@@ -52,10 +52,10 @@ export default function Course() {
             <div className="flex justify-center items-center h-screen">
               <Spin />
             </div>
-          ) : course?.length > 0 ? (
+          ) : course?.courses?.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 pb-28">
               {course &&
-                course.map((item, index) => (
+                course.courses.map((item, index) => (
                   <div
                     key={index}
                     className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 min-h-[100px]"
@@ -82,7 +82,7 @@ export default function Course() {
                           Mô tả: {item.title}
                         </p>
                         <p className="text-xs font-medium text-gray-500 mt-2">
-                          Giáo viên: {item.teacher?.lastName}
+                          Giáo viên: {item.teacher?.firstName}
                         </p>
                       </Link>
 
@@ -96,7 +96,7 @@ export default function Course() {
                           onClick={() => navigateToNonExpiredCourses(item._id)}
                         >
                           <FolderOpenOutlined className="text-sky-500" />
-                          <span>Bài tập: {item.quizzes?.length}</span>
+                          <span>Bài tập: {course.quizzes?.length}</span>
                         </div>
                       </div>
                     </div>

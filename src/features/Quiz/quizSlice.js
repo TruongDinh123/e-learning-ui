@@ -290,6 +290,18 @@ export const updateScore = createAsyncThunk(
   }
 );
 
+export const deleteScorebyQuiz = createAsyncThunk(
+  "/e-learning/delete-score-by-quiz",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await QuizService.deleteScorebyQuiz(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 const initialState = {
   quiz: "",
   getQuizzesByStudentAndCourse: [],
