@@ -27,6 +27,8 @@ export default function Quizs({ params }) {
   const [deadline, setDeadline] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [showCountdown, setShowCountdown] = useState(true);
+  const [quizSubmission, setQuizSubmission] = useState(null);
+  console.log("🚀 ~ quizSubmission:", quizSubmission);
   const [submitting, setSubmitting] = useState(false);
 
   const quizzesByStudentState = useSelector(
@@ -95,7 +97,8 @@ export default function Quizs({ params }) {
     if (isComplete) {
       localStorage.removeItem("quizStartTime");
     } else {
-      const startTime = localStorage.getItem("quizStartTime") || new Date().toISOString();
+      const startTime =
+        localStorage.getItem("quizStartTime") || new Date().toISOString();
       localStorage.setItem("quizStartTime", startTime);
       setStartTime(startTime);
     }
@@ -118,6 +121,7 @@ export default function Quizs({ params }) {
     dispatch(submitQuiz({ quizId: idQuiz, answer: formattedAnswers }))
       .then(unwrapResult)
       .then((res) => {
+        console.log("res", res);
         if (res.status) {
           messageApi
             .open({
@@ -125,6 +129,7 @@ export default function Quizs({ params }) {
               content: "Đang nộp bài...",
             })
             .then(() => {
+              setQuizSubmission(res.metadata);
               setSubmitted(true);
               setShowCountdown(false);
               localStorage.removeItem("quizAnswers");
@@ -150,10 +155,10 @@ export default function Quizs({ params }) {
         } else {
           setDeadline(null);
           setShowCountdown(false);
-            messageApi.error(
-              "Thời gian làm bài đã hết. Bài quiz của bạn sẽ được tự động nộp."
-            );
-            handleSubmit();
+          messageApi.error(
+            "Thời gian làm bài đã hết. Bài quiz của bạn sẽ được tự động nộp."
+          );
+          handleSubmit();
         }
       } else {
         setDeadline(null);
@@ -196,6 +201,23 @@ export default function Quizs({ params }) {
   if (quiz[0] && quiz[0]?.submissionTime) {
     submissionTime = new Date(quiz[0]?.submissionTime);
   }
+
+  const calculateCorrectAnswers = () => {
+    let correctCount = 0;
+    quiz[0]?.questions?.forEach((question) => {
+      const studentAnswer = quizSubmission?.answers?.find(
+        (answer) => answer[question._id]
+      );
+      if (studentAnswer && studentAnswer[question?._id] === question?.answer) {
+        correctCount += 1;
+      }
+    });
+    return correctCount;
+  };
+
+  // Khi hiển thị thông tin cho người dùng
+  const correctAnswersCount = calculateCorrectAnswers();
+  const totalQuestions = quiz[0]?.questions?.length;
 
   const currentTime = new Date();
 
@@ -264,24 +286,11 @@ export default function Quizs({ params }) {
                       const studentAnswer = isComplete
                         ? studentAnswers[question._id]
                         : selectedAnswers[question._id];
-                      const isCorrectAnswer = studentAnswer === question.answer;
-                      const showAnswer = submitted && isCorrectAnswer;
-                      const showWrongAnswer = submitted && !isCorrectAnswer;
                       return (
                         <div key={questionIndex} className="border p-4 mb-4">
                           <div key={question._id} className="mb-4 p-2">
-                            <h4
-                              className={`mb-2 font-medium ${
-                                showAnswer
-                                  ? "text-green-500"
-                                  : showWrongAnswer
-                                  ? "text-red-500"
-                                  : "text-black"
-                              }`}
-                            >
+                            <h4 className="mb-2 font-medium text-black">
                               Câu {questionIndex + 1}: {question.question}
-                              {showAnswer && " ✔️"}
-                              {showWrongAnswer && "❌"}
                             </h4>
                             {question.image_url && (
                               <div className="mb-2">
@@ -369,6 +378,28 @@ export default function Quizs({ params }) {
                               >
                                 Xem điểm
                               </Link>
+                              <div className="pt-4">
+                                {quizSubmission && (
+                                  <div className="bg-white shadow-lg rounded-lg p-5">
+                                    <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                                      Kết quả bài kiểm tra
+                                    </h3>
+                                    <p className="text-lg text-gray-700">
+                                      Điểm số của bạn:{" "}
+                                      <span className="font-bold text-green-500">
+                                        {quizSubmission?.score}
+                                      </span>
+                                    </p>
+                                    <p className="text-lg text-gray-700">
+                                      Số câu trả lời đúng:{" "}
+                                      <span className="font-bold text-blue-500">
+                                        {correctAnswersCount}
+                                      </span>
+                                      /{totalQuestions}
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
                             </>
                           )}
                         </>

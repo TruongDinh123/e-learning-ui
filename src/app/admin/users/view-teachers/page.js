@@ -12,6 +12,7 @@ import "../view-teachers/page.css";
 import UpdateTeacherToCourse from "../../courses/update-teacher-course/page";
 import AddTeacherToCourse from "../../courses/add-teacher-course/page";
 import useCoursesData from "@/hooks/useCoursesData";
+import AddStudentToCourse from "../../courses/add-student-course/page";
 
 const { Option } = Select;
 
@@ -43,18 +44,18 @@ export default function ViewTeachersCourse() {
   const courseState = useCoursesData();
 
   useEffect(() => {
-    if(courseState.length === 0) {
+    if (courseState.length === 0) {
       dispatch(viewCourses())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setCourses(res.metadata);
-        }
-      });
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            setCourses(res.metadata);
+          }
+        });
     } else {
       setCourses(courseState.metadata);
     }
-  }, []);
+  }, [update]);
 
   // Định nghĩa một hàm mới để tái sử dụng cho việc cập nhật dữ liệu
   const refreshCourseData = () => {
@@ -80,8 +81,8 @@ export default function ViewTeachersCourse() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-            setData(res?.metadata?.students);
-            setTeacher(res?.metadata?.teacher);
+          setData(res?.metadata?.students);
+          setTeacher(res?.metadata?.teacher);
         }
       });
   };
@@ -146,7 +147,8 @@ export default function ViewTeachersCourse() {
   return (
     <div className="p-3">
       {contextHolder}
-      <div className="p-7">
+      <h1 className="text-lg font-bold text-[#002c6a]">Quản lý khóa học</h1>
+      <div className="py-3">
         <Select
           placeholder="Chọn khóa học"
           onChange={handleCourseChange}
@@ -167,7 +169,19 @@ export default function ViewTeachersCourse() {
         >
           Xem
         </Button>
+        {showTable && (
+          <AddStudentToCourse
+            courseId={selectedCourse}
+            refresh={() => {
+              setUpdate(update + 1); // Đánh dấu cần cập nhật
+              getACourseData(selectedCourse); // Tải lại dữ liệu cho khóa học hiện tại
+            }}
+          >
+            Thêm học viên
+          </AddStudentToCourse>
+        )}
       </div>
+
       {showTable ? (
         teacher ? (
           <div className="border p-4 rounded-md mb-4 d-flex align-items-center justify-content-between">
@@ -193,10 +207,13 @@ export default function ViewTeachersCourse() {
           </div>
         )
       ) : (
-        <div className="border p-4 rounded-md my-4 flex flex-col items-center justify-center space-y-4">
-          <p className="text-lg font-bold text-[#002c6a]">
-            Hãy chọn khoá học bạn muốn xem thông tin
-          </p>
+        <div className="flex justify-center items-center h-[45vh]">
+          <Empty
+            className="text-center text-lg font-bold text-[#002c6a]"
+            description="
+                Hãy chọn khoá học bạn muốn xem thông tin.
+              "
+          />
         </div>
       )}
       {showTable && (
@@ -209,4 +226,12 @@ export default function ViewTeachersCourse() {
       )}
     </div>
   );
+}
+
+{
+  /* <div className="border p-4 rounded-md my-4 flex flex-col items-center justify-center space-y-4">
+          <p className="text-lg font-bold text-[#002c6a]">
+            Hãy chọn khoá học bạn muốn xem thông tin
+          </p>
+        </div> */
 }

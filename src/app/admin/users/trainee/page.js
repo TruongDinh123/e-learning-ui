@@ -41,7 +41,9 @@ export default function ViewStudentsCourse() {
     dispatch(removeStudentFromCourse({ courseId, userId }))
       .then(unwrapResult)
       .then((res) => {
-        dispatch(removeStudentFromCourseSuccess({ courseId, studentId: userId }));
+        dispatch(
+          removeStudentFromCourseSuccess({ courseId, studentId: userId })
+        );
         if (res.status) {
           setUpdate(update + 1);
         } else {
@@ -172,13 +174,13 @@ export default function ViewStudentsCourse() {
       sortDirections: ["descend"],
     },
     ...quizColumns,
-    {
-      title: "Chức năng",
-      dataIndex: "action",
-      key: "operation",
-      fixed: "right",
-      width: 100,
-    },
+    // {
+    //   title: "Chức năng",
+    //   dataIndex: "action",
+    //   key: "operation",
+    //   fixed: "right",
+    //   width: 100,
+    // },
   ];
 
   const data = useMemo(
@@ -214,6 +216,7 @@ export default function ViewStudentsCourse() {
   return (
     <div className="p-3">
       {contextHolder}
+      <h1 className="text-lg font-bold text-[#002c6a]">Quản lý bài tập học viên</h1>
       <div className="py-3">
         <Select
           placeholder="Chọn khóa học"
@@ -237,12 +240,12 @@ export default function ViewStudentsCourse() {
 
         {viewSuccess && (
           <>
-            <AddStudentToCourse
+            {/* <AddStudentToCourse
               courseId={selectedCourse}
               refresh={() => setUpdate(update + 1)}
             >
               Thêm học viên
-            </AddStudentToCourse>
+            </AddStudentToCourse> */}
             {teacher && (
               <div className="border p-4 rounded-md my-4">
                 <h2 className="font-bold text-lg">
@@ -265,10 +268,12 @@ export default function ViewStudentsCourse() {
       </div>
 
       {dataStudent?.length === 0 && (
-        <Empty
-          description="Không tìm thấy dữ liệu."
-          className="text-center text-sm text-muted-foreground mt-10"
-        ></Empty>
+        <div className="flex justify-center items-center h-[45vh]">
+          <Empty
+            className="text-center text-lg font-bold text-[#002c6a]"
+            description="Hãy chọn khóa học bạn muốn xem học viên"
+          />
+        </div>
       )}
     </div>
   );

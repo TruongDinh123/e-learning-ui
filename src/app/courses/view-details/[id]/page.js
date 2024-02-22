@@ -417,7 +417,7 @@ export default function ViewQuiz({ params }) {
     const allCourses = useSelector((state) => state.course.courses.metadata);
 
     // Tìm khóa học tương ứng dựa vào params?.id
-    const currentCourse = allCourses.find(
+    const currentCourse = allCourses?.find(
       (course) => course._id === params?.id
     );
 
@@ -485,17 +485,9 @@ export default function ViewQuiz({ params }) {
   };
 
   const renderContentBasedOnRole = () => {
-    const isAdminOrMentor = userState?.roles?.some(
-      (role) =>
-        role.name === "Admin" ||
-        role.name === "Super-Admin" ||
-        role.name === "Mentor"
-    );
-    if (isAdminOrMentor) {
-      // Hiển thị tất cả bài quiz cho Admin hoặc Mentor
+    if (isAdminOrMentorSidebar) {
       return <AllQuizzesComponent quizzes={quiz} />;
     } else {
-      // Hiển thị dựa trên menu được chọn cho người dùng khác
       return {
         1: (collapsed || !isMobile) && <NotificationsComponent />,
         2: (collapsed || !isMobile) && <ExpiredCoursesComponent />,

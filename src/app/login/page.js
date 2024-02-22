@@ -14,6 +14,7 @@ import Cookies from "js-cookie";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { useState } from "react";
 import ForgotPassword from "../user/forgot-password/page";
+import Link from "next/link";
 
 const loginSchema = yup.object({
   email: yup
@@ -47,7 +48,9 @@ export default function Login() {
         .then(unwrapResult)
         .then((res) => {
           if (res.status) {
-            const roleNames = res.metadata.account.roles.map(role => role.name);
+            const roleNames = res.metadata.account.roles.map(
+              (role) => role.name
+            );
 
             messageApi
               .open({
@@ -71,7 +74,13 @@ export default function Login() {
                   "user",
                   JSON.stringify(res.metadata.account)
                 );
-                const userName = (res.metadata.account?.firstName ? res.metadata.account?.firstName + " " : "") + (res.metadata.account?.lastName ? res.metadata.account?.lastName : "");
+                const userName =
+                  (res.metadata.account?.firstName
+                    ? res.metadata.account?.firstName + " "
+                    : "") +
+                  (res.metadata.account?.lastName
+                    ? res.metadata.account?.lastName
+                    : "");
                 localStorage.setItem("userName", JSON.stringify(userName));
 
                 localStorage.setItem("x-client-id", res.metadata.account._id);
@@ -115,7 +124,11 @@ export default function Login() {
       <div className="flex flex-col md:flex-row items-center justify-center w-full max-w-5xl">
         <div className="md:w-1/2 text-center md:text-left p-8">
           <h1 className="text-4xl font-bold mb-4">
-            Chào mừng bạn tới với 247learn.vn
+            <Link href="/">
+              <p className="hover:underline hover:text-[#007bff]">
+                Chào mừng bạn tới với 247learn.vn
+              </p>
+            </Link>
           </h1>
         </div>
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm md:max-w-md">

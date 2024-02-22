@@ -58,7 +58,6 @@ export default function QuizCreator() {
   const [isLoading, setIsLoading] = useState(false);
   const [quizType, setQuizType] = useState("multiple_choice");
   const [file, setFile] = useState(null);
-  const [fileQuestion, setFileQuestion] = useState(null);
   const [form] = Form.useForm();
   const router = useRouter();
 
@@ -67,11 +66,12 @@ export default function QuizCreator() {
   const datePickerPlacement = screens.xs ? "bottomRight" : "bottomLeft";
 
   const [questionImages, setQuestionImages] = useState([]);
+  const [fileQuestion, setFileQuestion] = useState(null);
 
-  const handleImageUpload = (event, index) => {
+  const handleImageUpload = (file, index) => {
     setQuestionImages((prevState) => {
       const newState = [...prevState];
-      newState[index] = fileQuestion;
+      newState[index] = file;
       return newState;
     });
   };
@@ -164,26 +164,30 @@ export default function QuizCreator() {
     fileList: file ? [file] : [],
   };
 
-  const propsQuestion = {
+  const getPropsQuestion = (index) => ({
     onRemove: () => {
-      setFileQuestion(null);
+      const newQuestionImages = [...questionImages];
+      newQuestionImages[index] = null;
+      setQuestionImages(newQuestionImages);
     },
     beforeUpload: (file) => {
-      setFileQuestion(file);
-      return false;
+      const newQuestionImages = [...questionImages];
+      newQuestionImages[index] = file;
+      setQuestionImages(newQuestionImages);
+      return false; // Ngăn chặn việc tự động upload
     },
-    fileList: fileQuestion ? [fileQuestion] : [],
+    fileList: questionImages[index] ? [questionImages[index]] : [],
     accept: ".jpg, .jpeg, .png",
-  };
+  });
 
   //hàm xử lý save quiz
   const handleSaveQuiz = (values) => {
     setIsLoading(true);
-    if(quizType === "multiple_choice") {
+    if (quizType === "multiple_choice") {
       const questionWithoutOptionsIndex = values?.questions?.findIndex(
         (q) => !q?.options || q?.options?.length === 0
       );
-  
+
       if (questionWithoutOptionsIndex !== -1) {
         message.error(
           `Câu hỏi số ${
@@ -264,13 +268,20 @@ export default function QuizCreator() {
           },
         };
       }
+        // Chỉ thêm lessonId vào formattedValues nếu selectedLesson có giá trị và khác rỗng
+      if (selectedLesson && selectedLesson !== "") {
+        formattedValues.lessonId = selectedLesson;
+      } else {
+        // Đảm bảo không thêm lessonId nếu không có bài học được chọn
+        delete formattedValues.lessonId;
+      }
     }
 
     if (selectedLesson) {
       formattedValues = {
         ...formattedValues,
-        lessonId: selectedLesson, // Add lessonId to the payload
-        courseIds: [], // Clear courseIds since the quiz is associated with a lesson
+        lessonId: selectedLesson,
+        courseIds: [],
       };
     } else {
       formattedValues = {
@@ -300,14 +311,14 @@ export default function QuizCreator() {
           );
         }
 
-        if (fileQuestion) {
+        if (questionImages) {
           questionImages.forEach((imageFile, index) => {
             if (imageFile && questionIds[index]) {
               dispatch(
                 uploadQuestionImage({
                   quizId: quizId,
                   questionId: questionIds[index],
-                  filename: fileQuestion,
+                  filename: imageFile,
                 })
               ).catch((error) => {
                 message.error(
@@ -684,16 +695,10 @@ export default function QuizCreator() {
                               name={[field.name, "image"]}
                             >
                               <Upload
-                                {...propsQuestion}
-                                onChange={(event) =>
-                                  handleImageUpload(event, index)
-                                }
+                                {...getPropsQuestion(index)}
+                                onChange={(event) => handleImageUpload(event.file, index)}
                               >
-                                <Button
-                                  className="custom-button"
-                                  type="primary"
-                                  icon={<UploadOutlined />}
-                                >
+                                <Button className="custom-button" type="primary" icon={<UploadOutlined />}>
                                   Thêm tệp
                                 </Button>
                               </Upload>

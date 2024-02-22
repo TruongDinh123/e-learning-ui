@@ -9,6 +9,7 @@ import {
   Dropdown,
   Space,
   Col,
+  Empty,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -76,7 +77,7 @@ export default function ViewQuiz() {
       // Áp dụng lọc cũng cho dữ liệu từ store
       if (isAdmin()) {
         visibleCourses = coursesFromStore.metadata;
-      } else  {
+      } else {
         visibleCourses = coursesFromStore.metadata.filter(
           (course) => course.teacher === currentTeacherId
         );
@@ -277,21 +278,7 @@ export default function ViewQuiz() {
                 </Option>
               ))}
             </Select>
-
-            {/* <Select
-              placeholder="Chọn bài học"
-              onChange={handleLessonChange}
-              value={selectedLesson}
-              className="me-3 w-full sm:w-64 mb-3 md:mb-0"
-            >
-              {selectedCourseLessons.map((lesson) => (
-                <Option key={lesson._id} value={lesson._id}>
-                  {lesson.name}
-                </Option>
-              ))}
-            </Select> */}
-
-            <div className="">
+            <div>
               <Button
                 type="primary"
                 className="custom-button"
@@ -300,13 +287,24 @@ export default function ViewQuiz() {
                 Xem
               </Button>
             </div>
+
           </div>
-          <Table
-            columns={columns}
-            dataSource={data}
-            pagination={{ pageSize: 5, position: ["bottomLeft"] }}
-            className="course-grid-container"
-          />
+          {data.length > 0 ? (
+            <Table
+              columns={columns}
+              dataSource={data}
+              pagination={{ pageSize: 5 }}
+            />
+          ) : (
+            <div className="flex justify-center items-center h-[45vh]">
+              <Empty
+                className="text-center text-lg font-bold text-[#002c6a]"
+                description="
+                Hãy chọn khóa học bạn muốn xem bài tập.
+              "
+              />
+            </div>
+          )}
         </React.Fragment>
       )}
     </div>

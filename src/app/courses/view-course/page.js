@@ -96,7 +96,7 @@ export default function Course() {
                           onClick={() => navigateToNonExpiredCourses(item._id)}
                         >
                           <FolderOpenOutlined className="text-sky-500" />
-                          <span>Bài tập: {course.quizzes?.length}</span>
+                          <span>Bài tập: {item.quizzes.length + item.lessons.reduce((acc, lesson) => acc + lesson.quizzes.length, 0)}</span>
                         </div>
                       </div>
                     </div>

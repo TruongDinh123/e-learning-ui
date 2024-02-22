@@ -63,7 +63,7 @@ export default function AdminSidebar(props) {
         {
           key: "users/trainee",
           icon: <UserOutlined />,
-          label: "Học viên",
+          label: "Bài tập học viên",
         },
       ],
     },
