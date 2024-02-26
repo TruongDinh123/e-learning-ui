@@ -1,13 +1,5 @@
 "use client";
-import {
-  Avatar,
-  Breadcrumb,
-  Button,
-  Collapse,
-  Empty,
-  Result,
-  Spin,
-} from "antd";
+import { Breadcrumb, Button, Empty, Result, Spin, message } from "antd";
 import "../[id]/page.css";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -27,14 +19,18 @@ export default function CourseDetails({ params }) {
   const router = useRouter();
 
   const userState = useSelector((state) => state.user);
-  const isLoggedIn = userState.user?.status === 200 || !!userState.userName; 
+  const isLoggedIn = userState.user?.status === 200 || !!userState.userName;
 
   const fetchData = useCallback(async () => {
     setLoading(true);
-    const userId = userState.user?._id || userState.user?.metadata?.account?._id;
+    const userId =
+      userState.user?._id || userState.user?.metadata?.account?._id;
     const roles = userState.user?.roles || userState.user?.account?.roles;
     const isAdminState = roles?.some(
-      (role) => role.name === "Admin" || role.name === "Super-Admin" || role.name === "Mentor"
+      (role) =>
+        role.name === "Admin" ||
+        role.name === "Super-Admin" ||
+        role.name === "Mentor"
     );
     try {
       const res = await dispatch(getACourse(params.id)).then(unwrapResult);
@@ -72,11 +68,29 @@ export default function CourseDetails({ params }) {
   }, [params.id, dispatch, isLoggedIn]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (!isLoggedIn) {
+      router.push("/login");
+    } else {
+      fetchData();
+    }
+  }, [fetchData, isLoggedIn, router]);
 
   const handleSelectLesson = (lesson) => {
-    setSelectedLesson(lesson);
+    const userId =
+      userState.user?.metadata?.account?._id || userState.user?._id;
+    const isStudent = dataCourse.students.some(
+      (student) => student._id === userId
+    );
+    if (!isStudent) {
+      // Nếu không phải là học viên, hiển thị thông báo và không thực hiện gì thêm
+      message.warning(
+        "Chỉ có học viên mới có thể xem thông tin bài học này",
+        3
+      );
+    } else {
+      // Nếu là học viên, tiếp tục với việc chọn bài học
+      setSelectedLesson(lesson);
+    }
   };
 
   const handleStartQuiz = async (quizId, quizType) => {
@@ -102,6 +116,18 @@ export default function CourseDetails({ params }) {
       {loading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />
+        </div>
+      ) : !dataCourse.showCourse ? (
+        <div className="flex justify-center items-center h-screen">
+          <Result
+            status="warning"
+            title="Chỉ có học viên mới có thể xem thông tin bài học này"
+            extra={
+              <Button type="primary" key="console" href="/">
+                Trang chủ
+              </Button>
+            }
+          />
         </div>
       ) : (
         <>
@@ -133,17 +159,19 @@ export default function CourseDetails({ params }) {
             </div>
             <div className="flex flex-col md:w-1/2 space-y-4 md:space-y-2 mt-4 md:mt-0 pl-2 justify-center items-center">
               <div className="flex items-center gap-3">
-                <img
-                  alt="Teacher's avatar"
-                  className="rounded-full"
-                  height="64"
-                  src={dataCourse?.teacher?.image_url || avatar}
-                  style={{
-                    aspectRatio: "64/64",
-                    objectFit: "cover",
-                  }}
-                  width="64"
-                />
+                {dataCourse?.teacher ? (
+                  <img
+                    alt="Teacher's avatar"
+                    className="rounded-full"
+                    height="64"
+                    src={dataCourse?.teacher?.image_url || avatar}
+                    style={{
+                      aspectRatio: "64/64",
+                      objectFit: "cover",
+                    }}
+                    width="64"
+                  />
+                ) : null}
                 <div className="grid gap-0.5 text-xs">
                   <div className="font-medium">
                     {dataCourse?.teacher?.lastName}
@@ -185,33 +213,39 @@ export default function CourseDetails({ params }) {
             <div className="flex flex-col w-full md:w-1/3 border-r md:border-r border-gray-200 dark:border-gray-200 p-4 overflow-auto">
               <h2 className="font-semibold mb-4">Bài học:</h2>
               <div className="space-y-4">
-                {dataCourse?.lessons?.map((lesson, index) => (
-                  <a
-                    className="block p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-                    onClick={() => handleSelectLesson(lesson)}
-                    key={index}
-                  >
-                    <h3 className="font-semibold">
-                      Bài học {index + 1}: {lesson.name}
-                    </h3>
-                    {lesson.quizzes && lesson.quizzes.length > 0 ? (
-                      <ul className="list-disc pl-5 mt-2">
-                        {lesson.quizzes.map((quiz, quizIndex) => (
-                          <li
-                            key={quizIndex}
-                            className="text-sm text-gray-500 dark:text-gray-400"
-                          >
-                            Bài tập bài {quizIndex + 1}: {quiz.name}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Chưa có bài tập
-                      </p>
-                    )}
-                  </a>
-                ))}
+                {dataCourse?.lessons?.length > 0 ? (
+                  dataCourse.lessons.map((lesson, index) => (
+                    <a
+                      className="block p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                      onClick={() => handleSelectLesson(lesson)}
+                      key={index}
+                    >
+                      <h3 className="font-semibold">
+                        Bài học {index + 1}: {lesson.name}
+                      </h3>
+                      {lesson.quizzes && lesson.quizzes.length > 0 ? (
+                        <ul className="list-disc pl-5 mt-2">
+                          {lesson.quizzes.map((quiz, quizIndex) => (
+                            <li
+                              key={quizIndex}
+                              className="text-sm text-gray-500 dark:text-gray-400"
+                            >
+                              Bài tập bài {quizIndex + 1}: {quiz.name}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Chưa có bài tập
+                        </p>
+                      )}
+                    </a>
+                  ))
+                ) : (
+                  <div className="text-center text-gray-500 dark:text-gray-400">
+                    Không có bài học
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex flex-col w-full md:w-2/3 p-4">

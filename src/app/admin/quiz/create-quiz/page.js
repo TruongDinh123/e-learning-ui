@@ -66,7 +66,6 @@ export default function QuizCreator() {
   const datePickerPlacement = screens.xs ? "bottomRight" : "bottomLeft";
 
   const [questionImages, setQuestionImages] = useState([]);
-  const [fileQuestion, setFileQuestion] = useState(null);
 
   const handleImageUpload = (file, index) => {
     setQuestionImages((prevState) => {
@@ -268,7 +267,7 @@ export default function QuizCreator() {
           },
         };
       }
-        // Chỉ thêm lessonId vào formattedValues nếu selectedLesson có giá trị và khác rỗng
+      // Chỉ thêm lessonId vào formattedValues nếu selectedLesson có giá trị và khác rỗng
       if (selectedLesson && selectedLesson !== "") {
         formattedValues.lessonId = selectedLesson;
       } else {
@@ -403,17 +402,24 @@ export default function QuizCreator() {
   }, [coursesFromStore, dispatch]);
 
   // Fetch quiz templates when the component mounts
+  const getQuizTemplatesStore = useSelector(
+    (state) => state.quiz.getQuizTemplates
+  );
+
   useEffect(() => {
-    dispatch(viewQuizTemplates())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setQuizTemplates(res.metadata);
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {});
+    if (getQuizTemplatesStore.length === 0) {
+      dispatch(viewQuizTemplates())
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            setQuizTemplates(res.metadata);
+          } else {  
+            messageApi.error(res.message);
+          }
+        });
+    } else {
+      setQuizTemplates(getQuizTemplatesStore.metadata);
+    }
   }, []);
 
   // Handle quiz template selection
@@ -574,7 +580,7 @@ export default function QuizCreator() {
                       style={{ width: "100%" }}
                     >
                       <Option value="">Không chọn</Option>
-                      {quizTemplates.map((template) => (
+                      {quizTemplates?.map((template) => (
                         <Option key={template._id} value={template._id}>
                           {template.name}
                         </Option>
@@ -696,9 +702,15 @@ export default function QuizCreator() {
                             >
                               <Upload
                                 {...getPropsQuestion(index)}
-                                onChange={(event) => handleImageUpload(event.file, index)}
+                                onChange={(event) =>
+                                  handleImageUpload(event.file, index)
+                                }
                               >
-                                <Button className="custom-button" type="primary" icon={<UploadOutlined />}>
+                                <Button
+                                  className="custom-button"
+                                  type="primary"
+                                  icon={<UploadOutlined />}
+                                >
                                   Thêm tệp
                                 </Button>
                               </Upload>

@@ -38,6 +38,19 @@ export const viewQuiz = createAsyncThunk(
   }
 );
 
+export const getAllScoresByCourseId = createAsyncThunk(
+  "/e-learning/get-all-score-by-course-id",
+  async (data, { rejectWithValue }) => {
+    console.log(data);
+    try {
+      const response = await QuizService.getAllScoresByCourseId(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 export const viewInfoQuiz = createAsyncThunk(
   "/e-learning/view-quiz-info",
   async (data, { rejectWithValue }) => {
@@ -306,6 +319,7 @@ const initialState = {
   quiz: "",
   getQuizzesByStudentAndCourse: [],
   getScoreState: [],
+  getQuizTemplates: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -443,6 +457,21 @@ const quizSlice = createSlice({
         state.getQuizzesByStudentAndCourse = action.payload;
       })
       .addCase(getQuizzesByStudentAndCourse.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
+      .addCase(viewQuizTemplates.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(viewQuizTemplates.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.getQuizTemplates = action.payload;
+      })
+      .addCase(viewQuizTemplates.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

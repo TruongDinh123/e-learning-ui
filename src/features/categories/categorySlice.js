@@ -4,7 +4,6 @@ import { CategoriesService } from "./categoryService";
 export const createCategory = createAsyncThunk(
   "/e-learning/create-category",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data);
     try {
       const response = await CategoriesService.createCategory(data);
       return response;

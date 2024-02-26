@@ -5,22 +5,24 @@ import {
   Collapse,
   Drawer,
   List,
-  Modal,
   Select,
   Spin,
   Table,
-  message,
 } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getScore } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 const ScoreManagement = () => {
   const dispatch = useDispatch();
   const [score, setScore] = useState([]);
+  console.log('score', score);
   const [isLoading, setIsLoading] = useState(false);
   const [filter, setFilter] = useState("tất cả");
   const { Option } = Select;
+
+  const userState = useSelector((state) => state?.user?.user);
+  console.log('userState', userState);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(
     Array(score.length).fill(false)
@@ -37,16 +39,15 @@ const ScoreManagement = () => {
     updatedIsDrawerOpen[index] = false;
     setIsDrawerOpen(updatedIsDrawerOpen);
   };
-  const handleOk = (index) => {
-    const updatedIsModalOpen = [...isModalOpen];
-    updatedIsModalOpen[index] = false;
-    setIsModalOpen(updatedIsModalOpen);
-  };
 
   const columns = [
     {
       title: "SNo.",
       dataIndex: "key",
+    },
+    {
+      title: "Khóa học",
+      dataIndex: "courseName",
     },
     {
       title: "Tên bài tập",
@@ -92,25 +93,6 @@ const ScoreManagement = () => {
   //table data
   let data = [];
   score.forEach((i, index) => {
-    const QuestionItem = ({ question, idxQuestion, answer }) => (
-      <List.Item>
-        <div className="p-3">
-          <h3 className="font-bold">{`Câu ${idxQuestion + 1}`}</h3>
-          <h3 className="font-semibold py-3">
-            {idxQuestion + 1}.{question.question}
-          </h3>
-          {question.options.map((option, idxOption) => (
-            <p key={idxOption}>
-              {idxOption + 1}: {option}
-            </p>
-          ))}
-          <p className="pt-3 text-green-500 font-bold">
-            <span style={{ color: "red" }}>Câu trả lời của bạn: {answer}</span>
-          </p>
-        </div>
-      </List.Item>
-    );
-
     const EssayAnswer = ({ essayAnswer, filename }) => (
       <div className="p-3">
         <h3 className="font-bold">Câu trả lời của bạn</h3>
@@ -129,15 +111,16 @@ const ScoreManagement = () => {
       </div>
     );
 
+    const courseName = userState?.courses?.find(course => i.quiz.courseIds.includes(course._id))?.name;
+
     if (
-      filter === "tất cả" ||
-      (filter === "quiz" && i.quiz) ||
-      (filter === "assignment" && i.assignment)
+      filter === "tất cả" || courseName === filter
     ) {
       data.push({
         key: index + 1,
         name: i?.quiz?.name ? i.quiz?.name : i.assignment?.name,
         score: i?.score,
+        courseName: courseName,
         action: (
           <React.Fragment>
             <Button
@@ -221,8 +204,9 @@ const ScoreManagement = () => {
             onChange={handleFilterChange}
           >
             <Option value="tất cả">Tất cả</Option>
-            <Option value="quiz">Bài tập</Option>
-            <Option value="assignment">Bài kiểm tra</Option>
+            {userState?.courses.map((course) => (
+              <Option key={course._id} value={course.name}>{course.name}</Option>
+            ))}
           </Select>
           <Table columns={columns} dataSource={data} className="pb-56" />
         </div>

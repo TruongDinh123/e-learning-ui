@@ -12,10 +12,9 @@ import {
   updateCourseImage,
   uploadImageCourse,
 } from "@/features/Courses/courseSlice";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import CustomButton from "@/components/comman/CustomBtn";
-import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
 import { isAdmin } from "@/middleware";
 
 const CourseSchema = yup.object({
@@ -40,17 +39,16 @@ export default function AddCourse(props) {
   const dispatch = useDispatch();
 
 
-  useEffect(() => {
-    dispatch(getAllCategoryAndSubCourses())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {});
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getAllCategoryAndSubCourses())
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       if (res.status) {
+  //       } else {
+  //         messageApi.error(res.message);
+  //       }
+  //     })
+  // }, []);
 
   const categories = useSelector(
     (state) => state.category?.categories?.metadata

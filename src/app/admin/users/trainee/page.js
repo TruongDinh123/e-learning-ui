@@ -6,12 +6,12 @@ import {
   viewCourses,
 } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Empty, Modal, Popconfirm, Select, Table, message } from "antd";
+import { Button, Empty, Popconfirm, Select, Table, message } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import AddStudentToCourse from "../../courses/add-student-course/page";
-import { getScoreByQuizId, viewQuiz } from "@/features/Quiz/quizSlice";
+import { getAllScoresByCourseId, viewQuiz } from "@/features/Quiz/quizSlice";
 import { isAdmin, isMentor } from "@/middleware";
+import "./page.css";
 
 const { Option } = Select;
 
@@ -24,18 +24,25 @@ export default function ViewStudentsCourse() {
   const [update, setUpdate] = useState(0);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courses, setCourses] = useState([]);
-  const [scores, setScores] = useState({}); // Change to an object
+  const [scores, setScores] = useState({});
   const [loading, setLoading] = useState(false);
   const [viewSuccess, setViewSuccess] = useState(false);
 
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
-    const selectedCourse = courses.find((course) => course._id === value);
+    setData([]);
+    setTeacher(null);
+    setQuizzes([]);
+    setScores({});
+    setViewSuccess(false);
   };
 
   const handleViewCourse = useCallback(() => {
-    getACourseData(selectedCourse);
-  }, [selectedCourse]);
+    setLoading(true);
+    getACourseData(selectedCourse).then(() => {
+      loadCourseData(selectedCourse);
+    });
+  }, [selectedCourse, dispatch, messageApi]);
 
   const handleDeleteStudent = ({ courseId, userId }) => {
     dispatch(removeStudentFromCourse({ courseId, userId }))
@@ -72,11 +79,8 @@ export default function ViewStudentsCourse() {
               );
             }
             setCourses(visibleCourses);
-            setLoading(true);
+            setLoading(false);
           }
-        })
-        .catch((error) => {
-          setLoading(false);
         });
     } else {
       // Áp dụng lọc cũng cho dữ liệu từ store
@@ -89,43 +93,41 @@ export default function ViewStudentsCourse() {
       }
       setCourses(visibleCourses);
     }
-  }, []);
+  }, [coursesFromStore]);
 
-  useEffect(() => {
-    getACourseData();
-  }, [update, selectedCourse]);
-
-  useEffect(() => {
-    dispatch(viewQuiz({ courseIds: selectedCourse }))
+  const loadCourseData = (courseId) => {
+    dispatch(viewQuiz({ courseIds: courseId }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
           setQuizzes(res.metadata);
-          const quizIds = res.metadata?.map((quiz) => quiz?._id);
-          dataStudent.forEach((student) => {
-            const userId = student._id;
-            quizIds.forEach((quizId) => {
-              dispatch(getScoreByQuizId({ quizId: quizId, userId: userId }))
-                .then(unwrapResult)
-                .then((res) => {
-                  if (res.status) {
-                    setScores((prevScores) => ({
-                      ...prevScores,
-                      [quizId]: res.metadata.map((item) => ({
-                        userId: item.user?._id,
-                        score: item?.score,
-                      })),
-                    }));
-                  } else {
-                    messageApi.error(res.message);
-                  }
-                });
-            });
-          });
+          return dispatch(getAllScoresByCourseId({ courseId }));
+        } else {
+          throw new Error(res.message);
         }
       })
-      .catch((error) => {});
-  }, [selectedCourse, dispatch, dataStudent]);
+      .then(unwrapResult)
+      .then((scoresRes) => {
+        if (scoresRes.status) {
+          setScores(
+            scoresRes.metadata.reduce((acc, current) => {
+              acc[current.quizId] = current.scores;
+              return acc;
+            }, {})
+          );
+        } else {
+          throw new Error(scoresRes.message);
+        }
+      })
+      .catch((error) => {
+        messageApi.error(
+          error.message || "An error occurred while fetching quizzes or scores."
+        );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   const getACourseData = () => {
     return dispatch(getACourse(selectedCourse))
@@ -139,7 +141,10 @@ export default function ViewStudentsCourse() {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {});
+      .catch((error) => {
+        messageApi.error("An error occurred while fetching course data.");
+        setLoading(false);
+      });
   };
 
   const quizColumns = useMemo(
@@ -155,10 +160,11 @@ export default function ViewStudentsCourse() {
           );
           const submissionTime = new Date(quiz?.submissionTime);
           const now = new Date();
-          if (submissionTime < now) {
+          if (studentScore?.isComplete || submissionTime >= now) {
+            return studentScore ? studentScore.score : "Chưa làm";
+          } else {
             return "Hết hạn nộp";
           }
-          return studentScore ? studentScore.score : "Chưa làm";
         },
       })),
     [quizzes, scores]
@@ -216,7 +222,9 @@ export default function ViewStudentsCourse() {
   return (
     <div className="p-3">
       {contextHolder}
-      <h1 className="text-lg font-bold text-[#002c6a]">Quản lý bài tập học viên</h1>
+      <h1 className="text-lg font-bold text-[#002c6a]">
+        Quản lý bài tập học viên
+      </h1>
       <div className="py-3">
         <Select
           placeholder="Chọn khóa học"
@@ -238,14 +246,8 @@ export default function ViewStudentsCourse() {
           Xem
         </Button>
 
-        {viewSuccess && (
+        {viewSuccess ? (
           <>
-            {/* <AddStudentToCourse
-              courseId={selectedCourse}
-              refresh={() => setUpdate(update + 1)}
-            >
-              Thêm học viên
-            </AddStudentToCourse> */}
             {teacher && (
               <div className="border p-4 rounded-md my-4">
                 <h2 className="font-bold text-lg">
@@ -257,24 +259,26 @@ export default function ViewStudentsCourse() {
             <Table
               columns={columns}
               dataSource={data}
-              pagination={{ pageSize: 5, position: ["bottomLeft"] }}
+              pagination={{ pageSize: 3, position: ["bottomLeft"] }}
               scroll={{
                 x: 1300,
               }}
               className="pt-3 grid-container"
             />
           </>
+        ) : (
+          <>
+            {dataStudent?.length === 0 && (
+              <div className="flex justify-center items-center h-[45vh]">
+                <Empty
+                  className="text-center text-lg font-bold text-[#002c6a]"
+                  description="Hãy chọn khóa học bạn muốn xem học viên"
+                />
+              </div>
+            )}
+          </>
         )}
       </div>
-
-      {dataStudent?.length === 0 && (
-        <div className="flex justify-center items-center h-[45vh]">
-          <Empty
-            className="text-center text-lg font-bold text-[#002c6a]"
-            description="Hãy chọn khóa học bạn muốn xem học viên"
-          />
-        </div>
-      )}
     </div>
   );
 }

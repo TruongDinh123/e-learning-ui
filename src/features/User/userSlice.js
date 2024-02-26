@@ -51,11 +51,17 @@ export const deleteUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
   "/e-learning/update-user",
-  async (data, { rejectWithValue, dispatch }) => {
+  async (data, { rejectWithValue }) => {
     try {
       const response = await authService.updateUser(data);
       if (response.status) {
-        const userName = (response.data?.metadata.firstName ? response.data?.metadata.firstName + " " : "") + (response.data?.metadata.lastName ? response.data?.metadata.lastName : "");
+        const userName =
+          (response.data?.metadata.firstName
+            ? response.data?.metadata.firstName + " "
+            : "") +
+          (response.data?.metadata.lastName
+            ? response.data?.metadata.lastName
+            : "");
         localStorage.setItem("userName", JSON.stringify(userName));
       }
       return response.data;

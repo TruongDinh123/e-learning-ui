@@ -143,7 +143,7 @@ function AdminFooter() {
           justifyContent: "center",
         }}
       >
-        95Elearning {new Date().getFullYear()} created by 95IDEAL
+        247learn.vn {new Date().getFullYear()} created by 95IDEAL
       </Footer>
     )
   );

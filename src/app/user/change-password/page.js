@@ -1,14 +1,12 @@
 "use client";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { Button, Spin, message } from "antd";
+import { Button, message } from "antd";
 import {
   changePassword,
-  getAUser,
   logOut,
   resetState,
-  updateUser,
 } from "@/features/User/userSlice";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";

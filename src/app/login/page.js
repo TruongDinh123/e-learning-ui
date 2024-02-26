@@ -125,8 +125,8 @@ export default function Login() {
         <div className="md:w-1/2 text-center md:text-left p-8">
           <h1 className="text-4xl font-bold mb-4">
             <Link href="/">
-              <p className="hover:underline hover:text-[#007bff]">
-                Chào mừng bạn tới với 247learn.vn
+              <p className="hover:no-underline hover:text-[#007bff]">
+                247learn.vn
               </p>
             </Link>
           </h1>

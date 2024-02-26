@@ -21,27 +21,36 @@ export default function Courses() {
   const [course, setCourses] = useState([]);
   const [updateCourse, setUpdateCourse] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [categories, setCategories] = useState([]);
+  // const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loadingStates, setLoadingStates] = useState({});
   const [filteredCourses, setFilteredCourses] = useState([]);
   const router = useRouter();
   const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
 
+  const categories = useSelector(
+    (state) => state.category.categories.metadata || []
+  );
+
   const fetchCategories = () => {
-    dispatch(getAllCategoryAndSubCourses())
-      .then(unwrapResult)
-      .then((res) => {
-        setCategories(res.metadata);
-      })
-      .catch((error) => {
-        console.error("Error fetching categories:", error);
-      });
+    if (categories.length === 0 && !isLoading) {
+      setIsLoading(true);
+      dispatch(getAllCategoryAndSubCourses())
+        .then(unwrapResult)
+        .then(() => {
+          setIsLoading(false);
+        })
+        .catch(() => {
+          setIsLoading(false);
+        });
+    }
   };
 
   useEffect(() => {
-    fetchCategories();
-  }, [dispatch, selectedCategory]);
+    if (categories.length === 0 && !isLoading) {
+      fetchCategories();
+    }
+  }, []);
 
   useEffect(() => {
     const currentTeacherId = localStorage.getItem("x-client-id");
@@ -56,9 +65,9 @@ export default function Courses() {
     const newFilteredCourses = selectedCategory
       ? categories
           .find((c) => c._id === selectedCategory)
-          ?.courses.filter(
-            (course) => isAdmin || course.teacher === currentTeacherId
-          ) || []
+          ?.courses?.filter(
+            (course) => isAdmin() || course.teacher === currentTeacherId
+          ) ?? []
       : visibleCourses;
 
     setFilteredCourses(newFilteredCourses);
@@ -70,12 +79,10 @@ export default function Courses() {
   };
 
   const courses = useCoursesData();
-  console.log("🚀 ~ courses:", courses);
+
   // viewCourses api
   useEffect(() => {
-    let isFetchingFromAPI = false;
-    if (courses.length === 0) {
-      isFetchingFromAPI = true;
+    if (courses.length === 0 && !isLoading) {
       setIsLoading(true);
       dispatch(viewCourses())
         .then(unwrapResult)
@@ -94,16 +101,13 @@ export default function Courses() {
           }
           setIsLoading(false);
         })
-        .catch((error) => {
-          setIsLoading(false);
-        })
         .finally(() => {
           setIsLoading(false);
         });
     } else {
       setCourses(courses?.metadata || courses);
     }
-  }, [updateCourse, courses, dispatch]);
+  }, [updateCourse, dispatch]);
 
   //table data
   let data = [];

@@ -224,6 +224,15 @@ const getScoreByUserId = async (data) => {
   return res.data;
 };
 
+const getAllScoresByCourseId = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/get-all-score/${data.courseId}`,
+    method: "GET",
+    data: data,
+  });
+  return res.data;
+};
+
 const updateScore = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/score/update`,
@@ -259,4 +268,5 @@ export const QuizService = {
   uploadQuestionImage,
   viewQuizInfo,
   deleteScorebyQuiz,
+  getAllScoresByCourseId,
 };

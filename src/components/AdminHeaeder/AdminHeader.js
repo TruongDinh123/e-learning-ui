@@ -8,25 +8,20 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Layout, Button, Avatar, Menu, Dropdown, Popover, message } from "antd";
+import { Button, Avatar, Menu, Dropdown, Popover, message } from "antd";
 import Link from "next/link";
 import { useEffect, useState, Fragment } from "react";
-import { Nav } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { useMediaQuery } from "react-responsive";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Dialog, Disclosure, Transition } from "@headlessui/react";
+import { Dialog, Disclosure } from "@headlessui/react";
 
-const { Header } = Layout;
 const logo3 = "/images/logo5.png";
-
-const headerStyle = { padding: 0, background: "#02354B" };
 
 export default function AdminHeader(props) {
   const { setCollapsed, collapsed } = props;
-  const userProfile = useSelector((state) => state.user.profile);
+  const userProfile = useSelector((state) => state.user.user);
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const userState = JSON.parse(localStorage.getItem("user"));
@@ -36,15 +31,17 @@ export default function AdminHeader(props) {
   const dispatch = useDispatch();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
-
   const userName =
     useSelector((state) => state.user.userName) ||
     JSON.parse(localStorage.getItem("userName"));
 
   useEffect(() => {
-    getAUsereData();
-  }, []);
+    if (!userProfile) {
+      getAUsereData();
+    } else {
+      setData(userProfile);
+    }
+  }, [userProfile]);
 
   const getAUsereData = () => {
     dispatch(getAUser(id))
@@ -80,7 +77,6 @@ export default function AdminHeader(props) {
     </Menu>
   );
 
-
   const handleLogOut = () => {
     setIsLoading(true);
     dispatch(logOut())
@@ -95,7 +91,11 @@ export default function AdminHeader(props) {
         }
       })
       .catch((error) => {
-        if (error.message === "Invalid client id" || error.response?.status === 401 || error.response?.status === 403) {
+        if (
+          error.message === "Invalid client id" ||
+          error.response?.status === 401 ||
+          error.response?.status === 403
+        ) {
           clearAuthState();
           router.push("/login");
         } else {
@@ -105,7 +105,7 @@ export default function AdminHeader(props) {
         }
       });
   };
-  
+
   // Hàm để xóa trạng thái xác thực của người dùng
   const clearAuthState = () => {
     localStorage.clear();
@@ -194,6 +194,9 @@ export default function AdminHeader(props) {
                                 `https://xsgames.co/randomusers/avatar.php?g=pixel`
                               }
                             />
+                            <span className="ml-2 text-white">
+                              {userName}
+                            </span>
                           </a>
                         </div>
                       </div>

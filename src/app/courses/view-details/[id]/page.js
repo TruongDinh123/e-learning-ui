@@ -11,7 +11,7 @@ import {
   Empty,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   getQuizzesByStudentAndCourse,
   getScoreByInfo,
@@ -43,6 +43,7 @@ export default function ViewQuiz({ params }) {
   const [expiredCount, setExpiredCount] = useState(0);
   const [allCourseCount, setAllCourse] = useState(0);
   const [isAdminOrMentorSidebar, setIsAdminOrMentor] = useState(false);
+  const [isLoadingRoleCheck, setIsLoadingRoleCheck] = useState(true); // Thêm trạng thái này
   const router = useRouter();
 
   const quizzesByStudentState = useSelector(
@@ -52,9 +53,6 @@ export default function ViewQuiz({ params }) {
     (state) => state.quiz.getScoreState.metadata
   );
   const getACourseState = useSelector((state) => state.course.Acourse.metadata);
-
-
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -161,17 +159,20 @@ export default function ViewQuiz({ params }) {
   };
 
   const userState = useSelector((state) => state?.user?.user);
-
   useEffect(() => {
-    // Cập nhật trạng thái isAdminOrMentor mỗi khi thông tin người dùng thay đổi
-    const checkIsAdminOrMentor = userState?.roles?.some(
+    const roles = userState?.roles || userState?.metadata?.account?.roles;
+
+    const checkIsAdminOrMentor = roles?.some(
       (role) =>
         role.name === "Admin" ||
         role.name === "Super-Admin" ||
         role.name === "Mentor"
     );
+
+    console.log(checkIsAdminOrMentor);
     setIsAdminOrMentor(checkIsAdminOrMentor);
-  }, [userState]); // Theo dõi sự thay đổi của userState
+    setIsLoadingRoleCheck(false);
+  }, [userState]);
 
   // Component hiển thị thông báo
   const NotificationsComponent = () => {
@@ -412,7 +413,7 @@ export default function ViewQuiz({ params }) {
     );
   };
 
-  const AllQuizzesComponent = ({ quizzes }) => {
+  const AllQuizzesComponent = () => {
     // Lấy ra thông tin của tất cả các khóa học từ store
     const allCourses = useSelector((state) => state.course.courses.metadata);
 
@@ -421,14 +422,26 @@ export default function ViewQuiz({ params }) {
       (course) => course._id === params?.id
     );
 
+  // Sử dụng useMemo để memoize giá trị của allQuizzes
+  const allQuizzes = useMemo(() => {
     // Lấy ra danh sách các bài quiz của khóa học tương ứng
     const courseQuizzes = currentCourse ? currentCourse.quizzes : [];
 
-    useEffect(() => {
-      setAllCourse(courseQuizzes.length);
-    }, [courseQuizzes]);
+    // Lấy ra danh sách các bài quiz từ mỗi bài học trong khóa học
+    const lessonQuizzes = currentCourse
+      ? currentCourse.lessons.flatMap(lesson => lesson.quizzes)
+      : [];
 
-    return courseQuizzes.length > 0 ? (
+    return [...courseQuizzes, ...lessonQuizzes];
+  }, [currentCourse]);
+
+    useEffect(() => {
+      setAllCourse(allQuizzes.length);
+    }, [allQuizzes]);
+
+    console.log("allquiz", allQuizzes)
+
+    return allQuizzes.length > 0 ? (
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-2">
         {isLoading ? (
           <div className="flex justify-center items-center h-screen">
@@ -436,7 +449,7 @@ export default function ViewQuiz({ params }) {
           </div>
         ) : (
           <>
-            {courseQuizzes.map((item, index) => (
+            {allQuizzes.map((item, index) => (
               <div
                 key={index}
                 className="bg-white rounded-lg card-shadow border border-gray-300 w-full overflow-hidden"
@@ -485,8 +498,10 @@ export default function ViewQuiz({ params }) {
   };
 
   const renderContentBasedOnRole = () => {
-    if (isAdminOrMentorSidebar) {
-      return <AllQuizzesComponent quizzes={quiz} />;
+    if (isLoadingRoleCheck) {
+      return <Spin />;
+    } else if (isAdminOrMentorSidebar) {
+      return <AllQuizzesComponent />;
     } else {
       return {
         1: (collapsed || !isMobile) && <NotificationsComponent />,
@@ -501,8 +516,6 @@ export default function ViewQuiz({ params }) {
   } = theme.useToken();
 
   const isMobile = useMediaQuery({ maxWidth: "768px" });
-
-
 
   return (
     <Content

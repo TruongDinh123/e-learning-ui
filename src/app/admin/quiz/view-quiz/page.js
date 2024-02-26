@@ -13,7 +13,7 @@ import {
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { deleteQuiz, viewInfoQuiz, viewQuiz } from "@/features/Quiz/quizSlice";
+import { deleteQuiz, viewInfoQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { viewCourses } from "@/features/Courses/courseSlice";
 import React from "react";
@@ -29,7 +29,6 @@ export default function ViewQuiz() {
   const dispatch = useDispatch();
   const [quiz, setquiz] = useState([]);
   const [updateQuiz, setUpdateQuiz] = useState(0);
-  const [selectedLesson, setSelectedLesson] = useState(null);
   const [courses, setCourses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,13 +43,31 @@ export default function ViewQuiz() {
   // Hàm xử lý khi chọn khóa học
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
-    const selectedCourse = courses.find((course) => course._id === value);
     localStorage.setItem("selectedCourseId", value);
   };
 
   const currentTeacherId = localStorage.getItem("x-client-id");
   const coursesFromStore = useSelector((state) => state.course.courses);
 
+  const handleViewQuiz = () => {
+    setIsLoading(true);
+    dispatch(viewInfoQuiz({ courseIds: selectedCourse }))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setquiz(res?.metadata);
+          setUpdateQuiz(updateQuiz + 1);
+          loadCourses();
+        } else {
+        }
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+      });
+  };
+
+  
   useEffect(() => {
     let visibleCourses;
     if (coursesFromStore.length === 0) {
@@ -74,7 +91,6 @@ export default function ViewQuiz() {
           setIsLoading(false);
         });
     } else {
-      // Áp dụng lọc cũng cho dữ liệu từ store
       if (isAdmin()) {
         visibleCourses = coursesFromStore.metadata;
       } else {
@@ -85,29 +101,6 @@ export default function ViewQuiz() {
       setCourses(visibleCourses);
     }
   }, [updateQuiz, coursesFromStore, dispatch]);
-
-  const handleViewQuiz = () => {
-    setIsLoading(true);
-    dispatch(viewInfoQuiz({ courseIds: selectedCourse }))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setquiz(res?.metadata);
-          setUpdateQuiz(updateQuiz + 1);
-        } else {
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    if (selectedCourse) {
-      handleViewQuiz();
-    }
-  }, [selectedCourse]);
 
   const handleDeleteQuiz = ({ quizId }) => {
     setIsLoading(true);
@@ -141,6 +134,7 @@ export default function ViewQuiz() {
     {
       title: "Loại hình thức",
       dataIndex: "type",
+      render: (text) => (text === "multiple_choice" ? "Trắc Nghiệm" : text === "essay" ? "Tự luận" : text),
       onFilter: (value, record) => record.type.indexOf(value) === 0,
       sorter: (a, b) => a.type.localeCompare(b.type),
       sortDirections: ["descend"],
@@ -199,7 +193,6 @@ export default function ViewQuiz() {
         <Button
           className="me-3"
           style={{ width: "100%" }}
-          lessonId={selectedLesson}
           onClick={() =>
             router.push(`/admin/quiz/view-list-question/${i?._id}`)
           }
@@ -287,7 +280,6 @@ export default function ViewQuiz() {
                 Xem
               </Button>
             </div>
-
           </div>
           {data.length > 0 ? (
             <Table

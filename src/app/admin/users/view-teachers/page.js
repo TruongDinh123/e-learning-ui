@@ -7,7 +7,7 @@ import {
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Button, Empty, Modal, Popconfirm, Select, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import "../view-teachers/page.css";
 import UpdateTeacherToCourse from "../../courses/update-teacher-course/page";
 import AddTeacherToCourse from "../../courses/add-teacher-course/page";
@@ -226,12 +226,4 @@ export default function ViewTeachersCourse() {
       )}
     </div>
   );
-}
-
-{
-  /* <div className="border p-4 rounded-md my-4 flex flex-col items-center justify-center space-y-4">
-          <p className="text-lg font-bold text-[#002c6a]">
-            Hãy chọn khoá học bạn muốn xem thông tin
-          </p>
-        </div> */
 }

@@ -152,12 +152,14 @@ export default function ViewListScore(props) {
                       />
                       <img
                         class="h-10 w-10 rounded-full mr-4"
-                        src="https://placehold.co/100x100"
+                        src={
+                          student?.user?.image_url || "https://placehold.co/100x100"
+                        }
                         alt="Placeholder avatar for student"
                       />
                       <div class="min-w-0 flex-1">
                         <p class="text-sm font-medium text-gray-900 truncate">
-                          {student?.user?.lastName}
+                          {student?.user?.lastName} {student?.user?.firstName}
                         </p>
                       </div>
                       <div class="ml-4 flex-shrink-0">

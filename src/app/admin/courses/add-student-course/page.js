@@ -51,10 +51,9 @@ export default function AddStudentToCourse(props) {
             .open({
               type: "Thành công",
               content: "Đang thực hiện...",
-              duration: 2.5,
+              duration: 0.5,
             })
             .then(() => {
-              message.success(res.message, 1.5);
               refresh();
             });
         })
