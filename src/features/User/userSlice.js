@@ -368,7 +368,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.user = action.payload;
+        state.user = action.payload.metadata;
       })
       
       .addCase(refreshAUser.rejected, (state, action) => {

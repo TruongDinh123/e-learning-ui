@@ -37,7 +37,7 @@ import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 import "./page.css";
 import { isAdmin, isMentor } from "@/middleware";
-import { getAUser } from "@/features/User/userSlice";
+import { getAUser, refreshAUser } from "@/features/User/userSlice";
 
 const { Option } = Select;
 
@@ -301,7 +301,6 @@ export default function QuizCreator() {
         const quizId = res.metadata?._id;
         const questionIds = res.metadata?.questions?.map((q) => q._id);
         const userId = localStorage?.getItem("x-client-id");
-        dispatch(getAUser(userId));
         if (file) {
           dispatch(uploadFileQuiz({ quizId: quizId, filename: file })).then(
             (res) => {
@@ -346,6 +345,7 @@ export default function QuizCreator() {
               router.push(`/admin/quiz/view-list-question/${quizId}`);
             }
             message.success(res.message, 1.5);
+            dispatch(refreshAUser(userId));
             setIsLoading(false);
           })
           .catch((error) => {
@@ -372,13 +372,11 @@ export default function QuizCreator() {
   const coursesFromStore = useSelector((state) => state.course.courses);
 
   const userFromStore = useSelector((state) => state.user);
-
+  console.log("🚀 ~ userFromStore:", userFromStore);
   const isQuizLimitReached =
-    userFromStore?.user.quizCount >= userFromStore?.user.quizLimit ||
+    userFromStore?.user?.quizCount >= userFromStore?.user?.quizLimit ||
     userFromStore?.user?.metadata?.account?.quizCount >=
-      userFromStore?.user?.metadata?.account?.quizLimit ||
-    userFromStore?.user?.metadata?.quizCount >=
-      userFromStore?.user?.metadata?.quizLimit;
+      userFromStore?.user?.metadata?.account?.quizLimit;
 
   useEffect(() => {
     const currentTeacherId = localStorage.getItem("x-client-id");
