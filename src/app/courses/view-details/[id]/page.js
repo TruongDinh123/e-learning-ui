@@ -28,7 +28,6 @@ import {
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
-import { isAdmin, isMentor } from "@/middleware";
 const { Sider, Content, Header } = Layout;
 
 export default function ViewQuiz({ params }) {
@@ -158,6 +157,7 @@ export default function ViewQuiz({ params }) {
     }
   };
 
+  //check roles
   const userState = useSelector((state) => state?.user?.user);
   useEffect(() => {
     const roles = userState?.roles || userState?.metadata?.account?.roles;
@@ -169,7 +169,6 @@ export default function ViewQuiz({ params }) {
         role.name === "Mentor"
     );
 
-    console.log(checkIsAdminOrMentor);
     setIsAdminOrMentor(checkIsAdminOrMentor);
     setIsLoadingRoleCheck(false);
   }, [userState]);
@@ -438,8 +437,6 @@ export default function ViewQuiz({ params }) {
     useEffect(() => {
       setAllCourse(allQuizzes.length);
     }, [allQuizzes]);
-
-    console.log("allquiz", allQuizzes)
 
     return allQuizzes.length > 0 ? (
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-2">

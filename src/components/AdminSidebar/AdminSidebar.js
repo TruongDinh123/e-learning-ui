@@ -5,19 +5,14 @@ import {
   FileAddOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
-import Cookies from "js-cookie";
-import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { getAUser, logOut, resetState } from "@/features/User/userSlice";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { useEffect, useState } from "react";
 import { isMentor } from "@/middleware";
 const logo3 = "/images/logo5.png";
 
 const { Sider } = Layout;
 
 export default function AdminSidebar(props) {
-  const { collapsed, setCollapsed } = props;
+  const { collapsed } = props;
   const router = useRouter();
 
   const menuItems = [

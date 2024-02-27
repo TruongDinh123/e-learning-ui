@@ -75,20 +75,26 @@ export default function CourseDetails({ params }) {
     }
   }, [fetchData, isLoggedIn, router]);
 
+  const user = userState.user;
+  console.log('user', user);
+
   const handleSelectLesson = (lesson) => {
-    const userId =
-      userState.user?.metadata?.account?._id || userState.user?._id;
+    const user = userState.user;
+    const userId = user?.metadata?.account?._id || user?._id;
+    const roles = user?.roles || user?.metadata?.account?.roles;
+    const isAdminOrMentor = roles?.some(
+      (role) => role.name === "Admin" || role.name === "Mentor"
+    );
     const isStudent = dataCourse.students.some(
       (student) => student._id === userId
     );
-    if (!isStudent) {
-      // Nếu không phải là học viên, hiển thị thông báo và không thực hiện gì thêm
+  
+    if (!isStudent && !isAdminOrMentor) {
       message.warning(
         "Chỉ có học viên mới có thể xem thông tin bài học này",
         3
       );
     } else {
-      // Nếu là học viên, tiếp tục với việc chọn bài học
       setSelectedLesson(lesson);
     }
   };

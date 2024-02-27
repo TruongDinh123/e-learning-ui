@@ -95,6 +95,18 @@ export const getAUser = createAsyncThunk(
   }
 );
 
+export const refreshAUser = createAsyncThunk(
+  "/e-learning/user",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await authService.getAUser(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 export const logOut = createAsyncThunk(
   "/e-learning/log-out",
   async (data, { rejectWithValue }) => {
@@ -348,6 +360,21 @@ const userSlice = createSlice({
       })
       .addCase(updateUserProfile, (state, action) => {
         state.profile = action.payload;
+      })
+      .addCase(refreshAUser.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(refreshAUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.user = action.payload;
+      })
+      
+      .addCase(refreshAUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
       })
       .addCase(resetState, () => initialState);
   },
