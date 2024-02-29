@@ -30,11 +30,6 @@ export default function ViewStudentsCourse() {
 
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
-    setData([]);
-    setTeacher(null);
-    setQuizzes([]);
-    setScores({});
-    setViewSuccess(false);
   };
 
   const handleViewCourse = useCallback(() => {

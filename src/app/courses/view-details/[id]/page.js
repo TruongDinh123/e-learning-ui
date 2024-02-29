@@ -9,6 +9,7 @@ import {
   Image,
   Badge,
   Empty,
+  message,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -51,6 +52,7 @@ export default function ViewQuiz({ params }) {
   const getScoreState = useSelector(
     (state) => state.quiz.getScoreState.metadata
   );
+
   const getACourseState = useSelector((state) => state.course.Acourse.metadata);
 
   useEffect(() => {
@@ -87,7 +89,6 @@ export default function ViewQuiz({ params }) {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [
     dispatch,
@@ -146,13 +147,12 @@ export default function ViewQuiz({ params }) {
               : "handle-submit-essay";
           const path = `/courses/view-details/${quizPage}/${quizId}`;
           router.push(path);
-        }, 500);
+        }, 100);
       } else {
-        console.error("Không thể bắt đầu quiz");
         setLoading(false);
       }
     } catch (error) {
-      console.error("Lỗi khi bắt đầu quiz:", error);
+      message.error(error.response?.data?.message, 3.5);
       setLoading(false);
     }
   };
@@ -421,18 +421,18 @@ export default function ViewQuiz({ params }) {
       (course) => course._id === params?.id
     );
 
-  // Sử dụng useMemo để memoize giá trị của allQuizzes
-  const allQuizzes = useMemo(() => {
-    // Lấy ra danh sách các bài quiz của khóa học tương ứng
-    const courseQuizzes = currentCourse ? currentCourse.quizzes : [];
+    // Sử dụng useMemo để memoize giá trị của allQuizzes
+    const allQuizzes = useMemo(() => {
+      // Lấy ra danh sách các bài quiz của khóa học tương ứng
+      const courseQuizzes = currentCourse ? currentCourse.quizzes : [];
 
-    // Lấy ra danh sách các bài quiz từ mỗi bài học trong khóa học
-    const lessonQuizzes = currentCourse
-      ? currentCourse.lessons.flatMap(lesson => lesson.quizzes)
-      : [];
+      // Lấy ra danh sách các bài quiz từ mỗi bài học trong khóa học
+      const lessonQuizzes = currentCourse
+        ? currentCourse.lessons.flatMap((lesson) => lesson.quizzes)
+        : [];
 
-    return [...courseQuizzes, ...lessonQuizzes];
-  }, [currentCourse]);
+      return [...courseQuizzes, ...lessonQuizzes];
+    }, [currentCourse]);
 
     useEffect(() => {
       setAllCourse(allQuizzes.length);

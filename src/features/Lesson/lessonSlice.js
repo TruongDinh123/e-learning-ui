@@ -118,7 +118,7 @@ const initialState = {
   message: "",
 };
 
-export const resetState = createAction("Reset_all");
+export const resetStateLesson = createAction("Reset_all_lesson");
 
 const lessonSlice = createSlice({
   name: "lesson",
@@ -182,7 +182,7 @@ const lessonSlice = createSlice({
         state.isSuccess = false;
         state.message = "Something went wrong!";
       })
-      .addCase(resetState, () => initialState);
+      .addCase(resetStateLesson, () => initialState);
   },
 });
 

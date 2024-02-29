@@ -33,17 +33,15 @@ export default function Courses() {
   );
 
   const fetchCategories = () => {
-    if (categories.length === 0 && !isLoading) {
-      setIsLoading(true);
-      dispatch(getAllCategoryAndSubCourses())
-        .then(unwrapResult)
-        .then(() => {
-          setIsLoading(false);
-        })
-        .catch(() => {
-          setIsLoading(false);
-        });
-    }
+    setIsLoading(true);
+    dispatch(getAllCategoryAndSubCourses())
+      .then(unwrapResult)
+      .then(() => {
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -107,7 +105,27 @@ export default function Courses() {
     } else {
       setCourses(courses?.metadata || courses);
     }
-  }, [updateCourse, dispatch]);
+  }, [course, selectedCategory, categories, updateCourse]);
+
+    // viewCourses reload api
+    useEffect(() => {
+        dispatch(viewCourses())
+          .then(unwrapResult)
+          .then((res) => {
+            if (res.status) {
+              const currentTeacherId = localStorage.getItem("x-client-id");
+              let visibleCourses;
+              if (isAdmin()) {
+                visibleCourses = res.metadata;
+              } else {
+                visibleCourses = res.metadata.filter(
+                  (course) => course.teacher === currentTeacherId
+                );
+              }
+              setCourses(visibleCourses);
+            }
+          })
+    }, []);
 
   //table data
   let data = [];

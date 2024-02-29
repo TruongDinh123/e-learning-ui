@@ -1,5 +1,5 @@
 "use client";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -119,26 +119,6 @@ function BookOpenIcon(props) {
   );
 }
 
-function CameraIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-      <circle cx="12" cy="13" r="3" />
-    </svg>
-  );
-}
-
 function ChevronDownIcon(props) {
   return (
     <svg
@@ -199,28 +179,6 @@ function SearchIcon(props) {
   );
 }
 
-function UsersIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-    </svg>
-  );
-}
-
 export default function Header() {
   const userState = useSelector((state) => state.user?.user);
   const isAdmin = userState?.roles?.some(
@@ -239,29 +197,6 @@ export default function Header() {
 
   const router = useRouter();
   const dispatch = useDispatch();
-
-  const id = localStorage.getItem("x-client-id");
-  const [user, setUserInfo] = useState(null);
-  const [messageApi, contextHolder] = message.useMessage();
-
-  const getAUsereData = () => {
-    dispatch(getAUser(id))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setUserInfo(res.metadata);
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {});
-  };
-
-  useEffect(() => {
-    if (userState) {
-      getAUsereData();
-    }
-  }, [getAUser, userName, userState]);
 
   const logout = useCallback(() => {
     localStorage.clear();
@@ -323,7 +258,6 @@ export default function Header() {
 
   return (
     <header className="bg-[#02354B] sticky top-0 z-20">
-      {contextHolder}
       <div className="max-w-[105rem] mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between h-[75px]">
           <div className="flex items-center">
@@ -538,8 +472,20 @@ export default function Header() {
                               size={40}
                               className="bg-white items-center justify-between"
                               icon={<UserOutlined />}
-                              src={userProfile?.image_url || user?.image_url}
+                              src={
+                                userProfile?.image_url ||
+                                userState?.image_url ||
+                                userState?.metadata?.account?.image_url
+                              }
                             />
+                            <span className="ml-2 text-white">
+                              {userProfile?.firstName ||
+                                userState?.firstName ||
+                                userState?.metadata?.account?.firstName}{" "}
+                              {userProfile?.lastName ||
+                                userState?.lastName ||
+                                userState?.metadata?.account?.lastName}
+                            </span>
                           </a>
                         </div>
                       </div>

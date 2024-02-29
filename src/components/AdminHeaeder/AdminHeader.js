@@ -16,6 +16,10 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Dialog, Disclosure } from "@headlessui/react";
+import { resetStateCourse } from "@/features/Courses/courseSlice";
+import { resetStateCategory } from "@/features/categories/categorySlice";
+import { resetStateLesson } from "@/features/Lesson/lessonSlice";
+import { resetStateQuiz } from "@/features/Quiz/quizSlice";
 
 const logo3 = "/images/logo5.png";
 
@@ -111,6 +115,10 @@ export default function AdminHeader(props) {
     localStorage.clear();
     Cookies.remove("Bearer");
     dispatch(resetState());
+    dispatch(resetStateCourse());
+    dispatch(resetStateCategory());
+    dispatch(resetStateLesson());
+    dispatch(resetStateQuiz());
     setIsLoading(false);
   };
 

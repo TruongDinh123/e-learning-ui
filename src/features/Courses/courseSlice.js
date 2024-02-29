@@ -249,6 +249,7 @@ export const getAllSubCoursesById = createAsyncThunk(
   }
 );
 
+
 const initialState = {
   course: "",
   subCourses: [],
@@ -260,7 +261,7 @@ const initialState = {
   message: "",
 };
 
-export const resetState = createAction("Reset_all");
+export const resetStateCourse = createAction("Reset_all_course");
 
 
 const courseSlice = createSlice({
@@ -366,9 +367,9 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        const index = state.courses.metadata.findIndex(course => course.id === action.payload.id);
+        const index = state.courses.metadata.findIndex(course => course._id === action.payload._id);
         if (index !== -1) {
-          state.courses[index] = action.payload;
+          state.courses.metadata[index] = action.payload;
         }
       })
       .addCase(editCourse.rejected, (state, action) => {
@@ -421,7 +422,22 @@ const courseSlice = createSlice({
         state.isSuccess = false;
         state.message = "Something went wrong!";
       })
-      .addCase(resetState, () => initialState);
+      .addCase(selectCourse.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(selectCourse.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.courses = action.payload;
+      })
+      .addCase(selectCourse.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
+      .addCase(resetStateCourse, () => initialState);
   },
 });
 

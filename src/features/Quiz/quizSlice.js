@@ -322,15 +322,20 @@ const initialState = {
   isError: false,
   isSuccess: false,
   isLoading: false,
+  newQuizCreated: false,
   message: "",
 };
 
-export const resetState = createAction("Reset_all");
+export const resetStateQuiz = createAction("Reset_all_quiz");
 
 const quizSlice = createSlice({
   name: "quiz",
   initialState,
-  reducers: {},
+  reducers: {
+    resetNewQuizCreatedFlag: (state) => {
+      state.newQuizCreated = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createQuiz.pending, (state, action) => {
@@ -340,6 +345,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        state.newQuizCreated = true;
       })
       .addCase(createQuiz.rejected, (state, action) => {
         state.isLoading = false;
@@ -476,8 +482,13 @@ const quizSlice = createSlice({
         state.isSuccess = false;
         state.message = "Something went wrong!";
       })
-      .addCase(resetState, () => initialState);
+      .addCase(resetNewQuizCreatedFlag, (state) => {
+        state.newQuizCreated = false;
+      })
+      .addCase(resetStateQuiz, () => initialState);
   },
 });
+
+export const { resetNewQuizCreatedFlag } = quizSlice.actions;
 
 export default quizSlice.reducer;

@@ -73,7 +73,7 @@ const initialState = {
   message: "",
 };
 
-export const resetState = createAction("Reset_all");
+export const resetStateCategory = createAction("Reset_all_category");
 
 const categorySlice = createSlice({
   name: "category",
@@ -95,7 +95,8 @@ const categorySlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = "Something went wrong!";
-      });
+      })
+      .addCase(resetStateCategory, () => initialState);
   },
 });
 

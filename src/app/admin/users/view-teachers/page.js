@@ -5,7 +5,7 @@ import {
   viewCourses,
 } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Empty, Modal, Popconfirm, Select, Table, message } from "antd";
+import { Button, Empty, Popconfirm, Select, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import "../view-teachers/page.css";

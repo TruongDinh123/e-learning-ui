@@ -17,7 +17,6 @@ import Link from "next/link";
 export default function Quizs({ params }) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [quiz, setquiz] = useState([]);
-  console.log("🚀 ~ quiz:", quiz);
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [submitted, setSubmitted] = useState(false);
@@ -28,12 +27,12 @@ export default function Quizs({ params }) {
   const [startTime, setStartTime] = useState(null);
   const [showCountdown, setShowCountdown] = useState(true);
   const [quizSubmission, setQuizSubmission] = useState(null);
-  console.log("🚀 ~ quizSubmission:", quizSubmission);
   const [submitting, setSubmitting] = useState(false);
 
   const quizzesByStudentState = useSelector(
     (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
   );
+
   //fetch API
   useEffect(() => {
     const fetchQuizInfo = async () => {
@@ -106,39 +105,42 @@ export default function Quizs({ params }) {
 
   const idQuiz = quiz.map((item) => item._id);
 
-  const handleSubmit = () => {
-    const savedAnswers =
-      Object.keys(selectedAnswers).length === 0
-        ? JSON.parse(localStorage.getItem("quizAnswers")) || {}
-        : selectedAnswers;
-
-    const formattedAnswers = Object.entries(savedAnswers).map(
-      ([questionId, answer]) => ({
-        [questionId]: answer,
-      })
-    );
+  const handleSubmit = async () => {
+    let savedAnswers = selectedAnswers;
+    if (Object.keys(savedAnswers).length === 0) {
+      const savedAnswersStr = localStorage.getItem("quizAnswers");
+      if (savedAnswersStr) {
+        savedAnswers = JSON.parse(savedAnswersStr) || {};
+      }
+    }
+  
+    const formattedAnswers = Object.entries(savedAnswers).map(([questionId, answer]) => ({
+      [questionId]: answer,
+    }));
+  
     setSubmitting(true);
-    dispatch(submitQuiz({ quizId: idQuiz, answer: formattedAnswers }))
-      .then(unwrapResult)
-      .then((res) => {
-        console.log("res", res);
-        if (res.status) {
-          messageApi
-            .open({
-              type: "Thành công",
-              content: "Đang nộp bài...",
-            })
-            .then(() => {
-              setQuizSubmission(res.metadata);
-              setSubmitted(true);
-              setShowCountdown(false);
-              localStorage.removeItem("quizAnswers");
-              localStorage.removeItem("quizStartTime");
-            });
-        } else {
-          messageApi.error(res.message);
-        }
-      });
+    try {
+      const res = await dispatch(submitQuiz({ quizId: idQuiz, answer: formattedAnswers })).then(unwrapResult);
+      console.log("res", res);
+      if (res.status) {
+        await messageApi.open({
+          type: "Thành công",
+          content: "Đang nộp bài...",
+        });
+        setQuizSubmission(res.metadata);
+        setSubmitted(true);
+        setShowCountdown(false);
+        localStorage.removeItem("quizAnswers");
+        localStorage.removeItem("quizStartTime");
+      } else {
+        messageApi.error(res.message);
+      }
+    } catch (error) {
+      console.error("Error submitting quiz:", error);
+      messageApi.error("Lỗi khi nộp bài.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   //countdount queries
@@ -282,7 +284,7 @@ export default function Quizs({ params }) {
                         </span>
                       </>
                     )}
-                    {item.questions.map((question, questionIndex) => {
+                    {item.questions?.map((question, questionIndex) => {
                       const studentAnswer = isComplete
                         ? studentAnswers[question._id]
                         : selectedAnswers[question._id];
@@ -342,11 +344,11 @@ export default function Quizs({ params }) {
                       )}
                       {isComplete ? (
                         <div className="font-bold text-sm text-blue-500">
-                          Bạn đã hoàn thành bài kiểm tra
+                          <p className="py-4">Bạn đã hoàn thành bài kiểm tra</p>
                           {quiz?.map((quiz, quizIndex) => (
                             <Link
                               key={quizIndex}
-                              className="ml-3 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
                               href={`/courses/view-details/${
                                 quiz.courseIds[0]?._id ||
                                 quiz.lessonId?.courseId?._id
@@ -363,7 +365,7 @@ export default function Quizs({ params }) {
                               {quiz?.map((quiz, quizIndex) => (
                                 <Link
                                   key={quizIndex}
-                                  className="mr-3 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                                  className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded block text-center md:inline-block md:mr-5 lg:px-6 lg:py-3"
                                   href={`/courses/view-details/${
                                     quiz.courseIds[0]?._id ||
                                     quiz.lessonId?.courseId?._id
@@ -374,7 +376,7 @@ export default function Quizs({ params }) {
                               ))}
                               <Link
                                 href="/courses/view-score"
-                                className="mr-3 custom-button text-white font-bold py-2 px-4 rounded"
+                                className="custom-button text-white font-bold py-2 px-4 rounded block text-center md:inline-block md:mr-5 lg:px-6 lg:py-3"
                               >
                                 Xem điểm
                               </Link>
@@ -404,7 +406,7 @@ export default function Quizs({ params }) {
                           )}
                         </>
                       )}
-                      {isTimeExceeded && (
+                      {isTimeExceeded && !isComplete && (
                         <div className="font-bold text-sm">
                           Thời gian làm bài đã hết
                         </div>

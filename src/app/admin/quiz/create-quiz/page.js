@@ -20,7 +20,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { selectCourse, viewCourses } from "@/features/Courses/courseSlice";
+import { selectCourse } from "@/features/Courses/courseSlice";
 import {
   createQuiz,
   uploadFileQuiz,
@@ -93,13 +93,13 @@ export default function QuizCreator() {
     setSelectedCourse(value);
     if (value.length > 1) {
       const allStudents = value.flatMap((courseId) => {
-        const course = courses.find((course) => course._id === courseId);
+        const course = courses?.find((course) => course?._id === courseId);
         return course?.students || [];
       });
       setStudentsByCourse(allStudents);
       setSelectedStudents(["all"]);
     } else if (value.length === 1) {
-      const selectedCourse = courses.find((course) => course._id === value[0]);
+      const selectedCourse = courses?.find((course) => course?._id === value[0]);
       setStudentsByCourse(selectedCourse?.students || []);
       setSelectedCourseLessons(selectedCourse?.lessons || []);
     }
@@ -208,36 +208,41 @@ export default function QuizCreator() {
       studentIds = studentsByCourse.map((student) => student._id);
     }
 
-    let questions = values.questions || [];
+    // let questions = values.questions || [];
+    let questions = form.getFieldValue("questions") || [];
 
     if (selectedQuizTemplate) {
-      // Xử lý cho trường hợp sử dụng bài tập mẫu
-      const quizTemplate = quizTemplates.find(
-        (template) => template._id === selectedQuizTemplate
-      );
+      // // Xử lý cho trường hợp sử dụng bài tập mẫu
+      // const quizTemplate = quizTemplates.find(
+      //   (template) => template._id === selectedQuizTemplate
+      // );
 
-      // Loại bỏ các câu hỏi trùng lặp từ người dùng
-      const userQuestions = questions
-        .filter(
-          (q) =>
-            !quizTemplate.questions.some((tq) => tq.question === q.question)
-        )
-        .map((question) => {
-          return {
-            ...question,
-            options: question.options.map((option) => option.option),
-          };
-        });
+      // // Loại bỏ các câu hỏi trùng lặp từ người dùng
+      // const userQuestions = questions
+      //   .filter(
+      //     (q) =>
+      //       !quizTemplate.questions.some((tq) => tq.question === q.question)
+      //   )
+      //   .map((question) => {
+      //     return {
+      //       ...question,
+      //       options: question.options.map((option) => option.option),
+      //     };
+      //   });
 
-      // Gộp các câu hỏi từ bài tập mẫu và người dùng
-      const combinedQuestions = [...quizTemplate.questions, ...userQuestions];
+      // // Gộp các câu hỏi từ bài tập mẫu và người dùng
+      // const combinedQuestions = [...quizTemplate.questions, ...userQuestions];
 
       formattedValues = {
-        type: quizTemplate.type,
+        type: quizType,
         name: values.name,
         courseIds: selectedCourse,
         studentIds: studentIds,
-        questions: combinedQuestions,
+        // questions: combinedQuestions,
+        questions: questions.map((question) => ({
+          ...question,
+          options: question.options.map((option) => option.option),
+        })),
         submissionTime: values?.submissionTime?.toISOString(),
         timeLimit: values?.timeLimit,
       };
@@ -372,7 +377,6 @@ export default function QuizCreator() {
   const coursesFromStore = useSelector((state) => state.course.courses);
 
   const userFromStore = useSelector((state) => state.user);
-  console.log("🚀 ~ userFromStore:", userFromStore);
   const isQuizLimitReached =
     userFromStore?.user?.quizCount >= userFromStore?.user?.quizLimit ||
     userFromStore?.user?.metadata?.account?.quizCount >=
@@ -382,7 +386,7 @@ export default function QuizCreator() {
     const currentTeacherId = localStorage.getItem("x-client-id");
     let visibleCourses;
 
-    if (coursesFromStore.length === 0) {
+    if (coursesFromStore?.length === 0) {
       dispatch(selectCourse())
         .then(unwrapResult)
         .then((res) => {
@@ -411,6 +415,28 @@ export default function QuizCreator() {
       setCourses(visibleCourses);
     }
   }, [coursesFromStore, dispatch]);
+
+  useEffect(() => {
+    const currentTeacherId = localStorage.getItem("x-client-id");
+    let visibleCourses;
+
+    dispatch(selectCourse())
+    .then(unwrapResult)
+    .then((res) => {
+      if (res.status) {
+        if (isAdmin()) {
+          visibleCourses = res.metadata;
+        } else if (isMentor()) {
+          visibleCourses = res.metadata.filter(
+            (course) => course.teacher === currentTeacherId
+          );
+        }
+        setCourses(visibleCourses);
+      } else {
+        messageApi.error(res.message);
+      }
+    });
+  }, [dispatch]);
 
   // Fetch quiz templates when the component mounts
   const getQuizTemplatesStore = useSelector(
@@ -514,7 +540,7 @@ export default function QuizCreator() {
                         style={{ width: "100%" }}
                         disabled={isQuizLimitReached}
                       >
-                        {courses.map((course) => (
+                        {courses?.map((course) => (
                           <Option key={course._id} value={course._id}>
                             {course.name}
                           </Option>

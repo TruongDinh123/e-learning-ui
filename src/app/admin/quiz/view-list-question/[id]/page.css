@@ -28,6 +28,10 @@
   }
 }
 
+.li-content {
+  word-break: break-all;
+}
+
 .sticky {
   position: -webkit-sticky; 
   position: sticky;

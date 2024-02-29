@@ -125,7 +125,7 @@ export default function ViewListQuestion({ params }) {
                           </h2>
                           {quiz.questions?.map((question, questionIndex) => (
                             <ul key={questionIndex}>
-                              <li className="border p-3 mb-2">
+                              <li className="border p-3 mb-2 li-content">
                                 <div className="mb-2">
                                   <span className="font-bold">
                                     Câu {questionIndex + 1}: {question.question}
