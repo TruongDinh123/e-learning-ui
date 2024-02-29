@@ -209,22 +209,21 @@ export default function ViewUsers() {
 
   //handleDeleteUser
   const handleDeleteUser = (id) => {
+    const updatedUsers = user.filter((u) => u._id !== id);
+    setUser(updatedUsers);
+  
     dispatch(deleteUser(id))
       .then(unwrapResult)
       .then((res) => {
-        if (res.status) {
-          messageApi
-            .open({
-              type: "Thành công",
-              content: "Đang thực hiện...",
-              duration: 2.5,
-            })
-            .then(() => setUpdateUser(updateUser + 1));
-        } else {
-          messageApi.error(res.message);
+        if (!res.status) {
+          setUser(user);
+          message.error("Có lỗi xảy ra khi xóa người dùng. Vui lòng thử lại.");
         }
       })
-      .catch((error) => {});
+      .catch((error) => {
+        setUser(user);
+        message.error("Có lỗi xảy ra khi xóa người dùng. Vui lòng thử lại.");
+      });
   };
 
   const handleTableChange = (newPagination, filters, sorter) => {

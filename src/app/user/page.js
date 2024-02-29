@@ -283,6 +283,15 @@ export default function UpdateInfoUser() {
         >
           Lưu
         </Button>
+        <div className="pb-2"></div>
+        <Button
+          href="/"
+          loading={loading}
+          type="default"
+          className="ml-auto w-full"
+        >
+          Hủy
+        </Button>
       </Card>
     </div>
   );

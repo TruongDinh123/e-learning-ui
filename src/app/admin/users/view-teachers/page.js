@@ -30,14 +30,38 @@ export default function ViewTeachersCourse() {
     setSelectedCourse(value);
   };
 
+  // const handleDeleteStudent = ({ courseId, userId }) => {
+  //   dispatch(removeStudentFromCourse({ courseId, userId }))
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       if (res.status) {
+  //         setUpdate(update + 1);
+  //         getACourseData(selectedCourse);
+  //       }
+  //     });
+  // };
+
   const handleDeleteStudent = ({ courseId, userId }) => {
+    // Cập nhật UI ngay lập tức trước khi gọi API
+    const updatedStudents = dataStudent.filter((student) => student._id !== userId);
+    setData(updatedStudents);
+  
     dispatch(removeStudentFromCourse({ courseId, userId }))
       .then(unwrapResult)
       .then((res) => {
-        if (res.status) {
-          setUpdate(update + 1);
-          getACourseData(selectedCourse);
+        if (!res.status) {
+          // Nếu có lỗi từ API, thông báo cho người dùng
+          // Khôi phục lại danh sách học viên trước khi xóa
+          setData(dataStudent);
+          message.error("Có lỗi xảy ra khi xóa học viên. Vui lòng thử lại.");
         }
+        // Không cần cập nhật UI ở đây vì đã cập nhật trước khi gọi API
+      })
+      .catch((error) => {
+        // Xử lý khi có lỗi xảy ra với request
+        // Khôi phục lại danh sách học viên trước khi xóa
+        setData(dataStudent);
+        message.error("Có lỗi xảy ra khi xóa học viên. Vui lòng thử lại.");
       });
   };
 

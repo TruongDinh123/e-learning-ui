@@ -1,7 +1,7 @@
 "use client";
 import { deleteCourse, viewCourses } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Menu, Dropdown, Spin, Image, Space, Empty, Select } from "antd";
+import { Menu, Dropdown, Spin, Image, Space, Empty, Select, message } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Popconfirm } from "antd";
@@ -141,7 +141,7 @@ export default function Courses() {
     });
   });
 
-  //handleDeleteCourse
+  // handleDeleteCourse
   const handleDeleteCourse = (id) => {
     setLoadingStates((prev) => ({ ...prev, [id]: true }));
     dispatch(deleteCourse(id))
@@ -155,7 +155,7 @@ export default function Courses() {
         fetchCategories();
       })
       .catch((error) => {
-        setIsLoading(false);
+        message.error("Có lỗi xảy ra khi xóa khóa học. Vui lòng thử lại.");
       })
       .finally(() => {
         setLoadingStates((prev) => ({ ...prev, [id]: false }));

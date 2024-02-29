@@ -10,6 +10,7 @@ import {
   Space,
   Col,
   Empty,
+  message,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -102,20 +103,32 @@ export default function ViewQuiz() {
     }
   }, [updateQuiz, coursesFromStore, dispatch]);
 
-  const handleDeleteQuiz = ({ quizId }) => {
-    setIsLoading(true);
+  // const handleDeleteQuiz = ({ quizId }) => {
+  //   dispatch(deleteQuiz({ quizId }))
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       if (res.status) {
+  //         const updatedQuizzes = quiz.filter((q) => q._id !== quizId);
+  //         setquiz(updatedQuizzes);
+  //       }
+  //     })
+  // };
 
+  const handleDeleteQuiz = ({ quizId }) => {
+    const updatedQuizzes = quiz.filter((q) => q._id !== quizId);
+    setquiz(updatedQuizzes);
+  
     dispatch(deleteQuiz({ quizId }))
       .then(unwrapResult)
       .then((res) => {
-        if (res.status) {
-          const updatedQuizzes = quiz.filter((q) => q._id !== quizId);
-          setquiz(updatedQuizzes);
+        if (!res.status) {
+          setquiz(quiz);
+          message.error("Có lỗi xảy ra khi xóa quiz. Vui lòng thử lại.");
         }
-        setIsLoading(false);
       })
       .catch((error) => {
-        setIsLoading(false);
+        setquiz(quiz);
+        message.error("Có lỗi xảy ra khi xóa quiz. Vui lòng thử lại.");
       });
   };
 

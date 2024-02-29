@@ -402,6 +402,14 @@ export default function QuizCreator() {
           } else {
             messageApi.error(res.message);
           }
+        })
+        .catch((error) => {
+          if (error.response.status === 401) {
+            // Handle unauthorized error
+            router.push('/login'); // Assuming '/login' is your login route path
+          } else {
+            messageApi.error("An unexpected error occurred.");
+          }
         });
     } else {
       // Áp dụng lọc cũng cho dữ liệu từ store
@@ -434,6 +442,14 @@ export default function QuizCreator() {
         setCourses(visibleCourses);
       } else {
         messageApi.error(res.message);
+      }
+    })
+    .catch((error) => {
+      if (error.response.status === 401) {
+        // Handle unauthorized error
+        router.push('/login'); // Assuming '/login' is your login route path
+      } else {
+        messageApi.error("An unexpected error occurred.");
       }
     });
   }, [dispatch]);
