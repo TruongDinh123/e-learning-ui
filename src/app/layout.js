@@ -30,7 +30,6 @@ export default function RootLayout({ children }) {
   useEffect(() => {
     // Check if the cookie exists
     const token = Cookies.get("Bearer");
-    const user = JSON.parse(localStorage.getItem("user")); // Giả sử bạn lưu thông tin người dùng vào localStorage
 
     // Ngay lập tức chuyển hướng nếu không phải Admin hoặc Mentor và cố gắng truy cập vào /admin/courses
     if (pathname === "/admin/courses" && !(isAdmin() || isMentor())) {

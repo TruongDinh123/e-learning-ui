@@ -1,13 +1,12 @@
 "use client";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Modal, message } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button } from "antd";
 import CustomInput from "@/components/comman/CustomInput";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { updateRole } from "@/features/User/userSlice";
 import React from "react";
 import { updateCategory } from "@/features/categories/categorySlice";
 

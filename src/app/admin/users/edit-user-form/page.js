@@ -3,12 +3,11 @@ import CustomInput from "@/components/comman/CustomInput";
 import {
   getAUser,
   updateUser,
-  updateUserProfile,
   uploadImageUser,
 } from "@/features/User/userSlice";
 import { AntDesignOutlined, UploadOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Avatar, Button, Card, DatePicker, Input, Upload, message } from "antd";
+import { Avatar, Button, Card, DatePicker, Upload, message } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
@@ -92,7 +91,6 @@ export default function EditUserForm() {
                 if (res.status) {
                   setFile(null);
                   setImageUrl(res.metadata.image_url);
-                  dispatch(updateUserProfile(res.metadata));
                   setLoading(false);
                   messageApi.open({
                     type: "Thành công",
@@ -282,7 +280,6 @@ export default function EditUserForm() {
         <div className="pb-2"></div>
         <Button
           href="/"
-          loading={loading}
           type="default"
           className="ml-auto w-full"
         >

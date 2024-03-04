@@ -99,7 +99,9 @@ export default function QuizCreator() {
       setStudentsByCourse(allStudents);
       setSelectedStudents(["all"]);
     } else if (value.length === 1) {
-      const selectedCourse = courses?.find((course) => course?._id === value[0]);
+      const selectedCourse = courses?.find(
+        (course) => course?._id === value[0]
+      );
       setStudentsByCourse(selectedCourse?.students || []);
       setSelectedCourseLessons(selectedCourse?.lessons || []);
     }
@@ -212,27 +214,6 @@ export default function QuizCreator() {
     let questions = form.getFieldValue("questions") || [];
 
     if (selectedQuizTemplate) {
-      // // Xử lý cho trường hợp sử dụng bài tập mẫu
-      // const quizTemplate = quizTemplates.find(
-      //   (template) => template._id === selectedQuizTemplate
-      // );
-
-      // // Loại bỏ các câu hỏi trùng lặp từ người dùng
-      // const userQuestions = questions
-      //   .filter(
-      //     (q) =>
-      //       !quizTemplate.questions.some((tq) => tq.question === q.question)
-      //   )
-      //   .map((question) => {
-      //     return {
-      //       ...question,
-      //       options: question.options.map((option) => option.option),
-      //     };
-      //   });
-
-      // // Gộp các câu hỏi từ bài tập mẫu và người dùng
-      // const combinedQuestions = [...quizTemplate.questions, ...userQuestions];
-
       formattedValues = {
         type: quizType,
         name: values.name,
@@ -377,10 +358,28 @@ export default function QuizCreator() {
   const coursesFromStore = useSelector((state) => state.course.courses);
 
   const userFromStore = useSelector((state) => state.user);
-  const isQuizLimitReached =
-    userFromStore?.user?.quizCount >= userFromStore?.user?.quizLimit ||
-    userFromStore?.user?.metadata?.account?.quizCount >=
-      userFromStore?.user?.metadata?.account?.quizLimit;
+
+  // Giả sử selectedCourse chứa ID của khóa học hiện tại được chọn
+  const currentTeacherId = userFromStore?.user?._id || userFromStore.metadata?.account?._id; // Hoặc lấy từ một nguồn khác nếu cần
+
+  // Tìm khóa học hiện tại từ danh sách khóa học trong userFromStore
+  const currentCourse =
+    userFromStore?.user?.metadata?.account?.courses?.find(
+      (course) => course._id === selectedCourse[0]
+    ) ||
+    userFromStore?.user?.courses?.find(
+      (course) => course._id === selectedCourse[0]
+    );
+
+  // Tìm thông tin teacherQuizzes cho giáo viên hiện tại trong khóa học đó
+  const teacherQuizInfo = currentCourse?.teacherQuizzes?.find(
+    (tq) => tq.teacherId === currentTeacherId
+  );
+
+  // Kiểm tra xem giáo viên đã đạt giới hạn tạo bài tập cho khóa học này chưa
+  const isQuizLimitReached = teacherQuizInfo
+    ? teacherQuizInfo.quizCount >= 3
+    : false;
 
   useEffect(() => {
     const currentTeacherId = localStorage.getItem("x-client-id");
@@ -406,7 +405,7 @@ export default function QuizCreator() {
         .catch((error) => {
           if (error.response.status === 401) {
             // Handle unauthorized error
-            router.push('/login'); // Assuming '/login' is your login route path
+            router.push("/login"); // Assuming '/login' is your login route path
           } else {
             messageApi.error("An unexpected error occurred.");
           }
@@ -429,29 +428,29 @@ export default function QuizCreator() {
     let visibleCourses;
 
     dispatch(selectCourse())
-    .then(unwrapResult)
-    .then((res) => {
-      if (res.status) {
-        if (isAdmin()) {
-          visibleCourses = res.metadata;
-        } else if (isMentor()) {
-          visibleCourses = res.metadata.filter(
-            (course) => course.teacher === currentTeacherId
-          );
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          if (isAdmin()) {
+            visibleCourses = res.metadata;
+          } else if (isMentor()) {
+            visibleCourses = res.metadata.filter(
+              (course) => course.teacher === currentTeacherId
+            );
+          }
+          setCourses(visibleCourses);
+        } else {
+          messageApi.error(res.message);
         }
-        setCourses(visibleCourses);
-      } else {
-        messageApi.error(res.message);
-      }
-    })
-    .catch((error) => {
-      if (error.response.status === 401) {
-        // Handle unauthorized error
-        router.push('/login'); // Assuming '/login' is your login route path
-      } else {
-        messageApi.error("An unexpected error occurred.");
-      }
-    });
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          // Handle unauthorized error
+          router.push("/login"); // Assuming '/login' is your login route path
+        } else {
+          messageApi.error("An unexpected error occurred.");
+        }
+      });
   }, [dispatch]);
 
   // Fetch quiz templates when the component mounts
@@ -537,7 +536,13 @@ export default function QuizCreator() {
                       label="Chọn khóa học của bạn:"
                       rules={
                         isQuizLimitReached
-                          ? []
+                          ? [
+                              {
+                                required: true,
+                                message:
+                                  "Bạn đã hết số lượng bài tập cho khóa học này.",
+                              },
+                            ]
                           : [
                               {
                                 required: true,
@@ -554,7 +559,7 @@ export default function QuizCreator() {
                         onChange={handleCourseChange}
                         value={selectedCourse}
                         style={{ width: "100%" }}
-                        disabled={isQuizLimitReached}
+                        // disabled={isQuizLimitReached}
                       >
                         {courses?.map((course) => (
                           <Option key={course._id} value={course._id}>

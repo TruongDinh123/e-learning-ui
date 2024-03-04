@@ -13,6 +13,7 @@ import UpdateTeacherToCourse from "../../courses/update-teacher-course/page";
 import AddTeacherToCourse from "../../courses/add-teacher-course/page";
 import useCoursesData from "@/hooks/useCoursesData";
 import AddStudentToCourse from "../../courses/add-student-course/page";
+import { isAdmin, isMentor } from "@/middleware";
 
 const { Option } = Select;
 
@@ -42,7 +43,6 @@ export default function ViewTeachersCourse() {
   // };
 
   const handleDeleteStudent = ({ courseId, userId }) => {
-    // Cập nhật UI ngay lập tức trước khi gọi API
     const updatedStudents = dataStudent.filter((student) => student._id !== userId);
     setData(updatedStudents);
   
@@ -50,16 +50,11 @@ export default function ViewTeachersCourse() {
       .then(unwrapResult)
       .then((res) => {
         if (!res.status) {
-          // Nếu có lỗi từ API, thông báo cho người dùng
-          // Khôi phục lại danh sách học viên trước khi xóa
           setData(dataStudent);
           message.error("Có lỗi xảy ra khi xóa học viên. Vui lòng thử lại.");
         }
-        // Không cần cập nhật UI ở đây vì đã cập nhật trước khi gọi API
       })
       .catch((error) => {
-        // Xử lý khi có lỗi xảy ra với request
-        // Khôi phục lại danh sách học viên trước khi xóa
         setData(dataStudent);
         message.error("Có lỗi xảy ra khi xóa học viên. Vui lòng thử lại.");
       });
@@ -68,16 +63,35 @@ export default function ViewTeachersCourse() {
   const courseState = useCoursesData();
 
   useEffect(() => {
+    const currentTeacherId = localStorage.getItem("x-client-id");
+    let visibleCourses;
     if (courseState.length === 0) {
+      setLoading(true);
       dispatch(viewCourses())
         .then(unwrapResult)
         .then((res) => {
           if (res.status) {
-            setCourses(res.metadata);
+            if (isAdmin()) {
+              visibleCourses = res.metadata;
+            } else {
+              visibleCourses = res.metadata.filter(
+                (course) => course.teacher === currentTeacherId
+              );
+            }
+            setCourses(visibleCourses);
+            setLoading(false);
           }
         });
     } else {
-      setCourses(courseState.metadata);
+      // Áp dụng lọc cũng cho dữ liệu từ store
+      if (isAdmin()) {
+        visibleCourses = courseState.metadata;
+      } else if (isMentor()) {
+        visibleCourses = courseState.metadata.filter(
+          (course) => course.teacher === currentTeacherId
+        );
+      }
+      setCourses(visibleCourses);
     }
   }, [update]);
 

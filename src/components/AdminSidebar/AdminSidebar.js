@@ -60,6 +60,11 @@ export default function AdminSidebar(props) {
           icon: <UserOutlined />,
           label: "Bài tập học viên",
         },
+        {
+          key: "users/view-teachers",
+          icon: <UserOutlined />,
+          label: "Khóa học",
+        },
       ],
     },
   ];
@@ -75,11 +80,6 @@ export default function AdminSidebar(props) {
         key: "users/view-role",
         icon: <UserOutlined />,
         label: "Vai trò",
-      },
-      {
-        key: "users/view-teachers",
-        icon: <UserOutlined />,
-        label: "Khóa học",
       },
       {
         key: "category",

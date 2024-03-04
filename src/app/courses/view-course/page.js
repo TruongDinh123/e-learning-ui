@@ -5,33 +5,38 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { Breadcrumb, Empty, Image, Spin } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 export default function Course() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
+  console.log(course);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  
   //viewCourses api
   useEffect(() => {
-    setIsLoading(true);
-    dispatch(getStudentCourses())
-      .then(unwrapResult)
-      .then((res) => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const res = await dispatch(getStudentCourses()).then(unwrapResult);
         if (res.status) {
           setCourse(res.metadata);
         }
+      } catch (error) {
+        console.error(error);
+      } finally {
         setIsLoading(false);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-      });
+      }
+    };
+  
+    fetchData();
   }, [dispatch]);
 
-  const navigateToNonExpiredCourses = (courseId) => {
+  const navigateToNonExpiredCourses = useCallback((courseId) => {
     router.push(`/courses/view-details/${courseId}`);
-  };
+  }, [router]);
 
   return (
     <div className="mx-auto px-4 sm:px-6 lg:px-8">

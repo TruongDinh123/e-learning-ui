@@ -202,9 +202,7 @@ export default function AdminHeader(props) {
                                 `https://xsgames.co/randomusers/avatar.php?g=pixel`
                               }
                             />
-                            <span className="ml-2 text-white">
-                              {userName}
-                            </span>
+                            <span className="ml-2 text-white">{userName}</span>
                           </a>
                         </div>
                       </div>

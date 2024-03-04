@@ -29,6 +29,7 @@ const { Option } = Select;
 export default function ViewQuiz() {
   const dispatch = useDispatch();
   const [quiz, setquiz] = useState([]);
+  const [hasViewed, setHasViewed] = useState(false);
   const [updateQuiz, setUpdateQuiz] = useState(0);
   const [courses, setCourses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -52,6 +53,7 @@ export default function ViewQuiz() {
 
   const handleViewQuiz = () => {
     setIsLoading(true);
+    setHasViewed(true);
     dispatch(viewInfoQuiz({ courseIds: selectedCourse }))
       .then(unwrapResult)
       .then((res) => {
@@ -262,55 +264,49 @@ export default function ViewQuiz() {
 
   return (
     <div className="p-3">
+      <div
+        style={{ display: "flex", paddingBottom: "10px" }}
+        className="pt-6"
+      >
+        <Select
+          placeholder="Chọn khóa học"
+          onChange={handleCourseChange}
+          value={selectedCourse}
+          className="me-3 w-full sm:w-64 mb-3 md:mb-0"
+        >
+          {courses.map((course) => (
+            <Option key={course._id} value={course._id}>
+              {course.name}
+            </Option>
+          ))}
+        </Select>
+        <div>
+          <Button
+            type="primary"
+            className="custom-button"
+            onClick={handleViewQuiz}
+          >
+            Xem
+          </Button>
+        </div>
+      </div>
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />
         </div>
+      ) : data.length > 0 ? (
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={{ pageSize: 5 }}
+        />
       ) : (
-        <React.Fragment>
-          <div
-            style={{ display: "flex", paddingBottom: "10px" }}
-            className="pt-6"
-          >
-            <Select
-              placeholder="Chọn khóa học"
-              onChange={handleCourseChange}
-              value={selectedCourse}
-              className="me-3 w-full sm:w-64 mb-3 md:mb-0"
-            >
-              {courses.map((course) => (
-                <Option key={course._id} value={course._id}>
-                  {course.name}
-                </Option>
-              ))}
-            </Select>
-            <div>
-              <Button
-                type="primary"
-                className="custom-button"
-                onClick={handleViewQuiz}
-              >
-                Xem
-              </Button>
-            </div>
-          </div>
-          {data.length > 0 ? (
-            <Table
-              columns={columns}
-              dataSource={data}
-              pagination={{ pageSize: 5 }}
-            />
-          ) : (
-            <div className="flex justify-center items-center h-[45vh]">
-              <Empty
-                className="text-center text-lg font-bold text-[#002c6a]"
-                description="
-                Hãy chọn khóa học bạn muốn xem bài tập.
-              "
-              />
-            </div>
-          )}
-        </React.Fragment>
+        <div className="flex justify-center items-center h-[45vh]">
+          <Empty
+              className="text-center text-lg font-bold text-[#002c6a]"
+              description={hasViewed ? "Không có dữ liệu cho khóa học này." : "Hãy chọn khóa học bạn muốn xem bài tập."}
+          />
+        </div>
       )}
     </div>
   );
