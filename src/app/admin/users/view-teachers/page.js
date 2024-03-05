@@ -43,9 +43,11 @@ export default function ViewTeachersCourse() {
   // };
 
   const handleDeleteStudent = ({ courseId, userId }) => {
-    const updatedStudents = dataStudent.filter((student) => student._id !== userId);
+    const updatedStudents = dataStudent.filter(
+      (student) => student._id !== userId
+    );
     setData(updatedStudents);
-  
+
     dispatch(removeStudentFromCourse({ courseId, userId }))
       .then(unwrapResult)
       .then((res) => {
@@ -132,9 +134,9 @@ export default function ViewTeachersCourse() {
     },
     {
       title: "Tên",
-      dataIndex: "lastName",
-      key: "lastName",
-      sorter: (a, b) => a.lastName.localeCompare(b.lastName),
+      dataIndex: "firstName",
+      key: "firstName",
+      sorter: (a, b) => a.firstName.localeCompare(b.firstName),
       sortDirections: ["descend"],
     },
     {
@@ -153,10 +155,11 @@ export default function ViewTeachersCourse() {
   let data = [];
   dataStudent?.forEach((student, index) => {
     const userId = student?._id;
+    console.log("🚀 ~ dataStudent:", dataStudent);
 
     data.push({
       key: index + 1,
-      lastName: student?.lastName,
+      firstName: student?.firstName,
       email: student?.email,
       action: (
         <React.Fragment>

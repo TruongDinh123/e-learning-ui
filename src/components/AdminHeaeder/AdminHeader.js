@@ -198,7 +198,7 @@ export default function AdminHeader(props) {
                               icon={<UserOutlined />}
                               src={
                                 userProfile?.image_url ||
-                                data?.image_url ||
+                                data?.metadata?.account?.image_url ||
                                 `https://xsgames.co/randomusers/avatar.php?g=pixel`
                               }
                             />

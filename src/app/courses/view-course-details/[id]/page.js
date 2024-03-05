@@ -14,6 +14,7 @@ const avatar = "/images/imagedefault.jpg";
 export default function CourseDetails({ params }) {
   const dispatch = useDispatch();
   const [dataCourse, setDataCourse] = useState([]);
+  console.log("🚀 ~ dataCourse:", dataCourse);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -23,8 +24,11 @@ export default function CourseDetails({ params }) {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
-    const userId =
-      userState.user?._id || userState.user?.metadata?.account?._id;
+    const userId = userState.user?._id || userState.user?.metadata?.account?._id;
+    // Chuyển userId sang chuỗi để so sánh
+    const userIdString = userId.toString();
+    console.log("🚀 ~ userId:", userId);
+  
     const roles = userState.user?.roles || userState.user?.account?.roles;
     const isAdminState = roles?.some(
       (role) =>
@@ -34,23 +38,33 @@ export default function CourseDetails({ params }) {
     );
     try {
       const res = await dispatch(getACourse(params.id)).then(unwrapResult);
+      console.log("🚀 ~ res:", res);
       if (res.status) {
         let filteredQuizzes = res.metadata.quizzes || [];
-        let filteredLessons =
-          res.metadata.lessons?.map((lesson) => ({
+        let filteredLessons = res.metadata.lessons || [];
+  
+        const isStudentOfCourse = res.metadata.students.some(
+          (student) => student._id === userId
+        );
+        console.log("🚀 ~ isStudentOfCourse:", isStudentOfCourse)
+  
+        if (!isAdminState && !isStudentOfCourse) {
+          filteredQuizzes = [];
+          filteredLessons = filteredLessons.map((lesson) => ({
             ...lesson,
-            quizzes: lesson.quizzes || [],
-          })) || [];
-
-        if (!isAdminState) {
+            quizzes: [],
+          }));
+        } else if (!isAdminState) {
           filteredQuizzes = filteredQuizzes.filter((quiz) =>
-            quiz.studentIds.includes(userId)
+            quiz.studentIds.includes(userIdString)
           );
           filteredLessons = filteredLessons.map((lesson) => ({
             ...lesson,
-            quizzes: lesson.quizzes.filter((quiz) =>
-              quiz.studentIds.includes(userId)
-            ),
+            quizzes: lesson.quizzes
+              ? lesson.quizzes.filter((quiz) =>
+                  quiz.studentIds.includes(userIdString)
+                )
+              : [],
           }));
         }
         setDataCourse({
@@ -59,13 +73,12 @@ export default function CourseDetails({ params }) {
           lessons: filteredLessons,
         });
       }
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching course details:", error);
     } finally {
       setLoading(false);
     }
-  }, [params.id, dispatch, isLoggedIn]);
+  }, [params.id, dispatch, isLoggedIn, userState.user]);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -74,9 +87,6 @@ export default function CourseDetails({ params }) {
       fetchData();
     }
   }, [fetchData, isLoggedIn, router]);
-
-  const user = userState.user;
-  console.log('user', user);
 
   const handleSelectLesson = (lesson) => {
     const user = userState.user;
@@ -88,7 +98,7 @@ export default function CourseDetails({ params }) {
     const isStudent = dataCourse.students.some(
       (student) => student._id === userId
     );
-  
+
     if (!isStudent && !isAdminOrMentor) {
       message.warning(
         "Chỉ có học viên mới có thể xem thông tin bài học này",
@@ -180,7 +190,8 @@ export default function CourseDetails({ params }) {
                 ) : null}
                 <div className="grid gap-0.5 text-xs">
                   <div className="font-medium">
-                    {dataCourse?.teacher?.lastName}
+                    {dataCourse?.teacher?.lastName}{" "}
+                    {dataCourse?.teacher?.firstName}
                   </div>
                   <div className="text-gray-500 dark:text-gray-400">
                     {dataCourse?.teacher?.email}
@@ -194,7 +205,7 @@ export default function CourseDetails({ params }) {
                       {dataCourse.quizzes.slice(0, 3).map((quiz, index) => (
                         <li key={index}>
                           <a
-                            className="text-blue-500 hover:underline cursor-pointer"
+                            className="text-blue-500 hover:no-underline cursor-pointer"
                             onClick={() =>
                               handleStartQuiz(quiz?._id, quiz?.type)
                             }
