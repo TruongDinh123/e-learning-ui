@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation";
 import UpdateQuiz from "../update-quiz/page";
 import "../view-quiz/page.css";
 import { useMediaQuery } from "react-responsive";
-import { isAdmin, isMentor } from "@/middleware";
+import { isAdmin } from "@/middleware";
 
 const { Option } = Select;
 
@@ -70,7 +70,6 @@ export default function ViewQuiz() {
       });
   };
 
-  
   useEffect(() => {
     let visibleCourses;
     if (coursesFromStore.length === 0) {
@@ -119,7 +118,7 @@ export default function ViewQuiz() {
   const handleDeleteQuiz = ({ quizId }) => {
     const updatedQuizzes = quiz.filter((q) => q._id !== quizId);
     setquiz(updatedQuizzes);
-  
+
     dispatch(deleteQuiz({ quizId }))
       .then(unwrapResult)
       .then((res) => {
@@ -149,7 +148,12 @@ export default function ViewQuiz() {
     {
       title: "Loại hình thức",
       dataIndex: "type",
-      render: (text) => (text === "multiple_choice" ? "Trắc Nghiệm" : text === "essay" ? "Tự luận" : text),
+      render: (text) =>
+        text === "multiple_choice"
+          ? "Trắc Nghiệm"
+          : text === "essay"
+          ? "Tự luận"
+          : text,
       onFilter: (value, record) => record.type.indexOf(value) === 0,
       sorter: (a, b) => a.type.localeCompare(b.type),
       sortDirections: ["descend"],
@@ -264,10 +268,7 @@ export default function ViewQuiz() {
 
   return (
     <div className="p-3">
-      <div
-        style={{ display: "flex", paddingBottom: "10px" }}
-        className="pt-6"
-      >
+      <div style={{ display: "flex", paddingBottom: "10px" }} className="pt-6">
         <Select
           placeholder="Chọn khóa học"
           onChange={handleCourseChange}
@@ -303,8 +304,12 @@ export default function ViewQuiz() {
       ) : (
         <div className="flex justify-center items-center h-[45vh]">
           <Empty
-              className="text-center text-lg font-bold text-[#002c6a]"
-              description={hasViewed ? "Không có dữ liệu cho khóa học này." : "Hãy chọn khóa học bạn muốn xem bài tập."}
+            className="text-center text-lg font-bold text-[#002c6a]"
+            description={
+              hasViewed
+                ? "Không có dữ liệu cho khóa học này."
+                : "Hãy chọn khóa học bạn muốn xem bài tập."
+            }
           />
         </div>
       )}

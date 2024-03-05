@@ -348,7 +348,8 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        const { firstName, lastName, email, phoneNumber, dob, gender } = action.payload.metadata;
+        const { firstName, lastName, email, phoneNumber, dob, gender } =
+          action.payload.metadata;
         if (firstName) state.user.firstName = firstName;
         if (lastName) state.user.lastName = lastName;
         if (email) state.user.email = email;
@@ -357,7 +358,7 @@ const userSlice = createSlice({
         if (gender) state.user.gender = gender;
 
         // Lấy dữ liệu người dùng hiện tại từ localStorage
-        const currentUser = JSON.parse(localStorage.getItem('user'));
+        const currentUser = JSON.parse(localStorage.getItem("user"));
 
         // Cập nhật dữ liệu người dùng với thông tin mới
         const updatedUser = {
@@ -368,9 +369,9 @@ const userSlice = createSlice({
         };
 
         // Lưu dữ liệu người dùng đã cập nhật vào localStorage
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        })
-        
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+      })
+
       .addCase(updateUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
@@ -385,17 +386,17 @@ const userSlice = createSlice({
         state.isSuccess = true;
 
         const { image_url } = action.payload.metadata;
-        
+
         if (image_url) state.user.image_url = image_url;
 
-        const currentUserImg = JSON.parse(localStorage.getItem('user'));
+        const currentUserImg = JSON.parse(localStorage.getItem("user"));
 
         const updatedUser = {
           ...currentUserImg,
           ...(image_url && { image_url }),
         };
 
-        localStorage.setItem('user', JSON.stringify(updatedUser));
+        localStorage.setItem("user", JSON.stringify(updatedUser));
       })
       .addCase(uploadImageUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -411,7 +412,7 @@ const userSlice = createSlice({
         state.isSuccess = true;
         state.user = action.payload.metadata;
       })
-      
+
       .addCase(refreshAUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;

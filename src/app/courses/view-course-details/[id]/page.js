@@ -14,8 +14,9 @@ const avatar = "/images/imagedefault.jpg";
 export default function CourseDetails({ params }) {
   const dispatch = useDispatch();
   const [dataCourse, setDataCourse] = useState([]);
-  console.log("🚀 ~ dataCourse:", dataCourse);
   const [selectedLesson, setSelectedLesson] = useState(null);
+  const [isStudentOfCourse, setIsStudentOfCourse] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -24,11 +25,10 @@ export default function CourseDetails({ params }) {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
-    const userId = userState.user?._id || userState.user?.metadata?.account?._id;
-    // Chuyển userId sang chuỗi để so sánh
+    const userId =
+      userState.user?._id || userState.user?.metadata?.account?._id;
     const userIdString = userId.toString();
-    console.log("🚀 ~ userId:", userId);
-  
+
     const roles = userState.user?.roles || userState.user?.account?.roles;
     const isAdminState = roles?.some(
       (role) =>
@@ -36,19 +36,19 @@ export default function CourseDetails({ params }) {
         role.name === "Super-Admin" ||
         role.name === "Mentor"
     );
+    setIsAdmin(isAdminState);
     try {
       const res = await dispatch(getACourse(params.id)).then(unwrapResult);
-      console.log("🚀 ~ res:", res);
       if (res.status) {
         let filteredQuizzes = res.metadata.quizzes || [];
         let filteredLessons = res.metadata.lessons || [];
-  
-        const isStudentOfCourse = res.metadata.students.some(
+
+        const isStudent = res.metadata.students.some(
           (student) => student._id === userId
         );
-        console.log("🚀 ~ isStudentOfCourse:", isStudentOfCourse)
-  
-        if (!isAdminState && !isStudentOfCourse) {
+        setIsStudentOfCourse(isStudent);
+
+        if (!isAdminState && !isStudent) {
           filteredQuizzes = [];
           filteredLessons = filteredLessons.map((lesson) => ({
             ...lesson,
@@ -133,7 +133,7 @@ export default function CourseDetails({ params }) {
         <div className="flex justify-center items-center h-screen">
           <Spin />
         </div>
-      ) : !dataCourse.showCourse ? (
+      ) : !dataCourse.showCourse && !(isStudentOfCourse || isAdmin) ? (
         <div className="flex justify-center items-center h-screen">
           <Result
             status="warning"
@@ -173,56 +173,39 @@ export default function CourseDetails({ params }) {
                 {dataCourse?.title}
               </p>
             </div>
-            <div className="flex flex-col md:w-1/2 space-y-4 md:space-y-2 mt-4 md:mt-0 pl-2 justify-center items-center">
-              <div className="flex items-center gap-3">
+            <div className="flex flex-col md:flex-row justify-between items-center p-4 md:p-6">
+              <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
                 {dataCourse?.teacher ? (
                   <img
                     alt="Teacher's avatar"
                     className="rounded-full"
-                    height="64"
                     src={dataCourse?.teacher?.image_url || avatar}
                     style={{
-                      aspectRatio: "64/64",
+                      width: "64px",
+                      height: "64px",
                       objectFit: "cover",
                     }}
-                    width="64"
                   />
                 ) : null}
-                <div className="grid gap-0.5 text-xs">
-                  <div className="font-medium">
+                <div className="flex flex-col justify-center">
+                  <div className="text-lg font-medium">
                     {dataCourse?.teacher?.lastName}{" "}
                     {dataCourse?.teacher?.firstName}
                   </div>
-                  <div className="text-gray-500 dark:text-gray-400">
+                  <div className="text-gray-500">
                     {dataCourse?.teacher?.email}
                   </div>
+                  <div className="pt-2">
+                    {dataCourse.quizzes.length > 3 && (
+                      <Link
+                        href={`/courses/view-details/${dataCourse?._id}`}
+                        className="text-blue-500 hover:no-underline"
+                      >
+                        Đi tới danh sách bài tập
+                      </Link>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="space-y-2">
-                <ul className="list-disc list-inside space-y-1">
-                  {isLoggedIn && (
-                    <>
-                      {dataCourse.quizzes.slice(0, 3).map((quiz, index) => (
-                        <li key={index}>
-                          <a
-                            className="text-blue-500 hover:no-underline cursor-pointer"
-                            onClick={() =>
-                              handleStartQuiz(quiz?._id, quiz?.type)
-                            }
-                          >{`Bài tập chung ${index + 1}: ${quiz.name}`}</a>
-                        </li>
-                      ))}
-                      {dataCourse.quizzes.length > 3 && (
-                        <Link
-                          href={`/courses/view-details/${dataCourse?._id}`}
-                          className="pl-4 text-blue-500"
-                        >
-                          Xem tất cả
-                        </Link>
-                      )}
-                    </>
-                  )}
-                </ul>
               </div>
             </div>
           </header>

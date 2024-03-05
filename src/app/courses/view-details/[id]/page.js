@@ -272,7 +272,7 @@ export default function ViewQuiz({ params }) {
             style={{ width: "100%" }}
             onClick={() => handleStartQuiz(i?._id, i?.type)}
           >
-            Xem chi tiết
+            Làm bài tập
           </Button>
         ),
       }));

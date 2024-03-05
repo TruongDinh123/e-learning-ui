@@ -79,6 +79,11 @@ export default function QuizCreator() {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    const currentTeacherId = localStorage.getItem("x-client-id");
+    dispatch(refreshAUser(currentTeacherId));
+  }, []); 
+
   // Hàm xử lý khi loại quiz thay đổi
   const handleQuizTypeChange = (value) => {
     setQuizType(value);
@@ -361,7 +366,7 @@ export default function QuizCreator() {
 
   // Giả sử selectedCourse chứa ID của khóa học hiện tại được chọn
   const currentTeacherId =
-    userFromStore?.user?._id || userFromStore?.user.metadata?.account?._id; // Hoặc lấy từ một nguồn khác nếu cần
+    userFromStore?.user?._id || userFromStore?.user?.metadata?.account?._id; // Hoặc lấy từ một nguồn khác nếu cần
 
   // Tìm khóa học hiện tại từ danh sách khóa học trong userFromStore
   const currentCourse =
