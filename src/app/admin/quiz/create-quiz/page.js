@@ -360,7 +360,8 @@ export default function QuizCreator() {
   const userFromStore = useSelector((state) => state.user);
 
   // Giả sử selectedCourse chứa ID của khóa học hiện tại được chọn
-  const currentTeacherId = userFromStore?.user?._id || userFromStore.metadata?.account?._id; // Hoặc lấy từ một nguồn khác nếu cần
+  const currentTeacherId =
+    userFromStore?.user?._id || userFromStore?.user.metadata?.account?._id; // Hoặc lấy từ một nguồn khác nếu cần
 
   // Tìm khóa học hiện tại từ danh sách khóa học trong userFromStore
   const currentCourse =
@@ -380,6 +381,7 @@ export default function QuizCreator() {
   const isQuizLimitReached = teacherQuizInfo
     ? teacherQuizInfo.quizCount >= 3
     : false;
+
 
   useEffect(() => {
     const currentTeacherId = localStorage.getItem("x-client-id");
