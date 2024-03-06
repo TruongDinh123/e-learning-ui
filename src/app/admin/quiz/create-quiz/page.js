@@ -37,7 +37,7 @@ import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 import "./page.css";
 import { isAdmin, isMentor } from "@/middleware";
-import { getAUser, refreshAUser } from "@/features/User/userSlice";
+import { refreshAUser } from "@/features/User/userSlice";
 
 const { Option } = Select;
 
@@ -82,7 +82,7 @@ export default function QuizCreator() {
   useEffect(() => {
     const currentTeacherId = localStorage.getItem("x-client-id");
     dispatch(refreshAUser(currentTeacherId));
-  }, []); 
+  }, []);
 
   // Hàm xử lý khi loại quiz thay đổi
   const handleQuizTypeChange = (value) => {
@@ -386,7 +386,6 @@ export default function QuizCreator() {
   const isQuizLimitReached = teacherQuizInfo
     ? teacherQuizInfo.quizCount >= 3
     : false;
-
 
   useEffect(() => {
     const currentTeacherId = localStorage.getItem("x-client-id");
@@ -794,9 +793,40 @@ export default function QuizCreator() {
                                   },
                                 ]}
                               >
-                                <Input.TextArea
+                                <ReactQuill
+                                  theme="snow"
                                   placeholder="Nhập câu hỏi tại đây"
-                                  autoSize={{ minRows: 2, maxRows: 5 }}
+                                  className="bg-white"
+                                  modules={{
+                                    toolbar: [
+                                      [{ header: [1, 2, false] }],
+                                      ["bold", "italic", "underline", "strike"], // toggled buttons
+                                      ["blockquote", "code-block"],
+
+                                      [{ list: "ordered" }, { list: "bullet" }],
+                                      [{ script: "sub" }, { script: "super" }], // superscript/subscript
+                                      [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+                                      [{ direction: "rtl" }], // text direction
+
+                                      [
+                                        {
+                                          size: [
+                                            "small",
+                                            false,
+                                            "large",
+                                            "huge",
+                                          ],
+                                        },
+                                      ], // custom dropdown
+                                      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+                                      [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+                                      [{ font: [] }],
+                                      [{ align: [] }], // text align
+
+                                      ["clean"], // remove formatting button
+                                    ],
+                                  }}
                                 />
                               </Form.Item>
                               <Form.Item

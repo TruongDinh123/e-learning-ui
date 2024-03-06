@@ -27,6 +27,7 @@ import { useRouter } from "next/navigation";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 import dayjs from "dayjs";
+import "react-quill/dist/quill.snow.css";
 
 const ReactQuill = dynamic(
   () => import("react-quill").then((mod) => mod.default),
@@ -309,7 +310,37 @@ export default function UpdateQuiz(props) {
                               },
                             ]}
                           >
-                            <Input placeholder="Câu hỏi" />
+                            <ReactQuill
+                              theme="snow"
+                              placeholder="Nhập câu hỏi tại đây"
+                              className="bg-white"
+                              modules={{
+                                toolbar: [
+                                  [{ header: [1, 2, false] }],
+                                  ["bold", "italic", "underline", "strike"],
+                                  ["blockquote", "code-block"],
+
+                                  [{ list: "ordered" }, { list: "bullet" }],
+                                  [{ script: "sub" }, { script: "super" }],
+                                  [{ indent: "-1" }, { indent: "+1" }][
+                                    { direction: "rtl" }
+                                  ],
+
+                                  [
+                                    {
+                                      size: ["small", false, "large", "huge"],
+                                    },
+                                  ],
+                                  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+                                  [{ color: [] }, { background: [] }],
+                                  [{ font: [] }],
+                                  [{ align: [] }], // text align
+
+                                  ["clean"],
+                                ],
+                              }}
+                            />
                           </Form.Item>
                           <Form.Item
                             label="Hình ảnh"
@@ -346,33 +377,56 @@ export default function UpdateQuiz(props) {
                             )}
                           </Form.Item>
                           <Form.List name={[field.name, "options"]}>
-                            {(subFields, subMeta) => (
+                            {(subFields, { add, remove }) => (
                               <div>
                                 {subFields.map((subField, subIndex) => (
-                                  <Space key={subField.key} style={{ display: 'flex', marginBottom: 8 }} align="start">
+                                  <div
+                                    key={subField.key}
+                                    style={{
+                                      display: "flex",
+                                      marginBottom: 8,
+                                      alignItems: "center",
+                                    }}
+                                  >
                                     <Form.Item
-                                      noStyle
+                                      {...subField}
                                       name={[subField.name, "option"]}
+                                      fieldKey={[subField.fieldKey, "option"]}
                                       rules={[
                                         {
                                           required: true,
-                                          message: "Hãy chọn lựa chọn",
+                                          message: "Vui lòng nhập lựa chọn",
                                         },
                                       ]}
+                                      style={{ flex: 1, marginRight: 8 }}
                                     >
-                                      <Input.TextArea placeholder="Thêm lựa chọn" autoSize={{ minRows: 1, maxRows: 6 }} />
+                                      <Input.TextArea
+                                        placeholder="Lựa chọn"
+                                        autoSize={{
+                                          minRows: 1,
+                                          maxRows: 5,
+                                        }}
+                                        style={{ width: "100%" }}
+                                      />
                                     </Form.Item>
                                     <CloseOutlined
-                                      onClick={() => subMeta.remove(subIndex)}
+                                      onClick={() => remove(subIndex)}
+                                      style={{
+                                        color: "red",
+                                        cursor: "pointer",
+                                        fontSize: "16px",
+                                        marginBottom: 8,
+                                        alignSelf: "center",
+                                      }}
                                     />
-                                  </Space>
+                                  </div>
                                 ))}
                                 <Button
                                   type="dashed"
-                                  onClick={() => subMeta.add()}
+                                  onClick={() => add()}
                                   block
                                 >
-                                  + Thêm
+                                  + Thêm lựa chọn
                                 </Button>
                               </div>
                             )}

@@ -84,3 +84,9 @@ body {
   justify-content: center;
   object-fit: cover;
 }
+
+
+.ql-editor .ql-indent-1 { padding-left: 3em; }
+.ql-editor .ql-indent-2 { padding-left: 6em; }
+.ql-editor .ql-indent-3 { padding-left: 9em; }
+.ql-editor .ql-align-justify { text-align: justify; }

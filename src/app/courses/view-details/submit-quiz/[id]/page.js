@@ -13,6 +13,7 @@ import { getScore, submitQuiz, viewAQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
+import "react-quill/dist/quill.snow.css";
 
 export default function Quizs({ params }) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -113,14 +114,18 @@ export default function Quizs({ params }) {
         savedAnswers = JSON.parse(savedAnswersStr) || {};
       }
     }
-  
-    const formattedAnswers = Object.entries(savedAnswers).map(([questionId, answer]) => ({
-      [questionId]: answer,
-    }));
-  
+
+    const formattedAnswers = Object.entries(savedAnswers).map(
+      ([questionId, answer]) => ({
+        [questionId]: answer,
+      })
+    );
+
     setSubmitting(true);
     try {
-      const res = await dispatch(submitQuiz({ quizId: idQuiz, answer: formattedAnswers })).then(unwrapResult);
+      const res = await dispatch(
+        submitQuiz({ quizId: idQuiz, answer: formattedAnswers })
+      ).then(unwrapResult);
       console.log("res", res);
       if (res.status) {
         await messageApi.open({
@@ -290,10 +295,16 @@ export default function Quizs({ params }) {
                         : selectedAnswers[question._id];
                       return (
                         <div key={questionIndex} className="border p-4 mb-4">
-                          <div key={question._id} className="mb-4 p-2">
-                            <h4 className="mb-2 font-medium text-black">
-                              Câu {questionIndex + 1}: {question.question}
-                            </h4>
+                          <div key={question._id} className="mb-2 p-2">
+                            <span className="mb-2 font-medium text-black">
+                              Câu {questionIndex + 1}:{" "}
+                            </span>
+                            <span
+                              className="view ql-editor"
+                              dangerouslySetInnerHTML={{
+                                __html: `${question.question}`,
+                              }}
+                            />
                             {question.image_url && (
                               <div className="mb-2">
                                 <img
@@ -303,29 +314,31 @@ export default function Quizs({ params }) {
                                 />
                               </div>
                             )}
-                            <Radio.Group
-                              onChange={(e) =>
-                                handleAnswer(question._id, e.target.value)
-                              }
-                              value={studentAnswer}
-                              disabled={submitted || isComplete}
-                              className="space-y-2"
-                            >
-                              {question.options.map((option) => (
-                                <div key={option} className="pl-4">
-                                  <Radio
-                                    value={option}
-                                    checked={option === studentAnswer}
-                                  >
-                                    {option}
-                                  </Radio>
-                                </div>
-                              ))}
-                            </Radio.Group>
                           </div>
-                          <span className="text-blue-500 text-lg px-2">
-                            Câu trả lời của bạn: {studentAnswer}
-                          </span>
+                          <Radio.Group
+                            onChange={(e) =>
+                              handleAnswer(question._id, e.target.value)
+                            }
+                            value={studentAnswer}
+                            disabled={submitted || isComplete}
+                            className="space-y-2 pb-2"
+                          >
+                            {question.options.map((option) => (
+                              <div key={option} className="pl-4">
+                                <Radio
+                                  value={option}
+                                  checked={option === studentAnswer}
+                                >
+                                  {option}
+                                </Radio>
+                              </div>
+                            ))}
+                          </Radio.Group>
+                          <div className="space-y-2">
+                            <span className="text-blue-500 text-lg">
+                              Câu trả lời của bạn: {studentAnswer}
+                            </span>
+                          </div>
                         </div>
                       );
                     })}

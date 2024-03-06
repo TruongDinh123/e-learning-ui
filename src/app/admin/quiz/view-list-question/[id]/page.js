@@ -1,5 +1,5 @@
 "use client";
-import { Button, Popconfirm, Spin, Breadcrumb, Tabs, Empty } from "antd";
+import { Spin, Breadcrumb, Tabs } from "antd";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import {
@@ -15,6 +15,7 @@ import ViewListScore from "../score-trainee/page";
 import "../[id]/page.css";
 import moment from "moment";
 import ScoreStatisticsCourse from "../score-statistics/page";
+import "react-quill/dist/quill.snow.css";
 
 export default function ViewListQuestion({ params }) {
   const dispatch = useDispatch();
@@ -127,9 +128,20 @@ export default function ViewListQuestion({ params }) {
                             <ul key={questionIndex}>
                               <li className="border p-3 mb-2 li-content">
                                 <div className="mb-2">
-                                  <span className="font-bold">
-                                    Câu {questionIndex + 1}: {question.question}
-                                  </span>
+                                  <div>
+                                    <span className="font-bold">
+                                      Câu {questionIndex + 1}:
+                                    </span>{" "}
+                                    <span
+                                      className="view ql-editor"
+                                      dangerouslySetInnerHTML={{
+                                        __html: `${question.question}`,
+                                      }}
+                                    />
+                                  </div>
+                                  {/* <div
+
+                                  /> */}
                                 </div>
                                 {question?.image_url && (
                                   <div className="mb-2">
@@ -153,25 +165,6 @@ export default function ViewListQuestion({ params }) {
                                 <span className="text-sm text-green-700 font-bold text-center mb-5">
                                   Đáp án: {question.answer}
                                 </span>
-                                {/* <div className="mt-3">
-                                  <Popconfirm
-                                    title="Xóa bài tập"
-                                    description="Bạn có chắc muốn xóa bài tập?"
-                                    okText="Có"
-                                    cancelText="Không"
-                                    okButtonProps={{
-                                      style: { backgroundColor: "red" },
-                                    }}
-                                    onConfirm={() =>
-                                      handleDeleteQuiz({
-                                        quizId: quiz?._id,
-                                        questionId: question?._id,
-                                      })
-                                    }
-                                  >
-                                    <Button danger>Xóa</Button>
-                                  </Popconfirm>
-                                </div> */}
                               </li>
                             </ul>
                           ))}
