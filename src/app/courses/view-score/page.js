@@ -16,13 +16,11 @@ import { unwrapResult } from "@reduxjs/toolkit";
 const ScoreManagement = () => {
   const dispatch = useDispatch();
   const [score, setScore] = useState([]);
-  console.log('score', score);
   const [isLoading, setIsLoading] = useState(false);
   const [filter, setFilter] = useState("tất cả");
   const { Option } = Select;
 
   const userState = useSelector((state) => state?.user?.user);
-  console.log('userState', userState);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(
     Array(score.length).fill(false)

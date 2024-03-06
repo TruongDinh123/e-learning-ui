@@ -11,7 +11,6 @@ import { useDispatch } from "react-redux";
 export default function Course() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
-  console.log(course);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   

@@ -40,7 +40,6 @@ export const viewQuiz = createAsyncThunk(
 export const getAllScoresByCourseId = createAsyncThunk(
   "/e-learning/get-all-score-by-course-id",
   async (data, { rejectWithValue }) => {
-    console.log(data);
     try {
       const response = await QuizService.getAllScoresByCourseId(data);
       return response;

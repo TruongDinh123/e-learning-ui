@@ -103,10 +103,8 @@ export default function AddCourse(props) {
             dispatch(uploadImageCourse({ courseId: courseId, filename: file }))
               .then(unwrapResult)
               .then((res) => {
-                console.log("res", res);
                 if (res.status) {
                   const imageUrl = res.metadata?.findCourse?.image_url;
-                  console.log("imageUrl", imageUrl);
                   dispatch(updateCourseImage({ courseId, imageUrl }));
 
                   if (values.isPublic) {

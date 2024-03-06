@@ -16,7 +16,6 @@ export const createCourse = createAsyncThunk(
 export const uploadImageCourse = createAsyncThunk(
   "/e-learning/upload-image-course",
   async (data, { rejectWithValue }) => {
-    console.log(data)
     try {
       const response = await courseService.uploadImageCourse(data);
       return response;

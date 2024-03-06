@@ -155,7 +155,6 @@ export default function ViewTeachersCourse() {
   let data = [];
   dataStudent?.forEach((student, index) => {
     const userId = student?._id;
-    console.log("🚀 ~ dataStudent:", dataStudent);
 
     data.push({
       key: index + 1,

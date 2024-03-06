@@ -139,9 +139,6 @@ export default function ViewListQuestion({ params }) {
                                       }}
                                     />
                                   </div>
-                                  {/* <div
-
-                                  /> */}
                                 </div>
                                 {question?.image_url && (
                                   <div className="mb-2">

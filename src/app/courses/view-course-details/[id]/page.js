@@ -196,7 +196,7 @@ export default function CourseDetails({ params }) {
                     {dataCourse?.teacher?.email}
                   </div>
                   <div className="pt-2">
-                    {dataCourse.quizzes.length > 3 && (
+                    {dataCourse.quizzes.length && (
                       <Link
                         href={`/courses/view-details/${dataCourse?._id}`}
                         className="text-blue-500 hover:no-underline"
