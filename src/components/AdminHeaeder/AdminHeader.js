@@ -8,9 +8,9 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Avatar, Menu, Dropdown, Popover, message } from "antd";
+import { Button, Avatar, Menu, Dropdown, message } from "antd";
 import Link from "next/link";
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
@@ -25,7 +25,7 @@ const logo3 = "/images/logo5.png";
 
 export default function AdminHeader(props) {
   const { setCollapsed, collapsed } = props;
-  const userProfile = useSelector((state) => state.user.user);
+  const userProfile = useSelector((state) => state?.user?.user);
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const userState = JSON.parse(localStorage.getItem("user"));
@@ -36,7 +36,7 @@ export default function AdminHeader(props) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const userName =
-    useSelector((state) => state.user.userName) ||
+    useSelector((state) => state?.user?.userName) ||
     JSON.parse(localStorage.getItem("userName"));
 
   useEffect(() => {
@@ -81,6 +81,18 @@ export default function AdminHeader(props) {
     </Menu>
   );
 
+  
+  const clearAuthState = () => {
+    localStorage.clear();
+    Cookies.remove("Bearer");
+    dispatch(resetState());
+    dispatch(resetStateCourse());
+    dispatch(resetStateCategory());
+    dispatch(resetStateLesson());
+    dispatch(resetStateQuiz());
+    setIsLoading(false);
+  };
+
   const handleLogOut = () => {
     setIsLoading(true);
     dispatch(logOut())
@@ -110,17 +122,6 @@ export default function AdminHeader(props) {
       });
   };
 
-  // Hàm để xóa trạng thái xác thực của người dùng
-  const clearAuthState = () => {
-    localStorage.clear();
-    Cookies.remove("Bearer");
-    dispatch(resetState());
-    dispatch(resetStateCourse());
-    dispatch(resetStateCategory());
-    dispatch(resetStateLesson());
-    dispatch(resetStateQuiz());
-    setIsLoading(false);
-  };
 
   return (
     <header className="bg-[#02354B] sticky top-0 z-20">
