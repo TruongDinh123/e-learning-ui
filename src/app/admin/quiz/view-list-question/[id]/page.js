@@ -2,11 +2,7 @@
 import { Spin, Breadcrumb, Tabs } from "antd";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import {
-  deleteQuizQuestion,
-  getScoreByQuizId,
-  viewAQuiz,
-} from "@/features/Quiz/quizSlice";
+import { getScoreByQuizId, viewAQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import React from "react";
 import Link from "next/link";
@@ -25,15 +21,17 @@ export default function ViewListQuestion({ params }) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    dispatch(viewAQuiz({ quizId: params?.id }))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setquiz(res.metadata);
-        } else {
-        }
-      })
-      .catch((error) => {});
+    const timer = setTimeout(() => {
+      dispatch(viewAQuiz({ quizId: params?.id }))
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            setquiz(res.metadata);
+          }
+        });
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }, [updateQuiz]);
 
   useEffect(() => {
@@ -44,22 +42,21 @@ export default function ViewListQuestion({ params }) {
           setScore(res.metadata);
         }
       })
-      .catch((error) => {});
   }, []);
 
-  const handleDeleteQuiz = ({ quizId, questionId }) => {
-    setIsLoading(true);
-    dispatch(deleteQuizQuestion({ quizId, questionId }))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setUpdateQuiz(updateQuiz + 1);
-        } else {
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {});
-  };
+  // const handleDeleteQuiz = ({ quizId, questionId }) => {
+  //   setIsLoading(true);
+  //   dispatch(deleteQuizQuestion({ quizId, questionId }))
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       if (res.status) {
+  //         setUpdateQuiz(updateQuiz + 1);
+  //       } else {
+  //       }
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {});
+  // };
 
   return (
     <div className="mx-auto px-4 sm:px-6 lg:px-8 p-3">
