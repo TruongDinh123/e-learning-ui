@@ -1,6 +1,6 @@
 "use client";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Dropdown,
   Input,
@@ -24,31 +24,10 @@ export default function ViewUsers() {
   const [updateUser, setUpdateUser] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 5,
-  });
   const { Option } = Select;
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("");
   const [roles, setRoles] = useState([]);
-
-  // Hàm xử lý sự kiện thay đổi cho trường tìm kiếm
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-    fetchUsers(
-      pagination.current,
-      pagination.pageSize,
-      e.target.value,
-      filterRole
-    );
-  };
-
-  // Hàm xử lý sự kiện thay đổi cho trường lọc vai trò
-  const handleRoleFilterChange = (value) => {
-    setFilterRole(value);
-    fetchUsers(pagination.current, pagination.pageSize, searchTerm, value);
-  };
 
   const columns = [
     {
@@ -96,49 +75,66 @@ export default function ViewUsers() {
     },
   ];
   //viewUsers api
+  const allUsersStore = useSelector((state) => state?.user?.allUsers);
+  const allRolesStore = useSelector((state) => state?.user?.allRoles);
+
   useEffect(() => {
-    setIsLoading(true);
-    dispatch(
-      getAllUser({ page: pagination.current, limit: pagination.pageSize })
-    )
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setUser(res.metadata.users);
-          setPagination((prevPagination) => ({
-            ...prevPagination,
-            total: res.metadata.total,
-            current: res.metadata.currentPage,
-            pageSize: res.metadata.pageSize,
-          }));
-        } else {
-          messageApi.error(res.message);
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-      });
+    if (allUsersStore?.metadata?.users?.length > 0) {
+      setUser(allUsersStore.metadata.users);
+    } else {
+      setIsLoading(true);
+      dispatch(getAllUser())
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            setUser(res.metadata.users);
+          } else {
+            messageApi.error(res.message);
+          }
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+        });
+    }
   }, [updateUser, dispatch, messageApi]);
 
   useEffect(() => {
-    dispatch(getAllRole())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setRoles(res.metadata);
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {
-        messageApi.error("An error occurred while fetching roles.");
-      });
+    if (allRolesStore?.metadata?.length > 0) {
+      setRoles(allRolesStore.metadata);
+    } else {
+      dispatch(getAllRole())
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            setRoles(res.metadata);
+          } else {
+            messageApi.error(res.message);
+          }
+        })
+        .catch((error) => {
+          messageApi.error("An error occurred while fetching roles.");
+        });
+    }
   }, [dispatch]);
+
+  let filteredUsersByRole = user.filter((u) => {
+    if (!filterRole) return true;
+    return u.roles.some((role) => role._id === filterRole);
+  });
+
+  //Tìm kiếm tên người dùng
+  let filteredUsers = filteredUsersByRole.filter((u) => {
+    return (
+      u.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      u.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      u.email?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   //table data
   let data = [];
-  user.forEach((i, index) => {
+  filteredUsers.forEach((i, index) => {
     let menuItems = [];
     if (!i?.roles.some((role) => role.name === "Super-Admin")) {
       menuItems.push(
@@ -211,7 +207,7 @@ export default function ViewUsers() {
   const handleDeleteUser = (id) => {
     const updatedUsers = user.filter((u) => u._id !== id);
     setUser(updatedUsers);
-  
+
     dispatch(deleteUser(id))
       .then(unwrapResult)
       .then((res) => {
@@ -223,41 +219,6 @@ export default function ViewUsers() {
       .catch((error) => {
         setUser(user);
         message.error("Có lỗi xảy ra khi xóa người dùng. Vui lòng thử lại.");
-      });
-  };
-
-  const handleTableChange = (newPagination, filters, sorter) => {
-    // Cập nhật state pagination với thông tin mới từ sự kiện
-    setPagination((prevPagination) => ({
-      ...prevPagination,
-      current: newPagination.current,
-      pageSize: newPagination.pageSize,
-    }));
-
-    // Gọi lại API với thông tin phân trang mới để lấy dữ liệu
-    fetchUsers(newPagination.current, newPagination.pageSize);
-  };
-
-  // Cập nhật hàm fetchUsers để chấp nhận các tham số tìm kiếm và lọc
-  const fetchUsers = (page, pageSize, search = "", role = "") => {
-    setIsLoading(true);
-    dispatch(getAllUser({ page, limit: pageSize, search, role }))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status === 200) {
-          setUser(res.metadata.users);
-          setPagination((prevPagination) => ({
-            ...prevPagination,
-            total: res.metadata.total,
-          }));
-        } else {
-          messageApi.error(res.message);
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        messageApi.error("An error occurred while fetching users.");
-        setIsLoading(false);
       });
   };
 
@@ -276,7 +237,7 @@ export default function ViewUsers() {
             title="Tìm kiếm người dùng"
             placeholder="Tìm kiếm người dùng"
             value={searchTerm}
-            onChange={handleSearchChange}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="mb-2 sm:mb-0 w-full sm:w-64"
           />
         </div>
@@ -290,8 +251,8 @@ export default function ViewUsers() {
           <Select
             showSearch
             placeholder="Lọc theo vai trò"
-            onChange={handleRoleFilterChange}
             value={filterRole}
+            onChange={(value) => setFilterRole(value)}
             className="w-full sm:w-64 mb-2"
           >
             <Option value="">Tất cả vai trò</Option>
@@ -318,12 +279,9 @@ export default function ViewUsers() {
             columns={columns}
             dataSource={data}
             pagination={{
-              current: pagination.current,
-              pageSize: pagination.pageSize,
-              total: pagination.total,
+              pageSize: 5,
               position: ["bottomLeft"],
             }}
-            onChange={handleTableChange}
             className="grid-container"
           />
         </React.Fragment>

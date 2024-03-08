@@ -27,9 +27,9 @@ export const registerUser = createAsyncThunk(
 
 export const getAllUser = createAsyncThunk(
   "/e-learning/users",
-  async ({ page, limit, search, role }, { rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
     try {
-      const response = await authService.getAllUser(page, limit, search, role);
+      const response = await authService.getAllUser(data);
       return response;
     } catch (err) {
       return rejectWithValue(err);
@@ -286,7 +286,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.allUsers = state.allUsers.filter(user => user._id !== action.meta.arg);
+        state.allUsers = state.allUsersStore?.metadata?.users?.filter(user => user._id !== action.meta.arg);
       })
       .addCase(deleteUser.rejected, (state, action) => {
         state.isLoading = false;
