@@ -217,6 +217,8 @@ const initialState = {
   user: userFromLocalStorage,
   userName: userNameFromLocalStogare,
   profile: {},
+  allUsers: [],
+  allRoles: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -275,6 +277,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        state.allUsers = action.payload;
       })
       .addCase(deleteUser.pending, (state, action) => {
         state.isLoading = true;
@@ -283,6 +286,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        state.allUsers = state.allUsers.filter(user => user._id !== action.meta.arg);
       })
       .addCase(deleteUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -296,6 +300,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        state.allRoles = action.payload;
       })
       .addCase(getAllRole.rejected, (state, action) => {
         state.isLoading = false;

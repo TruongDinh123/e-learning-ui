@@ -53,8 +53,21 @@ export default function StudentWork({ student }) {
             );
             return (
               <div key={question._id} className="mb-4">
-                <strong className="text-lg">Câu {index + 1}:</strong>{" "}
-                {question.question}
+                {/* <strong className="text-lg">Câu {index + 1}:</strong>{" "}
+                {question.question} */}
+                <div className="mb-2">
+                  <div>
+                    <span className="font-bold ext-lg">
+                      Câu {index + 1}:
+                    </span>{" "}
+                    <span
+                      className="view ql-editor"
+                      dangerouslySetInnerHTML={{
+                        __html: `${question.question}`,
+                      }}
+                    />
+                  </div>
+                </div>
                 <ul className="list-disc pl-5">
                   {question.options.map((option, index) => (
                     <li key={index} className="text-sm">
@@ -65,7 +78,11 @@ export default function StudentWork({ student }) {
                 <div className="mt-2">
                   <strong className="text-lg">
                     Câu trả lời của học viên:{" "}
-                    <span className={`font-medium ${studentAnswer ? "text-blue-500" : "text-red-500"}`}>
+                    <span
+                      className={`font-medium ${
+                        studentAnswer ? "text-blue-500" : "text-red-500"
+                      }`}
+                    >
                       {studentAnswer
                         ? studentAnswer[question._id]
                         : "Không có câu trả lời"}
