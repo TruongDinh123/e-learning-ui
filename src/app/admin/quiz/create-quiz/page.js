@@ -49,6 +49,7 @@ const ReactQuill = dynamic(
 export default function QuizCreator() {
   const [messageApi, contextHolder] = message.useMessage();
   const [selectedCourse, setSelectedCourse] = useState([]);
+  console.log(selectedCourse);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [selectedCourseLessons, setSelectedCourseLessons] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -96,6 +97,7 @@ export default function QuizCreator() {
   // Hàm xử lý khi chọn khóa học
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
+
     if (value.length > 1) {
       const allStudents = value.flatMap((courseId) => {
         const course = courses?.find((course) => course?._id === courseId);
@@ -191,13 +193,15 @@ export default function QuizCreator() {
   //hàm xử lý save quiz
   const handleSaveQuiz = (values) => {
     setIsLoading(true);
+
     if (quizType === "multiple_choice") {
+    
       const questionWithoutOptionsIndex = values?.questions?.findIndex(
         (q) => !q?.options || q?.options?.length === 0
       );
 
       if (questionWithoutOptionsIndex !== -1) {
-        message.error(
+        message.warning(
           `Câu hỏi số ${
             questionWithoutOptionsIndex + 1
           } phải có ít nhất một lựa chọn.`,
@@ -503,6 +507,16 @@ export default function QuizCreator() {
     }
   };
 
+  const handleFinishFailed = (errorInfo) => {
+    // Kiểm tra nếu người dùng chưa chọn khóa học và không phải là tạo bài tập mẫu
+    if (!selectedCourse.length && !isTemplateMode) {
+      message.warning("Vui lòng chọn ít nhất một khóa học trước khi tiếp tục.", 3.5);
+    }
+    if (!selectedStudents.length && !isTemplateMode) {
+      message.warning("Vui lòng chọn ít nhất một học viên trước khi tiếp tục.", 3.5);
+    }
+  };
+
   return (
     <div className="p-3">
       {contextHolder}
@@ -522,6 +536,7 @@ export default function QuizCreator() {
               questions: [{}],
             }}
             onFinish={handleSaveQuiz}
+            onFinishFailed={handleFinishFailed}
           >
             <div className="py-2">
               <Button
