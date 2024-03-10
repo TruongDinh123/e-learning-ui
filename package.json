@@ -28,6 +28,7 @@
     "formik": "^2.4.5",
     "heroicons": "^2.0.18",
     "js-cookie": "^3.0.5",
+    "luxon": "^3.4.4",
     "moment": "^2.29.4",
     "next": "^13.5.7-canary.11",
     "postcss": "^8.4.31",

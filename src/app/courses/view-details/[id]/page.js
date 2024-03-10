@@ -29,6 +29,7 @@ import {
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
+import {DateTime} from "luxon";
 const { Sider, Content, Header } = Layout;
 
 export default function ViewQuiz({ params }) {
@@ -258,7 +259,8 @@ export default function ViewQuiz({ params }) {
         const correspondingScore = score.find((s) => s.quiz?._id === i?._id);
         return !correspondingScore?.isComplete;
       })
-      .map((i, index) => ({
+      .map((i, index) => {
+        return {
         key: index + 1,
         name: i?.name,
         submissionTime: i?.submissionTime
@@ -275,7 +277,7 @@ export default function ViewQuiz({ params }) {
             Làm bài tập
           </Button>
         ),
-      }));
+      }});
 
     useEffect(() => {
       setExpiredCount(notCompletedQuizzes.length);
@@ -455,9 +457,9 @@ export default function ViewQuiz({ params }) {
                   <h5 className="text-lg font-semibold mb-2 line-clamp-2">
                     {item.name}
                   </h5>
-                  <p className="text-sm text-gray-500 mb-4">
+                  <p className="text-sm text-gray-UTC+7500 mb-4">
                     Hạn nộp bài:{" "}
-                    {item?.submissionTime ? item.submissionTime : "Không có"}
+                    {item?.submissionTime ? DateTime.fromISO(item.submissionTime).setLocale('vi').toFormat('dd/mm/yyyy HH:ii') : "Không có"}
                   </p>
                   <div className="flex items-center justify-between mb-4">
                     <span
