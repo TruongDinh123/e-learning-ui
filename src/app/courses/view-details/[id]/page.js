@@ -38,7 +38,7 @@ export default function ViewQuiz({ params }) {
   const [score, setScore] = useState([]);
   const [dataCourse, setDataCourse] = useState([]);
   const [isLoading, setLoading] = useState([]);
-  const [selectedMenu, setSelectedMenu] = useState("1");
+  const [selectedMenu, setSelectedMenu] = useState("2");
   const [collapsed, setCollapsed] = useState(false);
   const [nonExpiredCount, setNonExpiredCount] = useState(0);
   const [expiredCount, setExpiredCount] = useState(0);
@@ -105,7 +105,7 @@ export default function ViewQuiz({ params }) {
   }, [dispatch, params?.id]);
 
   useEffect(() => {
-    setSelectedMenu("3");
+    setSelectedMenu("2");
   }, [router]);
 
   const handleNoti = ({ message }) => {
@@ -559,6 +559,7 @@ export default function ViewQuiz({ params }) {
         >
           <div className="demo-logo-vertical" />
           <Menu
+              defaultOpenKeys={['sub1']}
             mode="inline"
             selectedKeys={[selectedMenu]}
             onSelect={({ key }) => setSelectedMenu(key)}
