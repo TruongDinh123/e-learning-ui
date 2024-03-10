@@ -202,7 +202,7 @@ const ScoreManagement = () => {
             onChange={handleFilterChange}
           >
             <Option value="tất cả">Tất cả</Option>
-            {userState?.courses.map((course) => (
+            {userState?.courses?.map((course) => (
               <Option key={course._id} value={course.name}>{course.name}</Option>
             ))}
           </Select>

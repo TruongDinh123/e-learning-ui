@@ -2,7 +2,7 @@
 import { getStudentCourses } from "@/features/Courses/courseSlice";
 import { BookOutlined, FolderOpenOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Breadcrumb, Empty, Image, Spin } from "antd";
+import {Breadcrumb, Button, Empty, Image, Spin} from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
@@ -99,13 +99,13 @@ export default function Course() {
                           className="flex items-center gap-x-1 text-gray-500  cursor-pointer"
                           onClick={() => navigateToNonExpiredCourses(item._id)}
                         >
-                          <button type="button"
+                          <Button type="button"
                                   className="ant-btn css-dev-only-do-not-override-3mqfnx ant-btn-default me-3 items-center flex">
                             <FolderOpenOutlined className="text-sky-500" />
                             <span>
                               Bài tập: {item.quizzes.length + item.lessons.reduce((acc, lesson) => acc + lesson.quizzes.length, 0)}
                             </span>
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </div>
