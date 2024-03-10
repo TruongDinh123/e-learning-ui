@@ -264,7 +264,7 @@ export default function ViewQuiz({ params }) {
         key: index + 1,
         name: i?.name,
         submissionTime: i?.submissionTime
-          ? DateTime.fromISO(i?.submissionTime).setLocale('vi').toFormat('dd/mm/yyyy HH:ii')
+          ? DateTime.fromISO(i?.submissionTime).setLocale('vi').toLocaleString(DateTime.DATETIME_SHORT)
           : null,
         isComplete: "Chưa hoàn thành",
         type: i?.type,
@@ -332,7 +332,7 @@ export default function ViewQuiz({ params }) {
         key: index + 1,
         name: i?.name,
         submissionTime: i?.submissionTime
-          ? DateTime.fromISO(i?.submissionTime).setLocale('vi').toFormat('dd/mm/yyyy HH:ii')
+          ? DateTime.fromISO(i?.submissionTime).setLocale('vi').toLocaleString(DateTime.DATETIME_SHORT)
           : null,
         isComplete: "Đã hoàn thành",
         type: i?.type,
@@ -459,7 +459,7 @@ export default function ViewQuiz({ params }) {
                   </h5>
                   <p className="text-sm text-gray-UTC+7500 mb-4">
                     Hạn nộp bài:{" "}
-                    {item?.submissionTime ? DateTime.fromISO(item.submissionTime).setLocale('vi').toFormat('dd/mm/yyyy HH:ii') : "Không có"}
+                    {item?.submissionTime ? DateTime.fromISO(item.submissionTime).setLocale('vi').toLocaleString(DateTime.DATETIME_SHORT) : "Không có"}
                   </p>
                   <div className="flex items-center justify-between mb-4">
                     <span
