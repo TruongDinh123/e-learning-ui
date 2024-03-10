@@ -138,10 +138,10 @@ export default function ViewUsers() {
     let menuItems = [];
     if (!i?.roles.some((role) => role.name === "Super-Admin")) {
       menuItems.push(
-        <Menu.Item>
+        <Menu.Item key={index}>
           <EditUser id={i?._id} refresh={() => setUpdateUser(updateUser + 1)} />
         </Menu.Item>,
-        <Menu.Item>
+        <Menu.Item key={index}>
           <Popconfirm
             title="Xóa người dùng"
             description="Bạn có chắc muốn xóa người dùng?"

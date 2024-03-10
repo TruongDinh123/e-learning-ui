@@ -283,9 +283,11 @@ export default function Courses() {
                     />
                   </div>
                   <div className="flex flex-col pt-2">
-                    <div className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2">
+                    <a className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2" onClick={() => router.push(
+                        `/admin/courses/Lesson/${item?._id}`
+                    )}>
                       {item.name} ({item.showCourse ? "Công khai" : "Riêng tư"})
-                    </div>
+                    </a>
                     <p className="text-xs text-muted-foreground"></p>
                     <div className="my-3 flex items-center gap-x-2 text-sm md:text-xs">
                       <div className="flex items-center gap-x-1 text-slate-500">

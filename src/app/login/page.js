@@ -52,48 +52,31 @@ export default function Login() {
               (role) => role.name
             );
 
-            messageApi
-              .open({
-                type: "Thành công",
-                icon: <Spin />,
-              })
-              .then(() =>
-                message.info(
-                  `Redirecting to ${
-                    res.metadata.account.roles.includes("Trainee")
-                      ? "Home"
-                      : "Dashboard"
-                  } `,
-                  0.5
-                )
-              )
-              .then(() => {
-                Cookies.set("Bearer", res?.metadata.tokens.accessToken);
+            Cookies.set("Bearer", res?.metadata.tokens.accessToken);
 
-                localStorage.setItem(
-                  "user",
-                  JSON.stringify(res.metadata.account)
-                );
-                const userName =
-                  (res.metadata.account?.firstName
+            localStorage.setItem(
+                "user",
+                JSON.stringify(res.metadata.account)
+            );
+            const userName =
+                (res.metadata.account?.firstName
                     ? res.metadata.account?.firstName + " "
                     : "") +
-                  (res.metadata.account?.lastName
+                (res.metadata.account?.lastName
                     ? res.metadata.account?.lastName
                     : "");
-                localStorage.setItem("userName", JSON.stringify(userName));
+            localStorage.setItem("userName", JSON.stringify(userName));
 
-                localStorage.setItem("x-client-id", res.metadata.account._id);
-                if (
-                  roleNames.includes("Admin") ||
-                  roleNames.includes("Super-Admin") ||
-                  roleNames.includes("Mentor")
-                ) {
-                  router.push("/admin/courses");
-                } else {
-                  router.push("/");
-                }
-              });
+            localStorage.setItem("x-client-id", res.metadata.account._id);
+            if (
+                roleNames.includes("Admin") ||
+                roleNames.includes("Super-Admin") ||
+                roleNames.includes("Mentor")
+            ) {
+              router.push("/admin/courses");
+            } else {
+              router.push("/");
+            }
           } else {
             message.error(res.message, 2.5);
           }
