@@ -188,7 +188,6 @@ export default function ViewQuiz({ params }) {
       const isStudentOfCourse = dataCourse.students.some(
         (student) => student._id === userId.toString()
       );
-      console.log("🚀 ~ isStudentOfCourse:", isStudentOfCourse);
 
       // Nếu không nằm trong mảng, hiển thị thông báo
       if (!isStudentOfCourse) {

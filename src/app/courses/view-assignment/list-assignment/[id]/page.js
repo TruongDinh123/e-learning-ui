@@ -17,16 +17,13 @@ export default function ListAssignment({ params }) {
   const [startTime, setStartTime] = useState(null);
 
   const handleAnswer = useCallback((questionId, answer) => {
-    console.log("handleAnswer function has started");
     setSelectedAnswers((prevAnswers) => ({
       ...prevAnswers,
       [questionId]: answer,
     }));
-    console.log("handleAnswer function has finished");
   }, []);
 
   useEffect(() => {
-    console.log("useEffect has started");
     setStartTime(Date.now());
 
     const fetchData = async () => {
@@ -36,10 +33,8 @@ export default function ListAssignment({ params }) {
         );
         const res = unwrapResult(resultAction);
         if (res.status) {
-          console.log("res has finished");
           setAssigment(res.metadata);
           setTimeLeft(res.metadata[0]?.timeLimit * 60);
-          console.log("res has finished");
         } else {
           messageApi.error(res.message);
         }
@@ -48,8 +43,6 @@ export default function ListAssignment({ params }) {
       }
     };
     fetchData();
-
-    console.log("useEffect has finished");
   }, []);
 
   return (

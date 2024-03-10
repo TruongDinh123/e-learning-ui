@@ -36,7 +36,6 @@ export default function HandleSubmit(props) {
     )
       .then(unwrapResult)
       .then((res) => {
-        console.log("submitAssignment response received");
         if (res.status) {
           messageApi
             .open({

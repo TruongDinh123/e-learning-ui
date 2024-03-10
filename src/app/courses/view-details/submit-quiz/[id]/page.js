@@ -126,7 +126,6 @@ export default function Quizs({ params }) {
       const res = await dispatch(
         submitQuiz({ quizId: idQuiz, answer: formattedAnswers })
       ).then(unwrapResult);
-      console.log("res", res);
       if (res.status) {
         await messageApi.open({
           type: "Thành công",
