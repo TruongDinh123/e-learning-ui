@@ -96,6 +96,7 @@ body {
   bottom: 0px;
   right: 20px;
   padding: 20px;
+  z-index: 10000;
 }
 .roundedFixedBtn{
   align-items: center;
@@ -104,9 +105,14 @@ body {
   /*width: 60px;*/
   font-size: 2em;
   font-weight: bold;
-  border-radius: 15%;
-  background-color: #ffffff;
+  border-radius: 5px;
+  background-color: #fc1d1d;
   color: white;
   text-align: center;
   cursor: pointer;
+  z-index: 10000;
+}
+
+.ant-statistic-content {
+  color: white !important;
 }

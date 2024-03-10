@@ -235,6 +235,7 @@ export default function Quizs({ params }) {
             <a className="fixedButton flex" href="javascript:void(0)">
               <div className="roundedFixedBtn flex">
                 <Statistic.Countdown
+                    style={{color: 'white'}}
                   value={deadline}
                   onFinish={handleSubmit}
               /></div>
