@@ -18,7 +18,7 @@ const Providers = dynamic(() => import("@/Provider"), { ssr: false });
 export default function RootLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const shouldRenderFooter = !pathname.includes("/web-rtc/room");
