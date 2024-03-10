@@ -39,6 +39,7 @@ export default function ViewQuiz({ params }) {
   const [quiz, setquiz] = useState([]);
   const [score, setScore] = useState([]);
   const [dataCourse, setDataCourse] = useState([]);
+  console.log("🚀 ~ dataCourse:", dataCourse);
   const [isLoading, setLoading] = useState([]);
   const [selectedMenu, setSelectedMenu] = useState("2");
   const [collapsed, setCollapsed] = useState(false);
@@ -46,7 +47,7 @@ export default function ViewQuiz({ params }) {
   const [expiredCount, setExpiredCount] = useState(0);
   const [allCourseCount, setAllCourse] = useState(0);
   const [isAdminOrMentorSidebar, setIsAdminOrMentor] = useState(false);
-  const [isLoadingRoleCheck, setIsLoadingRoleCheck] = useState(true); // Thêm trạng thái này
+  const [isLoadingRoleCheck, setIsLoadingRoleCheck] = useState(true);
   const router = useRouter();
 
   const quizzesByStudentState = useSelector(
@@ -176,6 +177,21 @@ export default function ViewQuiz({ params }) {
     setIsAdminOrMentor(checkIsAdminOrMentor);
     setIsLoadingRoleCheck(false);
   }, [userState]);
+
+  useEffect(() => {
+    // Giả sử userId là ID của người dùng hiện tại
+    const userId = localStorage?.getItem("x-client-id"); // Bạn cần thay thế bằng cách lấy ID thực tế của người dùng
+
+    // Kiểm tra xem userId có nằm trong mảng students của khóa học không
+    const isStudentOfCourse = dataCourse?.students?.some(
+      (student) => student._id === userId.toString()
+    );
+
+    // Nếu không nằm trong mảng, hiển thị thông báo
+    if (!isStudentOfCourse) {
+      message.warning("Bạn không phải là học sinh của khóa học này.", 5);
+    }
+  }, [dataCourse, message]);
 
   // Component hiển thị thông báo
   const NotificationsComponent = () => {

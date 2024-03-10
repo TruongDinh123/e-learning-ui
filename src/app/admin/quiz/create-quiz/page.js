@@ -49,7 +49,6 @@ const ReactQuill = dynamic(
 export default function QuizCreator() {
   const [messageApi, contextHolder] = message.useMessage();
   const [selectedCourse, setSelectedCourse] = useState([]);
-  console.log(selectedCourse);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [selectedCourseLessons, setSelectedCourseLessons] = useState([]);
   const [courses, setCourses] = useState([]);
