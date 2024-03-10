@@ -113,10 +113,10 @@ export default function LessonDetails({ params }) {
           </Link>
         </Breadcrumb.Item>
       </Breadcrumb>
-      <div class="max-w-screen-xl mx-auto grid-container">
+      <div className="max-w-screen-xl mx-auto grid-container">
         <h1 className="text-2xl text-black font-bold mb-2">Chi tiết bài học</h1>
 
-        <main class="mt-10">
+        <main className="mt-10">
           <React.Fragment>
             {isVideoEmpty && (
               <>
@@ -193,12 +193,12 @@ export default function LessonDetails({ params }) {
             </div>
           </div>
 
-          <div class="px-4 lg:px-0 lg:mt-24 text-gray-700 max-w-screen-md mx-auto text-lg leading-relaxed">
-            <h2 class="text-2xl text-gray-800 font-semibold mb-4 mt-4">
+          <div className="px-4 lg:px-0 lg:mt-24 text-gray-700 max-w-screen-md mx-auto text-lg leading-relaxed">
+            <h2 className="text-2xl text-gray-800 font-semibold mb-4 mt-4">
               {lesson?.name}
             </h2>
 
-            <p class="pb-6">{lesson?.content}</p>
+            <p className="pb-6">{lesson?.content}</p>
           </div>
         </main>
       </div>
