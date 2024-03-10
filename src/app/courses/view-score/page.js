@@ -12,12 +12,15 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getScore } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
+import {getStudentCourses} from "@/features/Courses/courseSlice";
+import "react-quill/dist/quill.snow.css";
 
 const ScoreManagement = () => {
   const dispatch = useDispatch();
   const [score, setScore] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [filter, setFilter] = useState("tất cả");
+  const [cources, setCources] = useState([]);
   const { Option } = Select;
 
   const userState = useSelector((state) => state?.user?.user);
@@ -86,6 +89,15 @@ const ScoreManagement = () => {
       .catch((error) => {
         setIsLoading(false);
       });
+    Promise.all([
+      dispatch(getStudentCourses()).then(unwrapResult)
+    ])
+        .then(([studentScore]) => {
+          setCources(studentScore.metadata.courses)
+        })
+        .catch((error) => {
+          messageApi.error("Có lỗi xảy ra khi tải thông tin.");
+        });
   }, []);
 
   //table data
@@ -153,9 +165,7 @@ const ScoreManagement = () => {
                             {/* <h3 className="font-bold">{`Câu ${
                               idxQuestion + 1
                             }`}</h3> */}
-                            <h3 className="font-semibold py-3">
-                              {question.question}
-                            </h3>
+                            <h3 className="font-semibold py-3" dangerouslySetInnerHTML={{ __html: question.question }} />
                             {question.options.map((option, idxOption) => (
                               <p key={idxOption}>
                                 {idxOption + 1}: {option}
@@ -202,7 +212,7 @@ const ScoreManagement = () => {
             onChange={handleFilterChange}
           >
             <Option value="tất cả">Tất cả</Option>
-            {userState?.courses?.map((course) => (
+            {cources?.map((course) => (
               <Option key={course._id} value={course.name}>{course.name}</Option>
             ))}
           </Select>
