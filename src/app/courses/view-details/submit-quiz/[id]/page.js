@@ -7,7 +7,7 @@ import {
   message,
   Spin,
   Statistic,
-  Breadcrumb,
+  Breadcrumb, FloatButton,
 } from "antd";
 import { getScore, submitQuiz, viewAQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -43,11 +43,9 @@ export default function Quizs({ params }) {
           (quiz) => quiz._id === params?.id
         );
         if (storedQuiz) {
-          console.log("Lấy dữ liệu quiz từ store");
           setquiz([storedQuiz]); // Đảm bảo dữ liệu được đặt trong một mảng
         } else {
           // Nếu không có trong store, fetch từ API
-          console.log("Gọi API để lấy dữ liệu quiz");
           const quizResult = await dispatch(
             viewAQuiz({ quizId: params?.id })
           ).then(unwrapResult);
@@ -232,6 +230,18 @@ export default function Quizs({ params }) {
 
   return (
     <div className="bg-gray-200 p-4">
+      {showCountdown && !isComplete && deadline && (
+          <>
+            <a className="fixedButton flex" href="javascript:void(0)">
+              <div className="roundedFixedBtn flex">
+                <Statistic.Countdown
+                  value={deadline}
+                  onFinish={handleSubmit}
+              /></div>
+            </a>
+          </>
+      )}
+
       <Breadcrumb className="pb-2">
         <Breadcrumb.Item>
           <Link href="/">Trang chủ</Link>
@@ -275,11 +285,6 @@ export default function Quizs({ params }) {
                   >
                     {showCountdown && !isComplete && deadline && (
                       <>
-                        <Statistic.Countdown
-                          title="Thời gian còn lại"
-                          value={deadline}
-                          onFinish={handleSubmit}
-                        />
                         <span className="text-red-500 block mt-2">
                           Lưu ý: Đừng thoát ra khỏi trang khi thời gian làm bài
                           chưa kết thúc.
