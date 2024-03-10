@@ -264,7 +264,7 @@ export default function ViewQuiz({ params }) {
         key: index + 1,
         name: i?.name,
         submissionTime: i?.submissionTime
-          ? format(new Date(i?.submissionTime), "dd/MM/yyyy HH:mm:ss")
+          ? DateTime.fromISO(i?.submissionTime).setLocale('vi').toFormat('dd/mm/yyyy HH:ii')
           : null,
         isComplete: "Chưa hoàn thành",
         type: i?.type,
@@ -332,7 +332,7 @@ export default function ViewQuiz({ params }) {
         key: index + 1,
         name: i?.name,
         submissionTime: i?.submissionTime
-          ? format(new Date(i?.submissionTime), "dd/MM/yyyy HH:mm:ss")
+          ? DateTime.fromISO(i?.submissionTime).setLocale('vi').toFormat('dd/mm/yyyy HH:ii')
           : null,
         isComplete: "Đã hoàn thành",
         type: i?.type,
