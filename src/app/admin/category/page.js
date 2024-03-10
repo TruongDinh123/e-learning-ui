@@ -123,7 +123,7 @@ export default function ViewCategories() {
       key: index + 1,
       name: i?.name,
       action: isMobile ? (
-        <Dropdown menu={menu} placement="bottomCenter">
+        <Dropdown overlay={menu} placement="bottomCenter">
           <Button
             className="text-center justify-self-center"
             onClick={(e) => e.preventDefault()}

@@ -220,7 +220,7 @@ export default function ViewQuiz() {
         </Button>
       ),
       action: isMobile ? (
-        <Dropdown menu={menu}>
+        <Dropdown overlay={menu}>
           <Button
             className="ant-dropdown-link text-center justify-self-center"
             onClick={(e) => e.preventDefault()}

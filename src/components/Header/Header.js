@@ -354,7 +354,7 @@ export default function Header() {
                   )}
 
                   {userState !== null && (
-                    <Dropdown menu={menu} placement="bottomLeft">
+                    <Dropdown overlay={menu} placement="bottomLeft">
                       <div className="ml-3 relative">
                         <div className="flex items-center space-x-4">
                           <a
