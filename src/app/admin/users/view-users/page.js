@@ -168,7 +168,7 @@ export default function ViewUsers() {
       status: i?.status,
       roles: i?.roles.map((role) => role.name),
       action: isMobile ? (
-        <Dropdown overlay={menu} placement="bottomCenter">
+        <Dropdown menu={menu} placement="bottomCenter">
           <Button
             className="text-center justify-self-center"
             onClick={(e) => e.preventDefault()}

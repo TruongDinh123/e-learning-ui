@@ -75,7 +75,7 @@ export default function ViewRoles() {
       key: index + 1,
       name: i?.name,
       action: isMobile ? (
-        <Dropdown overlay={menu} placement="bottomCenter">
+        <Dropdown menu={menu} placement="bottomCenter">
           <Button
             className="text-center justify-self-center"
             onClick={(e) => e.preventDefault()}
