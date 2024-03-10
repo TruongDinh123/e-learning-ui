@@ -16,6 +16,13 @@ import React, { useState } from "react";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import CustomButton from "@/components/comman/CustomBtn";
 import { isAdmin } from "@/middleware";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
+
+const ReactQuill = dynamic(
+  () => import("react-quill").then((mod) => mod.default),
+  { ssr: false }
+);
 
 const CourseSchema = yup.object({
   title: yup
@@ -37,7 +44,6 @@ export default function AddCourse(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState(null);
   const dispatch = useDispatch();
-
 
   // useEffect(() => {
   //   dispatch(getAllCategoryAndSubCourses())
@@ -238,16 +244,44 @@ export default function AddCourse(props) {
             }
           />
 
-          <label htmlFor="course" className="text-lg font-medium mt-3">
+          <label
+            htmlFor="courseDescription"
+            className="text-lg font-medium mt-3"
+          >
             Mô tả khóa học:
           </label>
-          <textarea
-            id="course"
-            placeholder="Thêm mô tả"
-            onChange={formik.handleChange("title")}
-            onBlur={formik.handleBlur("title")}
+          <ReactQuill
+            theme="snow"
             value={formik.values.title}
-            className="form-control"
+            onChange={(content) => formik.setFieldValue("title", content)}
+            onBlur={() => formik.setFieldTouched("title", true, true)}
+            placeholder="Thêm mô tả"
+            className="bg-white"
+            modules={{
+              toolbar: [
+                [{ header: [1, 2, false] }],
+                ["bold", "italic", "underline", "strike"],
+                ["blockquote", "code-block"],
+
+                [{ list: "ordered" }, { list: "bullet" }],
+                [{ script: "sub" }, { script: "super" }],
+                [{ indent: "-1" }, { indent: "+1" }],
+                [{ direction: "rtl" }],
+
+                [
+                  {
+                    size: ["small", false, "large", "huge"],
+                  },
+                ],
+                [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+                [{ color: [] }, { background: [] }],
+                [{ font: [] }],
+                [{ align: [] }],
+
+                ["clean"],
+              ],
+            }}
           />
           {formik.submitCount > 0 && formik.touched.title && formik.errors.title
             ? formik.errors.title

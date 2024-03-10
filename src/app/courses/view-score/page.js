@@ -1,18 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Collapse,
-  Drawer,
-  List,
-  Select,
-  Spin,
-  Table,
-} from "antd";
+import { Button, Collapse, Drawer, List, Select, Spin, Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { getScore } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import {getStudentCourses} from "@/features/Courses/courseSlice";
+import { getStudentCourses } from "@/features/Courses/courseSlice";
 import "react-quill/dist/quill.snow.css";
 
 const ScoreManagement = () => {
@@ -89,15 +81,13 @@ const ScoreManagement = () => {
       .catch((error) => {
         setIsLoading(false);
       });
-    Promise.all([
-      dispatch(getStudentCourses()).then(unwrapResult)
-    ])
-        .then(([studentScore]) => {
-          setCources(studentScore.metadata.courses)
-        })
-        .catch((error) => {
-          messageApi.error("Có lỗi xảy ra khi tải thông tin.");
-        });
+    Promise.all([dispatch(getStudentCourses()).then(unwrapResult)])
+      .then(([studentScore]) => {
+        setCources(studentScore.metadata.courses);
+      })
+      .catch((error) => {
+        messageApi.error("Có lỗi xảy ra khi tải thông tin.");
+      });
   }, []);
 
   //table data
@@ -121,11 +111,15 @@ const ScoreManagement = () => {
       </div>
     );
 
-    const courseName = userState?.courses?.find(course => i.quiz.courseIds.includes(course._id))?.name;
+    const courseName =
+      userState?.courses?.find((course) =>
+        i.quiz.courseIds.includes(course._id)
+      )?.name ||
+      userState?.metadata?.account.courses?.find((course) =>
+        i.quiz.courseIds.includes(course._id)
+      )?.name;
 
-    if (
-      filter === "tất cả" || courseName === filter
-    ) {
+    if (filter === "tất cả" || courseName === filter) {
       data.push({
         key: index + 1,
         name: i?.quiz?.name ? i.quiz?.name : i.assignment?.name,
@@ -143,7 +137,7 @@ const ScoreManagement = () => {
               Chi tiết
             </Button>
             <Drawer
-              title="Details Score"
+              title="Chi tiết bài làm"
               open={isDrawerOpen[index]}
               onClose={() => onClose(index)}
               width={1000}
@@ -165,7 +159,12 @@ const ScoreManagement = () => {
                             {/* <h3 className="font-bold">{`Câu ${
                               idxQuestion + 1
                             }`}</h3> */}
-                            <h3 className="font-semibold py-3" dangerouslySetInnerHTML={{ __html: question.question }} />
+                            <h3
+                              className="font-semibold py-3"
+                              dangerouslySetInnerHTML={{
+                                __html: question.question,
+                              }}
+                            />
                             {question.options.map((option, idxOption) => (
                               <p key={idxOption}>
                                 {idxOption + 1}: {option}
@@ -213,7 +212,9 @@ const ScoreManagement = () => {
           >
             <Option value="tất cả">Tất cả</Option>
             {cources?.map((course) => (
-              <Option key={course._id} value={course.name}>{course.name}</Option>
+              <Option key={course._id} value={course.name}>
+                {course.name}
+              </Option>
             ))}
           </Select>
           <Table columns={columns} dataSource={data} className="pb-56" />

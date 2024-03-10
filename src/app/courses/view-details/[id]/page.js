@@ -29,7 +29,9 @@ import {
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
-import {DateTime} from "luxon";
+import { DateTime } from "luxon";
+
+const avatar = "/images/imagedefault.jpg";
 const { Sider, Content, Header } = Layout;
 
 export default function ViewQuiz({ params }) {
@@ -102,6 +104,7 @@ export default function ViewQuiz({ params }) {
   useEffect(() => {
     dispatch(getQuizzesByStudentAndCourse({ courseId: params?.id }));
     dispatch(getScoreByInfo());
+    dispatch(getACourseByInfo(params?.id));
   }, [dispatch, params?.id]);
 
   useEffect(() => {
@@ -222,9 +225,7 @@ export default function ViewQuiz({ params }) {
         <div className="w-full p-2">
           <div className="bg-white flex flex-col p-6 rounded-lg shadow-md border border-gray-200">
             <div className="flex items-center mb-4">
-              <h2 className="text-lg font-semibold text-gray-700">
-                Notifications
-              </h2>
+              <h2 className="text-lg font-semibold text-gray-700">Thông báo</h2>
             </div>
             {dataCourse?.notifications?.map((noti, notiIndex) => (
               <div
@@ -261,37 +262,40 @@ export default function ViewQuiz({ params }) {
       })
       .map((i, index) => {
         return {
-        key: index + 1,
-        name: i?.name,
-        submissionTime: i?.submissionTime
-          ? DateTime.fromISO(i?.submissionTime).setLocale('vi').toLocaleString(DateTime.DATETIME_SHORT)
-          : null,
-        isComplete: "Chưa hoàn thành",
-        type: i?.type,
-        questions: (
-          <Button
-            className="me-3"
-            style={{ width: "100%" }}
-            onClick={() => handleStartQuiz(i?._id, i?.type)}
-          >
-            Làm bài tập
-          </Button>
-        ),
-      }});
+          key: index + 1,
+          name: i?.name,
+          submissionTime: i?.submissionTime
+            ? DateTime.fromISO(i?.submissionTime)
+                .setLocale("vi")
+                .toLocaleString(DateTime.DATETIME_SHORT)
+            : null,
+          isComplete: "Chưa hoàn thành",
+          type: i?.type,
+          questions: (
+            <Button
+              className="w-full text-white custom-button bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 text-center"
+              style={{ width: "100%" }}
+              onClick={() => handleStartQuiz(i?._id, i?.type)}
+            >
+              Làm bài tập
+            </Button>
+          ),
+        };
+      });
 
     useEffect(() => {
       setExpiredCount(notCompletedQuizzes.length);
     }, [notCompletedQuizzes]);
 
     return notCompletedQuizzes.length > 0 ? (
-      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-2">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-4">
         {notCompletedQuizzes.map((item, index) => (
           <div
             key={index}
-            className="bg-white rounded-lg card-shadow border border-gray-300 w-full overflow-hidden"
+            className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl"
           >
             <div className="p-4">
-              <h5 className="text-lg font-semibold mb-2 line-clamp-2">
+              <h5 className="text-lg font-semibold mb-2 truncate">
                 {item.name}
               </h5>
               <p className="text-sm text-gray-500 mb-4">
@@ -332,7 +336,9 @@ export default function ViewQuiz({ params }) {
         key: index + 1,
         name: i?.name,
         submissionTime: i?.submissionTime
-          ? DateTime.fromISO(i?.submissionTime).setLocale('vi').toLocaleString(DateTime.DATETIME_SHORT)
+          ? DateTime.fromISO(i?.submissionTime)
+              .setLocale("vi")
+              .toLocaleString(DateTime.DATETIME_SHORT)
           : null,
         isComplete: "Đã hoàn thành",
         type: i?.type,
@@ -368,10 +374,10 @@ export default function ViewQuiz({ params }) {
             {completedQuizzes.map((item, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg card-shadow border border-gray-300 w-full overflow-hidden"
+                className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl"
               >
                 <div className="p-4">
-                  <h5 className="text-lg font-semibold mb-2 line-clamp-2">
+                  <h5 className="text-lg font-semibold mb-2 truncate">
                     {item.name}
                   </h5>
                   <p className="text-sm text-gray-500 mb-4">
@@ -397,7 +403,22 @@ export default function ViewQuiz({ params }) {
                       text={item.isComplete}
                     />
                   </div>
-                  <div className="text-right">{item.questions}</div>
+                  <div className="text-right">
+                    <Button
+                      className="w-full text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 text-center"
+                      onClick={() =>
+                        item.type === "multiple_choice"
+                          ? router.push(
+                              `/courses/view-details/submit-quiz/${item._id}`
+                            )
+                          : router.push(
+                              `/courses/view-details/handle-submit-essay/${item._id}`
+                            )
+                      }
+                    >
+                      Xem chi tiết
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -439,9 +460,8 @@ export default function ViewQuiz({ params }) {
     useEffect(() => {
       setAllCourse(allQuizzes.length);
     }, [allQuizzes]);
-
     return allQuizzes.length > 0 ? (
-      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-2">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-4">
         {isLoading ? (
           <div className="flex justify-center items-center h-screen">
             <Spin />
@@ -451,15 +471,20 @@ export default function ViewQuiz({ params }) {
             {allQuizzes.map((item, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg card-shadow border border-gray-300 w-full overflow-hidden"
+                className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl"
               >
                 <div className="p-4">
-                  <h5 className="text-lg font-semibold mb-2 line-clamp-2">
+                  <h5 className="text-lg font-semibold mb-2 truncate">
                     {item.name}
                   </h5>
-                  <p className="text-sm text-gray-UTC+7500 mb-4">
+                  <p className="text-sm text-gray-500 mb-4">
                     Hạn nộp bài:{" "}
-                    {item?.submissionTime ? DateTime.fromISO(item.submissionTime).setLocale('vi').toLocaleString(DateTime.DATETIME_SHORT) : "Không có"}
+                    {item?.submissionTime
+                      ? format(
+                          new Date(item?.submissionTime),
+                          "dd/MM/yyyy HH:mm:ss"
+                        )
+                      : "Không có"}
                   </p>
                   <div className="flex items-center justify-between mb-4">
                     <span
@@ -523,7 +548,7 @@ export default function ViewQuiz({ params }) {
         paddingBottom: "100px",
       }}
     >
-      <Breadcrumb className="my-9">
+      <Breadcrumb className="mt-9">
         <Breadcrumb.Item>
           <Link href="/">Trang chủ</Link>
         </Breadcrumb.Item>
@@ -539,9 +564,44 @@ export default function ViewQuiz({ params }) {
           <span className="font-medium">Danh sách bài tập</span>
         </Breadcrumb.Item>
       </Breadcrumb>
+      <header
+        className="flex flex-col md:flex-row justify-between items-center bg-gray-100 dark:bg-gray-800 p-4 md:p-6"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(201, 144, 30, 0) 0%, rgba(255, 192, 67, 0.108) 100%)",
+        }}
+      >
+        <div className="flex flex-col md:w-1/2 space-y-2 border-gray-200 dark:border-gray-300">
+          <h1 className="text-3xl text-[#002c6a]">
+            {" "}
+            <span className="font-medium">{dataCourse?.name}</span>
+          </h1>
+        </div>
+        <div className="md:flex-row justify-between items-center p-4 md:p-6">
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+            {dataCourse?.teacher ? (
+              <img
+                alt="Teacher's avatar"
+                className="rounded-full"
+                src={dataCourse?.teacher?.image_url || avatar}
+                style={{
+                  width: "64px",
+                  height: "64px",
+                  objectFit: "cover",
+                }}
+              />
+            ) : null}
+            <div className="flex flex-col justify-center">
+              <div className="text-lg font-medium">
+                {dataCourse?.teacher?.lastName} {dataCourse?.teacher?.firstName}
+              </div>
+              <div className="text-gray-500">{dataCourse?.teacher?.email}</div>
+            </div>
+          </div>
+        </div>
+      </header>
       <Layout
         style={{
-          padding: "24px 0",
           background: colorBgContainer,
           borderRadius: borderRadiusLG,
         }}
@@ -559,7 +619,7 @@ export default function ViewQuiz({ params }) {
         >
           <div className="demo-logo-vertical" />
           <Menu
-              defaultOpenKeys={['sub1']}
+            defaultOpenKeys={["sub1"]}
             mode="inline"
             selectedKeys={[selectedMenu]}
             onSelect={({ key }) => setSelectedMenu(key)}

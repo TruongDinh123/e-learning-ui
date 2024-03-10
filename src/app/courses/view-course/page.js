@@ -2,18 +2,19 @@
 import { getStudentCourses } from "@/features/Courses/courseSlice";
 import { BookOutlined, FolderOpenOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import {Breadcrumb, Button, Empty, Image, Spin} from "antd";
+import { Breadcrumb, Button, Empty, Image, Spin } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import "react-quill/dist/quill.snow.css";
 
 export default function Course() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  
+
   //viewCourses api
   useEffect(() => {
     const fetchData = async () => {
@@ -29,13 +30,16 @@ export default function Course() {
         setIsLoading(false);
       }
     };
-  
+
     fetchData();
   }, [dispatch]);
 
-  const navigateToNonExpiredCourses = useCallback((courseId) => {
-    router.push(`/courses/view-details/${courseId}`);
-  }, [router]);
+  const navigateToNonExpiredCourses = useCallback(
+    (courseId) => {
+      router.push(`/courses/view-details/${courseId}`);
+    },
+    [router]
+  );
 
   return (
     <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -82,14 +86,16 @@ export default function Course() {
                         <h3 className="text-lg md:text-xl font-semibold group-hover:text-sky-600 transition duration-300 ease-in-out line-clamp-2">
                           {item.name}
                         </h3>
-                        <p className="text-sm text-gray-600 font-light md:text-base group-hover:text-sky-600 transition duration-300 ease-in-out line-clamp-1 mt-1">
-                          Mô tả: {item.title}
-                        </p>
+                        <p
+                          className="text-sm text-gray-600 font-light md:text-base group-hover:text-sky-600 transition duration-300 ease-in-out line-clamp-1 mt-1"
+                          dangerouslySetInnerHTML={{
+                            __html: `${item.title}`,
+                          }}
+                        />
                         <p className="text-xs font-medium text-gray-500 mt-2">
                           Giáo viên: {item.teacher?.firstName}
                         </p>
                       </Link>
-
                       <div className="mt-4 flex items-center gap-x-4 text-sm md:text-xs">
                         <div className="flex items-center gap-x-1 text-gray-500">
                           <BookOutlined className="text-sky-500" />
@@ -99,11 +105,18 @@ export default function Course() {
                           className="flex items-center gap-x-1 text-gray-500  cursor-pointer"
                           onClick={() => navigateToNonExpiredCourses(item._id)}
                         >
-                          <Button type="button"
-                                  className="ant-btn css-dev-only-do-not-override-3mqfnx ant-btn-default me-3 items-center flex">
+                          <Button
+                            type="button"
+                            className="ant-btn css-dev-only-do-not-override-3mqfnx ant-btn-default me-3 items-center flex"
+                          >
                             <FolderOpenOutlined className="text-sky-500" />
                             <span>
-                              Bài tập: {item.quizzes.length + item.lessons.reduce((acc, lesson) => acc + lesson.quizzes.length, 0)}
+                              Bài tập:{" "}
+                              {item.quizzes.length +
+                                item.lessons.reduce(
+                                  (acc, lesson) => acc + lesson.quizzes.length,
+                                  0
+                                )}
                             </span>
                           </Button>
                         </div>

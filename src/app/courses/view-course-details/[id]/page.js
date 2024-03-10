@@ -9,6 +9,8 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { useRouter } from "next/navigation";
 import { FolderOpenOutlined } from "@ant-design/icons";
 import { startQuiz } from "@/features/Quiz/quizSlice";
+import "react-quill/dist/quill.snow.css";
+
 const avatar = "/images/imagedefault.jpg";
 
 export default function CourseDetails({ params }) {
@@ -29,7 +31,8 @@ export default function CourseDetails({ params }) {
       userState.user?._id || userState.user?.metadata?.account?._id;
     const userIdString = userId.toString();
 
-    const roles = userState.user?.roles || userState.user?.account?.roles;
+    const roles =
+      userState.user?.roles || userState.user?.metadata?.account?.roles;
     const isAdminState = roles?.some(
       (role) =>
         role.name === "Admin" ||
@@ -127,8 +130,46 @@ export default function CourseDetails({ params }) {
     }
   };
 
+  const [showFullTitle, setShowFullTitle] = useState(false);
+
+  const toggleTitleDisplay = () => {
+    setShowFullTitle(!showFullTitle);
+  };
+
+  const renderCourseTitle = (title) => {
+    if (!showFullTitle && title.length > 100) {
+      return (
+        <>
+          {`${title.substring(0, 400)}... `}
+          <span
+            className="text-blue-500 cursor-pointer"
+            onClick={toggleTitleDisplay}
+          >
+            Xem thêm
+          </span>
+        </>
+      );
+    }
+    return (
+      <>
+        {title}{" "}
+        {title.length > 100 && (
+          <span
+            className="text-blue-500 cursor-pointer"
+            onClick={toggleTitleDisplay}
+          >
+            Rút gọn
+          </span>
+        )}
+      </>
+    );
+  };
+
   return (
-    <div className="flex flex-col md:h-[130vh] h-full text-black overflow-auto pt-4">
+    <div
+      className="flex flex-col md:h-[130vh] h-full text-black overflow-auto pt-4"
+      style={{ minHeight: "150vh" }}
+    >
       {loading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />
@@ -168,12 +209,12 @@ export default function CourseDetails({ params }) {
             }}
           >
             <div className="flex flex-col md:w-1/2 space-y-2 border-gray-200 dark:border-gray-300">
-              <h1 className="text-3xl font-bold">{dataCourse?.name}</h1>
-              <p className="text-gray-500 dark:text-gray-400">
-                {dataCourse?.title}
-              </p>
+              <h1 className="text-3xl text-[#002c6a]">
+                {" "}
+                <span className="font-medium">{dataCourse?.name}</span>
+              </h1>
             </div>
-            <div className="flex flex-col md:flex-row justify-between items-center p-4 md:p-6">
+            <div className="md:flex-row justify-between items-center p-4 md:p-6">
               <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
                 {dataCourse?.teacher ? (
                   <img
@@ -195,20 +236,37 @@ export default function CourseDetails({ params }) {
                   <div className="text-gray-500">
                     {dataCourse?.teacher?.email}
                   </div>
-                  <div className="pt-2">
-                    {dataCourse.quizzes.length && (
-                      <Link
-                        href={`/courses/view-details/${dataCourse?._id}`}
-                        className="text-blue-500 hover:no-underline"
-                      >
-                        Đi tới danh sách bài tập
-                      </Link>
-                    )}
-                  </div>
                 </div>
+              </div>
+              <div className="pt-4">
+                {dataCourse.quizzes.length && (
+                  <Link
+                    href={`/courses/view-details/${dataCourse?._id}`}
+                    className="text-white bg-[#002c6a] hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#002c6a] dark:hover:bg-blue-600 dark:focus:ring-blue-800 shadow-lg"
+                  >
+                    Đi tới danh sách bài tập
+                  </Link>
+                )}
               </div>
             </div>
           </header>
+          <div
+            className="md:flex-row justify-between items-center bg-gray-100 dark:bg-gray-800 p-4 md:p-6 border-b-2"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(201, 144, 30, 0) 0%, rgba(255, 192, 67, 0.108) 100%)",
+            }}
+          >
+            <div className="flex flex-col md:w-1/2 space-y-2 border-gray-200 dark:border-gray-300 my-2">
+              <h3 className="text-3xl text-[#002c6a]">Thông tin khóa học:</h3>
+            </div>
+            <p
+              className=""
+              dangerouslySetInnerHTML={{
+                __html: `${dataCourse?.title}`,
+              }}
+            ></p>
+          </div>
           <main className="flex flex-col md:flex-row flex-1 overflow-auto">
             <div className="flex flex-col w-full md:w-1/3 border-r md:border-r border-gray-200 dark:border-gray-200 p-4 overflow-auto">
               <h2 className="font-semibold mb-4">Bài học:</h2>

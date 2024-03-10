@@ -69,12 +69,19 @@ function classNames(...classes) {
 
 export default function Header() {
   const userState = useSelector((state) => state.user?.user);
-  const isAdmin = userState?.roles?.some(
-    (role) =>
-      role.name === "Admin" ||
-      role.name === "Super-Admin" ||
-      role.name === "Mentor"
-  );
+  const isAdmin =
+    userState?.roles?.some(
+      (role) =>
+        role.name === "Admin" ||
+        role.name === "Super-Admin" ||
+        role.name === "Mentor"
+    ) ||
+    userState?.metadata?.account?.roles?.some(
+      (role) =>
+        role.name === "Admin" ||
+        role.name === "Super-Admin" ||
+        role.name === "Mentor"
+    );
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -365,11 +372,9 @@ export default function Header() {
                               }
                             />
                             <span className="ml-2 text-white">
-                              {
-                                userState?.firstName ||
+                              {userState?.firstName ||
                                 userState?.metadata?.account?.firstName}{" "}
-                              {
-                                userState?.lastName ||
+                              {userState?.lastName ||
                                 userState?.metadata?.account?.lastName}
                             </span>
                           </a>

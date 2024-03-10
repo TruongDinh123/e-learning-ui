@@ -81,7 +81,6 @@ export default function AdminHeader(props) {
     </Menu>
   );
 
-  
   const clearAuthState = () => {
     localStorage.clear();
     Cookies.remove("Bearer");
@@ -122,7 +121,6 @@ export default function AdminHeader(props) {
       });
   };
 
-
   return (
     <header className="bg-[#02354B] sticky top-0 z-20">
       <div className="max-w-[105rem] mx-auto px-4 sm:px-6 lg:px-8">
@@ -134,12 +132,18 @@ export default function AdminHeader(props) {
               onClick={() => setCollapsed(!collapsed)}
               style={{
                 fontSize: "16px",
-                width: 64,
-                height: 64,
+                width: "auto",
+                height: "auto",
                 color: "#fff",
+                backgroundColor: "#1890ff",
+                border: "none",
+                padding: "10px 20px",
               }}
-            />
-            <div className="flex-shrink-0">
+              className="text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 font-medium rounded-lg dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800"
+            >
+              Menu
+            </Button>
+            <div className="flex-shrink-0 mx-5">
               <a href="/">
                 <img className="h-36 w-auto" src={logo3} alt="" />
               </a>

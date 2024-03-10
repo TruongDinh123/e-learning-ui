@@ -300,7 +300,7 @@ export default function Quizs({ params }) {
                         ? studentAnswers[question._id]
                         : selectedAnswers[question._id];
                       return (
-                        <div key={questionIndex} className="border p-4 mb-4">
+                        <div key={questionIndex} className="border p-4 mb-4 md:p-6 lg:p-8">
                           <div key={question._id} className="mb-2 p-2">
                             <span className="mb-2 font-medium text-black">
                               Câu {questionIndex + 1}:{" "}

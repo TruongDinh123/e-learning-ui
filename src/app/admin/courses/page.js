@@ -327,7 +327,7 @@ export default function Courses() {
                             >
                               Xem chi tiết
                             </Button>
-                            <Button
+                            {/* <Button
                               courseId={item?._id}
                               onClick={() =>
                                 router.push(
@@ -336,7 +336,7 @@ export default function Courses() {
                               }
                             >
                               Học viên
-                            </Button>
+                            </Button> */}
                             <Popconfirm
                               title="Xóa khóa học"
                               description="Bạn có chắc xóa khóa học?"
