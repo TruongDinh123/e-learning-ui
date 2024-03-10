@@ -8,7 +8,8 @@ export default function StudentWork({ student }) {
   const { quiz, essayAnswer, filename, answers } = student;
   const [isModalVisible, setIsModalVisible] = useState(false);
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
-
+  const isDesktop = useMediaQuery({ minWidth: 992 });
+  
   const showModal = () => {
     setIsModalVisible(true);
   };
@@ -61,7 +62,7 @@ export default function StudentWork({ student }) {
                       Câu {index + 1}:
                     </span>{" "}
                     <span
-                      className="view ql-editor"
+                      className={`overflow-hidden ${isDesktop ? 'view ql-editor' : ''}`}
                       dangerouslySetInnerHTML={{
                         __html: `${question.question}`,
                       }}

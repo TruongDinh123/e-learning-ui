@@ -19,7 +19,7 @@ import {
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { resetState, setUser, setUserName } from "@/features/User/userSlice";
+import { logOut, resetState, setUser, setUserName } from "@/features/User/userSlice";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
@@ -93,12 +93,19 @@ export default function Header() {
   const dispatch = useDispatch();
 
   const logout = useCallback(() => {
-    localStorage.clear();
-    Cookies.remove("Bearer");
-    dispatch(resetState());
-    dispatch(setUserName(null));
-    dispatch(setUser(null));
-    router.push("/");
+    dispatch(logOut())
+      .then(unwrapResult)
+      .then(() => {
+        localStorage.clear();
+        Cookies.remove("Bearer");
+        dispatch(resetState());
+        dispatch(setUserName(null));
+        dispatch(setUser(null));
+        router.push("/");
+      })
+      .catch((error) => {
+        console.error("Logout failed:", error);
+      });
   }, [dispatch, router]);
 
   const menu = (

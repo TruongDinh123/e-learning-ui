@@ -131,8 +131,8 @@ export default function ViewListScore(props) {
         </React.Fragment>
       )}
 
-      <div className="flex grid-container">
-        <div className="flex-2">
+      <div className="flex scroll-container">
+        <div className="flex-2 min-w-0">
           {score.length > 0 ? (
             <Tabs tabPosition={"left"} className="tabs-container">
               {score.map((student, index) => (
@@ -186,7 +186,7 @@ export default function ViewListScore(props) {
           ) : null}
         </div>
 
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           {selectedStudent && <StudentWork student={selectedStudent} />}
         </div>
       </div>

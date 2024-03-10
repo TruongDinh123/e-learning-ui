@@ -14,6 +14,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import "react-quill/dist/quill.snow.css";
+import { useMediaQuery } from "react-responsive";
 
 export default function Quizs({ params }) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -34,6 +35,7 @@ export default function Quizs({ params }) {
     (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
   );
 
+  const isDesktop = useMediaQuery({ minWidth: 992 });
   //fetch API
   useEffect(() => {
     const fetchQuizInfo = async () => {
@@ -306,7 +308,7 @@ export default function Quizs({ params }) {
                               Câu {questionIndex + 1}:{" "}
                             </span>
                             <span
-                              className="view ql-editor"
+                              className={`overflow-hidden ${isDesktop ? 'view ql-editor' : ''}`}
                               dangerouslySetInnerHTML={{
                                 __html: `${question.question}`,
                               }}

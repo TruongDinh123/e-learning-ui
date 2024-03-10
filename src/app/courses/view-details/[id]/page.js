@@ -39,7 +39,6 @@ export default function ViewQuiz({ params }) {
   const [quiz, setquiz] = useState([]);
   const [score, setScore] = useState([]);
   const [dataCourse, setDataCourse] = useState([]);
-  console.log("🚀 ~ dataCourse:", dataCourse);
   const [isLoading, setLoading] = useState([]);
   const [selectedMenu, setSelectedMenu] = useState("2");
   const [collapsed, setCollapsed] = useState(false);
@@ -180,16 +179,21 @@ export default function ViewQuiz({ params }) {
 
   useEffect(() => {
     // Giả sử userId là ID của người dùng hiện tại
-    const userId = localStorage?.getItem("x-client-id"); // Bạn cần thay thế bằng cách lấy ID thực tế của người dùng
+    const userId = localStorage?.getItem("x-client-id"); // Sử dụng giá trị thực tế của userId
 
-    // Kiểm tra xem userId có nằm trong mảng students của khóa học không
-    const isStudentOfCourse = dataCourse?.students?.some(
-      (student) => student._id === userId.toString()
-    );
+    if(isAdminOrMentorSidebar) return;
 
-    // Nếu không nằm trong mảng, hiển thị thông báo
-    if (!isStudentOfCourse) {
-      message.warning("Bạn không phải là học sinh của khóa học này.", 5);
+    // Đảm bảo rằng dataCourse và dataCourse.students tồn tại trước khi kiểm tra
+    if (dataCourse && Array.isArray(dataCourse.students)) {
+      const isStudentOfCourse = dataCourse.students.some(
+        (student) => student._id === userId.toString()
+      );
+      console.log("🚀 ~ isStudentOfCourse:", isStudentOfCourse);
+
+      // Nếu không nằm trong mảng, hiển thị thông báo
+      if (!isStudentOfCourse) {
+        router.push("/");
+      }
     }
   }, [dataCourse, message]);
 

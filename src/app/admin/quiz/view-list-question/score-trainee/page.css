@@ -7,3 +7,9 @@
     overflow-y: auto;
     max-height: 400px; /* Adjust this value to your needs */
   }
+
+  .scroll-container {
+    display: flex;
+    overflow-x: auto; /* Cho phép cuộn ngang */
+    -webkit-overflow-scrolling: touch; /* Cải thiện cuộn trên iOS */
+  }

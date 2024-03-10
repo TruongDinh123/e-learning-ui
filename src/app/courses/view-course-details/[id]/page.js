@@ -20,6 +20,7 @@ export default function CourseDetails({ params }) {
   const [isStudentOfCourse, setIsStudentOfCourse] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadingQuizzes, setLoadingQuizzes] = useState({});
   const router = useRouter();
 
   const userState = useSelector((state) => state.user);
@@ -114,6 +115,7 @@ export default function CourseDetails({ params }) {
 
   const handleStartQuiz = async (quizId, quizType) => {
     try {
+      setLoadingQuizzes(prev => ({ ...prev, [quizId]: true }));
       const response = await dispatch(startQuiz({ quizId })).then(unwrapResult);
       if (response.status) {
         const quizPage =
@@ -127,48 +129,20 @@ export default function CourseDetails({ params }) {
       }
     } catch (error) {
       console.error("Lỗi khi bắt đầu quiz:", error);
+      if (error.response && error.response.data.message) {
+        message.warning(`Lỗi: ${error.response.data.message}`);
+      } else {
+        message.error("Có lỗi xảy ra, vui lòng thử lại sau.");
+      }
+    } finally {
+      setLoadingQuizzes(prev => ({ ...prev, [quizId]: false }));
     }
-  };
-
-  const [showFullTitle, setShowFullTitle] = useState(false);
-
-  const toggleTitleDisplay = () => {
-    setShowFullTitle(!showFullTitle);
-  };
-
-  const renderCourseTitle = (title) => {
-    if (!showFullTitle && title.length > 100) {
-      return (
-        <>
-          {`${title.substring(0, 400)}... `}
-          <span
-            className="text-blue-500 cursor-pointer"
-            onClick={toggleTitleDisplay}
-          >
-            Xem thêm
-          </span>
-        </>
-      );
-    }
-    return (
-      <>
-        {title}{" "}
-        {title.length > 100 && (
-          <span
-            className="text-blue-500 cursor-pointer"
-            onClick={toggleTitleDisplay}
-          >
-            Rút gọn
-          </span>
-        )}
-      </>
-    );
   };
 
   return (
     <div
       className="flex flex-col md:h-[130vh] h-full text-black overflow-auto pt-4"
-      style={{ minHeight: "150vh" }}
+      style={{ minHeight: "200vh" }}
     >
       {loading ? (
         <div className="flex justify-center items-center h-screen">
@@ -188,17 +162,26 @@ export default function CourseDetails({ params }) {
         </div>
       ) : (
         <>
-          <Breadcrumb className="pl-4">
+          <Breadcrumb className="pl-4 space-x-2">
             <Breadcrumb.Item>
-              <Link href="/">Trang chủ</Link>
+              <Link href="/" className="text-blue-600 hover:text-blue-800">
+                Trang chủ
+              </Link>
             </Breadcrumb.Item>
             {isLoggedIn && (
               <Breadcrumb.Item>
-                <Link href="/courses/view-course">Khóa học của bạn</Link>
+                <Link
+                  href="/courses/view-course"
+                  className="text-blue-600 hover:text-blue-800"
+                >
+                  Khóa học của bạn
+                </Link>
               </Breadcrumb.Item>
             )}
             <Breadcrumb.Item>
-              <span className="font-medium">{dataCourse?.name}</span>
+              <span className="font-medium text-gray-700">
+                {dataCourse?.name}
+              </span>
             </Breadcrumb.Item>
           </Breadcrumb>
           <header
@@ -239,7 +222,7 @@ export default function CourseDetails({ params }) {
                 </div>
               </div>
               <div className="pt-4">
-                {dataCourse.quizzes.length && (
+                {dataCourse.quizzes.length > 0 && (
                   <Link
                     href={`/courses/view-details/${dataCourse?._id}`}
                     className="text-white bg-[#002c6a] hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#002c6a] dark:hover:bg-blue-600 dark:focus:ring-blue-800 shadow-lg"
@@ -250,24 +233,59 @@ export default function CourseDetails({ params }) {
               </div>
             </div>
           </header>
-          <div
-            className="md:flex-row justify-between items-center bg-gray-100 dark:bg-gray-800 p-4 md:p-6 border-b-2"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(201, 144, 30, 0) 0%, rgba(255, 192, 67, 0.108) 100%)",
-            }}
-          >
-            <div className="flex flex-col md:w-1/2 space-y-2 border-gray-200 dark:border-gray-300 my-2">
-              <h3 className="text-3xl text-[#002c6a]">Thông tin khóa học:</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-white shadow rounded-lg">
+            <div className="border-r border-gray-200 md:border-r-2">
+              <h3 className="text-xl font-semibold text-[#002c6a]">
+                Thông tin khóa học:
+              </h3>
+              <p
+                className="mt-2 text-gray-600"
+                dangerouslySetInnerHTML={{ __html: `${dataCourse?.title}` }}
+              ></p>
             </div>
-            <p
-              className=""
-              dangerouslySetInnerHTML={{
-                __html: `${dataCourse?.title}`,
-              }}
-            ></p>
+            {isStudentOfCourse || isAdmin ? (
+              <div>
+                <h2 className="text-lg font-semibold text-[#002c6a] sm:text-base">
+                  Danh sách bài tập
+                </h2>
+                <ul className="pl-5 sm:pl-4 list-none">
+                  {dataCourse.quizzes.map((quiz, index) => (
+                    <li key={quiz._id} className="mb-2">
+                      <div className="flex flex-col sm:flex-row justify-between items-center p-3 bg-gray-50 rounded-lg shadow">
+                        <span className="font-medium sm:text-sm">{index + 1 }. {quiz.name}</span>
+                        <div className="flex flex-col sm:flex-row items-center sm:mt-0">
+                          <span
+                            className={`px-3 mt-2 py-1 rounded-full text-sm font-semibold ${
+                              quiz.isCompleted
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
+                            } sm:mr-2`}
+                          >
+                            {quiz.isCompleted
+                              ? "Đã hoàn thành"
+                              : "Chưa hoàn thành"}
+                          </span>
+                          {!quiz.isCompleted && (
+                            <Button
+                              onClick={() =>
+                                handleStartQuiz(quiz._id, quiz.type)
+                              }
+                              className="mt-2 sm:mt-0 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded sm:text-xs"
+                              loading={loadingQuizzes[quiz._id]}
+                              type="primary"
+                            >
+                              Bắt đầu
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
           </div>
-          <main className="flex flex-col md:flex-row flex-1 overflow-auto">
+          <main className="flex flex-col md:flex-row flex-1 overflow-hidden">
             <div className="flex flex-col w-full md:w-1/3 border-r md:border-r border-gray-200 dark:border-gray-200 p-4 overflow-auto">
               <h2 className="font-semibold mb-4">Bài học:</h2>
               <div className="space-y-4">

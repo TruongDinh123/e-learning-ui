@@ -93,6 +93,7 @@ export default function AdminSidebar(props) {
     <Sider
       trigger={null}
       collapsible
+      collapsed={collapsed}
       breakpoint="lg"
       collapsedWidth="0"
       style={{

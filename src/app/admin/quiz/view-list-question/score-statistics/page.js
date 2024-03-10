@@ -83,6 +83,7 @@ export default function ScoreStatisticsCourse(props) {
           dataSource={score}
           columns={columns}
           rowKey={(record) => record._id}
+          scroll={{ x: 800 }} 
         />
       )}
     </div>

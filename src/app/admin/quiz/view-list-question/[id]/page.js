@@ -12,6 +12,7 @@ import "../[id]/page.css";
 import moment from "moment";
 import ScoreStatisticsCourse from "../score-statistics/page";
 import "react-quill/dist/quill.snow.css";
+import { useMediaQuery } from "react-responsive";
 
 export default function ViewListQuestion({ params }) {
   const dispatch = useDispatch();
@@ -19,7 +20,7 @@ export default function ViewListQuestion({ params }) {
   const [score, setScore] = useState([]);
   const [updateQuiz, setUpdateQuiz] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-
+  const isDesktop = useMediaQuery({ minWidth: 992 });
   useEffect(() => {
     const timer = setTimeout(() => {
       dispatch(viewAQuiz({ quizId: params?.id }))
@@ -130,7 +131,7 @@ export default function ViewListQuestion({ params }) {
                                       Câu {questionIndex + 1}:
                                     </span>{" "}
                                     <span
-                                      className="view ql-editor"
+                                      className={`overflow-hidden ${isDesktop ? 'view ql-editor' : ''}`}
                                       dangerouslySetInnerHTML={{
                                         __html: `${question.question}`,
                                       }}
