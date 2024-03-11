@@ -115,7 +115,7 @@ export default function CourseDetails({ params }) {
 
   const handleStartQuiz = async (quizId, quizType) => {
     try {
-      setLoadingQuizzes(prev => ({ ...prev, [quizId]: true }));
+      setLoadingQuizzes((prev) => ({ ...prev, [quizId]: true }));
       const response = await dispatch(startQuiz({ quizId })).then(unwrapResult);
       if (response.status) {
         const quizPage =
@@ -135,7 +135,7 @@ export default function CourseDetails({ params }) {
         message.error("Có lỗi xảy ra, vui lòng thử lại sau.");
       }
     } finally {
-      setLoadingQuizzes(prev => ({ ...prev, [quizId]: false }));
+      setLoadingQuizzes((prev) => ({ ...prev, [quizId]: false }));
     }
   };
 
@@ -251,31 +251,46 @@ export default function CourseDetails({ params }) {
                 <ul className="pl-5 sm:pl-4 list-none">
                   {dataCourse.quizzes.map((quiz, index) => (
                     <li key={quiz._id} className="mb-2">
-                      <div className="flex flex-col sm:flex-row justify-between items-center p-3 bg-gray-50 rounded-lg shadow">
-                        <span className="font-medium sm:text-sm">{index + 1 }. {quiz.name}</span>
+                      {/* Bọc nội dung và nút bắt đầu trong một div có sự kiện onClick */}
+                      <div
+                        className="flex flex-col sm:flex-row justify-between items-center p-3 bg-gray-50 rounded-lg shadow cursor-pointer"
+                        onClick={() =>
+                          !isAdmin &&
+                          !quiz.isCompleted &&
+                          handleStartQuiz(quiz._id, quiz.type)
+                        }
+                      >
+                        <span className="font-medium sm:text-sm">
+                          {index + 1}. {quiz.name}
+                        </span>
                         <div className="flex flex-col sm:flex-row items-center sm:mt-0">
-                          <span
-                            className={`px-3 mt-2 py-1 rounded-full text-sm font-semibold ${
-                              quiz.isCompleted
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
-                            } sm:mr-2`}
-                          >
-                            {quiz.isCompleted
-                              ? "Đã hoàn thành"
-                              : "Chưa hoàn thành"}
-                          </span>
-                          {!quiz.isCompleted && (
-                            <Button
-                              onClick={() =>
-                                handleStartQuiz(quiz._id, quiz.type)
-                              }
-                              className="mt-2 sm:mt-0 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded sm:text-xs"
-                              loading={loadingQuizzes[quiz._id]}
-                              type="primary"
-                            >
-                              Bắt đầu
-                            </Button>
+                          {!isAdmin && (
+                            <>
+                              <span
+                                className={`px-3 mt-2 py-1 rounded-full text-sm font-semibold ${
+                                  quiz.isCompleted
+                                    ? "bg-green-100 text-green-800"
+                                    : "bg-red-100 text-red-800"
+                                } sm:mr-2`}
+                              >
+                                {quiz.isCompleted
+                                  ? "Đã hoàn thành"
+                                  : "Chưa hoàn thành"}
+                              </span>
+                              {!quiz.isCompleted && (
+                                <Button
+                                  onClick={(e) => {
+                                    e.stopPropagation(); // Ngăn chặn sự kiện onClick của div cha được gọi
+                                    handleStartQuiz(quiz._id, quiz.type);
+                                  }}
+                                  className="mt-2 sm:mt-0 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded sm:text-xs"
+                                  loading={loadingQuizzes[quiz._id]}
+                                  type="primary"
+                                >
+                                  Bắt đầu
+                                </Button>
+                              )}
+                            </>
                           )}
                         </div>
                       </div>
