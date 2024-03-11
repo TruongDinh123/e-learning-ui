@@ -167,11 +167,10 @@ export default function ViewStudentsCourse() {
 
   const columns = [
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Họ tên",
+      dataIndex: "fullName",
+      key: "fullName",
       fixed: "left",
-      sorter: (a, b) => a.email.localeCompare(b.email),
       sortDirections: ["descend"],
     },
     ...quizColumns,
@@ -189,7 +188,7 @@ export default function ViewStudentsCourse() {
       dataStudent.map((student, index) => ({
         key: index + 1,
         userId: student?._id,
-        lastName: student?.lastName,
+        fullName: student?.lastName + " " +  student?.firstName,
         email: student?.email,
         action: (
           <Popconfirm
@@ -254,7 +253,7 @@ export default function ViewStudentsCourse() {
             <Table
               columns={columns}
               dataSource={data}
-              pagination={{ pageSize: 3, position: ["bottomLeft"] }}
+              pagination={{ pageSize: 10, position: ["bottomLeft"] }}
               scroll={{
                 x: 1300,
               }}

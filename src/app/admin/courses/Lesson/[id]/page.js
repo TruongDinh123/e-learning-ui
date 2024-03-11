@@ -290,7 +290,7 @@ export default function Lesson({ params }) {
               </div>
               {lessonIds?.length === 0 && (
                 <Empty
-                  description="Không có bài tập nào được tạo."
+                  description="Không có bài học nào được tạo."
                   className="text-center text-sm text-muted-foreground mt-10"
                 ></Empty>
               )}
