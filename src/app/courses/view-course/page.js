@@ -1,5 +1,5 @@
 "use client";
-import { getStudentCourses } from "@/features/Courses/courseSlice";
+import { getCourseSummary, getStudentCourses } from "@/features/Courses/courseSlice";
 import { BookOutlined, FolderOpenOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Breadcrumb, Button, Empty, Image, Spin } from "antd";
@@ -12,6 +12,7 @@ import "react-quill/dist/quill.snow.css";
 export default function Course() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
+  console.log("🚀 ~ course:", course);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -20,7 +21,7 @@ export default function Course() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const res = await dispatch(getStudentCourses()).then(unwrapResult);
+        const res = await dispatch(getCourseSummary()).then(unwrapResult);
         if (res.status) {
           setCourse(res.metadata);
         }
@@ -60,10 +61,10 @@ export default function Course() {
             <div className="flex justify-center items-center h-screen">
               <Spin />
             </div>
-          ) : course?.courses?.length > 0 ? (
+          ) : course?.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 pb-72">
               {course &&
-                course.courses.map((item, index) => (
+                course.map((item, index) => (
                   <div
                     key={index}
                     className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 min-h-[100px]"
@@ -99,7 +100,7 @@ export default function Course() {
                       <div className="mt-4 flex items-center gap-x-4 text-sm md:text-xs">
                         <div className="flex items-center gap-x-1 text-gray-500">
                           <BookOutlined className="text-sky-500" />
-                          <span>Bài học: {item.lessons.length}</span>
+                          <span>Bài học: {item?.totalLesson}</span>
                         </div>
                         <div
                           className="flex items-center gap-x-1 text-gray-500  cursor-pointer"
@@ -111,12 +112,7 @@ export default function Course() {
                           >
                             <FolderOpenOutlined className="text-sky-500" />
                             <span>
-                              Bài tập:{" "}
-                              {item.quizzes.length +
-                                item.lessons.reduce(
-                                  (acc, lesson) => acc + lesson.quizzes.length,
-                                  0
-                                )}
+                              Bài tập: {item.totalQuizCount}
                             </span>
                           </Button>
                         </div>

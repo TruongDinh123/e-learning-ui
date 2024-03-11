@@ -1,22 +1,18 @@
 "use client";
 import { getCoursePublic } from "@/features/Courses/courseSlice";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Carousel, Image, Input, Select, Tabs } from "antd";
-import Link from "next/link";
+import { Button, Carousel, Select, Tabs } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 const thumnail1 = "/images/thumnail5.jpg";
 const thumnail2 = "/images/thumnail2.jpg";
 const avatar = "/images/imagedefault.jpg";
-const { Option } = Select;
 
 export default function Home() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { TabPane } = Tabs;
   const categories = [
     ...new Set(
       course
