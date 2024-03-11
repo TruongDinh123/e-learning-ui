@@ -63,7 +63,7 @@ export default function AdminSidebar(props) {
         {
           key: "users/view-teachers",
           icon: <UserOutlined />,
-          label: "Khóa học",
+          label: "Học viên khoá học",
         },
       ],
     },
@@ -96,6 +96,7 @@ export default function AdminSidebar(props) {
       collapsed={collapsed}
       breakpoint="lg"
       collapsedWidth="0"
+      width={220}
       style={{
         height: "calc(100vh + 200px)",
       }}

@@ -137,6 +137,7 @@ export default function ViewQuiz({ params }) {
       quiz?.courseIds.some((course) => course._id === params?.id) ||
       quiz?.lessonId?.courseId._id === params?.id
   );
+  console.log("🚀 ~ filteredQuizzes:", filteredQuizzes)
 
   const handleStartQuiz = async (quizId, quizType) => {
     setLoading(true);
@@ -181,7 +182,7 @@ export default function ViewQuiz({ params }) {
     // Giả sử userId là ID của người dùng hiện tại
     const userId = localStorage?.getItem("x-client-id"); // Sử dụng giá trị thực tế của userId
 
-    if(isAdminOrMentorSidebar) return;
+    if (isAdminOrMentorSidebar) return;
 
     // Đảm bảo rằng dataCourse và dataCourse.students tồn tại trước khi kiểm tra
     if (dataCourse && Array.isArray(dataCourse.students)) {
@@ -347,36 +348,36 @@ export default function ViewQuiz({ params }) {
   // Component hiển thị khóa học hoàn thành
   const NonExpiredCoursesComponent = () => {
     const completedQuizzes = filteredQuizzes
-      ?.filter((i) => {
-        const correspondingScore = score.find((s) => s.quiz?._id === i?._id);
-        return correspondingScore?.isComplete;
-      })
-      .map((i, index) => ({
-        key: index + 1,
-        name: i?.name,
-        submissionTime: i?.submissionTime
-          ? DateTime.fromISO(i?.submissionTime)
-              .setLocale("vi")
-              .toLocaleString(DateTime.DATETIME_SHORT)
-          : null,
-        isComplete: "Đã hoàn thành",
-        type: i?.type,
-        questions: (
-          <Button
-            className="me-3"
-            style={{ width: "100%" }}
-            onClick={() =>
-              i?.type === "multiple_choice"
-                ? router.push(`/courses/view-details/submit-quiz/${i?._id}`)
-                : router.push(
-                    `/courses/view-details/handle-submit-essay/${i?._id}`
-                  )
-            }
-          >
-            Xem chi tiết
-          </Button>
-        ),
-      }));
+    ?.filter((quiz) => {
+      const correspondingScore = score.find((s) => s.quiz?._id === quiz?._id);
+      return correspondingScore?.isComplete;
+    })
+    .map((quiz, index) => ({
+      key: index + 1,
+      name: quiz?.name,
+      submissionTime: quiz?.submissionTime
+        ? DateTime.fromISO(quiz?.submissionTime)
+            .setLocale("vi")
+            .toLocaleString(DateTime.DATETIME_SHORT)
+        : null,
+      isComplete: "Đã hoàn thành",
+      type: quiz?.type,
+      _id: quiz._id,
+      questions: (
+        <Button
+          className="me-3"
+          style={{ width: "100%" }}
+          onClick={() => {
+            const path = quiz?.type === "multiple_choice"
+              ? `/courses/view-details/submit-quiz/${quiz._id}`
+              : `/courses/view-details/handle-submit-essay/${quiz._id}`;
+            router.push(path);
+          }}
+        >
+          Xem chi tiết
+        </Button>
+      ),
+    }));
 
     useEffect(() => {
       setNonExpiredCount(completedQuizzes.length);

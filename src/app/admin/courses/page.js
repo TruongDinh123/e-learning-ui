@@ -283,9 +283,12 @@ export default function Courses() {
                     />
                   </div>
                   <div className="flex flex-col pt-2">
-                    <a className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2" onClick={() => router.push(
-                        `/admin/courses/Lesson/${item?._id}`
-                    )}>
+                    <a
+                      className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2"
+                      onClick={() =>
+                        router.push(`/admin/courses/Lesson/${item?._id}`)
+                      }
+                    >
                       {item.name} ({item.showCourse ? "Công khai" : "Riêng tư"})
                     </a>
                     <p className="text-xs text-muted-foreground"></p>
@@ -327,7 +330,7 @@ export default function Courses() {
                                 )
                               }
                             >
-                              Xem chi tiết
+                              Bài học
                             </Button>
                             {/* <Button
                               courseId={item?._id}

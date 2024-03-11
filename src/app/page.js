@@ -4,8 +4,13 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { Button, Carousel, Select, Tabs } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-const thumnail1 = "/images/thumnail5.jpg";
-const thumnail2 = "/images/thumnail2.jpg";
+const thumnail1 = "/images/thumnail1.jpg";
+const thumnail2 = "/images/thumnail3.jpg";
+const thumnail3 = "/images/thumnail4.jpg";
+const thumnail4 = "/images/thumnail6.jpg";
+const thumnail5 = "/images/thumnail7.jpg";
+const thumnail6 = "/images/thumnail8.jpg";
+const thumnail7 = "/images/thumnail9.jpg";
 const avatar = "/images/imagedefault.jpg";
 
 export default function Home() {
@@ -71,6 +76,21 @@ export default function Home() {
         </div>
         <div>
           <img src={thumnail2} alt="Second" className="w-full" />
+        </div>
+        <div>
+          <img src={thumnail3} alt="Second" className="w-full" />
+        </div>
+        <div>
+          <img src={thumnail4} alt="Second" className="w-full" />
+        </div>
+        <div>
+          <img src={thumnail5} alt="Second" className="w-full" />
+        </div>
+        <div>
+          <img src={thumnail6} alt="Second" className="w-full" />
+        </div>
+        <div>
+          <img src={thumnail7} alt="Second" className="w-full" />
         </div>
       </Carousel>
 
