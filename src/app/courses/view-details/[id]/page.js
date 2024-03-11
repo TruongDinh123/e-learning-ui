@@ -137,7 +137,6 @@ export default function ViewQuiz({ params }) {
       quiz?.courseIds.some((course) => course._id === params?.id) ||
       quiz?.lessonId?.courseId._id === params?.id
   );
-  console.log("🚀 ~ filteredQuizzes:", filteredQuizzes)
 
   const handleStartQuiz = async (quizId, quizType) => {
     setLoading(true);
