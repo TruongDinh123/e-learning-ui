@@ -53,6 +53,7 @@ export default function Login() {
             );
 
             Cookies.set("Bearer", res?.metadata.tokens.accessToken);
+            Cookies.set("refreshToken", res?.metadata.tokens.refreshToken);
 
             localStorage.setItem(
                 "user",

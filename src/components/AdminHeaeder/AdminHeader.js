@@ -84,6 +84,7 @@ export default function AdminHeader(props) {
   const clearAuthState = () => {
     localStorage.clear();
     Cookies.remove("Bearer");
+    Cookies.remove("refreshToken");
     dispatch(resetState());
     dispatch(resetStateCourse());
     dispatch(resetStateCategory());

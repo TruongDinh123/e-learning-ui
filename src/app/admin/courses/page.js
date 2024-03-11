@@ -24,14 +24,12 @@ import "../courses/page.css";
 import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
 import { isAdmin } from "@/middleware";
 import useCoursesData from "@/hooks/useCoursesData";
-import Cookies from "js-cookie";
 
 export default function Courses() {
   const dispatch = useDispatch();
   const [course, setCourses] = useState([]);
   const [updateCourse, setUpdateCourse] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  // const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loadingStates, setLoadingStates] = useState({});
   const [filteredCourses, setFilteredCourses] = useState([]);

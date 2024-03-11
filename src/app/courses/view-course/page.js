@@ -1,5 +1,8 @@
 "use client";
-import { getCourseSummary, getStudentCourses } from "@/features/Courses/courseSlice";
+import {
+  getCourseSummary,
+  getStudentCourses,
+} from "@/features/Courses/courseSlice";
 import { BookOutlined, FolderOpenOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { Breadcrumb, Button, Empty, Image, Spin } from "antd";
@@ -12,7 +15,6 @@ import "react-quill/dist/quill.snow.css";
 export default function Course() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
-  console.log("🚀 ~ course:", course);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -102,20 +104,18 @@ export default function Course() {
                           <BookOutlined className="text-sky-500" />
                           <span>Bài học: {item?.totalLesson}</span>
                         </div>
-                        <div
-                          className="flex items-center gap-x-1 text-gray-500  cursor-pointer"
-                          onClick={() => navigateToNonExpiredCourses(item._id)}
-                        >
-                          <Button
-                            type="button"
-                            className="ant-btn css-dev-only-do-not-override-3mqfnx ant-btn-default me-3 items-center flex"
-                          >
-                            <FolderOpenOutlined className="text-sky-500" />
-                            <span>
-                              Bài tập: {item.totalQuizCount}
-                            </span>
-                          </Button>
+                        <div className="flex items-center gap-x-1 text-gray-500 cursor-pointer">
+                          <FolderOpenOutlined className="text-sky-500" />
+                          <span>Bài tập: {item.totalQuizCount}</span>
                         </div>
+                      </div>
+                      <div
+                        className="w-full mt-4"
+                        onClick={() => navigateToNonExpiredCourses(item._id)}
+                      >
+                        <Button type="primary" className="custom-button w-full">
+                          <span>Đi đến danh sách bài tập</span>
+                        </Button>
                       </div>
                     </div>
                   </div>
