@@ -143,7 +143,7 @@ function AdminFooter() {
           justifyContent: "center",
         }}
       >
-        247learn.vn {new Date().getFullYear()} created by 95IDEAL
+          © 2024 95EdTech From 95 Solutions Team
       </Footer>
     )
   );
