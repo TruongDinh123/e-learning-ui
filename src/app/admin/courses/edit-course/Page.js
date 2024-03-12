@@ -40,6 +40,9 @@ export default function EditCourses(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [currentCategory, setCurrentCategory] = useState(null);
   const router = useRouter();
+  const categories = useSelector(
+    (state) => state.category?.categories?.metadata
+  );
 
   useEffect(() => {
     setData(course);
@@ -47,11 +50,7 @@ export default function EditCourses(props) {
       categories &&
         categories.find((category) => category?._id === course?.category)
     );
-  }, [course]);
-
-  const categories = useSelector(
-    (state) => state.category?.categories?.metadata
-  );
+  }, [course, categories]);
 
   const propsUdateImage = {
     onRemove: () => {
@@ -111,11 +110,6 @@ export default function EditCourses(props) {
               .then((res) => {
                 if (res.status) {
                   setFile(null);
-                  messageApi.open({
-                    type: "Thành công",
-                    content: "Đang thực hiện...",
-                    duration: 2.5,
-                  });
                   fetchCategories();
                   refresh();
                   setIsLoading(false);
@@ -123,6 +117,7 @@ export default function EditCourses(props) {
                 fetchCategories();
                 refresh();
                 setIsLoading(false);
+                window.location.reload()
                 return res;
               });
           }

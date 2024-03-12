@@ -260,7 +260,6 @@ export const getAllSubCoursesById = createAsyncThunk(
   }
 );
 
-
 const initialState = {
   course: "",
   subCourses: [],
@@ -274,28 +273,33 @@ const initialState = {
 
 export const resetStateCourse = createAction("Reset_all_course");
 
-
 const courseSlice = createSlice({
   name: "course",
   initialState,
   reducers: {
     updateCourseImage: (state, action) => {
       const { courseId, imageUrl } = action.payload;
-      const courseIndex = state.courses.metadata.findIndex(course => course._id === courseId);
+      const courseIndex = state.courses.metadata.findIndex(
+        (course) => course._id === courseId
+      );
       if (courseIndex !== -1) {
         state.courses.metadata[courseIndex].image_url = imageUrl;
       }
     },
     addStudentToCourseSuccess: (state, action) => {
       const { courseId, studentInfo } = action.payload;
-      const courseIndex = state.courses.metadata.findIndex(course => course._id === courseId);
+      const courseIndex = state.courses.metadata.findIndex(
+        (course) => course._id === courseId
+      );
       if (courseIndex !== -1) {
         const student = {
           _id: studentInfo._id,
           firstName: studentInfo.firstName,
           lastName: studentInfo.lastName,
         };
-        const existingStudentIndex = state.courses.metadata[courseIndex].students.findIndex(student => student._id === studentInfo._id);
+        const existingStudentIndex = state.courses.metadata[
+          courseIndex
+        ].students.findIndex((student) => student._id === studentInfo._id);
         if (existingStudentIndex === -1) {
           // Nếu học viên chưa tồn tại, thêm vào mảng students
           if (!state.courses.metadata[courseIndex].students) {
@@ -307,9 +311,13 @@ const courseSlice = createSlice({
     },
     removeStudentFromCourseSuccess: (state, action) => {
       const { courseId, studentId } = action.payload;
-      const courseIndex = state.courses.metadata.findIndex(course => course._id === courseId);
+      const courseIndex = state.courses.metadata.findIndex(
+        (course) => course._id === courseId
+      );
       if (courseIndex !== -1) {
-        state.courses.metadata[courseIndex].students = state.courses.metadata[courseIndex].students.filter(student => student._id !== studentId);
+        state.courses.metadata[courseIndex].students = state.courses.metadata[
+          courseIndex
+        ].students.filter((student) => student._id !== studentId);
       }
     },
   },
@@ -363,7 +371,9 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.courses.metadata = state.courses.metadata.filter(course => course._id !== action.meta.arg);
+        state.courses.metadata = state.courses.metadata.filter(
+          (course) => course._id !== action.meta.arg
+        );
       })
       .addCase(deleteCourse.rejected, (state, action) => {
         state.isLoading = false;
@@ -378,12 +388,36 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        const index = state.courses.metadata.findIndex(course => course._id === action.payload._id);
+        const index = state.courses.metadata.findIndex(
+          (course) => course._id === action.payload._id
+        );
         if (index !== -1) {
           state.courses.metadata[index] = action.payload;
         }
       })
       .addCase(editCourse.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
+      .addCase(uploadImageCourse.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(uploadImageCourse.fulfilled, (state, action) => {
+        console.log("🚀 ~ action:", action);
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        const { courseId, imageUrl } = action.payload.metadata.findCourse;
+        const courseIndex = state.courses.metadata.findIndex(
+          (course) => course._id === courseId
+        );
+        if (courseIndex !== -1) {
+          state.courses.metadata[courseIndex].image_url = imageUrl;
+        }
+      })
+      .addCase(uploadImageCourse.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
@@ -452,6 +486,10 @@ const courseSlice = createSlice({
   },
 });
 
-export const { updateCourseImage, addStudentToCourseSuccess, removeStudentFromCourseSuccess } = courseSlice.actions;
+export const {
+  updateCourseImage,
+  addStudentToCourseSuccess,
+  removeStudentFromCourseSuccess,
+} = courseSlice.actions;
 
 export default courseSlice.reducer;

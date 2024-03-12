@@ -24,6 +24,7 @@ import "../courses/page.css";
 import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
 import { isAdmin } from "@/middleware";
 import useCoursesData from "@/hooks/useCoursesData";
+import "react-quill/dist/quill.snow.css";
 
 export default function Courses() {
   const dispatch = useDispatch();
@@ -85,6 +86,7 @@ export default function Courses() {
   };
 
   const courses = useCoursesData();
+  console.log("🚀 ~ courses:", courses);
 
   // viewCourses reload api
   useEffect(() => {
