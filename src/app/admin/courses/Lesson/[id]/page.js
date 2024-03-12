@@ -19,14 +19,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteLesson, viewLesson } from "@/features/Lesson/lessonSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import VideoLesson from "../view-lesson-video/[id]/page";
 import CreateLesson from "../create-lesson/page";
 import Link from "next/link";
 import { BookOutlined } from "@ant-design/icons";
 import { useMediaQuery } from "react-responsive";
 import "../[id]/page.css";
 import EditLesson from "../update-lesson/page";
-import { AiOutlineFundView } from "react-icons/ai";
 
 export default function Lesson({ params }) {
   const dispatch = useDispatch();

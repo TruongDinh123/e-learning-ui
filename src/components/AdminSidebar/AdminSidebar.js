@@ -98,7 +98,12 @@ export default function AdminSidebar(props) {
       collapsedWidth="0"
       width={220}
       style={{
-        height: "calc(100vh + 200px)",
+        minHeight: "calc(100vh + 200px)",
+        overflow: "auto",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        zIndex: 2000,
       }}
     >
       <div className="demo-logo-vertical d-flex justify-content-center align-items-center py-3">

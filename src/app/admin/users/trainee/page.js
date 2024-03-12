@@ -6,12 +6,13 @@ import {
   viewCourses,
 } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Empty, Popconfirm, Select, Table, message } from "antd";
+import { Button, Empty, Modal, Popconfirm, Select, Table, message } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllScoresByCourseId, viewQuiz } from "@/features/Quiz/quizSlice";
 import { isAdmin, isMentor } from "@/middleware";
 import "./page.css";
+import BarChart1 from "@/config/barchar1";
 
 const { Option } = Select;
 
@@ -27,6 +28,9 @@ export default function ViewStudentsCourse() {
   const [scores, setScores] = useState({});
   const [loading, setLoading] = useState(false);
   const [viewSuccess, setViewSuccess] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState({});
+  const [chartData, setChartData] = useState([]);
+  console.log("🚀 ~ chartData:", chartData);
 
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
@@ -174,43 +178,68 @@ export default function ViewStudentsCourse() {
       sortDirections: ["descend"],
     },
     ...quizColumns,
-    // {
-    //   title: "Chức năng",
-    //   dataIndex: "action",
-    //   key: "operation",
-    //   fixed: "right",
-    //   width: 100,
-    // },
+    {
+      title: "Chức năng",
+      dataIndex: "action",
+      key: "operation",
+      fixed: "right",
+      width: 100,
+    },
   ];
+
+  const handleViewChart = (studentId) => {
+    // Cập nhật dữ liệu biểu đồ cho học viên cụ thể
+    const studentScores = quizzes.map((quiz) => {
+      const score = scores[quiz._id]?.find((s) => s.userId === studentId);
+      return {
+        x: `Bài ${quiz.name}`,
+        y: score ? score.score : 0, // Nếu không có điểm, giá trị là 0
+      };
+    });
+    setChartData(studentScores); // Cập nhật state chartData với dữ liệu mới
+    setIsModalVisible(studentId); // Mở Modal
+  };
 
   const data = useMemo(
     () =>
       dataStudent.map((student, index) => ({
         key: index + 1,
         userId: student?._id,
-        fullName: student?.lastName + " " +  student?.firstName,
+        fullName: student?.lastName + " " + student?.firstName,
         email: student?.email,
         action: (
-          <Popconfirm
-            title="Xóa học viên"
-            description="Bạn có muốn xóa học viên?"
-            okText="Có"
-            cancelText="Không"
-            okButtonProps={{
-              style: { backgroundColor: "red" },
-            }}
-            onConfirm={() =>
-              handleDeleteStudent({
-                courseId: selectedCourse,
-                userId: student?._id,
-              })
-            }
-          >
-            <Button danger>Xóa</Button>
-          </Popconfirm>
+          <>
+            <Button
+              type="primary"
+              onClick={() => handleViewChart(student._id)}
+              className="me-3 custom-button"
+            >
+              Xem biểu đồ
+            </Button>
+            {isModalVisible === student._id && (
+              <Modal
+                title={`Biểu đồ điểm số của ${student.lastName} ${student.firstName}`}
+                visible={isModalVisible === student._id}
+                onCancel={() => setIsModalVisible(null)}
+                width={1000}
+                footer={[
+                  <Button
+                    key="cancel"
+                    onClick={() => setIsModalVisible(null)}
+                    style={{ marginRight: 8 }}
+                  >
+                    Hủy
+                  </Button>,
+                  <></>,
+                ]}
+              >
+                <BarChart1 chartData={chartData} />
+              </Modal>
+            )}
+          </>
         ),
       })),
-    [dataStudent]
+    [dataStudent, isModalVisible, quizzes, scores, chartData]
   );
 
   return (
@@ -219,7 +248,7 @@ export default function ViewStudentsCourse() {
       <h1 className="text-lg font-bold text-[#002c6a]">
         Quản lý bài tập học viên
       </h1>
-      <div className="py-3">
+      <div className="py-3 grid-container ">
         <Select
           placeholder="Chọn khóa học"
           onChange={handleCourseChange}

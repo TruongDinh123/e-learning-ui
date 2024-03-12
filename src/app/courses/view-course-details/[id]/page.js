@@ -1,5 +1,13 @@
 "use client";
-import { Breadcrumb, Button, Empty, Result, Spin, message } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Collapse,
+  Empty,
+  Result,
+  Spin,
+  message,
+} from "antd";
 import "../[id]/page.css";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -300,80 +308,88 @@ export default function CourseDetails({ params }) {
               </div>
             ) : null}
           </div>
-          <main className="flex flex-col md:flex-row flex-1 overflow-hidden">
-            <div className="flex flex-col w-full md:w-1/3 border-r md:border-r border-gray-200 dark:border-gray-200 p-4 overflow-auto">
-              <h2 className="font-semibold mb-4">Bài học:</h2>
-              <div className="space-y-4">
-                {dataCourse?.lessons?.length > 0 ? (
-                  dataCourse.lessons.map((lesson, index) => (
-                    <a
-                      className="block p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-                      onClick={() => handleSelectLesson(lesson)}
-                      key={index}
-                    >
-                      <h3 className="font-semibold">
-                        Bài học {index + 1}: {lesson.name}
-                      </h3>
-                      {lesson.quizzes && lesson.quizzes.length > 0 ? (
-                        <ul className="list-disc pl-5 mt-2">
-                          {lesson.quizzes.map((quiz, quizIndex) => (
-                            <li
-                              key={quizIndex}
-                              className="text-sm text-gray-500 dark:text-gray-400"
-                            >
-                              Bài tập bài {quizIndex + 1}: {quiz.name}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          Chưa có bài tập
-                        </p>
-                      )}
-                    </a>
-                  ))
-                ) : (
-                  <div className="text-center text-gray-500 dark:text-gray-400">
-                    Không có bài học
+          <Collapse bordered className="pt-4">
+            <Collapse.Panel header="Xem chi tiết khóa học" key="1">
+              <main className="flex flex-col md:flex-row flex-1 overflow-hidden">
+                <div className="flex flex-col w-full md:w-1/3 border-r md:border-r border-gray-200 dark:border-gray-200 p-4 overflow-auto">
+                  <h2 className="font-semibold mb-4">Bài học:</h2>
+                  <div className="space-y-4">
+                    {dataCourse?.lessons?.length > 0 ? (
+                      dataCourse.lessons.map((lesson, index) => (
+                        <a
+                          className="block p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                          onClick={() => handleSelectLesson(lesson)}
+                          key={index}
+                        >
+                          <h3 className="font-semibold">
+                            Bài học {index + 1}: {lesson.name}
+                          </h3>
+                          {lesson.quizzes && lesson.quizzes.length > 0 ? (
+                            <ul className="list-disc pl-5 mt-2">
+                              {lesson.quizzes.map((quiz, quizIndex) => (
+                                <li
+                                  key={quizIndex}
+                                  className="text-sm text-gray-500 dark:text-gray-400"
+                                >
+                                  Bài tập bài {quizIndex + 1}: {quiz.name}
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                              Chưa có bài tập
+                            </p>
+                          )}
+                        </a>
+                      ))
+                    ) : (
+                      <div className="text-center text-gray-500 dark:text-gray-400">
+                        Không có bài học
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </div>
-            <div className="flex flex-col w-full md:w-2/3 p-4">
-              {selectedLesson?.videos?.length > 0 ? (
-                selectedLesson.videos.map((video, index) => (
-                  <div className="space-y-4 overflow-auto" key={index}>
-                    <div className="aspect-[16/9] bg-gray-200 dark:bg-gray-800 rounded overflow-hidden items-center justify-center">
-                      <video controls src={video.url} className="w-full h-full">
-                        Your browser does not support the video tag.
-                      </video>
-                    </div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {selectedLesson.content}
-                    </p>
-                    <div
-                      className="flex items-center gap-x-1 text-gray-500 cursor-pointer"
-                      onClick={() =>
-                        handleStartQuiz(
-                          selectedLesson?.quizzes[0]?._id,
-                          selectedLesson?.quizzes?.type
-                        )
-                      }
-                    >
-                      <FolderOpenOutlined className="text-sky-500" />
-                      <span className="hover:text-blue-500">
-                        Bài tập: {selectedLesson.quizzes?.length}
-                      </span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="aspect-[16/9] bg-gray-200 rounded overflow-hidden flex items-center justify-center">
-                  <Empty description="Hãy chọn bài học để xem video nếu có." />
                 </div>
-              )}
-            </div>
-          </main>
+                <div className="flex flex-col w-full md:w-2/3 p-4">
+                  {selectedLesson?.videos?.length > 0 ? (
+                    selectedLesson.videos.map((video, index) => (
+                      <div className="space-y-4 overflow-auto" key={index}>
+                        <div className="aspect-[16/9] bg-gray-200 dark:bg-gray-800 rounded overflow-hidden items-center justify-center">
+                          <video
+                            controls
+                            src={video.url}
+                            className="w-full h-full"
+                          >
+                            Your browser does not support the video tag.
+                          </video>
+                        </div>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {selectedLesson.content}
+                        </p>
+                        <div
+                          className="flex items-center gap-x-1 text-gray-500 cursor-pointer"
+                          onClick={() =>
+                            handleStartQuiz(
+                              selectedLesson?.quizzes[0]?._id,
+                              selectedLesson?.quizzes?.type
+                            )
+                          }
+                        >
+                          <FolderOpenOutlined className="text-sky-500" />
+                          <span className="hover:text-blue-500">
+                            Bài tập: {selectedLesson.quizzes?.length}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="aspect-[16/9] bg-gray-200 rounded overflow-hidden flex items-center justify-center">
+                      <Empty description="Hãy chọn bài học để xem video nếu có." />
+                    </div>
+                  )}
+                </div>
+              </main>
+            </Collapse.Panel>
+          </Collapse>
         </>
       )}
     </div>

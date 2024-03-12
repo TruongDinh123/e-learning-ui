@@ -123,10 +123,10 @@ export default function AdminHeader(props) {
   };
 
   return (
-    <header className="bg-[#02354B] sticky top-0 z-20">
+    <header className="bg-[#02354B] sticky top-0 z-30" style={{ paddingLeft: collapsed ? "80px" : "280px" }}>
       <div className="max-w-[105rem] mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between h-[75px]">
-          <div className="flex items-center">
+          <div className="flex items-center justify-center">
             <Button
               type="text"
               icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
