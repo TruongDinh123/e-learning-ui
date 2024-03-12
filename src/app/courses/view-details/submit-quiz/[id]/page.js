@@ -7,7 +7,7 @@ import {
   message,
   Spin,
   Statistic,
-  Breadcrumb, FloatButton,
+  Breadcrumb,
 } from "antd";
 import { getScore, submitQuiz, viewAQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -231,17 +231,22 @@ export default function Quizs({ params }) {
 
   return (
     <div className="bg-gray-200 p-4">
-      {showCountdown && !isComplete && deadline && (
-          <>
-            <a className="fixedButton flex" href="javascript:void(0)">
-              <div className="roundedFixedBtn flex">
-                <Statistic.Countdown
-                    style={{color: 'white'}}
-                  value={deadline}
-                  onFinish={handleSubmit}
-              /></div>
-            </a>
-          </>
+      {loading ? null : (
+        <>
+          {showCountdown && !isComplete && deadline && (
+            <>
+              <a className="fixedButton flex" href="javascript:void(0)">
+                <div className="roundedFixedBtn flex">
+                  <Statistic.Countdown
+                    style={{ color: "white" }}
+                    value={deadline}
+                    onFinish={handleSubmit}
+                  />
+                </div>
+              </a>
+            </>
+          )}
+        </>
       )}
 
       <Breadcrumb className="pb-2">
@@ -301,13 +306,18 @@ export default function Quizs({ params }) {
                         ? studentAnswers[question._id]
                         : selectedAnswers[question._id];
                       return (
-                        <div key={questionIndex} className="border p-4 mb-4 md:p-6 lg:p-8">
+                        <div
+                          key={questionIndex}
+                          className="border p-4 mb-4 md:p-6 lg:p-8"
+                        >
                           <div key={question._id} className="mb-2 p-2">
                             <span className="mb-2 font-medium text-black">
                               Câu {questionIndex + 1}:{" "}
                             </span>
                             <span
-                              className={`overflow-hidden ${isDesktop ? 'view ql-editor' : ''}`}
+                              className={`overflow-hidden ${
+                                isDesktop ? "view ql-editor" : ""
+                              }`}
                               dangerouslySetInnerHTML={{
                                 __html: `${question.question}`,
                               }}

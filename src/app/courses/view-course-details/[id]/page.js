@@ -147,6 +147,14 @@ export default function CourseDetails({ params }) {
     }
   };
 
+  // Thêm hàm này để kiểm tra xem thời gian làm bài đã hết hay chưa
+  const hasQuizTimeElapsed = (quiz) => {
+    const currentTime = new Date();
+    const submissionTime = new Date(quiz.submissionTime);
+    const timeLimitInMilliseconds = quiz.timeLimit * 60 * 1000;
+    return currentTime - submissionTime > timeLimitInMilliseconds;
+  };
+
   return (
     <div
       className="flex flex-col md:h-[130vh] h-full text-black overflow-auto pt-4"
@@ -257,53 +265,59 @@ export default function CourseDetails({ params }) {
                   Danh sách bài tập
                 </h2>
                 <ul className="pl-5 sm:pl-4 list-none">
-                  {dataCourse.quizzes.map((quiz, index) => (
-                    <li key={quiz._id} className="mb-2">
-                      {/* Bọc nội dung và nút bắt đầu trong một div có sự kiện onClick */}
-                      <div
-                        className="flex flex-col sm:flex-row justify-between items-center p-3 bg-gray-50 rounded-lg shadow cursor-pointer"
-                        onClick={() =>
-                          !isAdmin &&
-                          !quiz.isCompleted &&
-                          handleStartQuiz(quiz._id, quiz.type)
-                        }
-                      >
-                        <span className="font-medium sm:text-sm">
-                          {index + 1}. {quiz.name}
-                        </span>
-                        <div className="flex flex-col sm:flex-row items-center sm:mt-0">
-                          {!isAdmin && (
-                            <>
-                              <span
-                                className={`px-3 mt-2 py-1 rounded-full text-sm font-semibold ${
-                                  quiz.isCompleted
-                                    ? "bg-green-100 text-green-800"
-                                    : "bg-red-100 text-red-800"
-                                } sm:mr-2`}
-                              >
-                                {quiz.isCompleted
-                                  ? "Đã hoàn thành"
-                                  : "Chưa hoàn thành"}
-                              </span>
-                              {!quiz.isCompleted && (
-                                <Button
-                                  onClick={(e) => {
-                                    e.stopPropagation(); // Ngăn chặn sự kiện onClick của div cha được gọi
-                                    handleStartQuiz(quiz._id, quiz.type);
-                                  }}
-                                  className="mt-2 sm:mt-0 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded sm:text-xs"
-                                  loading={loadingQuizzes[quiz._id]}
-                                  type="primary"
-                                >
-                                  Bắt đầu
-                                </Button>
-                              )}
-                            </>
-                          )}
+                  {dataCourse.quizzes.map((quiz, index) => {
+                    // Kiểm tra xem thời gian làm bài đã hết hay chưa
+                    const isTimeElapsed = hasQuizTimeElapsed(quiz);
+                    return (
+                      <li key={quiz._id} className="mb-2">
+                        <div
+                          className="flex flex-col sm:flex-row justify-between items-center p-3 bg-gray-50 rounded-lg shadow cursor-pointer"
+                          onClick={() =>
+                            !isAdmin &&
+                            !quiz.isCompleted &&
+                            !isTimeElapsed &&
+                            handleStartQuiz(quiz._id, quiz.type)
+                          }
+                        >
+                          <span className="font-medium sm:text-sm">
+                            {index + 1}. {quiz.name}
+                          </span>
+                          <div className="flex flex-col sm:flex-row items-center sm:mt-0">
+                            {!isAdmin && (
+                              <>
+                                {isTimeElapsed ? (
+                                  <span className="px-3 mt-2 py-1 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800 sm:mr-2">
+                                    Đã hết hạn
+                                  </span>
+                                ) : quiz.isCompleted ? (
+                                  <span className="px-3 mt-2 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800 sm:mr-2">
+                                    Đã hoàn thành
+                                  </span>
+                                ) : (
+                                  <span className="px-3 mt-2 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800 sm:mr-2">
+                                    Chưa hoàn thành
+                                  </span>
+                                )}
+                                {!quiz.isCompleted && !isTimeElapsed && (
+                                  <Button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleStartQuiz(quiz._id, quiz.type);
+                                    }}
+                                    className="mt-2 sm:mt-0 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded sm:text-xs"
+                                    loading={loadingQuizzes[quiz._id]}
+                                    type="primary"
+                                  >
+                                    Bắt đầu
+                                  </Button>
+                                )}
+                              </>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </li>
-                  ))}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             ) : null}

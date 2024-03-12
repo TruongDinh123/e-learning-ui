@@ -30,7 +30,6 @@ export default function ViewStudentsCourse() {
   const [viewSuccess, setViewSuccess] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState({});
   const [chartData, setChartData] = useState([]);
-  console.log("🚀 ~ chartData:", chartData);
 
   const handleCourseChange = (value) => {
     setSelectedCourse(value);

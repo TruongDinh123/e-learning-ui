@@ -405,7 +405,6 @@ const courseSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(uploadImageCourse.fulfilled, (state, action) => {
-        console.log("🚀 ~ action:", action);
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
