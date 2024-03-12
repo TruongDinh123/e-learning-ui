@@ -103,6 +103,8 @@ export default function Header() {
         Cookies.remove("Bearer");
         Cookies.remove("refreshToken");
         dispatch(resetState());
+        dispatch(setUserName(null));
+        dispatch(setUser(null));
         dispatch(resetStateCourse());
         dispatch(resetStateCategory());
         dispatch(resetStateLesson());
