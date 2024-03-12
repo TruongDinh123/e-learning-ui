@@ -86,7 +86,6 @@ export default function Courses() {
   };
 
   const courses = useCoursesData();
-  console.log("🚀 ~ courses:", courses);
 
   // viewCourses reload api
   useEffect(() => {

@@ -19,15 +19,13 @@ import {
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-import {
-  logOut,
-  resetState,
-  setUser,
-  setUserName,
-} from "@/features/User/userSlice";
+import { logOut, resetState, setUser, setUserName } from "@/features/User/userSlice";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
+import { getAllCategoryAndSubCourses, resetStateCategory } from "@/features/categories/categorySlice";
+import { resetStateCourse } from "@/features/Courses/courseSlice";
+import { resetStateLesson } from "@/features/Lesson/lessonSlice";
+import { resetStateQuiz } from "@/features/Quiz/quizSlice";
 
 const logo3 = "/images/logo5.png";
 
@@ -105,8 +103,10 @@ export default function Header() {
         Cookies.remove("Bearer");
         Cookies.remove("refreshToken");
         dispatch(resetState());
-        dispatch(setUserName(null));
-        dispatch(setUser(null));
+        dispatch(resetStateCourse());
+        dispatch(resetStateCategory());
+        dispatch(resetStateLesson());
+        dispatch(resetStateQuiz());
         router.push("/");
       })
       .catch((error) => {
