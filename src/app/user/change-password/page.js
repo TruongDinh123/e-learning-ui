@@ -110,8 +110,8 @@ export default function ChangePasswordForm() {
   return (
     <Fragment>
       {contextHolder}
-      <div className="row p-5">
-        <div className="col-lg-12 pb-28">
+      <div className="row pt-[140px] m-4">
+        <div className="col-lg-12 pb-40">
           <div className="card">
             <div className="card-header">
               <h4 className="card-title">Cập nhật mật khẩu</h4>
