@@ -34,49 +34,120 @@ import {
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
 import "./page.css";
 import { isAdmin, isMentor } from "@/middleware";
 import { refreshAUser } from "@/features/User/userSlice";
 
 const { Option } = Select;
 
+import "react-quill/dist/quill.snow.css";
 import "katex/dist/katex.min.css";
-// Import ReactQuill dynamically with SSR disabled
-const ReactQuill = dynamic(() => import("react-quill").then((mod) => mod.default), { ssr: false });
+// import katex from "katex";
 
-// Ensure Quill and related operations are only executed client-side
-if (typeof window !== 'undefined') {
-  const { Quill } = require("react-quill");
+// const Inline = Quill.import("blots/inline");
 
-  const Inline = Quill.import("blots/inline");
+// class FormulaBlot extends Inline {
+//   static create(value) {
+//     let node = super.create();
+//     katex.render(value, node, {
+//       throwOnError: false,
+//       errorColor: "#ff0000",
+//     });
+//     return node;
+//   }
 
-  class FormulaBlot extends Inline {
-    static create(value) {
-      let node = super.create();
-      katex.render(value, node, {
-        throwOnError: false,
-        errorColor: "#ff0000",
-      });
-      return node;
+//   static value(node) {
+//     return node.innerText;
+//   }
+// }
+
+// FormulaBlot.blotName = "formula";
+// FormulaBlot.tagName = "SPAN";
+// FormulaBlot.className = "ql-formula";
+
+// Quill.register("formats/formula", FormulaBlot);
+
+// let Formula = Quill.import('modules/formula');
+// Formula = {
+//   ...Formula,
+// };
+
+// if (window.katex === undefined) {
+//   window.katex = katex;
+// }
+
+
+const ReactQuill = dynamic(
+  () => import("react-quill").then((mod) => mod.default),
+  { ssr: false }
+);
+
+// const loadQuill = dynamic(() => import('react-quill').then((mod) => {
+//   const Quill = mod.Quill;
+//   const katex = require('katex');
+
+//   const Inline = Quill.import("blots/inline");
+
+//   class FormulaBlot extends Inline {
+//     static create(value) {
+//       let node = super.create();
+//       katex.render(value, node, {
+//         throwOnError: false,
+//         errorColor: "#ff0000",
+//       });
+//       return node;
+//     }
+
+//     static value(node) {
+//       return node.innerText;
+//     }
+//   }
+
+//   FormulaBlot.blotName = "formula";
+//   FormulaBlot.tagName = "SPAN";
+//   FormulaBlot.className = "ql-formula";
+
+//   Quill.register("formats/formula", FormulaBlot);
+
+//   if (typeof window !== "undefined" && window.katex === undefined) {
+//     window.katex = katex;
+//   }
+// }), { ssr: false });
+
+const setupQuill = () => {
+  if (typeof window !== 'undefined') {
+    const Quill = require('react-quill').Quill;
+    const katex = require('katex');
+
+    const Inline = Quill.import('blots/inline');
+
+    class FormulaBlot extends Inline {
+      static create(value) {
+        let node = super.create();
+        katex.render(value, node, {
+          throwOnError: false,
+          errorColor: '#ff0000',
+        });
+        return node;
+      }
+
+      static value(node) {
+        return node.innerText;
+      }
     }
 
-    static value(node) {
-      return node.innerText;
+    FormulaBlot.blotName = 'formula';
+    FormulaBlot.tagName = 'SPAN';
+    FormulaBlot.className = 'ql-formula';
+
+    Quill.register('formats/formula', FormulaBlot);
+
+    if (window.katex === undefined) {
+      window.katex = katex;
     }
   }
+};
 
-  FormulaBlot.blotName = "formula";
-  FormulaBlot.tagName = "SPAN";
-  FormulaBlot.className = "ql-formula";
-
-  Quill.register("formats/formula", FormulaBlot);
-
-  let Formula = Quill.import('modules/formula');
-  Formula = {
-    ...Formula,
-  };
-}
 
 export default function QuizCreator() {
   const [messageApi, contextHolder] = message.useMessage();
@@ -96,6 +167,11 @@ export default function QuizCreator() {
   const router = useRouter();
 
   const quillRef = useRef(null);
+
+  useEffect(() => {
+    setupQuill();
+  }, []);
+
 
   // Hàm để thêm công thức toán học vào trình soạn thảo
   const insertFormula = () => {

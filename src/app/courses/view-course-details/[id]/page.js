@@ -27,12 +27,13 @@ export default function CourseDetails({ params }) {
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [isStudentOfCourse, setIsStudentOfCourse] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  console.log("🚀 ~ isAdmin:", isAdmin);
   const [loading, setLoading] = useState(true);
   const [loadingQuizzes, setLoadingQuizzes] = useState({});
   const router = useRouter();
 
   const userState = useSelector((state) => state.user);
-  const isLoggedIn = userState.user?.status === 200 || !!userState.userName;
+  const isLoggedIn = userState.user?.status === 200 || !!userState.userName || userState.isSuccess
 
   const fetchData = useCallback(async () => {
     setLoading(true);

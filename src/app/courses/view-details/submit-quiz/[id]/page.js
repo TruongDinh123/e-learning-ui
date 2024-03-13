@@ -156,6 +156,7 @@ export default function Quizs({ params }) {
         await messageApi.open({
           type: "Thành công",
           content: "Đang nộp bài...",
+          style: { fontSize: "25px" },
         });
         setQuizSubmission(res.metadata);
         setSubmitted(true);
@@ -274,8 +275,7 @@ export default function Quizs({ params }) {
           )}
         </>
       )}
-
-      <Breadcrumb className="pb-2">
+      <Breadcrumb className="pb-4 pt-24 ">
         <Breadcrumb.Item>
           <Link href="/">Trang chủ</Link>
         </Breadcrumb.Item>
@@ -300,7 +300,7 @@ export default function Quizs({ params }) {
           </>
         ))}
       </Breadcrumb>
-      <div className="pt-24 pb-48 flex justify-center items-center bg-blue-200">
+      <div className="pb-48 flex justify-center items-center bg-blue-200">
         <div className="w-full md:w-2/3 lg:w-1/2">
           {contextHolder}
           {loading ? (
@@ -410,12 +410,14 @@ export default function Quizs({ params }) {
                     </div>
                     <div className="mt-4">
                       {!isTimeExceeded && !submitted && !isComplete && (
-                        <button
+                        <Button
+                          loading={submitting}
                           onClick={handleSubmit}
-                          className="mr-3 px-4 py-2 bg-purple-500 text-white font-bold rounded hover:bg-purple-600 transition duration-300"
+                          size="large"
+                          className="mr-3 px-4 text-center bg-purple-500 text-white font-bold rounded hover:bg-purple-600 transition duration-300"
                         >
                           Nộp bài
-                        </button>
+                        </Button>
                       )}
                       {isComplete && (
                         <div className="text-center text-sm text-blue-500">
@@ -454,6 +456,28 @@ export default function Quizs({ params }) {
                           >
                             Xem điểm
                           </a>
+                          <div className="pt-4">
+                            {quizSubmission && (
+                              <div className="bg-white shadow-lg rounded-lg p-5">
+                                <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                                  Kết quả bài kiểm tra
+                                </h3>
+                                <p className="text-lg text-gray-700">
+                                  Điểm số của bạn:{" "}
+                                  <span className="font-bold text-green-500">
+                                    {quizSubmission?.score}
+                                  </span>
+                                </p>
+                                <p className="text-lg text-gray-700">
+                                  Số câu trả lời đúng:{" "}
+                                  <span className="font-bold text-blue-500">
+                                    {correctAnswersCount}
+                                  </span>
+                                  /{totalQuestions}
+                                </p>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       )}
                       {isTimeExceeded && !isComplete && (

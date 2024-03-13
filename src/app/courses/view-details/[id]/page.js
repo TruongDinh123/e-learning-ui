@@ -567,7 +567,7 @@ export default function ViewQuiz({ params }) {
         paddingBottom: "100px",
       }}
     >
-      <Breadcrumb className="mt-9">
+      <Breadcrumb className="pt-28">
         <Breadcrumb.Item>
           <Link href="/">Trang chủ</Link>
         </Breadcrumb.Item>
