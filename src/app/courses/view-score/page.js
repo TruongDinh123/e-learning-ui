@@ -198,13 +198,13 @@ const ScoreManagement = () => {
   });
 
   return (
-    <div className="p-5">
+    <div className="p-5 pt-20">
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />
         </div>
       ) : (
-        <div className="pb-28">
+        <div className="pb-28 pt-20">
           <Select
             defaultValue="tất cả"
             style={{ width: 120 }}

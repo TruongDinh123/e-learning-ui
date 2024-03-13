@@ -157,7 +157,7 @@ export default function CourseDetails({ params }) {
 
   return (
     <div
-      className="flex flex-col md:h-[130vh] h-full text-black overflow-auto pt-4"
+      className="flex flex-col md:h-[130vh] h-full text-black overflow-auto pt-28"
       style={{ minHeight: "200vh" }}
     >
       {loading ? (

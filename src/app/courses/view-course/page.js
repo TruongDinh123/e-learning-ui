@@ -15,7 +15,6 @@ import "react-quill/dist/quill.snow.css";
 export default function Course() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
-  console.log("🚀 ~ course:", course);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -25,7 +24,6 @@ export default function Course() {
       setIsLoading(true);
       try {
         const res = await dispatch(getCourseSummary()).then(unwrapResult);
-        console.log("🚀 ~ res:", res);
         if (res.status) {
           setCourse(res.metadata);
         }
@@ -47,7 +45,7 @@ export default function Course() {
   );
 
   return (
-    <div className="mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-24">
       <Breadcrumb className="pt-3 pl-5">
         <Breadcrumb.Item>
           <Link href="/">Trang chủ</Link>
