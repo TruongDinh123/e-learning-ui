@@ -42,9 +42,6 @@ import { refreshAUser } from "@/features/User/userSlice";
 const { Option } = Select;
 
 import "katex/dist/katex.min.css";
-import { Quill } from "react-quill";
-import katex from "katex";
-
 
 // Import ReactQuill dynamically with SSR disabled
 const ReactQuill = dynamic(() => import("react-quill").then((mod) => mod.default), { ssr: false });
