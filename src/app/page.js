@@ -166,17 +166,19 @@ export default function Home1() {
                           <h3 className="text-lg font-semibold text-blue-950 mb-1 line-clamp-1">
                             {course.name}
                           </h3>
-                          <p
-                            className={`overflow-hidden text-sm text-gray-600 mb-4 line-clamp-2 ${
-                              isMobile ? "view ql-editor" : ""
-                            }`}
-                            dangerouslySetInnerHTML={{
-                              __html: `${
-                                course?.title ||
-                                "Thông tin khóa học chưa được cập nhật"
-                              }`,
-                            }}
-                          />
+                          {isMobile ? null : (
+                            <p
+                              className={`overflow-hidden text-sm text-gray-600 mb-4 line-clamp-2 ${
+                                isMobile ? "view ql-editor" : ""
+                              }`}
+                              dangerouslySetInnerHTML={{
+                                __html: `${
+                                  course?.title ||
+                                  "Thông tin khóa học chưa được cập nhật"
+                                }`,
+                              }}
+                            />
+                          )}
                           <p className="text-sm text-gray-900 font-medium mb-4 line-clamp-1">
                             {course?.teacher?.lastName
                               ? `${course.teacher.lastName} ${course.teacher.firstName}`
@@ -252,13 +254,13 @@ export default function Home1() {
                                 width="150"
                                 height="150"
                               />
-                              <div className="flex-grow">
-                                <div className="text-yellow-500 text-lg font-semibold mb-1">
-                                  {course.category?.name}
-                                </div>
-                                <h3 className="text-lg font-semibold text-blue-950 mb-1 line-clamp-1">
-                                  {course.name}
-                                </h3>
+                              <div className="text-yellow-500 text-lg font-semibold mb-1">
+                                {course.category?.name}
+                              </div>
+                              <h3 className="text-lg font-semibold text-blue-950 mb-1 line-clamp-1">
+                                {course.name}
+                              </h3>
+                              {isMobile ? null : (
                                 <p
                                   className={`overflow-hidden text-sm text-gray-600 mb-4 line-clamp-2 ${
                                     isMobile ? "view ql-editor" : ""
@@ -270,12 +272,12 @@ export default function Home1() {
                                     }`,
                                   }}
                                 />
-                                <p className="text-sm text-gray-900 font-medium mb-4 line-clamp-1">
-                                  {course?.teacher?.lastName
-                                    ? `${course.teacher.lastName} ${course.teacher.firstName}`
-                                    : "Chưa có giáo viên"}
-                                </p>
-                              </div>
+                              )}
+                              <p className="text-sm text-gray-900 font-medium mb-4 line-clamp-1">
+                                {course?.teacher?.lastName
+                                  ? `${course.teacher.lastName} ${course.teacher.firstName}`
+                                  : "Chưa có giáo viên"}
+                              </p>
                             </Link>
                           </div>
                         </Slide>
