@@ -68,17 +68,10 @@ FormulaBlot.className = "ql-formula";
 
 Quill.register("formats/formula", FormulaBlot);
 
-// Định nghĩa lại module 'formula' nếu cần thiết
 let Formula = Quill.import('modules/formula');
 Formula = {
   ...Formula,
-  // Cấu hình thêm cho Formula nếu cần
 };
-
-// Đảm bảo rằng katex có sẵn trên window để Quill có thể sử dụng
-if (window.katex === undefined) {
-  window.katex = katex;
-}
 
 
 const ReactQuill = dynamic(
