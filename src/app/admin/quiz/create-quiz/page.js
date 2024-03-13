@@ -42,42 +42,46 @@ import { refreshAUser } from "@/features/User/userSlice";
 const { Option } = Select;
 
 import "katex/dist/katex.min.css";
+import { Quill } from "react-quill";
+import katex from "katex";
 
-// Import ReactQuill dynamically with SSR disabled
-const ReactQuill = dynamic(() => import("react-quill").then((mod) => mod.default), { ssr: false });
+const Inline = Quill.import("blots/inline");
 
-// Ensure Quill and related operations are only executed client-side
-if (typeof window !== 'undefined') {
-  const { Quill } = require("react-quill");
-
-  const Inline = Quill.import("blots/inline");
-
-  class FormulaBlot extends Inline {
-    static create(value) {
-      let node = super.create();
-      katex.render(value, node, {
-        throwOnError: false,
-        errorColor: "#ff0000",
-      });
-      return node;
-    }
-
-    static value(node) {
-      return node.innerText;
-    }
+class FormulaBlot extends Inline {
+  static create(value) {
+    let node = super.create();
+    katex.render(value, node, {
+      throwOnError: false,
+      errorColor: "#ff0000",
+    });
+    return node;
   }
 
-  FormulaBlot.blotName = "formula";
-  FormulaBlot.tagName = "SPAN";
-  FormulaBlot.className = "ql-formula";
-
-  Quill.register("formats/formula", FormulaBlot);
-
-  let Formula = Quill.import('modules/formula');
-  Formula = {
-    ...Formula,
-  };
+  static value(node) {
+    return node.innerText;
+  }
 }
+
+FormulaBlot.blotName = "formula";
+FormulaBlot.tagName = "SPAN";
+FormulaBlot.className = "ql-formula";
+
+Quill.register("formats/formula", FormulaBlot);
+
+let Formula = Quill.import('modules/formula');
+Formula = {
+  ...Formula,
+};
+
+if (window.katex === undefined) {
+  window.katex = katex;
+}
+
+
+const ReactQuill = dynamic(
+  () => import("react-quill").then((mod) => mod.default),
+  { ssr: false }
+);
 
 export default function QuizCreator() {
   const [messageApi, contextHolder] = message.useMessage();

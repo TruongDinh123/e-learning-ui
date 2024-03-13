@@ -45,7 +45,7 @@ export default function Quizs({ params }) {
     const fetchQuizInfo = async () => {
       setLoading(true);
       try {
-        const storedQuiz = quizzesByStudentState.find(
+        const storedQuiz = quizzesByStudentState?.find(
           (quiz) => quiz._id === params?.id
         );
         if (storedQuiz) {
@@ -64,7 +64,7 @@ export default function Quizs({ params }) {
 
         const scoreResult = await dispatch(getScore()).then(unwrapResult);
         if (scoreResult.status) {
-          const completedQuiz = scoreResult.metadata.find(
+          const completedQuiz = scoreResult?.metadata?.find(
             (quiz) => quiz.quiz?._id === params?.id
           );
           if (completedQuiz) {
