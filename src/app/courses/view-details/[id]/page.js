@@ -10,6 +10,7 @@ import {
   Badge,
   Empty,
   message,
+  Tooltip,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -315,7 +316,7 @@ export default function ViewQuiz({ params }) {
           >
             <div className="p-4">
               <h5 className="text-lg font-semibold mb-2 truncate">
-                {item.name}
+                <Tooltip title={item.name}>{item.name}</Tooltip>
               </h5>
               <p className="text-sm text-gray-500 mb-4">
                 Hạn nộp bài:{" "}
@@ -347,36 +348,37 @@ export default function ViewQuiz({ params }) {
   // Component hiển thị khóa học hoàn thành
   const NonExpiredCoursesComponent = () => {
     const completedQuizzes = filteredQuizzes
-    ?.filter((quiz) => {
-      const correspondingScore = score.find((s) => s.quiz?._id === quiz?._id);
-      return correspondingScore?.isComplete;
-    })
-    .map((quiz, index) => ({
-      key: index + 1,
-      name: quiz?.name,
-      submissionTime: quiz?.submissionTime
-        ? DateTime.fromISO(quiz?.submissionTime)
-            .setLocale("vi")
-            .toLocaleString(DateTime.DATETIME_SHORT)
-        : null,
-      isComplete: "Đã hoàn thành",
-      type: quiz?.type,
-      _id: quiz._id,
-      questions: (
-        <Button
-          className="me-3"
-          style={{ width: "100%" }}
-          onClick={() => {
-            const path = quiz?.type === "multiple_choice"
-              ? `/courses/view-details/submit-quiz/${quiz._id}`
-              : `/courses/view-details/handle-submit-essay/${quiz._id}`;
-            router.push(path);
-          }}
-        >
-          Xem chi tiết
-        </Button>
-      ),
-    }));
+      ?.filter((quiz) => {
+        const correspondingScore = score.find((s) => s.quiz?._id === quiz?._id);
+        return correspondingScore?.isComplete;
+      })
+      .map((quiz, index) => ({
+        key: index + 1,
+        name: quiz?.name,
+        submissionTime: quiz?.submissionTime
+          ? DateTime.fromISO(quiz?.submissionTime)
+              .setLocale("vi")
+              .toLocaleString(DateTime.DATETIME_SHORT)
+          : null,
+        isComplete: "Đã hoàn thành",
+        type: quiz?.type,
+        _id: quiz._id,
+        questions: (
+          <Button
+            className="me-3"
+            style={{ width: "100%" }}
+            onClick={() => {
+              const path =
+                quiz?.type === "multiple_choice"
+                  ? `/courses/view-details/submit-quiz/${quiz._id}`
+                  : `/courses/view-details/handle-submit-essay/${quiz._id}`;
+              router.push(path);
+            }}
+          >
+            Xem chi tiết
+          </Button>
+        ),
+      }));
 
     useEffect(() => {
       setNonExpiredCount(completedQuizzes.length);
@@ -397,7 +399,7 @@ export default function ViewQuiz({ params }) {
               >
                 <div className="p-4">
                   <h5 className="text-lg font-semibold mb-2 truncate">
-                    {item.name}
+                    <Tooltip title={item.name}>{item.name}</Tooltip>
                   </h5>
                   <p className="text-sm text-gray-500 mb-4">
                     Hạn nộp bài:{" "}
@@ -494,7 +496,7 @@ export default function ViewQuiz({ params }) {
               >
                 <div className="p-4">
                   <h5 className="text-lg font-semibold mb-2 truncate">
-                    {item.name}
+                    <Tooltip title={item.name}>{item.name}</Tooltip>
                   </h5>
                   <p className="text-sm text-gray-500 mb-4">
                     Hạn nộp bài:{" "}

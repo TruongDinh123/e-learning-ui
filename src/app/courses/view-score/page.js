@@ -170,11 +170,20 @@ const ScoreManagement = () => {
                                 {idxOption + 1}: {option}
                               </p>
                             ))}
+                            {question?.image_url && (
+                              <div className="mb-2">
+                                <img
+                                  src={question.image_url}
+                                  alt={`Câu hỏi ${idxQuestion + 1}`}
+                                  className="max-w-auto"
+                                />
+                              </div>
+                            )}
                             <p className="pt-3 text-green-500 font-bold">
                               <span style={{ color: "red" }}>
                                 Câu trả lời của bạn:
                               </span>{" "}
-                              {answer}
+                              {answer ? answer : "Chưa trả lời"}
                             </p>
                           </div>
                         </List.Item>

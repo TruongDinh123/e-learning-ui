@@ -76,7 +76,6 @@ import "katex/dist/katex.min.css";
 //   window.katex = katex;
 // }
 
-
 const ReactQuill = dynamic(
   () => import("react-quill").then((mod) => mod.default),
   { ssr: false }
@@ -115,18 +114,18 @@ const ReactQuill = dynamic(
 // }), { ssr: false });
 
 const setupQuill = () => {
-  if (typeof window !== 'undefined') {
-    const Quill = require('react-quill').Quill;
-    const katex = require('katex');
+  if (typeof window !== "undefined") {
+    const Quill = require("react-quill").Quill;
+    const katex = require("katex");
 
-    const Inline = Quill.import('blots/inline');
+    const Inline = Quill.import("blots/inline");
 
     class FormulaBlot extends Inline {
       static create(value) {
         let node = super.create();
         katex.render(value, node, {
           throwOnError: false,
-          errorColor: '#ff0000',
+          errorColor: "#ff0000",
         });
         return node;
       }
@@ -136,18 +135,17 @@ const setupQuill = () => {
       }
     }
 
-    FormulaBlot.blotName = 'formula';
-    FormulaBlot.tagName = 'SPAN';
-    FormulaBlot.className = 'ql-formula';
+    FormulaBlot.blotName = "formula";
+    FormulaBlot.tagName = "SPAN";
+    FormulaBlot.className = "ql-formula";
 
-    Quill.register('formats/formula', FormulaBlot);
+    Quill.register("formats/formula", FormulaBlot);
 
     if (window.katex === undefined) {
       window.katex = katex;
     }
   }
 };
-
 
 export default function QuizCreator() {
   const [messageApi, contextHolder] = message.useMessage();
@@ -171,7 +169,6 @@ export default function QuizCreator() {
   useEffect(() => {
     setupQuill();
   }, []);
-
 
   // Hàm để thêm công thức toán học vào trình soạn thảo
   const insertFormula = () => {
@@ -316,6 +313,7 @@ export default function QuizCreator() {
 
   //hàm xử lý save quiz
   const handleSaveQuiz = (values) => {
+    console.log("🚀 ~ values:", values);
     setIsLoading(true);
 
     if (quizType === "multiple_choice") {
