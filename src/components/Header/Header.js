@@ -166,7 +166,7 @@ export default function Header() {
   );
 
   return (
-    <header className="bg-[#02354B] sticky top-0 z-20">
+    <header className="bg-[#02354B] fixed w-full top-0 z-50">
       <div className="max-w-[105rem] mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between h-[75px]">
           <div className="flex items-center">

@@ -1,4 +1,5 @@
 "use client";
+import 'katex/dist/katex.min.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
 import Header from "@/components/Header/Header";

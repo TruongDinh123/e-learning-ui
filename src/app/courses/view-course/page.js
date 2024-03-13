@@ -15,6 +15,7 @@ import "react-quill/dist/quill.snow.css";
 export default function Course() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
+  console.log("🚀 ~ course:", course);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -24,6 +25,7 @@ export default function Course() {
       setIsLoading(true);
       try {
         const res = await dispatch(getCourseSummary()).then(unwrapResult);
+        console.log("🚀 ~ res:", res);
         if (res.status) {
           setCourse(res.metadata);
         }
@@ -63,7 +65,7 @@ export default function Course() {
             <div className="flex justify-center items-center h-screen">
               <Spin />
             </div>
-          ) : course?.length > 0 ? (
+          ) : course.length ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 pb-72">
               {course &&
                 course.map((item, index) => (

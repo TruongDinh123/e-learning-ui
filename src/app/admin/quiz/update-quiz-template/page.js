@@ -27,6 +27,7 @@ import { useRouter } from "next/navigation";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 import dayjs from "dayjs";
+import "react-quill/dist/quill.snow.css";
 
 const ReactQuill = dynamic(
   () => import("react-quill").then((mod) => mod.default),
@@ -101,7 +102,6 @@ export default function UpdateQuizTemplate(props) {
         setIsLoading(false);
       })
       .catch((error) => {
-        
         message.error(error.response?.data?.message, 3.5);
         setIsLoading(false);
       });
@@ -140,9 +140,7 @@ export default function UpdateQuizTemplate(props) {
             setIsLoading(false);
           }
         })
-        .catch((error) => {
-          
-        });
+        .catch((error) => {});
     }
   }, [quizTemplateId, isModalOpen]);
 
@@ -153,7 +151,7 @@ export default function UpdateQuizTemplate(props) {
         type="primary"
         onClick={showModal}
         className="me-3 custom-button"
-        style={{ width: "100%"}}
+        style={{ width: "100%" }}
       >
         Cập nhật
       </Button>
@@ -230,7 +228,37 @@ export default function UpdateQuizTemplate(props) {
                               },
                             ]}
                           >
-                            <Input placeholder="Câu hỏi" />
+                            <ReactQuill
+                              theme="snow"
+                              placeholder="Nhập câu hỏi tại đây"
+                              className="bg-white"
+                              modules={{
+                                toolbar: [
+                                  [{ header: [1, 2, false] }],
+                                  ["bold", "italic", "underline", "strike"], // toggled buttons
+                                  ["blockquote", "code-block"],
+
+                                  [{ list: "ordered" }, { list: "bullet" }],
+                                  [{ script: "sub" }, { script: "super" }], // superscript/subscript
+                                  [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+                                  [{ direction: "rtl" }], // text direction
+                                  ["formula"], // math formula
+
+                                  [
+                                    {
+                                      size: ["small", false, "large", "huge"],
+                                    },
+                                  ], // custom dropdown
+                                  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+                                  [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+                                  [{ font: [] }],
+                                  [{ align: [] }], // text align
+
+                                  ["clean"], // remove formatting button
+                                ],
+                              }}
+                            />
                           </Form.Item>
                           <Form.List name={[field.name, "options"]}>
                             {(subFields, subMeta) => (

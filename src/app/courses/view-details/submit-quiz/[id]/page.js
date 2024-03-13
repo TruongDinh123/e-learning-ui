@@ -16,6 +16,8 @@ import Link from "next/link";
 import "react-quill/dist/quill.snow.css";
 import { useMediaQuery } from "react-responsive";
 
+const logo = "/images/logoimg.jpg";
+
 export default function Quizs({ params }) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [quiz, setquiz] = useState([]);
@@ -30,6 +32,8 @@ export default function Quizs({ params }) {
   const [showCountdown, setShowCountdown] = useState(true);
   const [quizSubmission, setQuizSubmission] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [questionsPerPage] = useState(10);
 
   const quizzesByStudentState = useSelector(
     (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
@@ -84,6 +88,28 @@ export default function Quizs({ params }) {
 
     fetchQuizInfo();
   }, [params?.id, dispatch]);
+
+  const indexOfLastQuestion = currentPage * questionsPerPage;
+  const indexOfFirstQuestion = indexOfLastQuestion - questionsPerPage;
+  const currentQuestions = quiz[0]?.questions?.slice(
+    indexOfFirstQuestion,
+    indexOfLastQuestion
+  );
+
+  const handleNextPage = () => {
+    setCurrentPage(currentPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage(currentPage - 1);
+  };
+
+  useEffect(() => {
+    const savedAnswers = localStorage.getItem("quizAnswers");
+    if (savedAnswers) {
+      setSelectedAnswers(JSON.parse(savedAnswers));
+    }
+  }, []);
 
   const handleAnswer = (questionId, answer) => {
     setSelectedAnswers((prevAnswers) => {
@@ -230,7 +256,7 @@ export default function Quizs({ params }) {
   const isTimeExceeded = currentTime > submissionTime;
 
   return (
-    <div className="bg-gray-200 p-4">
+    <div className="bg-blue-200 p-4">
       {loading ? null : (
         <>
           {showCountdown && !isComplete && deadline && (
@@ -274,8 +300,8 @@ export default function Quizs({ params }) {
           </>
         ))}
       </Breadcrumb>
-      <div className="pt-24 pb-48 flex justify-center items-center overflow-auto bg-gray-200 noCopy">
-        <div className="w-full md:w-2/3">
+      <div className="pt-24 pb-48 flex justify-center items-center bg-blue-200">
+        <div className="w-full md:w-2/3 lg:w-1/2">
           {contextHolder}
           {loading ? (
             <div className="flex justify-center items-center h-screen">
@@ -285,164 +311,158 @@ export default function Quizs({ params }) {
             <React.Fragment>
               {quiz.map((item, index) => (
                 <React.Fragment key={index}>
-                  <Card
-                    key={item._id}
-                    title={item.name}
-                    className="border-2 border-blue-500"
-                  >
+                  <div className="sticky top-16 z-40 bg-white shadow-md p-2 mb-4 flex items-center">
+                    <img src={logo} alt="School Logo" className="h-24 w-auto" />
+                    <h2 className="text-xl font-semibold text-gray-800">
+                      Trung tâm giáo dục Tường Ân - TƯỜNG ÂN EDUCATION
+                    </h2>
+                  </div>
+                  <div className="card bg-white shadow-lg rounded-lg p-6 mb-4">
+                    <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                      {item.name}
+                    </h2>
                     {showCountdown && !isComplete && deadline && (
-                      <>
-                        <span className="text-red-500 block mt-2">
+                      <div className="text-red-500 mb-4">
+                        <p>
                           Lưu ý: Đừng thoát ra khỏi trang khi thời gian làm bài
                           chưa kết thúc.
-                        </span>
-                        <span className="text-red-500 block mt-2">
-                          Khi hết thời gian sẽ tự động nộp bài.
-                        </span>
-                      </>
+                        </p>
+                        <p>Khi hết thời gian sẽ tự động nộp bài.</p>
+                      </div>
                     )}
-                    {item.questions?.map((question, questionIndex) => {
+                    {currentQuestions.map((question, questionIndex) => {
+                      const actualQuestionIndex =
+                        indexOfFirstQuestion + questionIndex + 1;
                       const studentAnswer = isComplete
                         ? studentAnswers[question._id]
                         : selectedAnswers[question._id];
                       return (
                         <div
                           key={questionIndex}
-                          className="border p-4 mb-4 md:p-6 lg:p-8"
+                          className="border-t border-gray-200 pt-4 mt-4 first:border-t-0 first:mt-0"
                         >
-                          <div key={question._id} className="mb-2 p-2">
-                            <span className="mb-2 font-medium text-black">
-                              Câu {questionIndex + 1}:{" "}
+                          <div className="mb-2">
+                            <span className="font-medium text-black">
+                              Câu {actualQuestionIndex}:{" "}
                             </span>
                             <span
-                              className={`overflow-hidden ${
-                                isDesktop ? "view ql-editor" : ""
-                              }`}
                               dangerouslySetInnerHTML={{
                                 __html: `${question.question}`,
                               }}
                             />
-                            {question.image_url && (
-                              <div className="mb-2">
-                                <img
-                                  src={question.image_url}
-                                  alt={`Câu hỏi ${questionIndex + 1}`}
-                                  className="max-w-auto h-64"
-                                />
-                              </div>
-                            )}
                           </div>
-                          <Radio.Group
-                            onChange={(e) =>
-                              handleAnswer(question._id, e.target.value)
-                            }
-                            value={studentAnswer}
-                            disabled={submitted || isComplete}
-                            className="space-y-2 pb-2"
-                          >
+                          {question.image_url && (
+                            <div className="mb-2">
+                              <img
+                                src={question.image_url}
+                                alt={`Câu hỏi ${actualQuestionIndex}`}
+                                className="max-w-full h-auto rounded-lg shadow"
+                              />
+                            </div>
+                          )}
+                          <div className="space-y-2 pb-2">
                             {question.options.map((option) => (
-                              <div key={option} className="pl-4">
-                                <Radio
+                              <label
+                                key={option}
+                                className="flex items-center pl-4"
+                              >
+                                <input
+                                  type="radio"
+                                  name={`question-${question._id}`}
                                   value={option}
+                                  onChange={(e) =>
+                                    handleAnswer(question._id, e.target.value)
+                                  }
                                   checked={option === studentAnswer}
-                                >
+                                  disabled={submitted || isComplete}
+                                  className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out"
+                                />
+                                <span className="ml-2 text-gray-700">
                                   {option}
-                                </Radio>
-                              </div>
+                                </span>
+                              </label>
                             ))}
-                          </Radio.Group>
-                          <div className="space-y-2">
-                            <span className="text-blue-500 text-lg">
-                              Câu trả lời của bạn: {studentAnswer}
-                            </span>
+                          </div>
+                          <div className="text-blue-500">
+                            Câu trả lời của bạn:{" "}
+                            {studentAnswer || "Chưa trả lời"}
                           </div>
                         </div>
                       );
                     })}
-                    <div className="p-4">
-                      {!isTimeExceeded && !submitted && !isComplete && (
-                        <>
-                          <Button
-                            type="primary"
-                            onClick={handleSubmit}
-                            loading={submitting}
-                            className="mr-3 custom-button text-white font-bold px-4 rounded"
-                          >
-                            Nộp bài
-                          </Button>
-                        </>
+                    <div className="flex justify-between mt-4">
+                      {currentPage > 1 && (
+                        <button
+                          onClick={handlePreviousPage}
+                          className="px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition duration-300"
+                        >
+                          Previous
+                        </button>
                       )}
-                      {isComplete ? (
-                        <div className="font-bold text-sm text-blue-500">
+                      {quiz[0]?.questions?.length > indexOfLastQuestion && (
+                        <button
+                          onClick={handleNextPage}
+                          className="px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600 transition duration-300"
+                        >
+                          Next
+                        </button>
+                      )}
+                    </div>
+                    <div className="mt-4">
+                      {!isTimeExceeded && !submitted && !isComplete && (
+                        <button
+                          onClick={handleSubmit}
+                          className="mr-3 px-4 py-2 bg-purple-500 text-white font-bold rounded hover:bg-purple-600 transition duration-300"
+                        >
+                          Nộp bài
+                        </button>
+                      )}
+                      {isComplete && (
+                        <div className="text-center text-sm text-blue-500">
                           <p className="py-4">Bạn đã hoàn thành bài kiểm tra</p>
-                          {quiz?.map((quiz, quizIndex) => (
-                            <Link
+                          {quiz.map((quiz, quizIndex) => (
+                            <a
                               key={quizIndex}
-                              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
                               href={`/courses/view-details/${
                                 quiz.courseIds[0]?._id ||
                                 quiz.lessonId?.courseId?._id
                               }`}
+                              className="inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
                             >
                               Danh sách bài tập
-                            </Link>
+                            </a>
                           ))}
                         </div>
-                      ) : (
-                        <>
-                          {submitted && (
-                            <>
-                              {quiz?.map((quiz, quizIndex) => (
-                                <Link
-                                  key={quizIndex}
-                                  className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded block text-center md:inline-block md:mr-5 lg:px-6 lg:py-3"
-                                  href={`/courses/view-details/${
-                                    quiz.courseIds[0]?._id ||
-                                    quiz.lessonId?.courseId?._id
-                                  }`}
-                                >
-                                  Danh sách bài tập
-                                </Link>
-                              ))}
-                              <Link
-                                href="/courses/view-score"
-                                className="custom-button text-white font-bold py-2 px-4 rounded block text-center md:inline-block md:mr-5 lg:px-6 lg:py-3"
-                              >
-                                Xem điểm
-                              </Link>
-                              <div className="pt-4">
-                                {quizSubmission && (
-                                  <div className="bg-white shadow-lg rounded-lg p-5">
-                                    <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                                      Kết quả bài kiểm tra
-                                    </h3>
-                                    <p className="text-lg text-gray-700">
-                                      Điểm số của bạn:{" "}
-                                      <span className="font-bold text-green-500">
-                                        {quizSubmission?.score}
-                                      </span>
-                                    </p>
-                                    <p className="text-lg text-gray-700">
-                                      Số câu trả lời đúng:{" "}
-                                      <span className="font-bold text-blue-500">
-                                        {correctAnswersCount}
-                                      </span>
-                                      /{totalQuestions}
-                                    </p>
-                                  </div>
-                                )}
-                              </div>
-                            </>
-                          )}
-                        </>
+                      )}
+                      {submitted && (
+                        <div className="text-center">
+                          {quiz.map((quiz, quizIndex) => (
+                            <a
+                              key={quizIndex}
+                              href={`/courses/view-details/${
+                                quiz.courseIds[0]?._id ||
+                                quiz.lessonId?.courseId?._id
+                              }`}
+                              className="inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2"
+                            >
+                              Danh sách bài tập
+                            </a>
+                          ))}
+                          <a
+                            href="/courses/view-score"
+                            className="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                          >
+                            Xem điểm
+                          </a>
+                        </div>
                       )}
                       {isTimeExceeded && !isComplete && (
-                        <div className="font-bold text-sm">
+                        <div className="font-bold text-sm text-red-500">
                           Thời gian làm bài đã hết
                         </div>
                       )}
                     </div>
-                  </Card>
+                  </div>
                 </React.Fragment>
               ))}
             </React.Fragment>

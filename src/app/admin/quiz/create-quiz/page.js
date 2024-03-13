@@ -18,7 +18,7 @@ import {
   Result,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { selectCourse } from "@/features/Courses/courseSlice";
 import {
@@ -33,13 +33,53 @@ import {
   UploadOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
-import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
 import "./page.css";
 import { isAdmin, isMentor } from "@/middleware";
 import { refreshAUser } from "@/features/User/userSlice";
 
 const { Option } = Select;
+
+import "katex/dist/katex.min.css";
+import { Quill } from "react-quill";
+import katex from "katex";
+
+const Inline = Quill.import("blots/inline");
+
+class FormulaBlot extends Inline {
+  static create(value) {
+    let node = super.create();
+    katex.render(value, node, {
+      throwOnError: false,
+      errorColor: "#ff0000",
+    });
+    return node;
+  }
+
+  static value(node) {
+    return node.innerText;
+  }
+}
+
+FormulaBlot.blotName = "formula";
+FormulaBlot.tagName = "SPAN";
+FormulaBlot.className = "ql-formula";
+
+Quill.register("formats/formula", FormulaBlot);
+
+// Định nghĩa lại module 'formula' nếu cần thiết
+let Formula = Quill.import('modules/formula');
+Formula = {
+  ...Formula,
+  // Cấu hình thêm cho Formula nếu cần
+};
+
+// Đảm bảo rằng katex có sẵn trên window để Quill có thể sử dụng
+if (window.katex === undefined) {
+  window.katex = katex;
+}
+
 
 const ReactQuill = dynamic(
   () => import("react-quill").then((mod) => mod.default),
@@ -62,6 +102,23 @@ export default function QuizCreator() {
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
   const router = useRouter();
+
+  const quillRef = useRef(null);
+
+  // Hàm để thêm công thức toán học vào trình soạn thảo
+  const insertFormula = () => {
+    const quill = quillRef.current.getEditor(); // Lấy instance của Quill editor
+    const range = quill.getSelection();
+    if (range) {
+      quill.insertText(range.index, " ", Quill.sources.USER);
+      quill.insertEmbed(
+        range.index + 1,
+        "formula",
+        "\\frac{a}{b}",
+        Quill.sources.USER
+      );
+    }
+  };
 
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
@@ -194,7 +251,6 @@ export default function QuizCreator() {
     setIsLoading(true);
 
     if (quizType === "multiple_choice") {
-    
       const questionWithoutOptionsIndex = values?.questions?.findIndex(
         (q) => !q?.options || q?.options?.length === 0
       );
@@ -509,10 +565,16 @@ export default function QuizCreator() {
   const handleFinishFailed = (errorInfo) => {
     // Kiểm tra nếu người dùng chưa chọn khóa học và không phải là tạo bài tập mẫu
     if (!selectedCourse.length && !isTemplateMode) {
-      message.warning("Vui lòng chọn ít nhất một khóa học trước khi tiếp tục.", 3.5);
+      message.warning(
+        "Vui lòng chọn ít nhất một khóa học trước khi tiếp tục.",
+        3.5
+      );
     }
     if (!selectedStudents.length && !isTemplateMode) {
-      message.warning("Vui lòng chọn ít nhất một học viên trước khi tiếp tục.", 3.5);
+      message.warning(
+        "Vui lòng chọn ít nhất một học viên trước khi tiếp tục.",
+        3.5
+      );
     }
   };
 
@@ -811,6 +873,7 @@ export default function QuizCreator() {
                                   theme="snow"
                                   placeholder="Nhập câu hỏi tại đây"
                                   className="bg-white"
+                                  ref={quillRef}
                                   modules={{
                                     toolbar: [
                                       [{ header: [1, 2, false] }],
@@ -821,6 +884,7 @@ export default function QuizCreator() {
                                       [{ script: "sub" }, { script: "super" }], // superscript/subscript
                                       [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
                                       [{ direction: "rtl" }], // text direction
+                                      ["formula"], // math formula
 
                                       [
                                         {
@@ -840,6 +904,8 @@ export default function QuizCreator() {
 
                                       ["clean"], // remove formatting button
                                     ],
+                                    // Đảm bảo rằng module 'formula' được thêm vào đây
+                                    formula: true,
                                   }}
                                 />
                               </Form.Item>
