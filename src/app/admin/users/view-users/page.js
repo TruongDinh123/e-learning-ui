@@ -76,6 +76,7 @@ export default function ViewUsers() {
   ];
   //viewUsers api
   const allUsersStore = useSelector((state) => state?.user?.allUsers);
+  console.log("🚀 ~ allUsersStore:", allUsersStore);
   const allRolesStore = useSelector((state) => state?.user?.allRoles);
 
   useEffect(() => {
@@ -97,7 +98,7 @@ export default function ViewUsers() {
           setIsLoading(false);
         });
     }
-  }, [updateUser, dispatch, messageApi]);
+  }, [dispatch, messageApi]);
 
   useEffect(() => {
     if (allRolesStore?.metadata?.length > 0) {
@@ -132,6 +133,16 @@ export default function ViewUsers() {
     );
   });
 
+  const optimisticUpdateUser = (updatedUser) => {
+    const updatedUsers = user.map((u) => {
+      if (u._id === updatedUser._id) {
+        return { ...u, ...updatedUser };
+      }
+      return u;
+    });
+    setUser(updatedUsers);
+  };
+
   //table data
   let data = [];
   filteredUsers.forEach((i, index) => {
@@ -139,7 +150,11 @@ export default function ViewUsers() {
     if (!i?.roles.some((role) => role.name === "Super-Admin")) {
       menuItems.push(
         <Menu.Item key={index}>
-          <EditUser id={i?._id} refresh={() => setUpdateUser(updateUser + 1)} />
+          <EditUser
+            id={i?._id}
+            refresh={() => setUpdateUser(updateUser + 1)}
+            optimisticUpdateUser={optimisticUpdateUser}
+          />
         </Menu.Item>,
         <Menu.Item key={index}>
           <Popconfirm
@@ -183,6 +198,7 @@ export default function ViewUsers() {
               <EditUser
                 id={i?._id}
                 refresh={() => setUpdateUser(updateUser + 1)}
+                optimisticUpdateUser={optimisticUpdateUser}
               />
               <Popconfirm
                 title="Xóa người dùng"

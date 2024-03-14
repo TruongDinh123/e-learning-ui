@@ -1,7 +1,7 @@
 "use client";
-import { getScoreByQuizId } from "@/features/Quiz/quizSlice";
+import { deleteScorebyQuiz, getScoreByQuizId } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Empty, Spin, Table, message } from "antd";
+import { Button, Empty, Spin, Table, message } from "antd";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -60,7 +60,32 @@ export default function ScoreStatisticsCourse(props) {
         return text ? text : "Giáo viên chưa chấm";
       },
     },
+    {
+      title: 'Hành động',
+      key: 'action',
+      render: (_, record) => (
+        <Button danger onClick={() => handleDeleteStudentScore({ scoreId: record._id })}>Xóa</Button>
+      ),
+    },
   ];
+
+  const handleDeleteStudentScore = ({ scoreId }) => {
+    const updatedScores = score.filter((item) => item._id !== scoreId);
+    setScore(updatedScores);
+  
+    dispatch(deleteScorebyQuiz({ scoreId }))
+      .then(unwrapResult)
+      .then((res) => {
+        if (!res.status) {
+          message.error("Có lỗi xảy ra khi xóa học viên. Vui lòng thử lại.");
+          setScore((prevScores) => [...prevScores, score.find((item) => item._id === scoreId)]);
+        }
+      })
+      .catch((error) => {
+        message.error("Có lỗi xảy ra khi xóa học viên. Vui lòng thử lại.");
+        setScore((prevScores) => [...prevScores, score.find((item) => item._id === scoreId)]);
+      });
+  };
 
   return (
     <div>

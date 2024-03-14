@@ -42,7 +42,7 @@ export default function ViewListQuestion({ params }) {
         if (res.status) {
           setScore(res.metadata);
         }
-      })
+      });
   }, []);
 
   // const handleDeleteQuiz = ({ quizId, questionId }) => {
@@ -131,7 +131,9 @@ export default function ViewListQuestion({ params }) {
                                       Câu {questionIndex + 1}:
                                     </span>{" "}
                                     <span
-                                      className={`overflow-hidden ${isDesktop ? 'view ql-editor' : ''}`}
+                                      className={`overflow-hidden ${
+                                        isDesktop ? "view ql-editor" : ""
+                                      }`}
                                       dangerouslySetInnerHTML={{
                                         __html: `${question.question}`,
                                       }}

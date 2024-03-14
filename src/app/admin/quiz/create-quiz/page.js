@@ -18,7 +18,7 @@ import {
   Result,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { selectCourse } from "@/features/Courses/courseSlice";
 import {
@@ -41,110 +41,15 @@ import { refreshAUser } from "@/features/User/userSlice";
 const { Option } = Select;
 
 import "react-quill/dist/quill.snow.css";
-import "katex/dist/katex.min.css";
-// import katex from "katex";
-
-// const Inline = Quill.import("blots/inline");
-
-// class FormulaBlot extends Inline {
-//   static create(value) {
-//     let node = super.create();
-//     katex.render(value, node, {
-//       throwOnError: false,
-//       errorColor: "#ff0000",
-//     });
-//     return node;
-//   }
-
-//   static value(node) {
-//     return node.innerText;
-//   }
-// }
-
-// FormulaBlot.blotName = "formula";
-// FormulaBlot.tagName = "SPAN";
-// FormulaBlot.className = "ql-formula";
-
-// Quill.register("formats/formula", FormulaBlot);
-
-// let Formula = Quill.import('modules/formula');
-// Formula = {
-//   ...Formula,
-// };
-
-// if (window.katex === undefined) {
-//   window.katex = katex;
-// }
+import Editor from "@/config/quillConfig";
 
 const ReactQuill = dynamic(
   () => import("react-quill").then((mod) => mod.default),
   { ssr: false }
 );
 
-// const loadQuill = dynamic(() => import('react-quill').then((mod) => {
-//   const Quill = mod.Quill;
-//   const katex = require('katex');
-
-//   const Inline = Quill.import("blots/inline");
-
-//   class FormulaBlot extends Inline {
-//     static create(value) {
-//       let node = super.create();
-//       katex.render(value, node, {
-//         throwOnError: false,
-//         errorColor: "#ff0000",
-//       });
-//       return node;
-//     }
-
-//     static value(node) {
-//       return node.innerText;
-//     }
-//   }
-
-//   FormulaBlot.blotName = "formula";
-//   FormulaBlot.tagName = "SPAN";
-//   FormulaBlot.className = "ql-formula";
-
-//   Quill.register("formats/formula", FormulaBlot);
-
-//   if (typeof window !== "undefined" && window.katex === undefined) {
-//     window.katex = katex;
-//   }
-// }), { ssr: false });
-
-const setupQuill = () => {
-  if (typeof window !== "undefined") {
-    const Quill = require("react-quill").Quill;
-    const katex = require("katex");
-
-    const Inline = Quill.import("blots/inline");
-
-    class FormulaBlot extends Inline {
-      static create(value) {
-        let node = super.create();
-        katex.render(value, node, {
-          throwOnError: false,
-          errorColor: "#ff0000",
-        });
-        return node;
-      }
-
-      static value(node) {
-        return node.innerText;
-      }
-    }
-
-    FormulaBlot.blotName = "formula";
-    FormulaBlot.tagName = "SPAN";
-    FormulaBlot.className = "ql-formula";
-
-    Quill.register("formats/formula", FormulaBlot);
-
-    if (window.katex === undefined) {
-      window.katex = katex;
-    }
-  }
+const htmlToJson = (html) => {
+  return JSON.stringify(html);
 };
 
 export default function QuizCreator() {
@@ -163,27 +68,6 @@ export default function QuizCreator() {
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
   const router = useRouter();
-
-  const quillRef = useRef(null);
-
-  useEffect(() => {
-    setupQuill();
-  }, []);
-
-  // Hàm để thêm công thức toán học vào trình soạn thảo
-  const insertFormula = () => {
-    const quill = quillRef.current.getEditor(); // Lấy instance của Quill editor
-    const range = quill.getSelection();
-    if (range) {
-      quill.insertText(range.index, " ", Quill.sources.USER);
-      quill.insertEmbed(
-        range.index + 1,
-        "formula",
-        "\\frac{a}{b}",
-        Quill.sources.USER
-      );
-    }
-  };
 
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
@@ -313,7 +197,6 @@ export default function QuizCreator() {
 
   //hàm xử lý save quiz
   const handleSaveQuiz = (values) => {
-    console.log("🚀 ~ values:", values);
     setIsLoading(true);
 
     if (quizType === "multiple_choice") {
@@ -607,6 +490,7 @@ export default function QuizCreator() {
 
   // Handle quiz template selection
   const handleQuizTemplateChange = (value) => {
+    console.log(value);
     setSelectedQuizTemplate(value);
     if (value) {
       const selectedTemplate = quizTemplates.find(
@@ -935,43 +819,18 @@ export default function QuizCreator() {
                                   },
                                 ]}
                               >
-                                <ReactQuill
-                                  theme="snow"
+                                <Editor
                                   placeholder="Nhập câu hỏi tại đây"
-                                  className="bg-white"
-                                  ref={quillRef}
-                                  modules={{
-                                    toolbar: [
-                                      [{ header: [1, 2, false] }],
-                                      ["bold", "italic", "underline", "strike"], // toggled buttons
-                                      ["blockquote", "code-block"],
-
-                                      [{ list: "ordered" }, { list: "bullet" }],
-                                      [{ script: "sub" }, { script: "super" }], // superscript/subscript
-                                      [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
-                                      [{ direction: "rtl" }], // text direction
-                                      ["formula"], // math formula
-
-                                      [
-                                        {
-                                          size: [
-                                            "small",
-                                            false,
-                                            "large",
-                                            "huge",
-                                          ],
-                                        },
-                                      ], // custom dropdown
-                                      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-                                      [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-                                      [{ font: [] }],
-                                      [{ align: [] }], // text align
-
-                                      ["clean"], // remove formatting button
-                                    ],
-                                    // Đảm bảo rằng module 'formula' được thêm vào đây
-                                    formula: true,
+                                  value={form.getFieldValue([
+                                    "questions",
+                                    field.name,
+                                    "question",
+                                  ])}
+                                  onChange={(html) => {
+                                    const jsonValue = htmlToJson(html);
+                                    form.setFieldValue({
+                                      [field.name]: { question: jsonValue },
+                                    });
                                   }}
                                 />
                               </Form.Item>

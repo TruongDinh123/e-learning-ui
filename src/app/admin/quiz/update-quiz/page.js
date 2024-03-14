@@ -28,11 +28,16 @@ import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 import dayjs from "dayjs";
 import "react-quill/dist/quill.snow.css";
+import Editor from "@/config/quillConfig";
 
 const ReactQuill = dynamic(
   () => import("react-quill").then((mod) => mod.default),
   { ssr: false }
 );
+
+const htmlToJson = (html) => {
+  return JSON.stringify(html);
+};
 
 export default function UpdateQuiz(props) {
   const { quizId, courseIds, refresh } = props;
@@ -310,35 +315,14 @@ export default function UpdateQuiz(props) {
                               },
                             ]}
                           >
-                            <ReactQuill
-                              theme="snow"
+                            <Editor
                               placeholder="Nhập câu hỏi tại đây"
-                              className="bg-white"
-                              modules={{
-                                toolbar: [
-                                  [{ header: [1, 2, false] }],
-                                  ["bold", "italic", "underline", "strike"],
-                                  ["blockquote", "code-block"],
-
-                                  [{ list: "ordered" }, { list: "bullet" }],
-                                  [{ script: "sub" }, { script: "super" }],
-                                  [{ indent: "-1" }, { indent: "+1" }][
-                                    { direction: "rtl" }
-                                  ],
-
-                                  [
-                                    {
-                                      size: ["small", false, "large", "huge"],
-                                    },
-                                  ],
-                                  [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-                                  [{ color: [] }, { background: [] }],
-                                  [{ font: [] }],
-                                  [{ align: [] }], // text align
-
-                                  ["clean"],
-                                ],
+                              value={form.getFieldValue(["questions", field.name, "question"])}
+                              onChange={(html) => {
+                                const jsonValue = htmlToJson(html);
+                                form.setFieldValue({
+                                  [field.name]: { question: jsonValue },
+                                });
                               }}
                             />
                           </Form.Item>

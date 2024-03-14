@@ -4,7 +4,10 @@ import { Button, Checkbox, Empty, Spin, Tabs, message } from "antd";
 import StudentWork from "../trainee-work/page";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { getScoreByQuizId, updateScore } from "@/features/Quiz/quizSlice";
+import {
+  getScoreByQuizId,
+  updateScore,
+} from "@/features/Quiz/quizSlice";
 import "./page.css";
 const { TabPane } = Tabs;
 
@@ -153,7 +156,8 @@ export default function ViewListScore(props) {
                       <img
                         class="h-10 w-10 rounded-full mr-4"
                         src={
-                          student?.user?.image_url || "https://placehold.co/100x100"
+                          student?.user?.image_url ||
+                          "https://placehold.co/100x100"
                         }
                         alt="Placeholder avatar for student"
                       />

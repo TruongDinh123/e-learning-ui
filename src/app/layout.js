@@ -82,7 +82,7 @@ export default function RootLayout({ children }) {
                   )}
 
                   <div
-                    className={pathname.includes("/admin") ? "" : undefined}
+                    className={pathname.includes("/admin") ? "" : "app"}
                     style={{
                       marginLeft: pathname.includes("/admin")
                         ? collapsed
