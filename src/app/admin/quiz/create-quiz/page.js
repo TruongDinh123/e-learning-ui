@@ -1064,6 +1064,7 @@ export default function QuizCreator() {
                                   okButtonProps: {
                                     className: "custom-button",
                                   },
+                                  showCancel: false,
                                 });
                               } else {
                                 setShowStudentSelectModal(true);
