@@ -13,14 +13,34 @@ const EmailSchema = yup.object({
   email: yup.string().email().required("email is required"),
 });
 
+// Tạo một mảng với 101 học viên giả
+const mockStudents = Array.from({ length: 101 }, (_, index) => ({
+  _id: `student${index + 1}`,
+  firstName: `FirstName${index + 1}`,
+  lastName: `LastName${index + 1}`,
+}));
+
 export default function AddStudentToCourse(props) {
-  const { courseId, refresh } = props;
+  const { courseId, refresh, dataStudent } = props;
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const showModal = () => {
-    setIsModalOpen(true);
+    if (dataStudent && dataStudent.length > 100) {
+      Modal.info({
+        title: "Giới hạn số lượng học viên",
+        content: "Số lượng học viên của bạn đã vượt quá 100. Vui lòng liên lạc với quản trị viên qua email 247learn.vn@gmail.com để nâng cấp dịch vụ.",
+        okText: "Đã hiểu",
+        okButtonProps: {
+          className: "custom-button",
+        },
+      });
+    } else {
+      setIsModalOpen(true);
+    }
   };
+
   const handleCancel = () => {
     setIsModalOpen(false);
   };

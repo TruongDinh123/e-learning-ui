@@ -216,6 +216,7 @@ export default function ViewTeachersCourse() {
               setUpdate(update + 1); // Đánh dấu cần cập nhật
               getACourseData(selectedCourse); // Tải lại dữ liệu cho khóa học hiện tại
             }}
+            dataStudent={dataStudent}
           >
             Thêm học viên
           </AddStudentToCourse>
