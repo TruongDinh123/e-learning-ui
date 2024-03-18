@@ -11,7 +11,11 @@ import * as yup from "yup";
 import { getAllUser } from "@/features/User/userSlice";
 
 const EmailSchema = yup.object({
-  email: yup.string().email().required("email is required"),
+  email: yup.string().email("email must be a valid email").required("email is required").test(
+    "is-gmail",
+    "email must be a Gmail address",
+    (value) => value && value.endsWith("@gmail.com")
+  ),
 });
 
 export default function AddTeacherToCourse(props) {

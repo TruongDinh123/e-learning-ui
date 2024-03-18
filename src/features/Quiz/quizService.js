@@ -9,6 +9,25 @@ const createQuiz = async (data) => {
   return res.data;
 };
 
+const draftQuiz = async (data) => {
+  const res = await axiosInstance({
+    url: "/e-learning/quiz/draft",
+    method: "POST",
+    data: data.formattedValues,
+  });
+  return res.data;
+};
+
+const DeletedraftQuiz = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/quiz/draft/${data.quizIdDraft}`,
+    method: "DELETE",
+    data: data,
+  });
+  return res.data;
+};
+
+
 const viewQuizTemplates = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/templates`,
@@ -38,6 +57,15 @@ const updateQuizTemplate = (data) => {
 const viewQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/course/${data.courseIds}/quizzes`,
+    method: "GET",
+  });
+  return res.data;
+};
+
+const getDraftQuiz = async (data) => {
+  console.log("🚀 ~ data:", data);
+  const res = await axiosInstance({
+    url: `/e-learning/draft-quiz?courseId=${data.courseId}`,
     method: "GET",
   });
   return res.data;
@@ -244,6 +272,7 @@ const updateScore = async (data) => {
 
 export const QuizService = {
   createQuiz,
+  draftQuiz,
   viewQuiz,
   deleteQuizQuestion,
   deleteQuiz,
@@ -269,4 +298,6 @@ export const QuizService = {
   viewQuizInfo,
   deleteScorebyQuiz,
   getAllScoresByCourseId,
+  getDraftQuiz,
+  DeletedraftQuiz,
 };

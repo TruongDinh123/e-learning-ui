@@ -16,13 +16,18 @@ import {
   Grid,
   InputNumber,
   Result,
+  Modal,
+  Badge,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { selectCourse } from "@/features/Courses/courseSlice";
 import {
+  DeldraftQuiz,
   createQuiz,
+  draftQuiz,
+  getDraftQuiz,
   uploadFileQuiz,
   uploadQuestionImage,
   viewQuizTemplates,
@@ -55,6 +60,7 @@ const htmlToJson = (html) => {
 export default function QuizCreator() {
   const [messageApi, contextHolder] = message.useMessage();
   const [selectedCourse, setSelectedCourse] = useState([]);
+  const [showDraftQuizzesSelect, setShowDraftQuizzesSelect] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [selectedCourseLessons, setSelectedCourseLessons] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -62,13 +68,17 @@ export default function QuizCreator() {
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [isTemplateMode, setIsTemplateMode] = useState(false);
   const [quizTemplates, setQuizTemplates] = useState([]);
+  const [draftQuizzes, setDraftquiz] = useState([]);
   const [selectedQuizTemplate, setSelectedQuizTemplate] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [quizType, setQuizType] = useState("multiple_choice");
+  const [showSaveOptionsModal, setShowSaveOptionsModal] = useState(false);
+  const [selectedQuizId, setSelectedQuizId] = useState(null);
+  const [showStudentSelectModal, setShowStudentSelectModal] = useState(false);
+
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
   const router = useRouter();
-
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
   const datePickerPlacement = screens.xs ? "bottomRight" : "bottomLeft";
@@ -102,15 +112,15 @@ export default function QuizCreator() {
   // Hàm xử lý khi chọn khóa học
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
-
-    if (value.length > 1) {
+    setShowDraftQuizzesSelect(true);
+    if (value?.length > 1) {
       const allStudents = value.flatMap((courseId) => {
         const course = courses?.find((course) => course?._id === courseId);
         return course?.students || [];
       });
       setStudentsByCourse(allStudents);
       setSelectedStudents(["all"]);
-    } else if (value.length === 1) {
+    } else if (value?.length === 1) {
       const selectedCourse = courses?.find(
         (course) => course?._id === value[0]
       );
@@ -141,7 +151,7 @@ export default function QuizCreator() {
       const selectedTemplate = quizTemplates.find(
         (template) => template._id === selectedQuizTemplate
       );
-      if (selectedTemplate && selectedTemplate.questions.length > 0) {
+      if (selectedTemplate && selectedTemplate?.questions?.length > 0) {
         // Nếu có bài tập mẫu, chỉ thêm câu hỏi mới nếu nó không trùng lặp
         const templateQuestions = selectedTemplate.questions.map(
           (q) => q.question
@@ -196,7 +206,7 @@ export default function QuizCreator() {
   });
 
   //hàm xử lý save quiz
-  const handleSaveQuiz = (values) => {
+  const handleSaveQuiz = (values, action) => {
     setIsLoading(true);
 
     if (quizType === "multiple_choice") {
@@ -216,7 +226,23 @@ export default function QuizCreator() {
       }
     }
 
-    let formattedValues;
+    // Định dạng giá trị dựa trên dữ liệu form và thêm logic dựa trên `action`
+    let formattedValues = {
+      ...values,
+      type: quizType,
+      courseIds: selectedCourse,
+      studentIds: action === "assign" ? selectedStudents : [],
+      questions: form.getFieldValue("questions") || [],
+      isDraft: action === "save_draft",
+    };
+
+    // Thêm isDraft vào formattedValues dựa trên action
+    if (action === "save_draft") {
+      formattedValues.isDraft = true;
+      if (selectedQuizId) {
+        formattedValues.quizIdDraft = selectedQuizId;
+      }
+    }
 
     let studentIds = selectedStudents;
     if (selectedStudents.includes("all")) {
@@ -239,12 +265,13 @@ export default function QuizCreator() {
         })),
         submissionTime: values?.submissionTime?.toISOString(),
         timeLimit: values?.timeLimit,
+        // ...(selectedQuizId ? { quizIdDraft: selectedQuizId } : {}),
       };
     } else {
       // Xử lý cho trường hợp không sử dụng bài tập mẫu
       if (quizType === "multiple_choice") {
         formattedValues = {
-          ...values,
+          ...formattedValues,
           type: quizType,
           submissionTime: values?.submissionTime?.toISOString(),
           courseIds: selectedCourse,
@@ -254,8 +281,10 @@ export default function QuizCreator() {
             ...question,
             options: question.options.map((option) => option.option),
           })),
+          // ...(selectedQuizId ? { quizIdDraft: selectedQuizId } : {}),
         };
       } else {
+        //xử lý tự luận
         formattedValues = {
           type: quizType,
           name: values.essayTitle,
@@ -266,6 +295,7 @@ export default function QuizCreator() {
             title: values.essayTitle,
             content: values.essayContent,
           },
+          // ...(selectedQuizId ? { quizIdDraft: selectedQuizId } : {}),
         };
       }
       // Chỉ thêm lessonId vào formattedValues nếu selectedLesson có giá trị và khác rỗng
@@ -282,16 +312,20 @@ export default function QuizCreator() {
         ...formattedValues,
         lessonId: selectedLesson,
         courseIds: [],
+        // ...(selectedQuizId ? { quizIdDraft: selectedQuizId } : {}),
       };
     } else {
       formattedValues = {
         ...formattedValues,
         courseIds: selectedCourse,
+        // ...(selectedQuizId ? { quizIdDraft: selectedQuizId } : {}),
       };
     }
 
+    const apiAction = action === "save_draft" ? draftQuiz : createQuiz;
+
     dispatch(
-      createQuiz({
+      apiAction({
         formattedValues,
       })
     )
@@ -319,6 +353,7 @@ export default function QuizCreator() {
                   quizId: quizId,
                   questionId: questionIds[index],
                   filename: imageFile,
+                  isTemplateMode,
                 })
               ).catch((error) => {
                 message.error(
@@ -345,6 +380,7 @@ export default function QuizCreator() {
             }
             message.success(res.message, 1.5);
             dispatch(refreshAUser(userId));
+            dispatch(DeldraftQuiz({ quizIdDraft: selectedQuizId }));
             setIsLoading(false);
           })
           .catch((error) => {
@@ -472,8 +508,9 @@ export default function QuizCreator() {
     (state) => state.quiz.getQuizTemplates
   );
 
+  //fetch the templates
   useEffect(() => {
-    if (getQuizTemplatesStore.length === 0) {
+    if (getQuizTemplatesStore?.length === 0) {
       dispatch(viewQuizTemplates())
         .then(unwrapResult)
         .then((res) => {
@@ -487,6 +524,21 @@ export default function QuizCreator() {
       setQuizTemplates(getQuizTemplatesStore.metadata);
     }
   }, []);
+
+  //fetch the quiz draft
+  useEffect(() => {
+    if (selectedCourse?.length > 0) {
+      dispatch(getDraftQuiz({ courseId: selectedCourse[0] }))
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            setDraftquiz(res.metadata);
+          } else {
+            messageApi.error(res.message);
+          }
+        });
+    }
+  }, [selectedCourse]);
 
   // Handle quiz template selection
   const handleQuizTemplateChange = (value) => {
@@ -512,15 +564,34 @@ export default function QuizCreator() {
     }
   };
 
+  //Xử lý sự kiện khi một bài tập nháp được chọn
+  const handleDraftQuizSelect = (selectedQuizId) => {
+    const selectedQuiz = draftQuizzes.find(
+      (quiz) => quiz._id === selectedQuizId
+    );
+    if (selectedQuiz) {
+      form.setFieldsValue({
+        name: selectedQuiz.name,
+        type: selectedQuiz.type,
+        questions: selectedQuiz.questions.map((question) => ({
+          question: question.question,
+          options: question.options.map((option) => ({ option })),
+          answer: question.answer,
+        })),
+      });
+    }
+    setSelectedQuizId(selectedQuizId);
+  };
+
   const handleFinishFailed = (errorInfo) => {
     // Kiểm tra nếu người dùng chưa chọn khóa học và không phải là tạo bài tập mẫu
-    if (!selectedCourse.length && !isTemplateMode) {
+    if (!selectedCourse?.length && !isTemplateMode) {
       message.warning(
         "Vui lòng chọn ít nhất một khóa học trước khi tiếp tục.",
         3.5
       );
     }
-    if (!selectedStudents.length && !isTemplateMode) {
+    if (!selectedStudents?.length && !isTemplateMode) {
       message.warning(
         "Vui lòng chọn ít nhất một học viên trước khi tiếp tục.",
         3.5
@@ -546,7 +617,6 @@ export default function QuizCreator() {
             initialValues={{
               questions: [{}],
             }}
-            onFinish={handleSaveQuiz}
             onFinishFailed={handleFinishFailed}
           >
             <div className="py-2">
@@ -561,7 +631,48 @@ export default function QuizCreator() {
             </div>
             {!isTemplateMode && (
               <>
-                <Row gutter={16} className="py-4">
+                {showDraftQuizzesSelect && (
+                  <Form.Item
+                    name="quizIdDraft"
+                    label="Bài tập nháp"
+                    rules={
+                      isQuizLimitReached
+                        ? [
+                            {
+                              required: true,
+                              message:
+                                "Bạn đã hết số lượng bài tập cho khóa học này.",
+                            },
+                          ]
+                        : null
+                    }
+                    labelCol={{ span: 24 }}
+                    wrapperCol={{ span: 24 }}
+                  >
+                    <Badge
+                      count={draftQuizzes.length}
+                      offset={[10, 0]}
+                      showZero
+                    >
+                      <Select
+                        onChange={handleDraftQuizSelect}
+                        placeholder="Chọn bài tập nháp"
+                        disabled={isQuizLimitReached}
+                      >
+                        {draftQuizzes.map((quiz) => (
+                          <Select.Option key={quiz._id} value={quiz._id}>
+                            {quiz.name}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Badge>
+                  </Form.Item>
+                )}
+              </>
+            )}
+            {!isTemplateMode && (
+              <>
+                <Row gutter={16} className="">
                   <Col xs={24} sm={12} md={8} lg={6}>
                     <Form.Item
                       name="courseIds"
@@ -601,6 +712,7 @@ export default function QuizCreator() {
                       </Select>
                     </Form.Item>
                   </Col>
+
                   <Col xs={24} sm={12} md={8} lg={6}>
                     <Form.Item
                       name="lessonId"
@@ -624,20 +736,11 @@ export default function QuizCreator() {
                       </Select>
                     </Form.Item>
                   </Col>
-                  <Col xs={24} sm={12} md={8} lg={6}>
+                  {/* <Col xs={24} sm={12} md={8} lg={6}>
                     <Form.Item
                       name="studentIds"
                       label="Chọn học viên muốn chọn: "
-                      rules={
-                        isQuizLimitReached
-                          ? []
-                          : [
-                              {
-                                required: true,
-                                message: "Vui lòng chọn học viên",
-                              },
-                            ]
-                      }
+                      rules={isQuizLimitReached && []}
                       labelCol={{ span: 24 }}
                       wrapperCol={{ span: 24 }}
                     >
@@ -647,11 +750,11 @@ export default function QuizCreator() {
                         onChange={handleStudentChange}
                         value={selectedStudents}
                         disabled={
-                          selectedCourse.length > 1 || isQuizLimitReached
+                          selectedCourse?.length > 1 || isQuizLimitReached
                         }
                         style={{ width: "100%" }}
                       >
-                        {selectedCourse.length > 1 ? (
+                        {selectedCourse?.length > 1 ? (
                           <Option key="all" value="all">
                             Thêm tất cả
                           </Option>
@@ -669,9 +772,9 @@ export default function QuizCreator() {
                         )}
                       </Select>
                     </Form.Item>
-                  </Col>
+                  </Col> */}
                   <Col xs={24} sm={24} md={8} lg={6}>
-                    {selectedCourse.length > 1 && (
+                    {selectedCourse?.length > 1 && (
                       <Tooltip title="Bài tập trên nhiều khóa học với bắt buộc chia sẻ với tất cả học viên">
                         <InfoCircleOutlined style={{ color: "red" }} />
                       </Tooltip>
@@ -699,33 +802,6 @@ export default function QuizCreator() {
                 )}
               </>
             )}
-
-            <Col xs={24} sm={12} md={8} lg={6}>
-              <Form.Item
-                label="Loại bài tập"
-                name="type"
-                rules={
-                  !isQuizLimitReached || isTemplateMode
-                    ? [
-                        {
-                          required: true,
-                          message: "Vui lòng chọn bài kiểm tra",
-                        },
-                      ]
-                    : []
-                }
-              >
-                <Select
-                  placeholder="chọn Loại bài tập"
-                  onChange={handleQuizTypeChange}
-                  className="w-full"
-                  disabled={isQuizLimitReached && !isTemplateMode}
-                >
-                  <Option value="multiple_choice">Trắc nghiệm</Option>
-                  {!isTemplateMode && <Option value="essay">Tự luận</Option>}
-                </Select>
-              </Form.Item>
-            </Col>
 
             {quizType === "multiple_choice" ? (
               <>
@@ -954,9 +1030,105 @@ export default function QuizCreator() {
                       htmlType="submit"
                       className="custom-button"
                       loading={isLoading}
+                      onClick={() => {
+                        // Kiểm tra trạng thái của form trước khi thực hiện hành động
+                        form
+                          .validateFields()
+                          .then((values) => {
+                            // Nếu form hợp lệ, kiểm tra xem có phải là bài tập mẫu không
+                            if (isTemplateMode) {
+                              // Nếu là bài tập mẫu, lưu trực tiếp mà không cần mở modal
+                              handleSaveQuiz(values);
+                            } else {
+                              // Nếu không phải là bài tập mẫu, hiển thị modal lựa chọn
+                              setShowSaveOptionsModal(true);
+                            }
+                          })
+                          .catch((errorInfo) => {
+                            // Nếu form không hợp lệ, `handleFinishFailed` sẽ được gọi tự động
+                            // Không cần thực hiện thêm hành động nào ở đây
+                          });
+                      }}
                     >
                       Lưu
                     </Button>
+                    <Modal
+                      title="Bạn muốn lưu bản nháp hay giao bài tập này cho học viên?"
+                      visible={showSaveOptionsModal}
+                      onCancel={() => setShowSaveOptionsModal(false)}
+                      footer={null}
+                    >
+                      <Button
+                        key="back"
+                        onClick={() => setShowSaveOptionsModal(false)}
+                      >
+                        Hủy
+                      </Button>
+                      <Button
+                        key="save_draft"
+                        onClick={() => {
+                          setShowSaveOptionsModal(false);
+                          handleSaveQuiz(form.getFieldsValue(), "save_draft");
+                        }}
+                      >
+                        Lưu Bản Nháp
+                      </Button>
+                      <Button
+                        key="assign"
+                        type="primary"
+                        className="custom-button"
+                        onClick={() => {
+                          setShowStudentSelectModal(true);
+                        }}
+                      >
+                        Giao Bài Tập
+                      </Button>
+                      <Modal
+                        title="Chọn Học Viên"
+                        visible={showStudentSelectModal}
+                        onCancel={() => setShowStudentSelectModal(false)}
+                        onOk={() => {
+                          setShowStudentSelectModal(false); // Đóng modal chọn học viên
+                          handleSaveQuiz(form.getFieldsValue(), "assign");
+                        }}
+                        okButtonProps={{ className: "custom-button" }}
+                      >
+                        <Form.Item
+                          name="studentIds"
+                          rules={isQuizLimitReached && []}
+                          labelCol={{ span: 24 }}
+                          wrapperCol={{ span: 24 }}
+                        >
+                          <Select
+                            mode="multiple"
+                            placeholder="Chọn học viên"
+                            onChange={handleStudentChange}
+                            value={selectedStudents}
+                            disabled={
+                              selectedCourse?.length > 1 || isQuizLimitReached
+                            }
+                            style={{ width: "100%" }}
+                          >
+                            {selectedCourse?.length > 1 ? (
+                              <Option key="all" value="all">
+                                Thêm tất cả
+                              </Option>
+                            ) : (
+                              <>
+                                <Option key="all" value="all">
+                                  Chọn tất cả
+                                </Option>
+                                {studentsByCourse.map((student) => (
+                                  <Option key={student._id} value={student._id}>
+                                    {student?.lastName} {student?.firstName}
+                                  </Option>
+                                ))}
+                              </>
+                            )}
+                          </Select>
+                        </Form.Item>
+                      </Modal>
+                    </Modal>
                   </div>
                 ) : null}
               </>

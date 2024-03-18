@@ -1,4 +1,4 @@
-import { getAUser, logOut, resetState } from "@/features/User/userSlice";
+import { getAUser, logOut, resetState, setUser, setUserName } from "@/features/User/userSlice";
 import {
   LockOutlined,
   LoginOutlined,
@@ -86,6 +86,8 @@ export default function AdminHeader(props) {
     Cookies.remove("Bearer");
     Cookies.remove("refreshToken");
     dispatch(resetState());
+    dispatch(setUserName(null));
+    dispatch(setUser(null));
     dispatch(resetStateCourse());
     dispatch(resetStateCategory());
     dispatch(resetStateLesson());

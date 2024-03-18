@@ -187,6 +187,15 @@ export default function TeamplateQuiz() {
                   __html: `${question.question}`,
                 }}
               />
+              {question?.image_url && (
+                <div className="mb-2">
+                  <img
+                    src={question.image_url}
+                    alt={`Câu hỏi ${index + 1}`}
+                    className="max-w-full h-auto rounded-lg shadow"
+                  />
+                </div>
+              )}
               <ul className="list-disc list-inside space-y-2 mb-3">
                 {question?.options?.map((option, index) => (
                   <li key={index} className="text-blue-600">
