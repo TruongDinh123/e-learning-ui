@@ -178,7 +178,7 @@ export default function ViewListScore(props) {
                         />
 
                         <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
-                          /10
+                          /1200
                         </span>
                       </div>
                     </li>

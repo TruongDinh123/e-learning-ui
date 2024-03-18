@@ -27,7 +27,7 @@ export default function CustomFooter() {
             <h5 className="font-bold mb-4 text-[#C89F65]">CỘNG ĐỒNG</h5>
             <ul className="space-y-2">
               <li>
-                <a href="#">Chăm sóc khách hàng</a>
+                <a href="https://zalo.me/g/ndgbpp653">Chăm sóc khách hàng</a>
               </li>
               <li>
                 <a href="#">Blog</a>

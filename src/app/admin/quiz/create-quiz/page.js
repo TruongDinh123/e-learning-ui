@@ -57,6 +57,13 @@ const htmlToJson = (html) => {
   return JSON.stringify(html);
 };
 
+// Tạo một mảng với 101 học viên giả
+const mockStudents = Array.from({ length: 101 }, (_, index) => ({
+  _id: `student${index + 1}`,
+  firstName: `FirstName${index + 1}`,
+  lastName: `LastName${index + 1}`,
+}));
+
 export default function QuizCreator() {
   const [messageApi, contextHolder] = message.useMessage();
   const [selectedCourse, setSelectedCourse] = useState([]);
@@ -65,6 +72,7 @@ export default function QuizCreator() {
   const [selectedCourseLessons, setSelectedCourseLessons] = useState([]);
   const [courses, setCourses] = useState([]);
   const [studentsByCourse, setStudentsByCourse] = useState([]);
+  console.log("🚀 ~ studentsByCourse:", studentsByCourse);
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [isTemplateMode, setIsTemplateMode] = useState(false);
   const [quizTemplates, setQuizTemplates] = useState([]);
@@ -373,7 +381,9 @@ export default function QuizCreator() {
             duration: 2.5,
           })
           .then(() => {
-            if (isTemplateMode) {
+            if (apiAction === draftQuiz) {
+              router.push("/admin/courses");
+            } else if (isTemplateMode) {
               router.push("/admin/quiz/template-quiz");
             } else {
               router.push(`/admin/quiz/view-list-question/${quizId}`);
@@ -631,47 +641,6 @@ export default function QuizCreator() {
             </div>
             {!isTemplateMode && (
               <>
-                {showDraftQuizzesSelect && (
-                  <Form.Item
-                    name="quizIdDraft"
-                    label="Bài tập nháp"
-                    rules={
-                      isQuizLimitReached
-                        ? [
-                            {
-                              required: true,
-                              message:
-                                "Bạn đã hết số lượng bài tập cho khóa học này.",
-                            },
-                          ]
-                        : null
-                    }
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                  >
-                    <Badge
-                      count={draftQuizzes.length}
-                      offset={[10, 0]}
-                      showZero
-                    >
-                      <Select
-                        onChange={handleDraftQuizSelect}
-                        placeholder="Chọn bài tập nháp"
-                        disabled={isQuizLimitReached}
-                      >
-                        {draftQuizzes.map((quiz) => (
-                          <Select.Option key={quiz._id} value={quiz._id}>
-                            {quiz.name}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </Badge>
-                  </Form.Item>
-                )}
-              </>
-            )}
-            {!isTemplateMode && (
-              <>
                 <Row gutter={16} className="">
                   <Col xs={24} sm={12} md={8} lg={6}>
                     <Form.Item
@@ -712,8 +681,47 @@ export default function QuizCreator() {
                       </Select>
                     </Form.Item>
                   </Col>
-
                   <Col xs={24} sm={12} md={8} lg={6}>
+                    {showDraftQuizzesSelect && (
+                      <Form.Item
+                        name="quizIdDraft"
+                        label="Bài tập nháp"
+                        rules={
+                          isQuizLimitReached
+                            ? [
+                                {
+                                  required: true,
+                                  message:
+                                    "Bạn đã hết số lượng bài tập cho khóa học này.",
+                                },
+                              ]
+                            : null
+                        }
+                        labelCol={{ span: 24 }}
+                        wrapperCol={{ span: 24 }}
+                      >
+                        <Badge
+                          count={draftQuizzes.length}
+                          offset={[10, 0]}
+                          showZero
+                        >
+                          <Select
+                            onChange={handleDraftQuizSelect}
+                            placeholder="Chọn bài tập nháp"
+                            disabled={isQuizLimitReached}
+                          >
+                            {draftQuizzes.map((quiz) => (
+                              <Select.Option key={quiz._id} value={quiz._id}>
+                                {quiz.name}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </Badge>
+                      </Form.Item>
+                    )}
+                  </Col>
+
+                  {/* <Col xs={24} sm={12} md={8} lg={6}>
                     <Form.Item
                       name="lessonId"
                       label="Chọn bài học:"
@@ -735,7 +743,8 @@ export default function QuizCreator() {
                         ))}
                       </Select>
                     </Form.Item>
-                  </Col>
+                  </Col> */}
+                  
                   {/* <Col xs={24} sm={12} md={8} lg={6}>
                     <Form.Item
                       name="studentIds"
@@ -1023,112 +1032,110 @@ export default function QuizCreator() {
                     title="Bạn chỉ có thể tạo tối đa 3 bài tập."
                   />
                 )}
-                {!isQuizLimitReached || isTemplateMode ? (
+                {!isQuizLimitReached ? (
                   <div className="pt-2 text-end">
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      className="custom-button"
-                      loading={isLoading}
-                      onClick={() => {
-                        // Kiểm tra trạng thái của form trước khi thực hiện hành động
-                        form
-                          .validateFields()
-                          .then((values) => {
-                            // Nếu form hợp lệ, kiểm tra xem có phải là bài tập mẫu không
-                            if (isTemplateMode) {
-                              // Nếu là bài tập mẫu, lưu trực tiếp mà không cần mở modal
-                              handleSaveQuiz(values);
-                            } else {
-                              // Nếu không phải là bài tập mẫu, hiển thị modal lựa chọn
-                              setShowSaveOptionsModal(true);
-                            }
-                          })
-                          .catch((errorInfo) => {
-                            // Nếu form không hợp lệ, `handleFinishFailed` sẽ được gọi tự động
-                            // Không cần thực hiện thêm hành động nào ở đây
-                          });
-                      }}
-                    >
-                      Lưu
-                    </Button>
-                    <Modal
-                      title="Bạn muốn lưu bản nháp hay giao bài tập này cho học viên?"
-                      visible={showSaveOptionsModal}
-                      onCancel={() => setShowSaveOptionsModal(false)}
-                      footer={null}
-                    >
+                    {!isTemplateMode && (
+                      <>
+                        <Button
+                          className="custom-button"
+                          type="primary"
+                          style={{ marginRight: 8 }}
+                          onClick={() => {
+                            form.validateFields().then((values) => {
+                              setShowSaveOptionsModal(false);
+                              handleSaveQuiz(values, "save_draft");
+                            });
+                          }}
+                        >
+                          Lưu Bản Nháp
+                        </Button>
+
+                        <Button
+                          type="primary"
+                          className="custom-button"
+                          onClick={() => {
+                            form.validateFields().then((values) => {
+                              if (studentsByCourse.length > 100) {
+                                Modal.confirm({
+                                  title: "Giới hạn số lượng học viên",
+                                  content:
+                                    "Số lượng học viên của bạn đã vượt quá 100. Vui lòng liên lạc vs quản trị viên qua email 247learn.vn để nâng câp dịch vụ.",
+                                  okText: "Đồng ý",
+                                  okButtonProps: {
+                                    className: "custom-button",
+                                  },
+                                });
+                              } else {
+                                setShowStudentSelectModal(true);
+                              }
+                            });
+                          }}
+                        >
+                          Giao Bài Tập
+                        </Button>
+                        <Modal
+                          title="Chọn Học Viên"
+                          visible={showStudentSelectModal}
+                          onCancel={() => setShowStudentSelectModal(false)}
+                          onOk={() => {
+                            setShowStudentSelectModal(false); // Đóng modal chọn học viên
+                            handleSaveQuiz(form.getFieldsValue(), "assign");
+                          }}
+                          okButtonProps={{ className: "custom-button" }}
+                        >
+                          <Form.Item
+                            name="studentIds"
+                            rules={isQuizLimitReached && []}
+                            labelCol={{ span: 24 }}
+                            wrapperCol={{ span: 24 }}
+                          >
+                            <Select
+                              mode="multiple"
+                              placeholder="Chọn học viên"
+                              onChange={handleStudentChange}
+                              value={selectedStudents}
+                              disabled={
+                                selectedCourse?.length > 1 || isQuizLimitReached
+                              }
+                              style={{ width: "100%" }}
+                            >
+                              {selectedCourse?.length > 1 ? (
+                                <Option key="all" value="all">
+                                  Thêm tất cả
+                                </Option>
+                              ) : (
+                                <>
+                                  <Option key="all" value="all">
+                                    Chọn tất cả
+                                  </Option>
+                                  {studentsByCourse.map((student) => (
+                                    <Option
+                                      key={student._id}
+                                      value={student._id}
+                                    >
+                                      {student?.lastName} {student?.firstName}
+                                    </Option>
+                                  ))}
+                                </>
+                              )}
+                            </Select>
+                          </Form.Item>
+                        </Modal>
+                      </>
+                    )}
+
+                    {isTemplateMode && (
                       <Button
-                        key="back"
-                        onClick={() => setShowSaveOptionsModal(false)}
-                      >
-                        Hủy
-                      </Button>
-                      <Button
-                        key="save_draft"
-                        onClick={() => {
-                          setShowSaveOptionsModal(false);
-                          handleSaveQuiz(form.getFieldsValue(), "save_draft");
-                        }}
-                      >
-                        Lưu Bản Nháp
-                      </Button>
-                      <Button
-                        key="assign"
-                        type="primary"
                         className="custom-button"
                         onClick={() => {
-                          setShowStudentSelectModal(true);
+                          form.validateFields().then((values) => {
+                            handleSaveQuiz(values);
+                          });
                         }}
                       >
-                        Giao Bài Tập
+                        Lưu Bài Mẫu
                       </Button>
-                      <Modal
-                        title="Chọn Học Viên"
-                        visible={showStudentSelectModal}
-                        onCancel={() => setShowStudentSelectModal(false)}
-                        onOk={() => {
-                          setShowStudentSelectModal(false); // Đóng modal chọn học viên
-                          handleSaveQuiz(form.getFieldsValue(), "assign");
-                        }}
-                        okButtonProps={{ className: "custom-button" }}
-                      >
-                        <Form.Item
-                          name="studentIds"
-                          rules={isQuizLimitReached && []}
-                          labelCol={{ span: 24 }}
-                          wrapperCol={{ span: 24 }}
-                        >
-                          <Select
-                            mode="multiple"
-                            placeholder="Chọn học viên"
-                            onChange={handleStudentChange}
-                            value={selectedStudents}
-                            disabled={
-                              selectedCourse?.length > 1 || isQuizLimitReached
-                            }
-                            style={{ width: "100%" }}
-                          >
-                            {selectedCourse?.length > 1 ? (
-                              <Option key="all" value="all">
-                                Thêm tất cả
-                              </Option>
-                            ) : (
-                              <>
-                                <Option key="all" value="all">
-                                  Chọn tất cả
-                                </Option>
-                                {studentsByCourse.map((student) => (
-                                  <Option key={student._id} value={student._id}>
-                                    {student?.lastName} {student?.firstName}
-                                  </Option>
-                                ))}
-                              </>
-                            )}
-                          </Select>
-                        </Form.Item>
-                      </Modal>
-                    </Modal>
+                    )}
                   </div>
                 ) : null}
               </>
