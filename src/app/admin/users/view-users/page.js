@@ -76,7 +76,6 @@ export default function ViewUsers() {
   ];
   //viewUsers api
   const allUsersStore = useSelector((state) => state?.user?.allUsers);
-  console.log("🚀 ~ allUsersStore:", allUsersStore);
   const allRolesStore = useSelector((state) => state?.user?.allRoles);
 
   useEffect(() => {

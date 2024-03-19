@@ -27,7 +27,6 @@ export default function CourseDetails({ params }) {
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [isStudentOfCourse, setIsStudentOfCourse] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  console.log("🚀 ~ isAdmin:", isAdmin);
   const [loading, setLoading] = useState(true);
   const [loadingQuizzes, setLoadingQuizzes] = useState({});
   const router = useRouter();

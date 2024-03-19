@@ -52,7 +52,6 @@ export default function HandleSubmit(props) {
         }
       })
       .catch((error) => {
-        console.log("submitAssignment error:", error);
       });
   };
 

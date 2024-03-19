@@ -28,7 +28,6 @@ export const draftQuiz = createAsyncThunk(
 export const DeldraftQuiz = createAsyncThunk(
   "/e-learning/draft-quiz/delete",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data);
     try {
       const response = await QuizService.DeletedraftQuiz(data);
       return response;
@@ -161,7 +160,6 @@ export const uploadFileQuiz = createAsyncThunk(
 export const uploadQuestionImage = createAsyncThunk(
   "/e-learning/upload-image-question",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data);
     try {
       const response = await QuizService.uploadQuestionImage(data);
       return response;

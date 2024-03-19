@@ -66,7 +66,6 @@ export default function RoomRTC() {
     setChannel(channelInstance);
 
     const handleChannelMessage = async (messageData, memberId) => {
-      console.log("a new mess");
       let data = JSON.parse(messageData.text);
       if (data.type === "chat") {
         addMessageToDom(data.displayName, data.message);
@@ -74,14 +73,12 @@ export default function RoomRTC() {
     };
 
     const handleMemberJoined = async (memberId) => {
-      console.log("A new member has joined", memberId);
       addMemberToDom(memberId);
       let members = await channelInstance.getMembers();
       updatememberTotal(members);
     };
 
     const handleMemberLeft = async (memberId) => {
-      console.log("A member has left", memberId);
       removeMemberFormDom(memberId);
       let members = await channelInstance.getMembers();
       updatememberTotal(members);

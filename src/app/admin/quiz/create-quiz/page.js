@@ -551,7 +551,6 @@ export default function QuizCreator() {
 
   // Handle quiz template selection
   const handleQuizTemplateChange = (value) => {
-    console.log(value);
     setSelectedQuizTemplate(value);
     if (value) {
       const selectedTemplate = quizTemplates.find(

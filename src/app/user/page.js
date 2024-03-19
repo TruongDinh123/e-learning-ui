@@ -114,9 +114,6 @@ export default function UpdateInfoUser() {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   return (
