@@ -204,7 +204,7 @@ export default function ViewStudentsCourse() {
       dataStudent.map((student, index) => ({
         key: index + 1,
         userId: student?._id,
-        fullName: student?.lastName + " " + student?.firstName,
+        fullName: [student?.lastName, student?.firstName].filter(Boolean).join(" "),
         email: student?.email,
         action: (
           <>
@@ -271,7 +271,7 @@ export default function ViewStudentsCourse() {
         {viewSuccess ? (
           <>
             {teacher && (
-              <div className="border p-4 rounded-md my-4">
+              <div className="border p-4 rounded-md">
                 <h2 className="font-bold text-lg">
                   Giáo viên: {teacher?.firstName}
                 </h2>
@@ -285,7 +285,7 @@ export default function ViewStudentsCourse() {
               scroll={{
                 x: 1300,
               }}
-              className="pt-3 grid-container"
+              // className="pt-3 grid-container"
             />
           </>
         ) : (

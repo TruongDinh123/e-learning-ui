@@ -25,6 +25,7 @@ const thumnail4 = "/images/thumnail6.jpg";
 const thumnail5 = "/images/thumnail7.jpg";
 const thumnail6 = "/images/thumnail8.jpg";
 const thumnail7 = "/images/thumnail9.jpg";
+const placeholder = "/images/placeholder.jpg";
 
 export default function Home1() {
   const dispatch = useDispatch();
@@ -151,7 +152,7 @@ export default function Home1() {
                         <img
                           alt="Hình ảnh khóa học"
                           className="w-full h-auto rounded-lg mb-2"
-                          src={course.image_url}
+                          src={course?.image_url || placeholder} 
                           style={{
                             aspectRatio: "150/150",
                             objectFit: "cover",
@@ -246,7 +247,7 @@ export default function Home1() {
                               <img
                                 alt="Hình ảnh khóa học"
                                 className="w-full h-auto rounded-lg mb-2"
-                                src={course.image_url}
+                                src={course?.image_url || placeholder}
                                 style={{
                                   aspectRatio: "150/150",
                                   objectFit: "cover",
