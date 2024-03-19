@@ -155,7 +155,6 @@ export default function RoomRTC() {
   let handleUserPublished = async (user, mediaType) => {
     remoteUsers[user.uid] = user;
     await client.subscribe(user, mediaType);
-    console.log("subscribe success");
 
     let player = document.getElementById(`user-container-${user.uid}`);
     if (player === null) {

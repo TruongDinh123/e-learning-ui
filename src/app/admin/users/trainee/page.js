@@ -152,16 +152,18 @@ export default function ViewStudentsCourse() {
         dataIndex: quiz._id,
         key: quiz._id,
         render: (text, record) => {
-          // Tìm điểm cho bài quiz này trong dữ liệu của học viên
           const studentScore = scores[quiz._id]?.find(
             (score) => score?.userId === record?.userId
           );
-          const submissionTime = new Date(quiz?.submissionTime);
+  
+          const hasSubmissionTime = quiz.hasOwnProperty('submissionTime');
+          const submissionTime = hasSubmissionTime ? new Date(quiz.submissionTime) : null;
           const now = new Date();
-          if (studentScore?.isComplete || submissionTime >= now) {
+  
+          if (!hasSubmissionTime || (submissionTime && now < submissionTime)) {
             return studentScore ? studentScore.score : "Chưa làm";
           } else {
-            return "Hết hạn nộp";
+            return studentScore?.isComplete ? studentScore.score : "Hết hạn nộp";
           }
         },
       })),
@@ -204,7 +206,9 @@ export default function ViewStudentsCourse() {
       dataStudent.map((student, index) => ({
         key: index + 1,
         userId: student?._id,
-        fullName: [student?.lastName, student?.firstName].filter(Boolean).join(" "),
+        fullName: [student?.lastName, student?.firstName]
+          .filter(Boolean)
+          .join(" "),
         email: student?.email,
         action: (
           <>

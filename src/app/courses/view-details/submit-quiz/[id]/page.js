@@ -21,7 +21,6 @@ const logo = "/images/logoimg.jpg";
 export default function Quizs({ params }) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [quiz, setquiz] = useState([]);
-  console.log(quiz);
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [submitted, setSubmitted] = useState(false);
@@ -32,7 +31,6 @@ export default function Quizs({ params }) {
   const [startTime, setStartTime] = useState(null);
   const [showCountdown, setShowCountdown] = useState(true);
   const [quizSubmission, setQuizSubmission] = useState(null);
-  console.log(quizSubmission)
   const [submitting, setSubmitting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [questionsPerPage] = useState(10);
