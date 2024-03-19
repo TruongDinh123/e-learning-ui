@@ -87,10 +87,12 @@ export default function ViewListQuestion({ params }) {
                   Tên khóa học: {quiz.courseIds[0]?.name}{" "}
                   {quiz.lessonId?.courseId?.name}
                 </h2>
-                <p className="text-blue-600">
-                  Thời gian hoàn thành:{" "}
-                  {moment(quiz.submissionTime).format("DD/MM/YYYY HH:mm")}
-                </p>
+                {quiz?.submissionTime && (
+                  <p className="text-blue-600">
+                    Thời gian hoàn thành:{" "}
+                    {moment(quiz.submissionTime).format("DD/MM/YYYY HH:mm")}
+                  </p>
+                )}
                 <p className="text-blue-600">
                   Loại bài tập:{" "}
                   {quiz.type === "multiple_choice" ? "Trắc nghiệm" : "Tự luận"}
@@ -219,7 +221,10 @@ export default function ViewListQuestion({ params }) {
                   )}
                 </TabPane>
                 <TabPane tab={`Điểm học viên`} key={quizIndex + 1}>
-                  <ViewListScore quizId={params?.id} totalQuestions={totalQuestions} />
+                  <ViewListScore
+                    quizId={params?.id}
+                    totalQuestions={totalQuestions}
+                  />
                 </TabPane>
                 <TabPane tab={`Thống kê điểm`}>
                   <ScoreStatisticsCourse quizId={params?.id} />
