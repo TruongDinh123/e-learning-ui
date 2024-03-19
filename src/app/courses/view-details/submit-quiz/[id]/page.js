@@ -465,7 +465,7 @@ export default function Quizs({ params }) {
                                 <p className="text-lg text-gray-700">
                                   Điểm số của bạn:{" "}
                                   <span className="font-bold text-green-500">
-                                    {quizSubmission?.score}/{totalQuestions * 10}
+                                  {correctAnswersCount * 10}/{totalQuestions * 10}
                                   </span>
                                 </p>
                                 <p className="text-lg text-gray-700">
