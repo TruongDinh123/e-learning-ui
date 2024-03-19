@@ -4,16 +4,13 @@ import { Button, Checkbox, Empty, Spin, Tabs, message } from "antd";
 import StudentWork from "../trainee-work/page";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-import {
-  getScoreByQuizId,
-  updateScore,
-} from "@/features/Quiz/quizSlice";
+import { getScoreByQuizId, updateScore } from "@/features/Quiz/quizSlice";
 import "./page.css";
 const { TabPane } = Tabs;
 
 export default function ViewListScore(props) {
   const [messageApi, contextHolder] = message.useMessage();
-  const { quizId } = props;
+  const { quizId, totalQuestions } = props;
   const dispatch = useDispatch();
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [score, setScore] = useState([]);
@@ -37,8 +34,9 @@ export default function ViewListScore(props) {
   };
 
   const handleScoreChange = (studentId, newScore) => {
-    if (newScore < 0 || newScore > 10) {
-      messageApi.error("Điểm phải nằm trong khoảng từ 0 đến 10");
+    const maxScore = totalQuestions * 10;
+    if (newScore < -1 || newScore > maxScore) {
+      messageApi.error(`Điểm phải nằm trong khoảng từ 0 đến ${maxScore}`);
       return;
     }
     setScore(
@@ -154,31 +152,33 @@ export default function ViewListScore(props) {
                         }
                       />
                       <img
-                        class="h-10 w-10 rounded-full mr-4"
+                        className="h-10 w-10 rounded-full mr-4"
                         src={
                           student?.user?.image_url ||
                           "https://placehold.co/100x100"
                         }
                         alt="Placeholder avatar for student"
                       />
-                      <div class="min-w-0 flex-1">
-                        <p class="text-sm font-medium text-gray-900 truncate">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium text-gray-900 truncate">
                           {student?.user?.lastName} {student?.user?.firstName}
                         </p>
                       </div>
-                      <div class="ml-4 flex-shrink-0">
-                        <input
-                          type="number"
-                          class="text-sm text-gray-500 border-l-2 pl-4"
-                          value={student?.updateScore ?? student?.score ?? ""}
-                          onChange={(e) =>
-                            handleScoreChange(student._id, e.target.value)
+                      <div className="ml-4 flex-shrink-0">
+                      <input
+                        type="number"
+                        className="text-sm text-gray-500 border-l-2 pl-4"
+                        defaultValue={student?.updateScore ?? student?.score ?? ""}
+                        onBlur={(e) => handleScoreChange(student._id, e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            handleScoreChange(student._id, e.target.value);
                           }
-                          placeholder="_"
-                        />
-
-                        <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
-                          /1200
+                        }}
+                        placeholder="_"
+                      />
+                        <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+                          / {totalQuestions * 10}
                         </span>
                       </div>
                     </li>

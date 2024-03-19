@@ -72,7 +72,6 @@ export default function QuizCreator() {
   const [selectedCourseLessons, setSelectedCourseLessons] = useState([]);
   const [courses, setCourses] = useState([]);
   const [studentsByCourse, setStudentsByCourse] = useState([]);
-  console.log("🚀 ~ studentsByCourse:", studentsByCourse);
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [isTemplateMode, setIsTemplateMode] = useState(false);
   const [quizTemplates, setQuizTemplates] = useState([]);
@@ -1055,20 +1054,7 @@ export default function QuizCreator() {
                           className="custom-button"
                           onClick={() => {
                             form.validateFields().then((values) => {
-                              if (studentsByCourse.length > 100) {
-                                Modal.confirm({
-                                  title: "Giới hạn số lượng học viên",
-                                  content:
-                                    "Số lượng học viên của bạn đã vượt quá 100. Vui lòng liên lạc vs quản trị viên qua email 247learn.vn để nâng câp dịch vụ.",
-                                  okText: "Đồng ý",
-                                  okButtonProps: {
-                                    className: "custom-button",
-                                  },
-                                  showCancel: false,
-                                });
-                              } else {
-                                setShowStudentSelectModal(true);
-                              }
+                              setShowStudentSelectModal(true);
                             });
                           }}
                         >

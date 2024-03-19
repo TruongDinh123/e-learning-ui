@@ -154,11 +154,8 @@ const ScoreManagement = () => {
                         ? Object.values(answerObj)[0]
                         : "";
                       return (
-                        <List.Item>
+                        <List.Item> 
                           <div className="p-3">
-                            {/* <h3 className="font-bold">{`Câu ${
-                              idxQuestion + 1
-                            }`}</h3> */}
                             <h3
                               className="font-semibold py-3"
                               dangerouslySetInnerHTML={{
@@ -185,6 +182,7 @@ const ScoreManagement = () => {
                               </span>{" "}
                               {answer ? answer : "Chưa trả lời"}
                             </p>
+                            <div className="border-b-2"></div>
                           </div>
                         </List.Item>
                       );

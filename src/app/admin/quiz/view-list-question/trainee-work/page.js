@@ -44,9 +44,9 @@ export default function StudentWork({ student }) {
     } else if (quiz && quiz.type === "multiple_choice") {
       // Bài tập trắc nghiệm
       return (
-        <div className="overflow-hidden max-h-75">
+        <div className="overflow-auto max-h-72">
           <Title level={3} className="text-3xl">
-            {quiz?.name}
+            Bài tập {quiz?.name}
           </Title>
           {quiz.questions.map((question, index) => {
             const studentAnswer = answers?.find((answer) =>

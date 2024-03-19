@@ -59,6 +59,8 @@ export default function ViewListQuestion({ params }) {
   //     .catch((error) => {});
   // };
 
+  const totalQuestions = quiz[0]?.questions?.length;
+
   return (
     <div className="mx-auto px-4 sm:px-6 lg:px-8 p-3">
       {isLoading ? (
@@ -217,7 +219,7 @@ export default function ViewListQuestion({ params }) {
                   )}
                 </TabPane>
                 <TabPane tab={`Điểm học viên`} key={quizIndex + 1}>
-                  <ViewListScore quizId={params?.id} />
+                  <ViewListScore quizId={params?.id} totalQuestions={totalQuestions} />
                 </TabPane>
                 <TabPane tab={`Thống kê điểm`}>
                   <ScoreStatisticsCourse quizId={params?.id} />
