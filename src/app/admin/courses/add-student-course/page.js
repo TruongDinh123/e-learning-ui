@@ -27,7 +27,7 @@ export default function AddStudentToCourse(props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
-    if (dataStudent && dataStudent.length > 100) {
+    if (dataStudent && dataStudent.length >= 3) {
       Modal.info({
         title: "Giới hạn số lượng học viên",
         content: "Số lượng học viên của bạn đã vượt quá 100. Vui lòng liên lạc với quản trị viên qua email 247learn.vn@gmail.com để nâng cấp dịch vụ.",

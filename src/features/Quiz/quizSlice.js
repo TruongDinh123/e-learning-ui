@@ -354,6 +354,7 @@ const initialState = {
   getQuizzesByStudentAndCourse: [],
   getScoreState: [],
   getQuizTemplates: [],
+  getdraftQuiz: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -512,6 +513,39 @@ const quizSlice = createSlice({
         state.getQuizTemplates = action.payload;
       })
       .addCase(viewQuizTemplates.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
+      .addCase(getDraftQuiz.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getDraftQuiz.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.getdraftQuiz = action.payload.metadata;
+      })
+      .addCase(getDraftQuiz.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
+      .addCase(DeldraftQuiz.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(DeldraftQuiz.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        const draftQuizId = action.meta.arg.quizIdDraft;
+        if (state.getdraftQuiz && Array.isArray(state.getdraftQuiz)) {
+          state.getdraftQuiz = state.getdraftQuiz.filter(draftQuiz => draftQuiz._id !== draftQuizId);
+        }
+      })
+      .addCase(DeldraftQuiz.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

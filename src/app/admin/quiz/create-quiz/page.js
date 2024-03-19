@@ -414,7 +414,7 @@ export default function QuizCreator() {
   };
 
   const coursesFromStore = useSelector((state) => state.course.courses);
-
+  const draftQuizFromStore = useSelector((state) => state.quiz.getdraftQuiz);
   const userFromStore = useSelector((state) => state.user);
 
   // Giả sử selectedCourse chứa ID của khóa học hiện tại được chọn
@@ -534,9 +534,11 @@ export default function QuizCreator() {
     }
   }, []);
 
-  //fetch the quiz draft
+  //fetch the draft
   useEffect(() => {
-    if (selectedCourse?.length > 0) {
+    if (draftQuizFromStore?.length > 0) {
+      setDraftquiz(draftQuizFromStore);
+    } else if (selectedCourse?.length > 0) {
       dispatch(getDraftQuiz({ courseId: selectedCourse[0] }))
         .then(unwrapResult)
         .then((res) => {
@@ -547,7 +549,7 @@ export default function QuizCreator() {
           }
         });
     }
-  }, [selectedCourse]);
+  }, [selectedCourse, draftQuizFromStore, dispatch]);
 
   // Handle quiz template selection
   const handleQuizTemplateChange = (value) => {
@@ -742,7 +744,7 @@ export default function QuizCreator() {
                       </Select>
                     </Form.Item>
                   </Col> */}
-                  
+
                   {/* <Col xs={24} sm={12} md={8} lg={6}>
                     <Form.Item
                       name="studentIds"
