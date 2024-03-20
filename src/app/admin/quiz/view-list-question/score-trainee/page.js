@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button, Checkbox, Empty, Spin, Tabs, message } from "antd";
 import StudentWork from "../trainee-work/page";
 import { useDispatch } from "react-redux";
@@ -7,12 +7,14 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { getScoreByQuizId, updateScore } from "@/features/Quiz/quizSlice";
 import "./page.css";
 const { TabPane } = Tabs;
+import { debounce } from "lodash";
 
 export default function ViewListScore(props) {
   const [messageApi, contextHolder] = message.useMessage();
   const { quizId, totalQuestions } = props;
   const dispatch = useDispatch();
   const [selectedStudent, setSelectedStudent] = useState(null);
+  console.log("🚀 ~ selectedStudent:", selectedStudent);
   const [score, setScore] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -92,6 +94,9 @@ export default function ViewListScore(props) {
       });
   }, [update]);
 
+  const getFullName = (student) =>
+    [student?.lastName, student?.firstName].filter(Boolean).join(" ");
+
   return (
     <div>
       {contextHolder}
@@ -140,8 +145,11 @@ export default function ViewListScore(props) {
                 <TabPane
                   tab={
                     <li
-                      className="px-4 py-4 flex items-center sm:px-6"
-                      onClick={() => setSelectedStudent(student)}
+                      className={`px-4 py-4 flex items-center sm:px-6 ${
+                        selectedStudent && selectedStudent._id === student._id
+                          ? "selected-student"
+                          : ""
+                      }`}
                     >
                       <input
                         type="checkbox"
@@ -151,32 +159,41 @@ export default function ViewListScore(props) {
                           handleStudentCheck(student._id, e.target.checked)
                         }
                       />
-                      <img
-                        className="h-10 w-10 rounded-full mr-4"
-                        src={
-                          student?.user?.image_url ||
-                          "https://placehold.co/100x100"
-                        }
-                        alt="Placeholder avatar for student"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          {student?.user?.lastName} {student?.user?.firstName}
-                        </p>
+                      <div
+                        onClick={() => setSelectedStudent(student)}
+                        className="flex flex-1 cursor-pointer items-center"
+                      >
+                        <img
+                          className="h-10 w-10 rounded-full mr-4"
+                          src={
+                            student?.user?.image_url ||
+                            "https://placehold.co/100x100"
+                          }
+                          alt="Placeholder avatar for student"
+                        />
+                        <div className="min-w-0 flex-1 items-center">
+                          <p className="text-sm font-medium text-gray-900 truncate">
+                            {student?.user?.lastName} {student?.user?.firstName}
+                          </p>
+                        </div>
                       </div>
                       <div className="ml-4 flex-shrink-0">
-                      <input
-                        type="number"
-                        className="text-sm text-gray-500 border-l-2 pl-4"
-                        defaultValue={student?.updateScore ?? student?.score ?? ""}
-                        onBlur={(e) => handleScoreChange(student._id, e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            handleScoreChange(student._id, e.target.value);
+                        <input
+                          type="number"
+                          className="text-sm text-gray-500 border-l-2 pl-4"
+                          defaultValue={
+                            student?.updateScore ?? student?.score ?? ""
                           }
-                        }}
-                        placeholder="_"
-                      />
+                          onBlur={(e) =>
+                            handleScoreChange(student._id, e.target.value)
+                          }
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleScoreChange(student._id, e.target.value);
+                            }
+                          }}
+                          placeholder="_"
+                        />
                         <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
                           / {totalQuestions * 10}
                         </span>
@@ -190,8 +207,15 @@ export default function ViewListScore(props) {
           ) : null}
         </div>
 
-        <div className="flex-1 min-w-0">
-          {selectedStudent && <StudentWork student={selectedStudent} />}
+        <div className="flex-1 min-w-0 px-4">
+          {selectedStudent && (
+            <>
+              <h1 className="flex justify-center items-center text-xl font-bold pb-4 text-purple-600">
+                Bài làm của: {getFullName(selectedStudent.user)}
+              </h1>
+              <StudentWork student={selectedStudent} />
+            </>
+          )}
         </div>
       </div>
     </div>

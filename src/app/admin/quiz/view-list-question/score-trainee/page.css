@@ -13,3 +13,9 @@
     overflow-x: auto; /* Cho phép cuộn ngang */
     -webkit-overflow-scrolling: touch; /* Cải thiện cuộn trên iOS */
   }
+
+  .selected-student {
+    background-color: #f0f9ff; /* Màu nền nhẹ */
+    border-left: 4px solid #0b72d3; /* Dải màu bên trái để làm nổi bật */
+    padding-left: 1rem; /* Điều chỉnh padding để phù hợp với dải màu */
+  }
