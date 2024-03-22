@@ -14,7 +14,6 @@ export default function ViewListScore(props) {
   const { quizId, totalQuestions } = props;
   const dispatch = useDispatch();
   const [selectedStudent, setSelectedStudent] = useState(null);
-  console.log("🚀 ~ selectedStudent:", selectedStudent);
   const [score, setScore] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
