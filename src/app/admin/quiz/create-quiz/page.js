@@ -20,8 +20,8 @@ import {
   Badge,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { unwrapResult } from "@reduxjs/toolkit";
+import { useEffect, useMemo, useState } from "react";
+import { createSelector, unwrapResult } from "@reduxjs/toolkit";
 import { selectCourse } from "@/features/Courses/courseSlice";
 import {
   DeldraftQuiz,
@@ -32,16 +32,13 @@ import {
   uploadQuestionImage,
   viewQuizTemplates,
 } from "@/features/Quiz/quizSlice";
-import {
-  CloseOutlined,
-  InfoCircleOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { CloseOutlined, UploadOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import "./page.css";
 import { isAdmin, isMentor } from "@/middleware";
 import { refreshAUser } from "@/features/User/userSlice";
+import _ from "lodash";
 
 const { Option } = Select;
 
@@ -56,13 +53,6 @@ const ReactQuill = dynamic(
 const htmlToJson = (html) => {
   return JSON.stringify(html);
 };
-
-// Tạo một mảng với 101 học viên giả
-const mockStudents = Array.from({ length: 101 }, (_, index) => ({
-  _id: `student${index + 1}`,
-  firstName: `FirstName${index + 1}`,
-  lastName: `LastName${index + 1}`,
-}));
 
 export default function QuizCreator() {
   const [messageApi, contextHolder] = message.useMessage();
@@ -82,6 +72,7 @@ export default function QuizCreator() {
   const [showSaveOptionsModal, setShowSaveOptionsModal] = useState(false);
   const [selectedQuizId, setSelectedQuizId] = useState(null);
   const [showStudentSelectModal, setShowStudentSelectModal] = useState(false);
+  const [initialQuestions, setInitialQuestions] = useState([]);
 
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
@@ -119,20 +110,27 @@ export default function QuizCreator() {
   // Hàm xử lý khi chọn khóa học
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
-    // setShowDraftQuizzesSelect(true);
-    if (value?.length > 1) {
+    setShowDraftQuizzesSelect(value.length > 0); // Hiển thị chỉ khi có khóa học được chọn
+
+    if (value.length > 1) {
       const allStudents = value.flatMap((courseId) => {
         const course = courses?.find((course) => course?._id === courseId);
         return course?.students || [];
       });
       setStudentsByCourse(allStudents);
       setSelectedStudents(["all"]);
-    } else if (value?.length === 1) {
+    } else if (value.length === 1) {
       const selectedCourse = courses?.find(
         (course) => course?._id === value[0]
       );
       setStudentsByCourse(selectedCourse?.students || []);
       setSelectedCourseLessons(selectedCourse?.lessons || []);
+    } else {
+      // Xử lý cho trường hợp không có khóa học nào được chọn
+      setStudentsByCourse([]);
+      setSelectedCourseLessons([]);
+      setDraftquiz([]); // Cần xóa bài nháp đã lọc nếu không có khóa học nào được chọn
+      setInitialQuestions([]); // Cũng cần xóa câu hỏi ban đầu nếu không có khóa học nào được chọn
     }
   };
 
@@ -212,10 +210,53 @@ export default function QuizCreator() {
     accept: ".jpg, .jpeg, .png",
   });
 
+  const questionsAreEqual = (q1, q2) => {
+    // So sánh nội dung câu hỏi và câu trả lời
+    if (q1.question.trim() !== q2.question.trim() || q1.answer !== q2.answer) {
+      return false;
+    }
+    // Đảm bảo rằng cả hai đều có options là mảng các chuỗi
+    const options1 = q1.options
+      .map((opt) => (typeof opt === "object" ? opt.option : opt))
+      .map((opt) => opt.trim());
+    const options2 = q2.options
+      .map((opt) => (typeof opt === "object" ? opt.option : opt))
+      .map((opt) => opt.trim());
 
-  //hàm xử lý save quiz ver 1
-  const handleSaveQuiz = (values) => {
+    // So sánh các lựa chọn, nếu số lượng khác nhau, chúng không bằng nhau
+    if (options1.length !== options2.length) {
+      return false;
+    }
+    // So sánh từng lựa chọn
+    for (let i = 0; i < options1.length; i++) {
+      if (options1[i] !== options2[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  //hàm xử lý save quiz ver 2
+  const handleSaveQuiz = (values, action) => {
     setIsLoading(true);
+
+    // Chuẩn bị dữ liệu câu hỏi
+    const currentQuestions = form.getFieldValue("questions") || [];
+    const normalizedCurrentQuestions = currentQuestions.map((q) => ({
+      ...q,
+      options: q.options.map((opt) =>
+        typeof opt === "object" ? opt.option : opt
+      ),
+    }));
+
+    // Lọc và chuẩn bị câu hỏi để lưu
+    const questionsToSave = normalizedCurrentQuestions.filter((q) => {
+      if (!q._id) return true;
+      const originalQuestion = initialQuestions.find((iq) => iq._id === q._id);
+      // Câu hỏi đã chỉnh sửa có _id và nội dung khác với normalizedInitialQuestions
+      return originalQuestion ? !questionsAreEqual(q, originalQuestion) : false;
+    });
 
     if (quizType === "multiple_choice") {
       const questionWithoutOptionsIndex = values?.questions?.findIndex(
@@ -234,7 +275,23 @@ export default function QuizCreator() {
       }
     }
 
-    let formattedValues;
+    // Định dạng giá trị dựa trên dữ liệu form và thêm logic dựa trên `action`
+    let formattedValues = {
+      ...values,
+      type: quizType,
+      courseIds: selectedCourse,
+      studentIds: action === "assign" ? selectedStudents : [],
+      questions: questionsToSave,
+      isDraft: action === "save_draft",
+    };
+
+    // Thêm isDraft vào formattedValues dựa trên action
+    if (action === "save_draft") {
+      formattedValues.isDraft = true;
+      if (selectedQuizId) {
+        formattedValues.quizIdDraft = selectedQuizId;
+      }
+    }
 
     let studentIds = selectedStudents;
     if (selectedStudents.includes("all")) {
@@ -243,6 +300,7 @@ export default function QuizCreator() {
 
     // let questions = values.questions || [];
     let questions = form.getFieldValue("questions") || [];
+    const apiAction = action === "save_draft" ? draftQuiz : createQuiz;
 
     if (selectedQuizTemplate) {
       formattedValues = {
@@ -260,9 +318,9 @@ export default function QuizCreator() {
       };
     } else {
       // Xử lý cho trường hợp không sử dụng bài tập mẫu
-      if (quizType === "multiple_choice") {
+      if (apiAction === createQuiz && quizType === "multiple_choice") {
         formattedValues = {
-          ...values,
+          ...formattedValues,
           type: quizType,
           submissionTime: values?.submissionTime?.toISOString(),
           courseIds: selectedCourse,
@@ -273,7 +331,8 @@ export default function QuizCreator() {
             options: question.options.map((option) => option.option),
           })),
         };
-      } else {
+      } else if (apiAction === createQuiz && quizType === "essay") {
+        //xử lý tự luận
         formattedValues = {
           type: quizType,
           name: values.essayTitle,
@@ -286,7 +345,7 @@ export default function QuizCreator() {
           },
         };
       }
-      // Chỉ thêm lessonId vào formattedValues nếu selectedLesson có giá trị và khác rỗng
+
       if (selectedLesson && selectedLesson !== "") {
         formattedValues.lessonId = selectedLesson;
       } else {
@@ -305,11 +364,12 @@ export default function QuizCreator() {
       formattedValues = {
         ...formattedValues,
         courseIds: selectedCourse,
+        // ...(selectedQuizId ? { quizIdDraft: selectedQuizId } : {}),
       };
     }
 
     dispatch(
-      createQuiz({
+      apiAction({
         formattedValues,
       })
     )
@@ -337,6 +397,7 @@ export default function QuizCreator() {
                   quizId: quizId,
                   questionId: questionIds[index],
                   filename: imageFile,
+                  isTemplateMode,
                 })
               ).catch((error) => {
                 message.error(
@@ -356,10 +417,15 @@ export default function QuizCreator() {
             duration: 2.5,
           })
           .then(() => {
-            if (isTemplateMode) {
+            if (apiAction === draftQuiz) {
+              router.push("/admin/courses");
+            } else if (isTemplateMode) {
               router.push("/admin/quiz/template-quiz");
             } else {
               router.push(`/admin/quiz/view-list-question/${quizId}`);
+              if (apiAction === createQuiz) {
+                dispatch(DeldraftQuiz({ quizIdDraft: selectedQuizId }));
+              }
             }
             message.success(res.message, 1.5);
             dispatch(refreshAUser(userId));
@@ -386,233 +452,55 @@ export default function QuizCreator() {
       });
   };
 
-  //hàm xử lý save quiz ver 2
-  // const handleSaveQuiz = (values, action) => {
-  //   setIsLoading(true);
+  const selectCourses = createSelector(
+    [(state) => state.course.courses],
+    (courses) => courses
+  );
 
-  //   if (quizType === "multiple_choice") {
-  //     const questionWithoutOptionsIndex = values?.questions?.findIndex(
-  //       (q) => !q?.options || q?.options?.length === 0
-  //     );
+  const selectDraftQuiz = createSelector(
+    [(state) => state.quiz.getdraftQuiz],
+    (getdraftQuiz) => getdraftQuiz
+  );
 
-  //     if (questionWithoutOptionsIndex !== -1) {
-  //       message.warning(
-  //         `Câu hỏi số ${
-  //           questionWithoutOptionsIndex + 1
-  //         } phải có ít nhất một lựa chọn.`,
-  //         3.5
-  //       );
-  //       setIsLoading(false);
-  //       return;
-  //     }
-  //   }
+  const selectQuizTemplates = createSelector(
+    [(state) => state.quiz.getQuizTemplates],
+    (getQuizTemplates) => getQuizTemplates
+  );
 
-  //   // Định dạng giá trị dựa trên dữ liệu form và thêm logic dựa trên `action`
-  //   let formattedValues = {
-  //     ...values,
-  //     type: quizType,
-  //     courseIds: selectedCourse,
-  //     studentIds: action === "assign" ? selectedStudents : [],
-  //     questions: form.getFieldValue("questions") || [],
-  //     isDraft: action === "save_draft",
-  //   };
-
-  //   // Thêm isDraft vào formattedValues dựa trên action
-  //   if (action === "save_draft") {
-  //     formattedValues.isDraft = true;
-  //     if (selectedQuizId) {
-  //       formattedValues.quizIdDraft = selectedQuizId;
-  //     }
-  //   }
-
-  //   let studentIds = selectedStudents;
-  //   if (selectedStudents.includes("all")) {
-  //     studentIds = studentsByCourse.map((student) => student._id);
-  //   }
-
-  //   // let questions = values.questions || [];
-  //   let questions = form.getFieldValue("questions") || [];
-
-  //   if (selectedQuizTemplate) {
-  //     formattedValues = {
-  //       type: quizType,
-  //       name: values.name,
-  //       courseIds: selectedCourse,
-  //       studentIds: studentIds,
-  //       // questions: combinedQuestions,
-  //       questions: questions.map((question) => ({
-  //         ...question,
-  //         options: question.options.map((option) => option.option),
-  //       })),
-  //       submissionTime: values?.submissionTime?.toISOString(),
-  //       timeLimit: values?.timeLimit,
-  //       // ...(selectedQuizId ? { quizIdDraft: selectedQuizId } : {}),
-  //     };
-  //   } else {
-  //     // Xử lý cho trường hợp không sử dụng bài tập mẫu
-  //     if (quizType === "multiple_choice") {
-  //       formattedValues = {
-  //         ...formattedValues,
-  //         type: quizType,
-  //         submissionTime: values?.submissionTime?.toISOString(),
-  //         courseIds: selectedCourse,
-  //         studentIds: studentIds,
-  //         timeLimit: values?.timeLimit,
-  //         questions: values.questions.map((question) => ({
-  //           ...question,
-  //           options: question.options.map((option) => option.option),
-  //         })),
-  //         // ...(selectedQuizId ? { quizIdDraft: selectedQuizId } : {}),
-  //       };
-  //     } else {
-  //       //xử lý tự luận
-  //       formattedValues = {
-  //         type: quizType,
-  //         name: values.essayTitle,
-  //         courseIds: selectedCourse,
-  //         studentIds: studentIds,
-  //         submissionTime: values?.submissionTime?.toISOString(),
-  //         essay: {
-  //           title: values.essayTitle,
-  //           content: values.essayContent,
-  //         },
-  //         // ...(selectedQuizId ? { quizIdDraft: selectedQuizId } : {}),
-  //       };
-  //     }
-  //     // Chỉ thêm lessonId vào formattedValues nếu selectedLesson có giá trị và khác rỗng
-  //     if (selectedLesson && selectedLesson !== "") {
-  //       formattedValues.lessonId = selectedLesson;
-  //     } else {
-  //       // Đảm bảo không thêm lessonId nếu không có bài học được chọn
-  //       delete formattedValues.lessonId;
-  //     }
-  //   }
-
-  //   if (selectedLesson) {
-  //     formattedValues = {
-  //       ...formattedValues,
-  //       lessonId: selectedLesson,
-  //       courseIds: [],
-  //       // ...(selectedQuizId ? { quizIdDraft: selectedQuizId } : {}),
-  //     };
-  //   } else {
-  //     formattedValues = {
-  //       ...formattedValues,
-  //       courseIds: selectedCourse,
-  //       // ...(selectedQuizId ? { quizIdDraft: selectedQuizId } : {}),
-  //     };
-  //   }
-
-  //   const apiAction = action === "save_draft" ? draftQuiz : createQuiz;
-
-  //   dispatch(
-  //     apiAction({
-  //       formattedValues,
-  //     })
-  //   )
-  //     .then(unwrapResult)
-  //     .then(async (res) => {
-  //       const quizId = res.metadata?._id;
-  //       const questionIds = res.metadata?.questions?.map((q) => q._id);
-  //       const userId = localStorage?.getItem("x-client-id");
-  //       if (file) {
-  //         dispatch(uploadFileQuiz({ quizId: quizId, filename: file })).then(
-  //           (res) => {
-  //             if (res.status) {
-  //               setFile(null);
-  //             }
-  //             setIsLoading(false);
-  //           }
-  //         );
-  //       }
-
-  //       if (questionImages) {
-  //         questionImages.forEach((imageFile, index) => {
-  //           if (imageFile && questionIds[index]) {
-  //             dispatch(
-  //               uploadQuestionImage({
-  //                 quizId: quizId,
-  //                 questionId: questionIds[index],
-  //                 filename: imageFile,
-  //                 isTemplateMode,
-  //               })
-  //             ).catch((error) => {
-  //               message.error(
-  //                 error.response?.data?.message ||
-  //                   "An error occurred while uploading the question image.",
-  //                 3.5
-  //               );
-  //             });
-  //           }
-  //         });
-  //       }
-
-  //       messageApi
-  //         .open({
-  //           type: "Thành công",
-  //           content: "Đang thực hiện...",
-  //           duration: 2.5,
-  //         })
-  //         .then(() => {
-  //           if (apiAction === draftQuiz) {
-  //             router.push("/admin/courses");
-  //           } else if (isTemplateMode) {
-  //             router.push("/admin/quiz/template-quiz");
-  //           } else {
-  //             router.push(`/admin/quiz/view-list-question/${quizId}`);
-  //           }
-  //           message.success(res.message, 1.5);
-  //           dispatch(refreshAUser(userId));
-  //           // dispatch(DeldraftQuiz({ quizIdDraft: selectedQuizId }));
-  //           setIsLoading(false);
-  //         })
-  //         .catch((error) => {
-  //           setIsLoading(false);
-  //           message.error(error.response?.data?.message, 3.5);
-  //         });
-  //     })
-  //     .catch((error) => {
-  //       setIsLoading(false);
-  //       if (error.status === 403 && error.name === "BadRequestError") {
-  //         message.error("A quiz for this lesson already exists.", 3.5);
-  //         setIsLoading(false);
-  //       } else {
-  //         message.error(
-  //           error.response?.data?.message ||
-  //             "An error occurred while saving the quiz.",
-  //           3.5
-  //         );
-  //         setIsLoading(false);
-  //       }
-  //     });
-  // };
-
-  const coursesFromStore = useSelector((state) => state.course.courses);
-  // const draftQuizFromStore = useSelector((state) => state.quiz.getdraftQuiz);
+  const coursesFromStore = useSelector((state) => selectCourses(state));
+  const draftQuizFromStore = useSelector((state) => selectDraftQuiz(state));
+  const getQuizTemplatesStore = useSelector((state) =>
+    selectQuizTemplates(state)
+  );
   const userFromStore = useSelector((state) => state.user);
 
   // Giả sử selectedCourse chứa ID của khóa học hiện tại được chọn
-  const currentTeacherId =
-    userFromStore?.user?._id || userFromStore?.user?.metadata?.account?._id; // Hoặc lấy từ một nguồn khác nếu cần
+  const currentTeacherId = useMemo(() => {
+    return (
+      userFromStore?.user?._id || userFromStore?.user?.metadata?.account?._id
+    );
+  }, [userFromStore]);
 
   // Tìm khóa học hiện tại từ danh sách khóa học trong userFromStore
-  const currentCourse =
-    userFromStore?.user?.metadata?.account?.courses?.find(
-      (course) => course._id === selectedCourse[0]
-    ) ||
-    userFromStore?.user?.courses?.find(
-      (course) => course._id === selectedCourse[0]
+  const currentCourse = useMemo(() => {
+    return (
+      userFromStore?.user?.metadata?.account?.courses?.find(
+        (course) => course._id === selectedCourse[0]
+      ) ||
+      userFromStore?.user?.courses?.find(
+        (course) => course._id === selectedCourse[0]
+      )
     );
+  }, [userFromStore, selectedCourse]);
 
   // Tìm thông tin teacherQuizzes cho giáo viên hiện tại trong khóa học đó
-  const teacherQuizInfo = currentCourse?.teacherQuizzes?.find(
-    (tq) => tq.teacherId === currentTeacherId
-  );
-
   // Kiểm tra xem giáo viên đã đạt giới hạn tạo bài tập cho khóa học này chưa
-  const isQuizLimitReached = teacherQuizInfo
-    ? teacherQuizInfo.quizCount >= 3
-    : false;
+  const isQuizLimitReached = useMemo(() => {
+    const teacherQuizInfo = currentCourse?.teacherQuizzes?.find(
+      (tq) => tq.teacherId === currentTeacherId
+    );
+    return teacherQuizInfo ? teacherQuizInfo.quizCount >= 3 : false;
+  }, [currentCourse, currentTeacherId]);
 
   useEffect(() => {
     const currentTeacherId = localStorage.getItem("x-client-id");
@@ -687,10 +575,6 @@ export default function QuizCreator() {
   }, [dispatch]);
 
   // Fetch quiz templates when the component mounts
-  const getQuizTemplatesStore = useSelector(
-    (state) => state.quiz.getQuizTemplates
-  );
-
   //fetch the templates
   useEffect(() => {
     if (getQuizTemplatesStore?.length === 0) {
@@ -709,21 +593,33 @@ export default function QuizCreator() {
   }, []);
 
   //fetch the draft
-  // useEffect(() => {
-  //   if (draftQuizFromStore?.length > 0) {
-  //     setDraftquiz(draftQuizFromStore);
-  //   } else if (selectedCourse?.length > 0) {
-  //     dispatch(getDraftQuiz({ courseId: selectedCourse[0] }))
-  //       .then(unwrapResult)
-  //       .then((res) => {
-  //         if (res.status) {
-  //           setDraftquiz(res.metadata);
-  //         } else {
-  //           messageApi.error(res.message);
-  //         }
-  //       });
-  //   }
-  // }, [selectedCourse, draftQuizFromStore, dispatch]);
+  useEffect(() => {
+    const courseId = selectedCourse[0];
+    const filteredDraftQuizzes = draftQuizFromStore?.filter((quiz) =>
+      quiz.courseIds.includes(courseId)
+    );
+
+    if (filteredDraftQuizzes.length > 0) {
+      setDraftquiz(filteredDraftQuizzes);
+      setInitialQuestions(filteredDraftQuizzes[0].questions);
+    } else if (selectedCourse?.length > 0) {
+      dispatch(getDraftQuiz())
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            const filteredRes = res.metadata.filter((quiz) =>
+              quiz.courseIds.includes(courseId)
+            );
+            setDraftquiz(filteredRes);
+            if (filteredRes.length > 0) {
+              setInitialQuestions(filteredRes[0].questions);
+            }
+          } else {
+            messageApi.error(res.message);
+          }
+        });
+    }
+  }, [selectedCourse, dispatch]);
 
   // Handle quiz template selection
   const handleQuizTemplateChange = (value) => {
@@ -741,6 +637,7 @@ export default function QuizCreator() {
           answer: question.answer,
         })),
       });
+      setSelectedQuizId("");
     } else {
       form.setFieldsValue({ type: "" });
       form.setFieldsValue({ name: "" });
@@ -749,23 +646,44 @@ export default function QuizCreator() {
   };
 
   //Xử lý sự kiện khi một bài tập nháp được chọn
-  // const handleDraftQuizSelect = (selectedQuizId) => {
-  //   const selectedQuiz = draftQuizzes.find(
-  //     (quiz) => quiz._id === selectedQuizId
-  //   );
-  //   if (selectedQuiz) {
-  //     form.setFieldsValue({
-  //       name: selectedQuiz.name,
-  //       type: selectedQuiz.type,
-  //       questions: selectedQuiz.questions.map((question) => ({
-  //         question: question.question,
-  //         options: question.options.map((option) => ({ option })),
-  //         answer: question.answer,
-  //       })),
-  //     });
-  //   }
-  //   setSelectedQuizId(selectedQuizId);
-  // };
+  const handleDraftQuizSelect = (selectedQuizId) => {
+    const selectedQuiz = draftQuizzes.find(
+      (quiz) => quiz._id === selectedQuizId
+    );
+    if (selectedQuiz) {
+      form.setFieldsValue({
+        name: selectedQuiz.name,
+        type: selectedQuiz.type,
+        questions: selectedQuiz.questions.map((question) => ({
+          _id: question._id,
+          question: question.question,
+          options: question.options.map((option) => ({ option })),
+          answer: question.answer,
+        })),
+      });
+
+      const newQuestionImages = selectedQuiz.questions.map((question) => {
+        if (question.image_url) {
+          const urlParts = question.image_url.split("/");
+          const fileName = urlParts[urlParts.length - 1];
+          return {
+            uid: question._id,
+            name: fileName,
+            status: "done",
+            url: question.image_url,
+          };
+        }
+        return null;
+      });
+
+      setQuestionImages(newQuestionImages);
+    } else {
+      form.resetFields(["name", "type", "questions"]);
+      setQuestionImages([]);
+    }
+    setSelectedQuizTemplate("");
+    setSelectedQuizId(selectedQuizId);
+  };
 
   const handleFinishFailed = (errorInfo) => {
     // Kiểm tra nếu người dùng chưa chọn khóa học và không phải là tạo bài tập mẫu
@@ -856,7 +774,7 @@ export default function QuizCreator() {
                       </Select>
                     </Form.Item>
                   </Col>
-                  {/* <Col xs={24} sm={12} md={8} lg={6}>
+                  <Col xs={24} sm={12} md={8} lg={6}>
                     {showDraftQuizzesSelect && (
                       <Form.Item
                         name="quizIdDraft"
@@ -883,8 +801,13 @@ export default function QuizCreator() {
                           <Select
                             onChange={handleDraftQuizSelect}
                             placeholder="Chọn bài tập nháp"
-                            disabled={isQuizLimitReached}
+                            disabled={
+                              isQuizLimitReached ||
+                              (selectedQuizTemplate &&
+                                selectedQuizTemplate !== "")
+                            }
                           >
+                            <Select.Option value="">Không chọn</Select.Option>
                             {draftQuizzes.map((quiz) => (
                               <Select.Option key={quiz._id} value={quiz._id}>
                                 {quiz.name}
@@ -894,9 +817,9 @@ export default function QuizCreator() {
                         </Badge>
                       </Form.Item>
                     )}
-                  </Col> */}
+                  </Col>
 
-                  <Col xs={24} sm={12} md={8} lg={6}>
+                  {/* <Col xs={24} sm={12} md={8} lg={6}>
                     <Form.Item
                       name="lessonId"
                       label="Chọn bài học:"
@@ -918,9 +841,9 @@ export default function QuizCreator() {
                         ))}
                       </Select>
                     </Form.Item>
-                  </Col>
+                  </Col> */}
 
-                  <Col xs={24} sm={12} md={8} lg={6}>
+                  {/* <Col xs={24} sm={12} md={8} lg={6}>
                     <Form.Item
                       name="studentIds"
                       label="Chọn học viên muốn chọn: "
@@ -956,14 +879,14 @@ export default function QuizCreator() {
                         )}
                       </Select>
                     </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={24} md={8} lg={6}>
+                  </Col> */}
+                  {/* <Col xs={24} sm={24} md={8} lg={6}>
                     {selectedCourse?.length > 1 && (
                       <Tooltip title="Bài tập trên nhiều khóa học với bắt buộc chia sẻ với tất cả học viên">
                         <InfoCircleOutlined style={{ color: "red" }} />
                       </Tooltip>
                     )}
-                  </Col>
+                  </Col> */}
                 </Row>
 
                 {!isTemplateMode && quizType !== "essay" && (
@@ -973,7 +896,10 @@ export default function QuizCreator() {
                       placeholder="Chọn mẫu bài tập"
                       onChange={handleQuizTemplateChange}
                       style={{ width: "100%" }}
-                      disabled={isQuizLimitReached}
+                      disabled={
+                        isQuizLimitReached ||
+                        (selectedQuizId && selectedQuizId !== "")
+                      }
                     >
                       <Option value="">Không chọn</Option>
                       {quizTemplates?.map((template) => (
@@ -1207,7 +1133,7 @@ export default function QuizCreator() {
                     title="Bạn chỉ có thể tạo tối đa 3 bài tập."
                   />
                 )}
-                {/* {!isQuizLimitReached ? (
+                {!isQuizLimitReached ? (
                   <div className="pt-2 text-end">
                     {!isTemplateMode && (
                       <>
@@ -1300,8 +1226,8 @@ export default function QuizCreator() {
                       </Button>
                     )}
                   </div>
-                ) : null} */}
-                {!isQuizLimitReached || isTemplateMode ? (
+                ) : null}
+                {/* {!isQuizLimitReached || isTemplateMode ? (
                   <div className="pt-2 text-end">
                     <Button
                       type="primary"
@@ -1312,7 +1238,7 @@ export default function QuizCreator() {
                       Lưu
                     </Button>
                   </div>
-                ) : null}
+                ) : null} */}
               </>
             ) : (
               <>

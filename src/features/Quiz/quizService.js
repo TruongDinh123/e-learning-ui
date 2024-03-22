@@ -64,7 +64,7 @@ const viewQuiz = async (data) => {
 
 const getDraftQuiz = async (data) => {
   const res = await axiosInstance({
-    url: `/e-learning/draft-quiz?courseId=${data.courseId}`,
+    url: `/e-learning/draft-quiz`,
     method: "GET",
   });
   return res.data;

@@ -16,6 +16,7 @@ export const createQuiz = createAsyncThunk(
 export const draftQuiz = createAsyncThunk(
   "/e-learning/draft-quiz",
   async (data, { rejectWithValue }) => {
+    console.log("🚀 ~ data:", data);
     try {
       const response = await QuizService.draftQuiz(data);
       return response;
@@ -518,6 +519,31 @@ const quizSlice = createSlice({
         state.isSuccess = false;
         state.message = "Something went wrong!";
       })
+      .addCase(draftQuiz.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(draftQuiz.fulfilled, (state, action) => {
+        console.log("🚀 ~ action:", action);
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        const index = state.getdraftQuiz.findIndex(
+          (quiz) => quiz._id === action.payload.metadata._id
+        );
+        if (index !== -1) {
+          // Nếu tìm thấy quiz trong mảng, cập nhật nó
+          state.getdraftQuiz[index] = action.payload.metadata;
+        } else {
+          // Nếu không tìm thấy, thêm mới vào mảng
+          state.getdraftQuiz.push(action.payload.metadata);
+        }
+      })
+      .addCase(draftQuiz.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
       .addCase(getDraftQuiz.pending, (state, action) => {
         state.isLoading = true;
       })
@@ -542,7 +568,9 @@ const quizSlice = createSlice({
         state.isSuccess = true;
         const draftQuizId = action.meta.arg.quizIdDraft;
         if (state.getdraftQuiz && Array.isArray(state.getdraftQuiz)) {
-          state.getdraftQuiz = state.getdraftQuiz.filter(draftQuiz => draftQuiz._id !== draftQuizId);
+          state.getdraftQuiz = state.getdraftQuiz.filter(
+            (draftQuiz) => draftQuiz._id !== draftQuizId
+          );
         }
       })
       .addCase(DeldraftQuiz.rejected, (state, action) => {
