@@ -3,13 +3,30 @@ import {
   UserOutlined,
   VideoCameraOutlined,
   FileAddOutlined,
+  BankOutlined,
+  BulbOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Modal } from "antd";
 import { useRouter } from "next/navigation";
 import { isMentor } from "@/middleware";
 const logo3 = "/images/logo5.png";
+const newlogo = "/images/new.png";
 
 const { Sider } = Layout;
+
+const showComingSoonModal = () => {
+  Modal.info({
+    title: 'Tính năng sắp ra mắt',
+    content: (
+      <div>
+        <p>Đây là tính năng sắp ra mắt, dành cho giáo viên đặc biệt. Để sử dụng tính năng này vui lòng liên hệ qua 247learn@gmail.com</p>
+      </div>
+    ),
+    onOk() {},
+    type: 'confirm',
+    okButtonProps: {className: 'custom-button'}
+  });
+};
 
 export default function AdminSidebar(props) {
   const { collapsed } = props;
@@ -47,6 +64,17 @@ export default function AdminSidebar(props) {
           key: "quiz/template-quiz",
           icon: <UserOutlined />,
           label: "Bài tập mẫu",
+        },
+        {
+          key: "quiz/bank-quiz",
+          icon: (
+            <span>
+               <img src={newlogo} alt="New" style={{ width: '20px' }} />
+            </span>
+          ),
+          label: (
+            <span style={{ color: 'red' }}>Ngân hàng đề thi</span>
+          ),
         },
       ],
     },
@@ -124,8 +152,11 @@ export default function AdminSidebar(props) {
         style={{ flex: 1 }}
         defaultSelectedKeys={["1"]}
         onClick={({ key }) => {
-          router.push(`/admin/${key}`);
-          props.setCollapsed(true);
+          if (key === "quiz/bank-quiz") {
+            showComingSoonModal();
+          } else {
+            router.push(`/admin/${key}`);
+          }
         }}
         items={menuItems}
       />
