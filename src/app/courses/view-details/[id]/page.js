@@ -457,29 +457,24 @@ export default function ViewQuiz({ params }) {
   };
 
   const AllQuizzesComponent = () => {
-    // Lấy ra thông tin của tất cả các khóa học từ store
-    const allCourses = useSelector((state) => state.course.courses.metadata);
+    const allCourses = useSelector((state) => state?.course?.courses?.metadata);
 
-    // Tìm khóa học tương ứng dựa vào params?.id
     const currentCourse = allCourses?.find(
-      (course) => course._id === params?.id
+      (course) => course?._id === params?.id
     );
 
-    // Sử dụng useMemo để memoize giá trị của allQuizzes
     const allQuizzes = useMemo(() => {
-      // Lấy ra danh sách các bài quiz của khóa học tương ứng
-      const courseQuizzes = currentCourse ? currentCourse.quizzes : [];
+      const courseQuizzes = currentCourse ? currentCourse.quizzes || [] : [];
 
-      // Lấy ra danh sách các bài quiz từ mỗi bài học trong khóa học
       const lessonQuizzes = currentCourse
-        ? currentCourse.lessons.flatMap((lesson) => lesson.quizzes)
+        ? currentCourse.lessons?.flatMap((lesson) => lesson.quizzes || [])
         : [];
 
       return [...courseQuizzes, ...lessonQuizzes];
     }, [currentCourse]);
 
     useEffect(() => {
-      setAllCourse(allQuizzes.length);
+      setAllCourse(allQuizzes?.length);
     }, [allQuizzes]);
     return allQuizzes.length > 0 ? (
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-4">
