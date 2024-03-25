@@ -14,7 +14,7 @@ const EmailSchema = yup.object({
   email: yup.string()
     .email("email must be a valid email")
     .required("email is required")
-    .matches(/^[a-zA-Z0-9._%+-]+@gmail\.com$/, "email must be a Gmail address"),
+    // .matches(/^[a-zA-Z0-9._%+-]+@gmail\.com$/, "email must be a Gmail address"),
 });
 
 export default function AddTeacherToCourse(props) {

@@ -13,7 +13,7 @@ const EmailSchema = yup.object({
   email: yup.string()
     .email("email phải là một địa chỉ email hợp lệ")
     .required("email là bắt buộc")
-    .matches(/^[a-zA-Z0-9._%+-]+@gmail\.com$/, "email phải là địa chỉ Gmail"),
+    // .matches(/^[a-zA-Z0-9._%+-]+@gmail\.com$/, "email phải là địa chỉ Gmail"),
 });
 
 // Tạo một mảng với 101 học viên giả
