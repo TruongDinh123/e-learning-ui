@@ -436,6 +436,13 @@ export default function QuizCreator() {
             }
           });
         }
+
+        if (apiAction === createQuiz) {
+          if (action !== "save_draft") {
+            dispatch(DeldraftQuiz({ quizIdDraft: selectedQuizId }));
+          }
+        }
+
         dispatch(refreshAUser(userId));
       })
       .catch((error) => {
@@ -463,9 +470,6 @@ export default function QuizCreator() {
         router.push("/admin/quiz/template-quiz");
       } else {
         router.push(`/admin/quiz/view-quiz`);
-        if (apiAction === createQuiz) {
-          dispatch(DeldraftQuiz({ quizIdDraft: selectedQuizId }));
-        }
       }
   };
 

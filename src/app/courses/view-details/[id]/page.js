@@ -11,6 +11,7 @@ import {
   Empty,
   message,
   Tooltip,
+  Modal,
 } from "antd";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -296,13 +297,26 @@ export default function ViewQuiz({ params }) {
             <Button
               className="w-full text-white custom-button bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 text-center"
               style={{ width: "100%" }}
-              onClick={() => handleStartQuiz(i?._id, i?.type)}
+              onClick={() => confirmStartQuiz(i?._id, i?.type)}
             >
-              Làm bài tập
+              Bắt đầu thi
             </Button>
           ),
         };
       });
+
+      const confirmStartQuiz = (quizId, quizType) => {
+        Modal.confirm({
+          title: 'Vui lòng xác nhận bắt đầu làm bài thi',
+          content: 'Lưu ý, trong quá trình làm bài, nếu bạn có các hành vi như: đóng hoặc tải lại trình duyệt, hệ thống sẽ ghi nhận trạng thái là đã hoàn thành.',
+          okText: 'Xác nhận',
+          cancelText: 'Huỷ',
+          onOk() {
+            handleStartQuiz(quizId, quizType);
+          },
+          okButtonProps: { className: "custom-button" },
+        });
+      };
 
     useEffect(() => {
       setExpiredCount(notCompletedQuizzes.length);

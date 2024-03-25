@@ -4,6 +4,7 @@ import {
   Button,
   Collapse,
   Empty,
+  Modal,
   Result,
   Spin,
   message,
@@ -122,29 +123,35 @@ export default function CourseDetails({ params }) {
   };
 
   const handleStartQuiz = async (quizId, quizType) => {
-    try {
-      setLoadingQuizzes((prev) => ({ ...prev, [quizId]: true }));
-      const response = await dispatch(startQuiz({ quizId })).then(unwrapResult);
-      if (response.status) {
-        const quizPage =
-          quizType === "multiple_choice"
-            ? "submit-quiz"
-            : "handle-submit-essay";
-        const path = `/courses/view-details/${quizPage}/${quizId}`;
-        router.push(path);
-      } else {
-        console.error("Không thể bắt đầu quiz");
-      }
-    } catch (error) {
-      console.error("Lỗi khi bắt đầu quiz:", error);
-      if (error.response && error.response.data.message) {
-        message.warning(`Lỗi: ${error.response.data.message}`);
-      } else {
-        message.error("Có lỗi xảy ra, vui lòng thử lại sau.");
-      }
-    } finally {
-      setLoadingQuizzes((prev) => ({ ...prev, [quizId]: false }));
-    }
+    Modal.confirm({
+      title: 'Vui lòng xác nhận bắt đầu làm bài thi',
+      content: 'Lưu ý, trong quá trình làm bài, nếu bạn có các hành vi như: đóng hoặc tải lại trình duyệt, hệ thống sẽ ghi nhận trạng thái là đã hoàn thành.',
+      okText: 'Xác nhận',
+      cancelText: 'Huỷ',
+      onOk: async () => {
+        try {
+          setLoadingQuizzes((prev) => ({ ...prev, [quizId]: true }));
+          const response = await dispatch(startQuiz({ quizId })).then(unwrapResult);
+          if (response.status) {
+            const quizPage = quizType === "multiple_choice" ? "submit-quiz" : "handle-submit-essay";
+            const path = `/courses/view-details/${quizPage}/${quizId}`;
+            router.push(path);
+          } else {
+            console.error("Không thể bắt đầu quiz");
+          }
+        } catch (error) {
+          console.error("Lỗi khi bắt đầu quiz:", error);
+          if (error.response && error.response.data.message) {
+            message.warning(`Lỗi: ${error.response.data.message}`);
+          } else {
+            message.error("Có lỗi xảy ra, vui lòng thử lại sau.");
+          }
+        } finally {
+          setLoadingQuizzes((prev) => ({ ...prev, [quizId]: false }));
+        }
+      },
+      okButtonProps: { className: "custom-button" },
+    });
   };
 
   // Thêm hàm này để kiểm tra xem thời gian làm bài đã hết hay chưa
@@ -308,7 +315,7 @@ export default function CourseDetails({ params }) {
                                     loading={loadingQuizzes[quiz._id]}
                                     type="primary"
                                   >
-                                    Bắt đầu
+                                    Bắt đầu thi
                                   </Button>
                                 )}
                               </>

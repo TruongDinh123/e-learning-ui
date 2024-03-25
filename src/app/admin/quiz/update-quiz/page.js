@@ -215,7 +215,7 @@ export default function UpdateQuiz(props) {
                   answer: question.answer,
                   image: question?.image_url,
                 })),
-                submissionTime: dayjs(quizToUpdate?.submissionTime),
+                submissionTime: quizToUpdate?.submissionTime ? dayjs(quizToUpdate.submissionTime) : undefined,
                 timeLimit: quizToUpdate.timeLimit,
               });
             }
@@ -263,12 +263,6 @@ export default function UpdateQuiz(props) {
             <Form.Item
               label="Thời hạn nộp"
               name="submissionTime"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập thời gian nộp bài",
-                },
-              ]}
             >
               <DatePicker
                 showTime
