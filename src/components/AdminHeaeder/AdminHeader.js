@@ -8,7 +8,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Avatar, Menu, Dropdown, message } from "antd";
+import { Button, Avatar, Menu, Dropdown, message, Progress, Tooltip } from "antd";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -124,6 +124,47 @@ export default function AdminHeader(props) {
       });
   };
 
+  const { isLoadingQuiz, newQuizCreated } = useSelector((state) => state?.quiz);
+  const [showProgress, setShowProgress] = useState(false);
+  const [progressPercent, setProgressPercent] = useState(0);
+
+  useEffect(() => {
+    let intervalId;
+  
+    if (isLoadingQuiz) {
+      setShowProgress(true);
+      setProgressPercent(0);
+      intervalId = setInterval(() => {
+        setProgressPercent((prevPercent) => {
+          if (prevPercent >= 75) {
+            clearInterval(intervalId);
+            return 75;
+          }
+          return prevPercent + 1;
+        });
+      }, 20);
+    } else if (newQuizCreated) {
+      clearInterval(intervalId);
+      setProgressPercent(75);
+      intervalId = setInterval(() => {
+        setProgressPercent((prevPercent) => {
+          if (prevPercent >= 100) {
+            clearInterval(intervalId);
+            setTimeout(() => {
+              setShowProgress(false);
+              message.success("Bài thi đã được tạo thành công. Email thông báo đang được gửi.", 2.5);
+            }, 2000);
+            return 100;
+          }
+          return prevPercent + 1;
+        });
+      }, 20);
+    }
+  
+    return () => clearInterval(intervalId);
+  }, [isLoadingQuiz, newQuizCreated]);
+
+
   return (
     <header className="bg-[#02354B] sticky top-0 z-30" style={{ paddingLeft: collapsed ? "80px" : "280px" }}>
       <div className="max-w-[105rem] mx-auto px-4 sm:px-6 lg:px-8">
@@ -181,7 +222,7 @@ export default function AdminHeader(props) {
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
-              <div className="ml-3 relative">
+              <div className="ml-3 relative"> 
                 <div className="ml-10 flex items-center space-x-4">
                   {userState == null && (
                     <Link href="/login" icon={<LoginOutlined />}>
@@ -193,7 +234,12 @@ export default function AdminHeader(props) {
 
                   {userState !== null && (
                     <Dropdown overlay={menu} placement="bottomLeft">
-                      <div className="ml-3 relative">
+                      <div className="ml-3 relative flex items-center">
+                        {showProgress && (
+                          <Tooltip title={isLoadingQuiz ? "Đang tạo bài thi" : "Bài thi đã được tạo thành công!"}>
+                            <Progress type="circle" percent={progressPercent} width={40} />
+                          </Tooltip>
+                        )}
                         <div className="flex items-center space-x-4">
                           <a
                             aria-current="page"

@@ -360,6 +360,7 @@ const initialState = {
   isSuccess: false,
   isLoading: false,
   newQuizCreated: false,
+  isLoadingQuiz: false,
   message: "",
 };
 
@@ -377,15 +378,18 @@ const quizSlice = createSlice({
     builder
       .addCase(createQuiz.pending, (state, action) => {
         state.isLoading = true;
+        state.isLoadingQuiz = true;
       })
       .addCase(createQuiz.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.isLoadingQuiz = false;
         state.isError = false;
         state.isSuccess = true;
         state.newQuizCreated = true;
       })
       .addCase(createQuiz.rejected, (state, action) => {
         state.isLoading = false;
+        state.isLoadingQuiz = false;
         state.isError = true;
         state.isSuccess = false;
         state.message = "Something went wrong!";
