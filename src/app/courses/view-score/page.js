@@ -18,7 +18,7 @@ const ScoreManagement = () => {
   const userState = useSelector((state) => state?.user?.user);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(
-    Array(score.length).fill(false)
+    Array(score?.length)?.fill(false)
   );
 
   const showDrawer = (index) => {
@@ -45,15 +45,15 @@ const ScoreManagement = () => {
     {
       title: "Tên bài tập",
       dataIndex: "name",
-      onFilter: (value, record) => record.name.indexOf(value) === 0,
-      sorter: (a, b) => a.name.length - b.name.length,
+      onFilter: (value, record) => record?.name?.indexOf(value) === 0,
+      sorter: (a, b) => a?.name?.length - b?.name?.length,
       sortDirections: ["descend"],
     },
     {
       title: "Điểm",
       dataIndex: "score",
-      onFilter: (value, record) => record.score.indexOf(value) === 0,
-      sorter: (a, b) => a.score.length - b.score.length,
+      onFilter: (value, record) => record?.score?.indexOf(value) === 0,
+      sorter: (a, b) => a?.score?.length - b?.score?.length,
       sortDirections: ["descend"],
     },
     {
@@ -73,8 +73,8 @@ const ScoreManagement = () => {
     dispatch(getScore())
       .then(unwrapResult)
       .then((res) => {
-        if (res.status) {
-          setScore(res.metadata);
+        if (res?.status) {
+          setScore(res?.metadata);
         }
         setIsLoading(false);
       })
@@ -83,7 +83,7 @@ const ScoreManagement = () => {
       });
     Promise.all([dispatch(getStudentCourses()).then(unwrapResult)])
       .then(([studentScore]) => {
-        setCources(studentScore.metadata.courses);
+        setCources(studentScore?.metadata?.courses);
       })
       .catch((error) => {
         messageApi.error("Có lỗi xảy ra khi tải thông tin.");
@@ -92,7 +92,7 @@ const ScoreManagement = () => {
 
   //table data
   let data = [];
-  score.forEach((i, index) => {
+  score?.forEach((i, index) => {
     const EssayAnswer = ({ essayAnswer, filename }) => (
       <div className="p-3">
         <h3 className="font-bold">Câu trả lời của bạn</h3>
@@ -113,10 +113,10 @@ const ScoreManagement = () => {
 
     const courseName =
       userState?.courses?.find((course) =>
-        i.quiz.courseIds.includes(course._id)
+        i?.quiz?.courseIds?.includes(course?._id)
       )?.name ||
       userState?.metadata?.account.courses?.find((course) =>
-        i.quiz.courseIds.includes(course._id)
+        i?.quiz?.courseIds?.includes(course?._id)
       )?.name;
 
     if (filter === "tất cả" || courseName === filter) {
@@ -147,7 +147,7 @@ const ScoreManagement = () => {
                   <List
                     dataSource={i?.quiz?.questions || i?.assignment?.questions}
                     renderItem={(question, idxQuestion) => {
-                      const answerObj = i?.answers.find(
+                      const answerObj = i?.answers?.find(
                         (answer) => Object.keys(answer)[0] === question._id
                       );
                       const answer = answerObj
@@ -214,17 +214,17 @@ const ScoreManagement = () => {
         <div className="pb-28 pt-20">
           <Select
             defaultValue="tất cả"
-            style={{ width: 120 }}
             onChange={handleFilterChange}
+            className="me-3 w-full sm:w-64 mb-3 md:mb-0"
           >
             <Option value="tất cả">Tất cả</Option>
             {cources?.map((course) => (
-              <Option key={course._id} value={course.name}>
-                {course.name}
+              <Option key={course?._id} value={course?.name}>
+                {course?.name}
               </Option>
             ))}
           </Select>
-          <Table columns={columns} dataSource={data} className="pb-56" />
+          <Table columns={columns} dataSource={data} className="pb-56"   />
         </div>
       )}
     </div>
