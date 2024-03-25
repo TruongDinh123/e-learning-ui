@@ -127,13 +127,15 @@ export default function AdminHeader(props) {
   const { isLoadingQuiz, newQuizCreated } = useSelector((state) => state?.quiz);
   const [showProgress, setShowProgress] = useState(false);
   const [progressPercent, setProgressPercent] = useState(0);
-
+  const [initiated, setInitiated] = useState(false);
+  
   useEffect(() => {
     let intervalId;
   
     if (isLoadingQuiz) {
       setShowProgress(true);
       setProgressPercent(0);
+      setInitiated(true);
       intervalId = setInterval(() => {
         setProgressPercent((prevPercent) => {
           if (prevPercent >= 75) {
@@ -143,7 +145,7 @@ export default function AdminHeader(props) {
           return prevPercent + 1;
         });
       }, 20);
-    } else if (newQuizCreated) {
+    } else if (newQuizCreated && initiated) {
       clearInterval(intervalId);
       setProgressPercent(75);
       intervalId = setInterval(() => {
@@ -153,6 +155,7 @@ export default function AdminHeader(props) {
             setTimeout(() => {
               setShowProgress(false);
               message.success("Bài thi đã được tạo thành công. Email thông báo đang được gửi.", 2.5);
+              setInitiated(false);
             }, 2000);
             return 100;
           }
@@ -162,7 +165,7 @@ export default function AdminHeader(props) {
     }
   
     return () => clearInterval(intervalId);
-  }, [isLoadingQuiz, newQuizCreated]);
+  }, [isLoadingQuiz, newQuizCreated, initiated]);
 
 
   return (

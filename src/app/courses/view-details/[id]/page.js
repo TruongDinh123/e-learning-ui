@@ -12,7 +12,7 @@ import {
   message,
   Tooltip,
 } from "antd";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   getQuizzesByStudentAndCourse,
@@ -26,6 +26,7 @@ import { format } from "date-fns";
 import {
   createNotification,
   getACourseByInfo,
+  viewCourses,
 } from "@/features/Courses/courseSlice";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import Link from "next/link";
@@ -457,8 +458,10 @@ export default function ViewQuiz({ params }) {
   };
 
   const AllQuizzesComponent = () => {
-    const allCourses = useSelector((state) => state?.course?.courses?.metadata);
-
+    const allCourses = useSelector(
+      (state) => state?.course?.courses?.metadata,
+      shallowEqual
+    );
     const currentCourse = allCourses?.find(
       (course) => course?._id === params?.id
     );
@@ -474,8 +477,12 @@ export default function ViewQuiz({ params }) {
     }, [currentCourse]);
 
     useEffect(() => {
+      if (!allCourses) {
+        dispatch(viewCourses());
+      }
       setAllCourse(allQuizzes?.length);
-    }, [allQuizzes]);
+    }, [allQuizzes, allCourses, dispatch]);
+
     return allQuizzes.length > 0 ? (
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-4">
         {isLoading ? (
