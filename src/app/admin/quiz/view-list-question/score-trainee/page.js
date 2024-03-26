@@ -1,13 +1,12 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Checkbox, Empty, Spin, Tabs, message } from "antd";
 import StudentWork from "../trainee-work/page";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { getScoreByQuizId, updateScore } from "@/features/Quiz/quizSlice";
 import "./page.css";
-const { TabPane } = Tabs;
-import { debounce } from "lodash";
+import { useMediaQuery } from "react-responsive";
 
 export default function ViewListScore(props) {
   const [messageApi, contextHolder] = message.useMessage();
@@ -96,6 +95,67 @@ export default function ViewListScore(props) {
   const getFullName = (student) =>
     [student?.lastName, student?.firstName].filter(Boolean).join(" ");
 
+  const tabItems = score.map((student) => ({
+    label: (
+      <li
+        className={`px-4 py-4 flex items-center sm:px-6 ${
+          selectedStudent && selectedStudent._id === student._id
+            ? "selected-student"
+            : ""
+        }`}
+        style={{ maxWidth: "100%", overflow: "auto", textOverflow: "ellipsis" }}
+      >
+        <input
+          type="checkbox"
+          className="mr-4 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+          checked={student.selected}
+          onChange={(e) => handleStudentCheck(student._id, e.target.checked)}
+        />
+        <div
+          onClick={() => setSelectedStudent(student)}
+          className="flex flex-1 cursor-pointer items-center"
+        >
+          <img
+            className="h-10 w-10 rounded-full mr-4"
+            src={student?.user?.image_url || "https://placehold.co/100x100"}
+            alt="Placeholder avatar for student"
+          />
+          <div className="min-w-0 flex-1 items-center">
+            <p className="text-sm font-medium text-gray-900 truncate">
+              {student?.user?.lastName} {student?.user?.firstName}
+            </p>
+          </div>
+        </div>
+        <div className="ml-4 flex-shrink-0">
+          <input
+            type="number"
+            className="text-sm text-gray-500 border-l-2 pl-4"
+            defaultValue={student?.updateScore ?? student?.score ?? ""}
+            onBlur={(e) => handleScoreChange(student._id, e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleScoreChange(student._id, e.target.value);
+              }
+            }}
+            placeholder="_"
+          />
+          <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+            / {totalQuestions * 10}
+          </span>
+        </div>
+      </li>
+    ),
+    key: student._id,
+    children: (
+      <div style={{ maxHeight: '45vh', overflowY: 'auto' }}>
+        <h1 className="flex justify-center items-center text-xl font-bold pb-4 text-purple-600">
+          Bài làm của: {getFullName(student.user)}
+        </h1>
+        <StudentWork student={student} />
+    </div>
+    ),
+  }));
+
   return (
     <div>
       {contextHolder}
@@ -127,7 +187,7 @@ export default function ViewListScore(props) {
             </>
           ) : (
             <div
-              className="flex justify-center items-center"
+              className="flex justify-center items-center scrollbar scrollbar-thin"
               style={{ height: "45vh" }}
             >
               <Empty description="Hiện tại chưa có học viên nộp bài" />
@@ -135,88 +195,9 @@ export default function ViewListScore(props) {
           )}
         </React.Fragment>
       )}
-
-      <div className="flex scroll-container">
-        <div className="flex-2 min-w-0">
-          {score.length > 0 ? (
-            <Tabs tabPosition={"left"} className="tabs-container">
-              {score.map((student, index) => (
-                <TabPane
-                  tab={
-                    <li
-                      className={`px-4 py-4 flex items-center sm:px-6 ${
-                        selectedStudent && selectedStudent._id === student._id
-                          ? "selected-student"
-                          : ""
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        className="mr-4 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                        checked={student.selected}
-                        onChange={(e) =>
-                          handleStudentCheck(student._id, e.target.checked)
-                        }
-                      />
-                      <div
-                        onClick={() => setSelectedStudent(student)}
-                        className="flex flex-1 cursor-pointer items-center"
-                      >
-                        <img
-                          className="h-10 w-10 rounded-full mr-4"
-                          src={
-                            student?.user?.image_url ||
-                            "https://placehold.co/100x100"
-                          }
-                          alt="Placeholder avatar for student"
-                        />
-                        <div className="min-w-0 flex-1 items-center">
-                          <p className="text-sm font-medium text-gray-900 truncate">
-                            {student?.user?.lastName} {student?.user?.firstName}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="ml-4 flex-shrink-0">
-                        <input
-                          type="number"
-                          className="text-sm text-gray-500 border-l-2 pl-4"
-                          defaultValue={
-                            student?.updateScore ?? student?.score ?? ""
-                          }
-                          onBlur={(e) =>
-                            handleScoreChange(student._id, e.target.value)
-                          }
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              handleScoreChange(student._id, e.target.value);
-                            }
-                          }}
-                          placeholder="_"
-                        />
-                        <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
-                          / {totalQuestions * 10}
-                        </span>
-                      </div>
-                    </li>
-                  }
-                  key={index}
-                />
-              ))}
-            </Tabs>
-          ) : null}
-        </div>
-
-        <div className="flex-1 min-w-0 px-4">
-          {selectedStudent && (
-            <>
-              <h1 className="flex justify-center items-center text-xl font-bold pb-4 text-purple-600">
-                Bài làm của: {getFullName(selectedStudent.user)}
-              </h1>
-              <StudentWork student={selectedStudent} />
-            </>
-          )}
-        </div>
-      </div>
+      {score.length > 0 ? (
+        <Tabs tabPosition="left" items={tabItems} type="line" style={{ maxHeight: "45vh" }} className="scrollbar scrollbar-thin" />
+      ) : null}
     </div>
   );
 }

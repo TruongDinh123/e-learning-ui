@@ -3,17 +3,22 @@ import {
   Breadcrumb,
   Button,
   Collapse,
+  Drawer,
   Empty,
   Modal,
   Result,
   Spin,
+  Table,
   message,
 } from "antd";
 import "../[id]/page.css";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getACourse } from "@/features/Courses/courseSlice";
+import {
+  getACourse,
+  getStudentScoresByCourse,
+} from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useRouter } from "next/navigation";
 import { FolderOpenOutlined } from "@ant-design/icons";
@@ -30,10 +35,16 @@ export default function CourseDetails({ params }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadingQuizzes, setLoadingQuizzes] = useState({});
+  const [rankingDrawerVisible, setRankingDrawerVisible] = useState(false);
+  const [rankingData, setRankingData] = useState([]);
+  console.log("rankingData", rankingData);
   const router = useRouter();
 
   const userState = useSelector((state) => state.user);
-  const isLoggedIn = userState.user?.status === 200 || !!userState.userName || userState.isSuccess
+  const isLoggedIn =
+    userState.user?.status === 200 ||
+    !!userState.userName ||
+    userState.isSuccess;
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -124,16 +135,22 @@ export default function CourseDetails({ params }) {
 
   const handleStartQuiz = async (quizId, quizType) => {
     Modal.confirm({
-      title: 'Vui lòng xác nhận bắt đầu làm bài thi',
-      content: 'Lưu ý, trong quá trình làm bài, nếu bạn có các hành vi như: đóng hoặc tải lại trình duyệt, hệ thống sẽ ghi nhận trạng thái là đã hoàn thành.',
-      okText: 'Xác nhận',
-      cancelText: 'Huỷ',
+      title: "Vui lòng xác nhận bắt đầu làm bài thi",
+      content:
+        "Lưu ý, trong quá trình làm bài, nếu bạn có các hành vi như: đóng hoặc tải lại trình duyệt, hệ thống sẽ ghi nhận trạng thái là đã hoàn thành.",
+      okText: "Xác nhận",
+      cancelText: "Huỷ",
       onOk: async () => {
         try {
           setLoadingQuizzes((prev) => ({ ...prev, [quizId]: true }));
-          const response = await dispatch(startQuiz({ quizId })).then(unwrapResult);
+          const response = await dispatch(startQuiz({ quizId })).then(
+            unwrapResult
+          );
           if (response.status) {
-            const quizPage = quizType === "multiple_choice" ? "submit-quiz" : "handle-submit-essay";
+            const quizPage =
+              quizType === "multiple_choice"
+                ? "submit-quiz"
+                : "handle-submit-essay";
             const path = `/courses/view-details/${quizPage}/${quizId}`;
             router.push(path);
           } else {
@@ -160,6 +177,42 @@ export default function CourseDetails({ params }) {
     const submissionTime = new Date(quiz.submissionTime);
     const timeLimitInMilliseconds = quiz.timeLimit * 60 * 1000;
     return currentTime - submissionTime > timeLimitInMilliseconds;
+  };
+
+  const columns = [
+    {
+      title: "Tên",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Điểm",
+      dataIndex: "totalScore",
+      key: "totalScore",
+    },
+  ];
+
+  const showRankingDrawer = async () => {
+    setRankingDrawerVisible(true);
+    try {
+      const rankingResponse = await dispatch(
+        getStudentScoresByCourse(params.id)
+      ).then(unwrapResult);
+      console.log("rankingResponse", rankingResponse);
+      const rankingArray = Array.isArray(rankingResponse.metadata)
+        ? rankingResponse.metadata
+        : [];
+      setRankingData(rankingArray);
+    } catch (error) {
+      console.error("Error fetching ranking data:", error);
+      message.error("Không thể lấy dữ liệu bảng xếp hạng.");
+      setRankingData([]);
+    }
   };
 
   return (
@@ -271,6 +324,55 @@ export default function CourseDetails({ params }) {
                 <h2 className="text-lg font-semibold text-[#002c6a] sm:text-base">
                   Danh sách bài tập
                 </h2>
+                <div className="pt-4">
+                  <Button
+                    onClick={showRankingDrawer}
+                    type="primary"
+                    className="custom-button"
+                  >
+                    Xem bảng xếp hạng
+                  </Button>
+                  <Drawer
+                    title="Bảng xếp hạng điểm số"
+                    placement="right"
+                    closable={true}
+                    onClose={() => setRankingDrawerVisible(false)}
+                    visible={rankingDrawerVisible}
+                    width="80%"
+                  >
+                    <div className="flex justify-around items-center mb-8">
+                      {rankingData.slice(0, 3).map((student, index) => (
+                        <div
+                          key={student.email}
+                          className={`flex flex-col items-center ${
+                            index === 0
+                              ? "text-gold"
+                              : index === 1
+                              ? "text-silver"
+                              : "text-bronze"
+                          }`}
+                        >
+                          <span className="text-4xl font-bold">
+                            {index + 1}
+                          </span>
+                          <span className="text-lg font-semibold">
+                            {student.name}
+                          </span>
+                          <span className="text-md">{student.totalScore}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <Table
+                      dataSource={rankingData}
+                      columns={columns}
+                      rowKey="email"
+                      rowClassName={(record, index) =>
+                        index < 3 ? "top-ranking-row" : ""
+                      }
+                      pagination={false}
+                    />
+                  </Drawer>
+                </div>
                 <ul className="pl-5 sm:pl-4 list-none">
                   {dataCourse.quizzes.map((quiz, index) => {
                     // Kiểm tra xem thời gian làm bài đã hết hay chưa

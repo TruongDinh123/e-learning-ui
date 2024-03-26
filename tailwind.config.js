@@ -6,7 +6,13 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        gold: '#ffd700',
+        silver: '#c0c0c0',
+        bronze: '#cd7f32',
+      },
+    },
   },
   plugins: [
     require('tailwind-scrollbar'),

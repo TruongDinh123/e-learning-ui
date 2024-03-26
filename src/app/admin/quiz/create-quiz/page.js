@@ -88,10 +88,10 @@ export default function QuizCreator() {
     setCurrentPage(page);
   };
 
-  const handleImageUpload = (file, index) => {
+  const handleImageUpload = (file, key) => {
     setQuestionImages((prevState) => {
       const newState = [...prevState];
-      newState[index] = file;
+      newState[key] = file;
       return newState;
     });
   };
@@ -221,19 +221,19 @@ export default function QuizCreator() {
     fileList: file ? [file] : [],
   };
 
-  const getPropsQuestion = (index) => ({
+  const getPropsQuestion = (key) => ({
     onRemove: () => {
       const newQuestionImages = [...questionImages];
-      newQuestionImages[index] = null;
+      delete newQuestionImages[key];
       setQuestionImages(newQuestionImages);
     },
     beforeUpload: (file) => {
       const newQuestionImages = [...questionImages];
-      newQuestionImages[index] = file;
+      newQuestionImages[key] = file;
       setQuestionImages(newQuestionImages);
-      return false; // Ngăn chặn việc tự động upload
+      return false;
     },
-    fileList: questionImages[index] ? [questionImages[index]] : [],
+    fileList: questionImages[key] ? [questionImages[key]] : [],
     accept: ".jpg, .jpeg, .png",
   });
 
@@ -325,7 +325,6 @@ export default function QuizCreator() {
       studentIds = studentsByCourse.map((student) => student._id);
     }
 
-    // let questions = values.questions || [];
     let questions = form.getFieldValue("questions") || [];
     const apiAction = action === "save_draft" ? draftQuiz : createQuiz;
 
@@ -335,7 +334,6 @@ export default function QuizCreator() {
         name: values.name,
         courseIds: selectedCourse,
         studentIds: studentIds,
-        // questions: combinedQuestions,
         questions: questions.map((question) => ({
           ...question,
           options: question.options.map((option) => option.option),
@@ -490,6 +488,7 @@ export default function QuizCreator() {
 
   const coursesFromStore = useSelector((state) => selectCourses(state));
   const draftQuizFromStore = useSelector((state) => selectDraftQuiz(state));
+  console.log("draftQuizFromStore", draftQuizFromStore);
   const getQuizTemplatesStore = useSelector((state) =>
     selectQuizTemplates(state)
   );
@@ -685,6 +684,7 @@ export default function QuizCreator() {
           question: question.question,
           options: question.options.map((option) => ({ option })),
           answer: question.answer,
+          image_url: question.image_url,
         })),
       });
 
@@ -897,14 +897,23 @@ export default function QuizCreator() {
                       }
                       className="w-full"
                     >
+                    {isTemplateMode ? (
                       <Input
                         disabled={
-                          !isCourseSelected ||
                           (isQuizLimitReached && !isTemplateMode)
                         }
-                        placeholder="Tên bài"
+                        placeholder="Nhập tên bài tập mẫu"
                         className="w-full"
                       />
+                    ) : (
+                      <Input
+                        disabled={ !isCourseSelected ||
+                          (isQuizLimitReached && !isTemplateMode)
+                        }
+                        placeholder="Nhập tên bài tập"
+                        className="w-full"
+                      />
+                    )}
                     </Form.Item>
                   </Col>
                   {!isTemplateMode && (
@@ -1006,9 +1015,9 @@ export default function QuizCreator() {
                                       name={[field.name, "image"]}
                                     >
                                       <Upload
-                                        {...getPropsQuestion(index)}
+                                        {...getPropsQuestion(field.key)}
                                         onChange={(event) =>
-                                          handleImageUpload(event.file, index)
+                                          handleImageUpload(event.file, field.key)
                                         }
                                       >
                                         <Button
