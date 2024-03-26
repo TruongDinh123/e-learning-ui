@@ -488,7 +488,6 @@ export default function QuizCreator() {
 
   const coursesFromStore = useSelector((state) => selectCourses(state));
   const draftQuizFromStore = useSelector((state) => selectDraftQuiz(state));
-  console.log("draftQuizFromStore", draftQuizFromStore);
   const getQuizTemplatesStore = useSelector((state) =>
     selectQuizTemplates(state)
   );

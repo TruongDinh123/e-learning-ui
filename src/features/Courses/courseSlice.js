@@ -263,7 +263,6 @@ export const getAllSubCoursesById = createAsyncThunk(
 export const getStudentScoresByCourse = createAsyncThunk(
   "/e-learning/get-all-score-by-id/",
   async (data, { rejectWithValue }) => {
-    console.log("data", data)
     try {
       const response = await courseService.getStudentScoresByCourse(data);
       return response;

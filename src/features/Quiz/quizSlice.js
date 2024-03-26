@@ -16,7 +16,6 @@ export const createQuiz = createAsyncThunk(
 export const draftQuiz = createAsyncThunk(
   "/e-learning/draft-quiz",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data);
     try {
       const response = await QuizService.draftQuiz(data);
       return response;
