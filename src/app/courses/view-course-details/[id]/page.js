@@ -37,7 +37,6 @@ export default function CourseDetails({ params }) {
   const [loadingQuizzes, setLoadingQuizzes] = useState({});
   const [rankingDrawerVisible, setRankingDrawerVisible] = useState(false);
   const [rankingData, setRankingData] = useState([]);
-  console.log("rankingData", rankingData);
   const router = useRouter();
 
   const userState = useSelector((state) => state.user);
@@ -185,11 +184,11 @@ export default function CourseDetails({ params }) {
       dataIndex: "name",
       key: "name",
     },
-    {
+    ...(isAdmin ? [{
       title: "Email",
       dataIndex: "email",
       key: "email",
-    },
+    }] : []),
     {
       title: "Điểm",
       dataIndex: "totalScore",
@@ -203,13 +202,11 @@ export default function CourseDetails({ params }) {
       const rankingResponse = await dispatch(
         getStudentScoresByCourse(params.id)
       ).then(unwrapResult);
-      console.log("rankingResponse", rankingResponse);
       const rankingArray = Array.isArray(rankingResponse.metadata)
         ? rankingResponse.metadata
         : [];
       setRankingData(rankingArray);
     } catch (error) {
-      console.error("Error fetching ranking data:", error);
       message.error("Không thể lấy dữ liệu bảng xếp hạng.");
       setRankingData([]);
     }

@@ -6,7 +6,7 @@ import {
   viewCourses,
 } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Empty, Modal, Popconfirm, Select, Table, message } from "antd";
+import { Button, Empty, Modal, Popconfirm, Select, Table, Tooltip, message } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllScoresByCourseId, viewQuiz } from "@/features/Quiz/quizSlice";
@@ -148,7 +148,12 @@ export default function ViewStudentsCourse() {
   const quizColumns = useMemo(
     () =>
       quizzes.map((quiz, index) => ({
-        title: `Bài ${index + 1}`,
+        // title: `Bài ${index + 1}`,
+        title: (
+          <Tooltip title={quiz.name}>
+            {`Bài ${quiz.name.length > 10 ? quiz.name.substring(0, 20) + '...' : quiz.name}`}
+          </Tooltip>
+        ),
         dataIndex: quiz._id,
         key: quiz._id,
         render: (text, record) => {
@@ -194,11 +199,11 @@ export default function ViewStudentsCourse() {
       const score = scores[quiz._id]?.find((s) => s.userId === studentId);
       return {
         x: `Bài ${quiz.name}`,
-        y: score ? score.score : 0, // Nếu không có điểm, giá trị là 0
+        y: score ? score.score : 0,
       };
     });
-    setChartData(studentScores); // Cập nhật state chartData với dữ liệu mới
-    setIsModalVisible(studentId); // Mở Modal
+    setChartData(studentScores);
+    setIsModalVisible(studentId);
   };
 
   const data = useMemo(

@@ -185,9 +185,6 @@ export default function Quizs({ params }) {
         handleSubmit();
       },
       okButtonProps: {className: 'custom-button'},
-      onCancel() {
-        console.log('Hủy nộp bài');
-      },
     });
   };
 
