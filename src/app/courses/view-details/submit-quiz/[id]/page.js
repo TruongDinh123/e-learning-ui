@@ -8,6 +8,7 @@ import {
   Spin,
   Statistic,
   Breadcrumb,
+  Modal,
 } from "antd";
 import { getScore, submitQuiz, viewAQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -174,6 +175,22 @@ export default function Quizs({ params }) {
     }
   };
 
+  const showConfirmSubmit = () => {
+    Modal.confirm({
+      title: 'Bạn có chắc chắn muốn nộp bài?',
+      content: 'Một khi đã nộp, bạn không thể chỉnh sửa các câu trả lời.',
+      okText: 'Nộp bài',
+      cancelText: 'Hủy bỏ',
+      onOk() {
+        handleSubmit();
+      },
+      okButtonProps: {className: 'custom-button'},
+      onCancel() {
+        console.log('Hủy nộp bài');
+      },
+    });
+  };
+
   //countdount queries
   useEffect(() => {
     if (quiz.length > 0 && startTime && !isComplete) {
@@ -311,11 +328,39 @@ export default function Quizs({ params }) {
             <React.Fragment>
               {quiz.map((item, index) => (
                 <React.Fragment key={index}>
-                  <div className="sticky top-16 z-40 bg-white shadow-md p-2 mb-4 flex items-center">
-                    <img src={logo} alt="School Logo" className="h-24 w-auto" />
-                    <h2 className="text-xl font-semibold text-gray-800">
-                      Trung tâm giáo dục Tường Ân - TƯỜNG ÂN EDUCATION
-                    </h2>
+                  <div className="sticky top-16 z-40 bg-white shadow-md p-2 mb-4 flex items-center justify-between">
+                    <div className="flex items-center">
+                      <img
+                        src={logo}
+                        alt="School Logo"
+                        className="h-24 w-auto"
+                      />
+                      <h2 className="text-xl font-semibold text-gray-800">
+                        Trung tâm giáo dục Tường Ân
+                      </h2>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="mr-4 text-lg font-semibold text-gray-700">
+                        Số câu đã hoàn thành:
+                        <span className="text-black">
+                          {Object.keys(selectedAnswers).length}
+                        </span>
+                        /
+                        <span className="text-black">
+                          {quiz[0]?.questions?.length}
+                        </span>
+                      </div>
+                      {!isTimeExceeded && !submitted && !isComplete && (
+                        <Button
+                          loading={submitting}
+                          onClick={showConfirmSubmit}
+                          size="large"
+                          className="mr-3 px-4 text-center bg-purple-500 text-white font-bold rounded hover:bg-purple-600 transition duration-300"
+                        >
+                          Nộp bài
+                        </Button>
+                      )}
+                    </div>
                   </div>
                   <div className="card bg-white shadow-lg rounded-lg p-6 mb-4">
                     <h2 className="text-xl font-semibold text-gray-800 mb-4">
@@ -409,16 +454,6 @@ export default function Quizs({ params }) {
                       )}
                     </div>
                     <div className="mt-4">
-                      {!isTimeExceeded && !submitted && !isComplete && (
-                        <Button
-                          loading={submitting}
-                          onClick={handleSubmit}
-                          size="large"
-                          className="mr-3 px-4 text-center bg-purple-500 text-white font-bold rounded hover:bg-purple-600 transition duration-300"
-                        >
-                          Nộp bài
-                        </Button>
-                      )}
                       {isComplete && (
                         <div className="text-center text-sm text-blue-500">
                           <p className="py-4">Bạn đã hoàn thành bài kiểm tra</p>
@@ -465,7 +500,8 @@ export default function Quizs({ params }) {
                                 <p className="text-lg text-gray-700">
                                   Điểm số của bạn:{" "}
                                   <span className="font-bold text-green-500">
-                                    {quizSubmission?.score}/{totalQuestions * 10}
+                                    {quizSubmission?.score}/
+                                    {totalQuestions * 10}
                                   </span>
                                 </p>
                                 <p className="text-lg text-gray-700">

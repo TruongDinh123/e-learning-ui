@@ -183,6 +183,14 @@ const getAllSubCourses = async (data) => {
   return res.data;
 };
 
+const getStudentScoresByCourse = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/course/${data}/getStudentScores`,
+    method: "GET",
+  });
+  return res.data;
+};
+
 export const courseService = {
   createCourse,
   viewCourse,
@@ -205,4 +213,5 @@ export const courseService = {
   selectCourse,
   getACourseByInfo,
   getCourseSummary,
+  getStudentScoresByCourse,
 };

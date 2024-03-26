@@ -5,8 +5,9 @@ import {
   FileAddOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { isMentor } from "@/middleware";
+import { useEffect, useState } from "react";
 const logo3 = "/images/logo5.png";
 const newlogo = "/images/new.png";
 
@@ -29,6 +30,34 @@ const { Sider } = Layout;
 export default function AdminSidebar(props) {
   const { collapsed } = props;
   const router = useRouter();
+  const pathname = usePathname()
+  const getCurrentKey = (path) => {
+    if (pathname.includes('/admin/courses')) {
+      return 'courses';
+    } else if (pathname.includes('/admin/quiz/create-quiz')) {
+      return 'quiz/create-quiz';
+    }  else if (pathname.includes('/admin/quiz/view-quiz')) {
+      return 'quiz/view-quiz';
+    } else if (pathname.includes('admin/quiz/template-quiz')) {
+      return 'quiz/template-quiz';
+    } else if (pathname.includes('/admin/users/trainee')) {
+      return 'users/trainee';
+    } else if (pathname.includes('/admin/users/view-teachers')) {
+      return 'users/view-teachers';
+    } else if (pathname.includes('/admin/users/view-users')) {
+      return 'users/view-users';
+    } else if (pathname.includes('/admin/users/view-role')) {
+      return 'users/view-role';
+    } else if (pathname.includes('/admin/category')) {
+      return 'category';
+    }
+    return '1';
+  };
+  const [selectedKey, setSelectedKey] = useState(getCurrentKey(pathname));
+
+  useEffect(() => {
+    setSelectedKey(getCurrentKey(pathname));
+  }, [pathname]);
 
   const menuItems = [
     {
@@ -148,7 +177,7 @@ export default function AdminSidebar(props) {
         theme="dark"
         mode="inline"
         style={{ flex: 1 }}
-        defaultSelectedKeys={["1"]}
+        selectedKeys={[selectedKey]}
         onClick={({ key }) => {
           if (key === "quiz/bank-quiz") {
             showComingSoonModal();

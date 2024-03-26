@@ -6,6 +6,7 @@ import { getScore } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { getStudentCourses } from "@/features/Courses/courseSlice";
 import "react-quill/dist/quill.snow.css";
+import { refreshAUser } from "@/features/User/userSlice";
 
 const ScoreManagement = () => {
   const dispatch = useDispatch();
@@ -90,6 +91,11 @@ const ScoreManagement = () => {
       });
   }, []);
 
+  useEffect(() => {
+    const currentTeacherId = localStorage.getItem("x-client-id");
+    dispatch(refreshAUser(currentTeacherId));
+  }, [filter]);
+
   //table data
   let data = [];
   score?.forEach((i, index) => {
@@ -119,7 +125,7 @@ const ScoreManagement = () => {
         i?.quiz?.courseIds?.includes(course?._id)
       )?.name;
 
-    if (filter === "tất cả" || courseName === filter) {
+    if ((filter === "tất cả" && courseName) || courseName === filter) {
       data.push({
         key: index + 1,
         name: i?.quiz?.name ? i.quiz?.name : i.assignment?.name,
@@ -154,7 +160,7 @@ const ScoreManagement = () => {
                         ? Object.values(answerObj)[0]
                         : "";
                       return (
-                        <List.Item> 
+                        <List.Item>
                           <div className="p-3">
                             <h3
                               className="font-semibold py-3"
@@ -224,7 +230,7 @@ const ScoreManagement = () => {
               </Option>
             ))}
           </Select>
-          <Table columns={columns} dataSource={data} className="pb-56"   />
+          <Table columns={columns} dataSource={data} className="pb-56" />
         </div>
       )}
     </div>

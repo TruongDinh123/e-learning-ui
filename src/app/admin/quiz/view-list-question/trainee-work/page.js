@@ -44,7 +44,7 @@ export default function StudentWork({ student }) {
     } else if (quiz && quiz.type === "multiple_choice") {
       // Bài tập trắc nghiệm
       return (
-        <div className="overflow-auto max-h-[23rem] space-y-4">
+        <div className="space-y-4">
           <h3 className="text-3xl font-bold text-indigo-600">
             Bài tập {quiz?.name}
           </h3>

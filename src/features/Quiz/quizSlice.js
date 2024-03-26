@@ -527,7 +527,6 @@ const quizSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(draftQuiz.fulfilled, (state, action) => {
-        console.log("🚀 ~ action:", action);
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
@@ -543,6 +542,31 @@ const quizSlice = createSlice({
         }
       })
       .addCase(draftQuiz.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
+      .addCase(uploadQuestionImage.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(uploadQuestionImage.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+
+        const index = state.getdraftQuiz.findIndex(
+          (quiz) => quiz._id === action.payload.metadata.quiz._id
+        );
+        if (index !== -1) {
+          // Nếu tìm thấy quiz trong mảng, cập nhật nó
+          state.getdraftQuiz[index] = action.payload.metadata.quiz;
+        } else {
+          // Nếu không tìm thấy, thêm mới vào mảng
+          state.getdraftQuiz.push(action.payload.metadata.quiz);
+        }
+      })
+      .addCase(uploadQuestionImage.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
