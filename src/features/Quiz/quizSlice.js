@@ -553,16 +553,15 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-
-        const index = state.getdraftQuiz.findIndex(
-          (quiz) => quiz._id === action.payload.metadata.quiz._id
-        );
-        if (index !== -1) {
-          // Nếu tìm thấy quiz trong mảng, cập nhật nó
-          state.getdraftQuiz[index] = action.payload.metadata.quiz;
-        } else {
-          // Nếu không tìm thấy, thêm mới vào mảng
-          state.getdraftQuiz.push(action.payload.metadata.quiz);
+        if(action.payload.metadata.quiz.isDraft){
+          const index = state.getdraftQuiz.findIndex(
+            (quiz) => quiz._id === action.payload.metadata.quiz._id
+          );
+          if (index !== -1) {
+            state.getdraftQuiz[index] = action.payload.metadata.quiz;
+          } else {
+            state.getdraftQuiz.push(action.payload.metadata.quiz);
+          }
         }
       })
       .addCase(uploadQuestionImage.rejected, (state, action) => {

@@ -351,7 +351,7 @@ export default function QuizCreator() {
           courseIds: selectedCourse,
           studentIds: studentIds,
           timeLimit: values?.timeLimit,
-          questions: values.questions.map((question) => ({
+          questions: questions.map((question) => ({
             ...question,
             options: question.options.map((option) => option.option),
           })),
