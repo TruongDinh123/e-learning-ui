@@ -70,7 +70,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Header() {
+export default function HeaderUser() {
   const userState = useSelector((state) => state.user?.user);
   const isAdmin =
     userState?.roles?.some(
