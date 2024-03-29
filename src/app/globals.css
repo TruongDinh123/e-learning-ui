@@ -6,15 +6,23 @@
   width: fit-content;
 }
 
-.ant-layout {
+.ant-layout-admin {
   min-height: 100vh;
   height: 100%;
   background-color: white;
 }
 
-/* .anticon svg {
-  color: #fff;
-} */
+@media (max-width: 768px) {
+  .ant-layout-content {
+    padding: 0 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ant-layout-content {
+    padding: 0 12px;
+  }
+}
 
 html,
 body {

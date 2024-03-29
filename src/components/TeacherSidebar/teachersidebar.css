@@ -1,0 +1,15 @@
+/* Đặt tên class cho menu của bạn, ví dụ: .custom-menu */
+.custom-menu .ant-menu-item:hover {
+    background-color: #02675b; /* Màu nền khi hover */
+    color: #fff; /* Màu chữ khi hover */
+  }
+  
+  .custom-menu .ant-menu-item-selected {
+    background-color: #024e56; /* Màu nền cho item được chọn */
+    color: #fff; /* Màu chữ cho item được chọn */
+  }
+  
+  .custom-menu .ant-menu-item-active {
+    background-color: #025e6d; /* Màu nền khi item đang active (được click hoặc focus) */
+    color: #fff; /* Màu chữ khi item đang active */
+  }
