@@ -237,7 +237,6 @@ export default function QuizCreator() {
     beforeUpload: (file) => {
       const newQuestionImages = [...questionImages];
       newQuestionImages[key] = { file: file, uploaded: false };
-      console.log('newQuestionImages', newQuestionImages);
       setQuestionImages(newQuestionImages);
       return false;
     },
@@ -417,7 +416,6 @@ export default function QuizCreator() {
         setIsLoadingApi(true);
         const quizId = res.metadata?._id;
         const questionIds = res.metadata?.questions?.map((q) => q._id);
-        console.log('questionIds',questionIds);
         const userId = localStorage?.getItem("x-client-id");
         let uploadPromises = [];
         if (file) {
@@ -434,7 +432,6 @@ export default function QuizCreator() {
         if (apiAction === createQuiz || apiAction === draftQuiz) {
           if (questionImages) {
             questionImages.forEach((imageFile, index) => {
-              console.log('imageFile', imageFile);
               if (imageFile && imageFile.uploaded === false &&  questionIds[index]) {
                 const imageUploadPromise = dispatch(
                   uploadQuestionImage({
