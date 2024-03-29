@@ -554,13 +554,20 @@ const quizSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         if(action.payload.metadata.quiz.isDraft){
-          const index = state.getdraftQuiz.findIndex(
-            (quiz) => quiz._id === action.payload.metadata.quiz._id
-          );
-          if (index !== -1) {
-            state.getdraftQuiz[index] = action.payload.metadata.quiz;
-          } else {
-            state.getdraftQuiz.push(action.payload.metadata.quiz);
+          const updatedQuizInfo = action.payload.metadata.quiz;
+          const updatedQuestionId = action.meta.arg.questionId;
+
+          const quizIndex = state.getdraftQuiz.findIndex(quiz => quiz._id === updatedQuizInfo._id);
+
+          if (quizIndex !== -1) {
+            const questionIndex = state.getdraftQuiz[quizIndex].questions.findIndex(question => question._id === updatedQuestionId);
+
+            if (questionIndex !== -1) {
+              const updatedQuestion = updatedQuizInfo.questions.find(question => question._id === updatedQuestionId);
+              if (updatedQuestion && updatedQuestion.image_url) {
+                state.getdraftQuiz[quizIndex].questions[questionIndex].image_url = updatedQuestion.image_url;
+              }
+            }
           }
         }
       })
