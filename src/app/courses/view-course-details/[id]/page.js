@@ -27,6 +27,12 @@ import "react-quill/dist/quill.snow.css";
 
 const avatar = "/images/imagedefault.jpg";
 
+function addCustomClassesToHtml(htmlString) {
+  return htmlString
+    .replace('<ol>', '<ol class="custom-ol">')
+    .replace(/<li>/g, '<li class="custom-li">');
+}
+
 export default function CourseDetails({ params }) {
   const dispatch = useDispatch();
   const [dataCourse, setDataCourse] = useState([]);
@@ -313,8 +319,8 @@ export default function CourseDetails({ params }) {
               </h3>
               <p
                 className="mt-2 text-gray-600"
-                dangerouslySetInnerHTML={{ __html: `${dataCourse?.title}` }}
-              ></p>
+                dangerouslySetInnerHTML={{ __html: addCustomClassesToHtml(dataCourse?.title) }}
+              />
             </div>
             {isStudentOfCourse || isAdmin ? (
               <div>

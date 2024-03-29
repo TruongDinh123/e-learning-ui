@@ -93,7 +93,8 @@ export default function QuizCreator() {
   const handleImageUpload = (file, key) => {
     setQuestionImages((prevState) => {
       const newState = [...prevState];
-      newState[key] = file;
+      // newState[key] = file;
+      newState[key] = { file: file, uploaded: false };
       return newState;
     });
   };
@@ -163,7 +164,8 @@ export default function QuizCreator() {
     const questions = form.getFieldValue("questions") || [];
     // Kiểm tra xem câu hỏi mới có trùng với câu hỏi mẫu không
     // Thêm câu hỏi mới vào danh sách
-    const newQuestions = [...questions, {}];
+    const newQuestion = { isNew: true }; // Đánh dấu câu hỏi mới
+    const newQuestions = [...questions, newQuestion];
 
     // Cập nhật danh sách câu hỏi với câu hỏi mới
     form.setFieldsValue({ questions: newQuestions });
@@ -230,15 +232,21 @@ export default function QuizCreator() {
     onRemove: () => {
       const newQuestionImages = [...questionImages];
       delete newQuestionImages[key];
-      setQuestionImages(newQuestionImages);
+      setQuestionImages(newQuestionImages.filter(Boolean));
     },
     beforeUpload: (file) => {
       const newQuestionImages = [...questionImages];
-      newQuestionImages[key] = file;
+      newQuestionImages[key] = { file: file, uploaded: false };
+      console.log('newQuestionImages', newQuestionImages);
       setQuestionImages(newQuestionImages);
       return false;
     },
-    fileList: questionImages[key] ? [questionImages[key]] : [],
+    fileList: questionImages[key] ? [{
+      uid: questionImages[key].file ? questionImages[key].file.uid : questionImages[key].uid,
+      name: questionImages[key].file ? questionImages[key].file.name : questionImages[key].name,
+      status: 'done',
+      url: questionImages[key].file ? questionImages[key].file.url : questionImages[key].url,
+    }] : [],
     accept: ".jpg, .jpeg, .png",
   });
 
@@ -278,7 +286,7 @@ export default function QuizCreator() {
     const currentQuestions = form.getFieldValue("questions") || [];
     const normalizedCurrentQuestions = currentQuestions.map((q) => ({
       ...q,
-      options: q.options.map((opt) =>
+      options: q?.options?.map((opt) =>
         typeof opt === "object" ? opt.option : opt
       ),
     }));
@@ -409,6 +417,7 @@ export default function QuizCreator() {
         setIsLoadingApi(true);
         const quizId = res.metadata?._id;
         const questionIds = res.metadata?.questions?.map((q) => q._id);
+        console.log('questionIds',questionIds);
         const userId = localStorage?.getItem("x-client-id");
         let uploadPromises = [];
         if (file) {
@@ -421,19 +430,22 @@ export default function QuizCreator() {
           );
           uploadPromises.push(fileUploadPromise);
         }
+
         if (apiAction === createQuiz || apiAction === draftQuiz) {
           if (questionImages) {
             questionImages.forEach((imageFile, index) => {
-              if (imageFile && questionIds[index]) {
+              console.log('imageFile', imageFile);
+              if (imageFile && imageFile.uploaded === false &&  questionIds[index]) {
                 const imageUploadPromise = dispatch(
                   uploadQuestionImage({
                     quizId: quizId,
                     questionId: questionIds[index],
-                    filename: imageFile,
+                    filename: imageFile.file,
                     isTemplateMode,
                   })
                 )
                 uploadPromises.push(imageUploadPromise);
+                imageFile.uploaded = true;
               }
             });
           }
