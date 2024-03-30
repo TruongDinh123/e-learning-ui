@@ -327,7 +327,7 @@ export default function CourseDetails({ params }) {
                 <h2 className="text-lg font-semibold text-[#002c6a] sm:text-base">
                   Danh sách bài tập
                 </h2>
-                <div className="pt-4">
+                {/* <div className="pt-4">
                   <Button
                     onClick={showRankingDrawer}
                     type="primary"
@@ -375,7 +375,7 @@ export default function CourseDetails({ params }) {
                       pagination={false}
                     />
                   </Drawer>
-                </div>
+                </div> */}
                 <ul className="pl-5 sm:pl-4 list-none">
                   {dataCourse.quizzes.map((quiz, index) => {
                     // Kiểm tra xem thời gian làm bài đã hết hay chưa
