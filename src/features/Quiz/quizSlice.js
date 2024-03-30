@@ -529,14 +529,19 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        console.log('action', action);
         const index = state.getdraftQuiz.findIndex(
           (quiz) => quiz._id === action.payload.metadata._id
         );
         if (index !== -1) {
-          // Nếu tìm thấy quiz trong mảng, cập nhật nó
-          state.getdraftQuiz[index] = action.payload.metadata;
+          const updatedQuestions = action.payload.metadata.questions.filter(
+            (question) => !action.meta.arg.formattedValues.deletedQuestionIds.includes(question._id)
+          );
+          state.getdraftQuiz[index] = {
+            ...action.payload.metadata,
+            questions: updatedQuestions
+          };
         } else {
-          // Nếu không tìm thấy, thêm mới vào mảng
           state.getdraftQuiz.push(action.payload.metadata);
         }
       })
