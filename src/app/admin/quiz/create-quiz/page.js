@@ -73,6 +73,7 @@ export default function QuizCreator() {
   const [showStudentSelectModal, setShowStudentSelectModal] = useState(false);
   const [initialQuestions, setInitialQuestions] = useState([]);
   const [isLoadingDraft, setIsLoadingDraft] = useState(false);
+  const [deletedQuestionIds, setDeletedQuestionIds] = useState([]);
 
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
@@ -91,12 +92,13 @@ export default function QuizCreator() {
   };
 
   const handleImageUpload = (file, key) => {
-    setQuestionImages((prevState) => {
-      const newState = [...prevState];
-      // newState[key] = file;
-      newState[key] = { file: file, uploaded: false };
-      return newState;
-    });
+    if (file.status !== "removed") {
+      setQuestionImages((prevState) => {
+        const newState = [...prevState];
+        newState[key] = { file: file, uploaded: false };
+        return newState;
+      });
+    }
   };
 
   const dispatch = useDispatch();
@@ -202,6 +204,13 @@ export default function QuizCreator() {
   // Hàm xử lý khi xóa câu hỏi
   const handleRemoveQuestion = (index) => {
     const questions = form.getFieldValue("questions") || [];
+    const questionToRemove = questions[index];
+
+    // Nếu câu hỏi có _id, thêm vào mảng deletedQuestionIds
+    if (questionToRemove._id) {
+      setDeletedQuestionIds([...deletedQuestionIds, questionToRemove._id]);
+    }
+
     const newQuestions = [...questions];
     newQuestions.splice(index, 1);
     form.setFieldsValue({ questions: newQuestions });
@@ -230,25 +239,37 @@ export default function QuizCreator() {
 
   const getPropsQuestion = (key) => ({
     onRemove: () => {
-      const newQuestionImages = [...questionImages];
-      delete newQuestionImages[key];
-      setQuestionImages(newQuestionImages.filter(Boolean));
+      setQuestionImages((prevImages) => {
+        const newQuestionImages = [...prevImages];
+        newQuestionImages[key] = null;
+        return newQuestionImages;
+      });
     },
     beforeUpload: (file) => {
       const newQuestionImages = [...questionImages];
       newQuestionImages[key] = { file: file, uploaded: false };
+
       setQuestionImages(newQuestionImages);
       return false;
     },
-    fileList: questionImages[key] ? [{
-      uid: questionImages[key].file ? questionImages[key].file.uid : questionImages[key].uid,
-      name: questionImages[key].file ? questionImages[key].file.name : questionImages[key].name,
-      status: 'done',
-      url: questionImages[key].file ? questionImages[key].file.url : questionImages[key].url,
-    }] : [],
+    fileList: questionImages[key]
+      ? [
+          {
+            uid: questionImages[key].file
+              ? questionImages[key].file.uid
+              : questionImages[key].uid,
+            name: questionImages[key].file
+              ? questionImages[key].file.name
+              : questionImages[key].name,
+            status: "done",
+            url: questionImages[key].file
+              ? questionImages[key].file.url
+              : questionImages[key].url,
+          },
+        ]
+      : [],
     accept: ".jpg, .jpeg, .png",
   });
-
 
   const questionsAreEqual = (q1, q2) => {
     // So sánh nội dung câu hỏi và câu trả lời
@@ -283,6 +304,7 @@ export default function QuizCreator() {
 
     // Chuẩn bị dữ liệu câu hỏi
     const currentQuestions = form.getFieldValue("questions") || [];
+
     const normalizedCurrentQuestions = currentQuestions.map((q) => ({
       ...q,
       options: q?.options?.map((opt) =>
@@ -323,6 +345,8 @@ export default function QuizCreator() {
       studentIds: action === "assign" ? selectedStudents : [],
       questions: questionsToSave,
       isDraft: action === "save_draft",
+      isTemplateMode: action === "assign" ? isTemplateMode : false,
+      deletedQuestionIds: deletedQuestionIds,
     };
 
     // Thêm isDraft vào formattedValues dựa trên action
@@ -419,20 +443,24 @@ export default function QuizCreator() {
         const userId = localStorage?.getItem("x-client-id");
         let uploadPromises = [];
         if (file) {
-          const fileUploadPromise = dispatch(uploadFileQuiz({ quizId: quizId, filename: file })).then(
-            (res) => {
-              if (res.status) {
-                setFile(null);
-              }
+          const fileUploadPromise = dispatch(
+            uploadFileQuiz({ quizId: quizId, filename: file })
+          ).then((res) => {
+            if (res.status) {
+              setFile(null);
             }
-          );
+          });
           uploadPromises.push(fileUploadPromise);
         }
 
         if (apiAction === createQuiz || apiAction === draftQuiz) {
           if (questionImages) {
             questionImages.forEach((imageFile, index) => {
-              if (imageFile && imageFile.uploaded === false &&  questionIds[index]) {
+              if (
+                imageFile &&
+                imageFile.uploaded === false &&
+                questionIds[index]
+              ) {
                 const imageUploadPromise = dispatch(
                   uploadQuestionImage({
                     quizId: quizId,
@@ -440,14 +468,16 @@ export default function QuizCreator() {
                     filename: imageFile.file,
                     isTemplateMode,
                   })
-                )
+                );
                 uploadPromises.push(imageUploadPromise);
                 imageFile.uploaded = true;
               }
             });
           }
           if (action !== "save_draft") {
-            const deleteDraftPromise = dispatch(DeldraftQuiz({ quizIdDraft: selectedQuizId }));
+            const deleteDraftPromise = dispatch(
+              DeldraftQuiz({ quizIdDraft: selectedQuizId })
+            );
             uploadPromises.push(deleteDraftPromise);
           }
         }
@@ -481,7 +511,7 @@ export default function QuizCreator() {
 
     if (isTemplateMode) {
       router.push("/admin/quiz/template-quiz");
-    } else if(apiAction === createQuiz) {
+    } else if (apiAction === createQuiz) {
       router.push(`/admin/quiz/view-quiz`);
     }
   };
@@ -630,15 +660,14 @@ export default function QuizCreator() {
   useEffect(() => {
     const courseId = selectedCourse[0];
     const filteredDraftQuizzes = draftQuizFromStore?.filter((quiz) =>
-      quiz.courseIds.includes(courseId)
+      quiz?.courseIds?.includes(courseId)
     );
 
     if (filteredDraftQuizzes.length > 0) {
       setDraftquiz(filteredDraftQuizzes);
       setInitialQuestions(filteredDraftQuizzes[0].questions);
       setShowDraftQuizzesSelect(filteredDraftQuizzes.length > 0);
-    } else 
-    if (selectedCourse?.length > 0) {
+    } else if (selectedCourse?.length > 0) {
       setIsLoadingDraft(true);
       dispatch(getDraftQuiz())
         .then(unwrapResult)
@@ -976,198 +1005,202 @@ export default function QuizCreator() {
                     </>
                   )}
                 </Row>
-                {isCourseSelected && (
+                {isTemplateMode || (isCourseSelected && !isQuizLimitReached) ? (
                   <>
                     <div>
-                      {!isQuizLimitReached || isTemplateMode ? (
-                        <Form.List name="questions">
-                          {(fields, { add, remove }) => {
-                            // Tính toán chỉ số của câu hỏi đầu và cuối trên trang hiện tại
-                            const indexOfLastQuestion =
-                              currentPage * questionsPerPage;
-                            const indexOfFirstQuestion =
-                              indexOfLastQuestion - questionsPerPage;
-                            // Lọc ra các câu hỏi để hiển thị trên trang hiện tại
-                            const currentQuestions = fields.slice(
-                              indexOfFirstQuestion,
-                              indexOfLastQuestion
-                            );
-                            return (
-                              <>
-                                {currentQuestions.map((field, index) => (
-                                  <div key={field.key} className="pb-4">
-                                    <Card
-                                      key={field.key}
-                                      title={`Câu hỏi ${
-                                        indexOfFirstQuestion + index + 1
-                                      }`}
-                                      extra={
-                                        <Button
-                                          danger
-                                          onClick={() =>
-                                            handleRemoveQuestion(
-                                              indexOfFirstQuestion + index
-                                            )
-                                          }
-                                        >
-                                          Xóa
-                                        </Button>
-                                      }
-                                      className="bg-slate-300"
-                                    >
-                                      <Form.Item
-                                        label="Câu hỏi"
-                                        name={[field.name, "question"]}
-                                        rules={[
-                                          {
-                                            required: true,
-                                            message: "Vui lòng nhập câu hỏi.",
-                                          },
-                                        ]}
+                      <Form.List name="questions">
+                        {(fields, { add, remove }) => {
+                          // Tính toán chỉ số của câu hỏi đầu và cuối trên trang hiện tại
+                          const indexOfLastQuestion =
+                            currentPage * questionsPerPage;
+                          const indexOfFirstQuestion =
+                            indexOfLastQuestion - questionsPerPage;
+                          // Lọc ra các câu hỏi để hiển thị trên trang hiện tại
+                          const currentQuestions = fields.slice(
+                            indexOfFirstQuestion,
+                            indexOfLastQuestion
+                          );
+                          return (
+                            <>
+                              {currentQuestions.map((field, index) => (
+                                <div key={field.key} className="pb-4">
+                                  <Card
+                                    key={field.key}
+                                    title={`Câu hỏi ${
+                                      indexOfFirstQuestion + index + 1
+                                    }`}
+                                    extra={
+                                      <Button
+                                        danger
+                                        onClick={() =>
+                                          handleRemoveQuestion(
+                                            indexOfFirstQuestion + index
+                                          )
+                                        }
                                       >
-                                        <Editor
-                                          placeholder="Nhập câu hỏi tại đây"
-                                          value={form.getFieldValue([
-                                            "questions",
-                                            field.name,
-                                            "question",
-                                          ])}
-                                          onChange={(html) => {
-                                            const jsonValue = htmlToJson(html);
-                                            form.setFieldValue({
-                                              [field.name]: {
-                                                question: jsonValue,
-                                              },
-                                            });
-                                          }}
-                                        />
-                                      </Form.Item>
-                                      <Form.Item label="Hình ảnh" name={[field.name, "image"]}>
-                                          <Upload
-                                            {...getPropsQuestion(field.key)}
-                                            onChange={(event) => handleImageUpload(event.file, field.key)}
-                                          >
-                                            <Button className="custom-button" type="primary" icon={<UploadOutlined />}>
-                                              Thêm tệp
-                                            </Button>
-                                          </Upload>
-                                      </Form.Item>
-                                      <Form.List name={[field.name, "options"]}>
-                                        {(subFields, { add, remove }) => (
-                                          <div>
-                                            {subFields.map(
-                                              (subField, subIndex) => (
-                                                <div
-                                                  key={subField.key}
+                                        Xóa
+                                      </Button>
+                                    }
+                                    className="bg-slate-300"
+                                  >
+                                    <Form.Item
+                                      label="Câu hỏi"
+                                      name={[field.name, "question"]}
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Vui lòng nhập câu hỏi.",
+                                        },
+                                      ]}
+                                    >
+                                      <Editor
+                                        placeholder="Nhập câu hỏi tại đây"
+                                        value={form.getFieldValue([
+                                          "questions",
+                                          field.name,
+                                          "question",
+                                        ])}
+                                        onChange={(html) => {
+                                          const jsonValue = htmlToJson(html);
+                                          form.setFieldValue({
+                                            [field.name]: {
+                                              question: jsonValue,
+                                            },
+                                          });
+                                        }}
+                                      />
+                                    </Form.Item>
+                                    <Form.Item
+                                      label="Hình ảnh"
+                                      name={[field.name, "image"]}
+                                    >
+                                      <Upload
+                                        {...getPropsQuestion(field.key)}
+                                        onChange={(event) =>
+                                          handleImageUpload(
+                                            event.file,
+                                            field.key
+                                          )
+                                        }
+                                      >
+                                        <Button
+                                          className="custom-button"
+                                          type="primary"
+                                          icon={<UploadOutlined />}
+                                        >
+                                          Thêm tệp
+                                        </Button>
+                                      </Upload>
+                                    </Form.Item>
+                                    <Form.List name={[field.name, "options"]}>
+                                      {(subFields, { add, remove }) => (
+                                        <div>
+                                          {subFields.map(
+                                            (subField, subIndex) => (
+                                              <div
+                                                key={subField.key}
+                                                style={{
+                                                  display: "flex",
+                                                  marginBottom: 8,
+                                                  alignItems: "center",
+                                                }}
+                                              >
+                                                <Form.Item
+                                                  {...subField}
+                                                  name={[
+                                                    subField.name,
+                                                    "option",
+                                                  ]}
+                                                  fieldKey={[
+                                                    subField.fieldKey,
+                                                    "option",
+                                                  ]}
+                                                  rules={[
+                                                    {
+                                                      required: true,
+                                                      message:
+                                                        "Vui lòng nhập lựa chọn",
+                                                    },
+                                                  ]}
                                                   style={{
-                                                    display: "flex",
-                                                    marginBottom: 8,
-                                                    alignItems: "center",
+                                                    flex: 1,
+                                                    marginRight: 8,
                                                   }}
                                                 >
-                                                  <Form.Item
-                                                    {...subField}
-                                                    name={[
-                                                      subField.name,
-                                                      "option",
-                                                    ]}
-                                                    fieldKey={[
-                                                      subField.fieldKey,
-                                                      "option",
-                                                    ]}
-                                                    rules={[
-                                                      {
-                                                        required: true,
-                                                        message:
-                                                          "Vui lòng nhập lựa chọn",
-                                                      },
-                                                    ]}
-                                                    style={{
-                                                      flex: 1,
-                                                      marginRight: 8,
+                                                  <Input.TextArea
+                                                    placeholder="Lựa chọn"
+                                                    autoSize={{
+                                                      minRows: 1,
+                                                      maxRows: 5,
                                                     }}
-                                                  >
-                                                    <Input.TextArea
-                                                      placeholder="Lựa chọn"
-                                                      autoSize={{
-                                                        minRows: 1,
-                                                        maxRows: 5,
-                                                      }}
-                                                      style={{ width: "100%" }}
-                                                    />
-                                                  </Form.Item>
-                                                  <CloseOutlined
-                                                    onClick={() =>
-                                                      remove(subIndex)
-                                                    }
-                                                    style={{
-                                                      color: "red",
-                                                      cursor: "pointer",
-                                                      fontSize: "16px",
-                                                      marginBottom: 8,
-                                                      alignSelf: "center",
-                                                    }}
+                                                    style={{ width: "100%" }}
                                                   />
-                                                </div>
-                                              )
-                                            )}
-                                            <Button
-                                              type="dashed"
-                                              onClick={() => add()}
-                                              block
-                                            >
-                                              + Thêm lựa chọn
-                                            </Button>
-                                          </div>
-                                        )}
-                                      </Form.List>
-                                      <Form.Item
-                                        label="Đáp án"
-                                        name={[field.name, "answer"]}
-                                        rules={[
-                                          {
-                                            required: true,
-                                            message: "Vui lòng nhập đáp án",
-                                          },
-                                        ]}
-                                      >
-                                        <Input.TextArea
-                                          autoSize={{ minRows: 1, maxRows: 3 }}
-                                          placeholder="Đáp án"
-                                        />
-                                      </Form.Item>
-                                    </Card>
-                                  </div>
-                                ))}
-                                <Button
-                                  type="dashed"
-                                  className="bg-orange-200"
-                                  onClick={() => handleAddQuestion()}
-                                  block
-                                >
-                                  + Thêm câu hỏi
-                                </Button>
-                                {fields.length > 0 && (
-                                  <Pagination
-                                    current={currentPage}
-                                    total={fields.length}
-                                    pageSize={questionsPerPage}
-                                    onChange={paginate}
-                                    className="pagination-bar pt-4"
-                                    responsive={true}
-                                  />
-                                )}
-                              </>
-                            );
-                          }}
-                        </Form.List>
-                      ) : (
-                        <Result
-                          status="warning"
-                          subTitle="Hãy liên hệ với admin qua email 247learn.vn@gmail.com để được nâng cấp tài khoản."
-                          title="Bạn chỉ có thể tạo tối đa 3 bài tập."
-                        />
-                      )}
+                                                </Form.Item>
+                                                <CloseOutlined
+                                                  onClick={() =>
+                                                    remove(subIndex)
+                                                  }
+                                                  style={{
+                                                    color: "red",
+                                                    cursor: "pointer",
+                                                    fontSize: "16px",
+                                                    marginBottom: 8,
+                                                    alignSelf: "center",
+                                                  }}
+                                                />
+                                              </div>
+                                            )
+                                          )}
+                                          <Button
+                                            type="dashed"
+                                            onClick={() => add()}
+                                            block
+                                          >
+                                            + Thêm lựa chọn
+                                          </Button>
+                                        </div>
+                                      )}
+                                    </Form.List>
+                                    <Form.Item
+                                      label="Đáp án"
+                                      name={[field.name, "answer"]}
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Vui lòng nhập đáp án",
+                                        },
+                                      ]}
+                                    >
+                                      <Input.TextArea
+                                        autoSize={{ minRows: 1, maxRows: 3 }}
+                                        placeholder="Đáp án"
+                                      />
+                                    </Form.Item>
+                                  </Card>
+                                </div>
+                              ))}
+                              <Button
+                                type="dashed"
+                                className="bg-orange-200"
+                                onClick={() => handleAddQuestion()}
+                                block
+                              >
+                                + Thêm câu hỏi
+                              </Button>
+                              {fields.length > 0 && (
+                                <Pagination
+                                  current={currentPage}
+                                  total={fields.length}
+                                  pageSize={questionsPerPage}
+                                  onChange={paginate}
+                                  className="pagination-bar pt-4"
+                                  responsive={true}
+                                />
+                              )}
+                            </>
+                          );
+                        }}
+                      </Form.List>
                     </div>
                     {!isQuizLimitReached ? (
                       <div className="pt-2 text-end">
@@ -1255,7 +1288,7 @@ export default function QuizCreator() {
                             className="custom-button"
                             onClick={() => {
                               form.validateFields().then((values) => {
-                                handleSaveQuiz(values);
+                                handleSaveQuiz(values, "assign");
                               });
                             }}
                           >
@@ -1265,7 +1298,13 @@ export default function QuizCreator() {
                       </div>
                     ) : null}
                   </>
-                )}
+                ) : isCourseSelected ? (
+                  <Result
+                    status="warning"
+                    subTitle="Hãy liên hệ với admin qua email 247learn.vn@gmail.com để được nâng cấp tài khoản."
+                    title="Bạn chỉ có thể tạo tối đa 3 bài tập."
+                  />
+                ) : null}
               </>
             ) : (
               //Tự luận
