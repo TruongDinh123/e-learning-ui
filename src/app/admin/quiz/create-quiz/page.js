@@ -25,6 +25,7 @@ import { selectCourse } from "@/features/Courses/courseSlice";
 import {
   DeldraftQuiz,
   createQuiz,
+  deleteQuestionImage,
   draftQuiz,
   getDraftQuiz,
   uploadFileQuiz,
@@ -83,7 +84,6 @@ export default function QuizCreator() {
   const datePickerPlacement = screens.xs ? "bottomRight" : "bottomLeft";
 
   const [questionImages, setQuestionImages] = useState([]);
-
   const [currentPage, setCurrentPage] = useState(1);
   const questionsPerPage = 10;
 
@@ -211,6 +211,12 @@ export default function QuizCreator() {
       setDeletedQuestionIds([...deletedQuestionIds, questionToRemove._id]);
     }
 
+    setQuestionImages((prevImages) => {
+      const newQuestionImages = [...prevImages];
+      newQuestionImages.splice(index, 1); // Xóa hình ảnh tại vị trí câu hỏi bị xóa
+      return newQuestionImages;
+    });
+
     const newQuestions = [...questions];
     newQuestions.splice(index, 1);
     form.setFieldsValue({ questions: newQuestions });
@@ -241,7 +247,7 @@ export default function QuizCreator() {
     onRemove: () => {
       setQuestionImages((prevImages) => {
         const newQuestionImages = [...prevImages];
-        newQuestionImages[key] = null;
+        newQuestionImages[key] = {file: null, deleteQuestionImage: true};
         return newQuestionImages;
       });
     },
@@ -471,7 +477,16 @@ export default function QuizCreator() {
                 );
                 uploadPromises.push(imageUploadPromise);
                 imageFile.uploaded = true;
-              }
+              } else if(imageFile && imageFile.deleteQuestionImage){
+                const imageDeletePromise = dispatch(
+                  deleteQuestionImage({
+                    quizId: quizId,
+                    questionId: questionIds[index],
+                    isTemplateMode,
+                  })
+                );
+                  uploadPromises.push(imageDeletePromise);
+                }
             });
           }
           if (action !== "save_draft") {
