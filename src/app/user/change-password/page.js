@@ -1,14 +1,12 @@
 "use client";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { Button, Spin, message } from "antd";
+import { Button, message } from "antd";
 import {
   changePassword,
-  getAUser,
   logOut,
   resetState,
-  updateUser,
 } from "@/features/User/userSlice";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -112,8 +110,8 @@ export default function ChangePasswordForm() {
   return (
     <Fragment>
       {contextHolder}
-      <div className="row p-5">
-        <div className="col-lg-12 pb-28">
+      <div className="row pt-[140px] m-4">
+        <div className="col-lg-12 pb-40">
           <div className="card">
             <div className="card-header">
               <h4 className="card-title">Cập nhật mật khẩu</h4>

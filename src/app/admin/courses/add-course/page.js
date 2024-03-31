@@ -5,19 +5,24 @@ import { useFormik } from "formik";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as yup from "yup";
 import { Button, Modal, Radio, Upload, message } from "antd";
-import { useRouter } from "next/navigation";
 import {
   buttonPriavteourse,
   buttonPublicCourse,
   createCourse,
-  getAllSubCourses,
+  updateCourseImage,
   uploadImageCourse,
 } from "@/features/Courses/courseSlice";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import CustomButton from "@/components/comman/CustomBtn";
-import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
 import { isAdmin } from "@/middleware";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
+
+const ReactQuill = dynamic(
+  () => import("react-quill").then((mod) => mod.default),
+  { ssr: false }
+);
 
 const CourseSchema = yup.object({
   title: yup
@@ -34,28 +39,22 @@ const CourseSchema = yup.object({
 
 export default function AddCourse(props) {
   const { refresh, fetchCategories } = props;
-  const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState(null);
   const dispatch = useDispatch();
 
-  const user = JSON.parse(localStorage?.getItem("user"));
-
-  // const isAdmin = user?.roles?.includes("Admin") || user?.roles?.includes("Super-Admin");
-
-  useEffect(() => {
-    dispatch(getAllCategoryAndSubCourses())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {});
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getAllCategoryAndSubCourses())
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       if (res.status) {
+  //       } else {
+  //         messageApi.error(res.message);
+  //       }
+  //     })
+  // }, []);
 
   const categories = useSelector(
     (state) => state.category?.categories?.metadata
@@ -111,6 +110,9 @@ export default function AddCourse(props) {
               .then(unwrapResult)
               .then((res) => {
                 if (res.status) {
+                  const imageUrl = res.metadata?.findCourse?.image_url;
+                  dispatch(updateCourseImage({ courseId, imageUrl }));
+
                   if (values.isPublic) {
                     fetchCategories();
                     refresh();
@@ -213,6 +215,7 @@ export default function AddCourse(props) {
             </Button>
             <Button
               key="save"
+              type="primary"
               className="custom-button"
               onClick={handleOk}
               loading={isLoading}
@@ -241,16 +244,44 @@ export default function AddCourse(props) {
             }
           />
 
-          <label htmlFor="course" className="text-lg font-medium mt-3">
+          <label
+            htmlFor="courseDescription"
+            className="text-lg font-medium mt-3"
+          >
             Mô tả khóa học:
           </label>
-          <textarea
-            id="course"
-            placeholder="Thêm mô tả"
-            onChange={formik.handleChange("title")}
-            onBlur={formik.handleBlur("title")}
+          <ReactQuill
+            theme="snow"
             value={formik.values.title}
-            className="form-control"
+            onChange={(content) => formik.setFieldValue("title", content)}
+            onBlur={() => formik.setFieldTouched("title", true, true)}
+            placeholder="Thêm mô tả"
+            className="bg-white"
+            modules={{
+              toolbar: [
+                [{ header: [1, 2, false] }],
+                ["bold", "italic", "underline", "strike"],
+                ["blockquote", "code-block"],
+
+                [{ list: "ordered" }, { list: "bullet" }],
+                [{ script: "sub" }, { script: "super" }],
+                [{ indent: "-1" }, { indent: "+1" }],
+                [{ direction: "rtl" }],
+
+                [
+                  {
+                    size: ["small", false, "large", "huge"],
+                  },
+                ],
+                [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+                [{ color: [] }, { background: [] }],
+                [{ font: [] }],
+                [{ align: [] }],
+
+                ["clean"],
+              ],
+            }}
           />
           {formik.submitCount > 0 && formik.touched.title && formik.errors.title
             ? formik.errors.title

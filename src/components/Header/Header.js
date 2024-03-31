@@ -2,38 +2,30 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
 import {
-  ArrowPathIcon,
   Bars3Icon,
   ChartPieIcon,
   ChevronRightIcon,
   CursorArrowRaysIcon,
-  FingerPrintIcon,
-  SquaresPlusIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import React from "@heroicons/react";
 import Link from "next/link";
-import { Avatar, Button, Dropdown, Menu, message } from "antd";
+import { Avatar, Dropdown, Menu } from "antd";
 import {
   LockOutlined,
   LoginOutlined,
   LogoutOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-import {
-  getAUser,
-  resetState,
-  setUser,
-  setUserName,
-} from "@/features/User/userSlice";
+import { logOut, resetState, setUser, setUserName } from "@/features/User/userSlice";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
-import { RiLockPasswordLine } from "react-icons/ri";
+import { getAllCategoryAndSubCourses, resetStateCategory } from "@/features/categories/categorySlice";
+import { resetStateCourse } from "@/features/Courses/courseSlice";
+import { resetStateLesson } from "@/features/Lesson/lessonSlice";
+import { resetStateQuiz } from "@/features/Quiz/quizSlice";
 
 const logo3 = "/images/logo5.png";
 
@@ -50,12 +42,6 @@ const products = [
     href: "/courses/view-score",
     icon: CursorArrowRaysIcon,
   },
-  // {
-  //   name: "Tạo phòng học",
-  //   description: "Tạo phòng học để học tập cùng bạn bè",
-  //   href: "/web-rtc/lobby",
-  //   icon: FingerPrintIcon,
-  // },
 ];
 
 const UserLinks = () => {
@@ -77,14 +63,6 @@ const UserLinks = () => {
           </span>
         </div>
       </Link>
-      {/* <Link href="/web-rtc/lobby">
-        <div className="flex items-center">
-          <CameraIcon className="h-5 w-5 text-gray-600 mr-2" />
-          <span className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-            Tạo phòng họp
-          </span>
-        </div>
-      </Link> */}
     </>
   );
 };
@@ -92,159 +70,22 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-function BarChartIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="12" x2="12" y1="20" y2="10" />
-      <line x1="18" x2="18" y1="20" y2="4" />
-      <line x1="6" x2="6" y1="20" y2="16" />
-    </svg>
-  );
-}
-
-function BookOpenIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-    </svg>
-  );
-}
-
-function CameraIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-      <circle cx="12" cy="13" r="3" />
-    </svg>
-  );
-}
-
-function ChevronDownIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m6 9 6 6 6-6" />
-    </svg>
-  );
-}
-
-function LogOutIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-      <polyline points="16 17 21 12 16 7" />
-      <line x1="21" x2="9" y1="12" y2="12" />
-    </svg>
-  );
-}
-
-function SearchIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="11" cy="11" r="8" />
-      <path d="m21 21-4.3-4.3" />
-    </svg>
-  );
-}
-
-function UsersIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-    </svg>
-  );
-}
-
-export default function Header() {
+export default function HeaderUser() {
   const userState = useSelector((state) => state.user?.user);
-  const isAdmin = userState?.roles?.some(
-    (role) =>
-      role.name === "Admin" ||
-      role.name === "Super-Admin" ||
-      role.name === "Mentor"
-  );
+  const isAdmin =
+    userState?.roles?.some(
+      (role) =>
+        role.name === "Admin" ||
+        role.name === "Super-Admin" ||
+        role.name === "Mentor"
+    ) ||
+    userState?.metadata?.account?.roles?.some(
+      (role) =>
+        role.name === "Admin" ||
+        role.name === "Super-Admin" ||
+        role.name === "Mentor"
+    );
 
-  const userProfile = useSelector((state) => state.user.profile);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const userName =
@@ -254,36 +95,25 @@ export default function Header() {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const id = localStorage.getItem("x-client-id");
-  const [user, setUserInfo] = useState(null);
-  const [messageApi, contextHolder] = message.useMessage();
-
-  const getAUsereData = () => {
-    dispatch(getAUser(id))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setUserInfo(res.metadata);
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {});
-  };
-
-  useEffect(() => {
-    if (userState) {
-      getAUsereData();
-    }
-  }, [getAUser, userName, userState]);
-
   const logout = useCallback(() => {
-    localStorage.clear();
-    Cookies.remove("Bearer");
-    dispatch(resetState());
-    dispatch(setUserName(null));
-    dispatch(setUser(null));
-    router.push("/");
+    dispatch(logOut())
+      .then(unwrapResult)
+      .then(() => {
+        localStorage.clear();
+        Cookies.remove("Bearer");
+        Cookies.remove("refreshToken");
+        dispatch(resetState());
+        dispatch(setUserName(null));
+        dispatch(setUser(null));
+        dispatch(resetStateCourse());
+        dispatch(resetStateCategory());
+        dispatch(resetStateLesson());
+        dispatch(resetStateQuiz());
+        router.push("/");
+      })
+      .catch((error) => {
+        console.error("Logout failed:", error);
+      });
   }, [dispatch, router]);
 
   const menu = (
@@ -336,8 +166,7 @@ export default function Header() {
   );
 
   return (
-    <header className="bg-[#02354B] sticky top-0 z-20">
-      {contextHolder}
+    <header className="bg-[#02354B] fixed w-full top-0 z-50">
       <div className="max-w-[105rem] mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between h-[75px]">
           <div className="flex items-center">
@@ -412,7 +241,7 @@ export default function Header() {
                                     <div key={course?._id} className="mb-6">
                                       <Link
                                         className="text-sm text-[#C89F65] font-medium mb-2"
-                                        href={`/courses/lessons/${course?._id}`}
+                                        href={`/courses/view-course-details/${course?._id}`}
                                       >
                                         {course.name}
                                       </Link>
@@ -451,14 +280,22 @@ export default function Header() {
             </div>
           </div>
           <div className="flex lg:hidden">
-            <button
-              type="button"
-              className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-white"
-              onClick={() => setMobileMenuOpen(true)}
-            >
-              <span className="sr-only">Open main menu</span>
-              <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-            </button>
+            {!userState ? (
+              <Link href="/login">
+                <span className="cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-white">
+                  Đăng nhập
+                </span>
+              </Link>
+            ) : (
+              <button
+                type="button"
+                className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-white"
+                onClick={() => setMobileMenuOpen(true)}
+              >
+                <span className="sr-only">Open main menu</span>
+                <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+              </button>
+            )}
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
@@ -544,8 +381,17 @@ export default function Header() {
                               size={40}
                               className="bg-white items-center justify-between"
                               icon={<UserOutlined />}
-                              src={userProfile?.image_url || user?.image_url}
+                              src={
+                                userState?.image_url ||
+                                userState?.metadata?.account?.image_url
+                              }
                             />
+                            <span className="ml-2 text-white">
+                              {userState?.firstName ||
+                                userState?.metadata?.account?.firstName}{" "}
+                              {userState?.lastName ||
+                                userState?.metadata?.account?.lastName}
+                            </span>
                           </a>
                         </div>
                       </div>
@@ -637,25 +483,17 @@ export default function Header() {
                     </div>
                   </div>
                   <div className="space-y-2 py-6">
-                    {userState !== null ? (
-                      <span
-                        title="Logout"
-                        icon={<LogoutOutlined />}
-                        onClick={logout}
-                        className="cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                      >
-                        <div className="flex items-center">
-                          <LogOutIcon className="h-5 w-5 text-gray-600 mr-2" />
-                          <span>Đăng xuất</span>
-                        </div>
-                      </span>
-                    ) : (
-                      <Link href="/login" icon={<LoginOutlined />}>
-                        <span className="cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                          Đăng nhập
-                        </span>
-                      </Link>
-                    )}
+                    <span
+                      title="Logout"
+                      icon={<LogoutOutlined />}
+                      onClick={logout}
+                      className="cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      <div className="flex items-center">
+                        <LogOutIcon className="h-5 w-5 text-gray-600 mr-2" />
+                        <a href="/login">Đăng xuất</a>
+                      </div>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -664,5 +502,106 @@ export default function Header() {
         </div>
       </div>
     </header>
+  );
+}
+
+function BarChartIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="12" x2="12" y1="20" y2="10" />
+      <line x1="18" x2="18" y1="20" y2="4" />
+      <line x1="6" x2="6" y1="20" y2="16" />
+    </svg>
+  );
+}
+
+function BookOpenIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+    </svg>
+  );
+}
+
+function ChevronDownIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+function LogOutIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" x2="9" y1="12" y2="12" />
+    </svg>
+  );
+}
+
+function SearchIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
   );
 }

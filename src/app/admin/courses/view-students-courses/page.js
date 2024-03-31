@@ -1,7 +1,7 @@
 "use client";
 import { getACourse } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Modal, Table, message } from "antd";
+import { Table, message } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import AddStudentToCourse from "../add-student-course/page";
@@ -35,7 +35,6 @@ export default function ViewStudentsCourse(props) {
     });
   }, [loadScores, dataStudent, dispatch,update]);
 
-  console.log("studentScores::", studentScores);
   const getACourseData = () => {
     return dispatch(getACourse(id))
       .then(unwrapResult)

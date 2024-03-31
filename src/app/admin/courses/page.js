@@ -1,9 +1,18 @@
 "use client";
 import { deleteCourse, viewCourses } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Menu, Dropdown, Spin, Image, Space, Empty, Select } from "antd";
+import {
+  Menu,
+  Dropdown,
+  Spin,
+  Image,
+  Space,
+  Empty,
+  Select,
+  message,
+} from "antd";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Popconfirm } from "antd";
 import EditCourses from "./edit-course/Page";
 import { useRouter } from "next/navigation";
@@ -14,45 +23,44 @@ import { Col } from "react-bootstrap";
 import "../courses/page.css";
 import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
 import { isAdmin } from "@/middleware";
+import useCoursesData from "@/hooks/useCoursesData";
+import "react-quill/dist/quill.snow.css";
 
 export default function Courses() {
   const dispatch = useDispatch();
   const [course, setCourses] = useState([]);
   const [updateCourse, setUpdateCourse] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loadingStates, setLoadingStates] = useState({});
   const [filteredCourses, setFilteredCourses] = useState([]);
   const router = useRouter();
+  const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
+
+  const categories = useSelector(
+    (state) => state.category.categories.metadata || []
+  );
 
   const fetchCategories = () => {
+    setIsLoading(true);
     dispatch(getAllCategoryAndSubCourses())
       .then(unwrapResult)
-      .then((res) => {
-        setCategories(res.metadata);
+      .then(() => {
+        setIsLoading(false);
       })
-      .catch((error) => {
-        console.error("Error fetching categories:", error);
+      .catch(() => {
+        setIsLoading(false);
       });
   };
 
   useEffect(() => {
-    fetchCategories();
-  }, [dispatch, selectedCategory]);
-
-  // Lọc các khóa học theo danh mục được chọn
-  // useEffect(() => {
-  //   const newFilteredCourses = selectedCategory
-  //     ? categories.find((c) => c._id === selectedCategory)?.courses || []
-  //     : course;
-  //   setFilteredCourses(newFilteredCourses);
-  // }, [course, selectedCategory, categories]);
+    if (categories.length === 0 && !isLoading) {
+      fetchCategories();
+    }
+  }, []);
 
   useEffect(() => {
     const currentTeacherId = localStorage.getItem("x-client-id");
-    const user = JSON.parse(localStorage?.getItem("user"));
-    // const isAdmin = user?.roles?.includes("Admin") || user?.roles?.includes("Super-Admin");
 
     let visibleCourses = course;
     if (!isAdmin() && currentTeacherId) {
@@ -64,9 +72,9 @@ export default function Courses() {
     const newFilteredCourses = selectedCategory
       ? categories
           .find((c) => c._id === selectedCategory)
-          ?.courses.filter(
-            (course) => isAdmin || course.teacher === currentTeacherId
-          ) || []
+          ?.courses?.filter(
+            (course) => isAdmin() || course.teacher === currentTeacherId
+          ) ?? []
       : visibleCourses;
 
     setFilteredCourses(newFilteredCourses);
@@ -77,21 +85,16 @@ export default function Courses() {
     setSelectedCategory(value);
   };
 
-  // viewCourses api
+  const courses = useCoursesData();
+
+  // viewCourses reload api
   useEffect(() => {
-    setIsLoading(true);
     dispatch(viewCourses())
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
           const currentTeacherId = localStorage.getItem("x-client-id");
-          const user = JSON.parse(localStorage?.getItem("user"));
-
-          // const isAdmin =
-          //   user?.roles?.includes("Admin") ||
-          //   user?.roles?.includes("Super-Admin");
           let visibleCourses;
-
           if (isAdmin()) {
             visibleCourses = res.metadata;
           } else {
@@ -101,14 +104,37 @@ export default function Courses() {
           }
           setCourses(visibleCourses);
         }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setIsLoading(false);
       });
-  }, [updateCourse]);
+  }, []);
 
-  const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
+  // viewCourses api
+  useEffect(() => {
+    if (courses.length === 0 && !isLoading) {
+      setIsLoading(true);
+      dispatch(viewCourses())
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            const currentTeacherId = localStorage.getItem("x-client-id");
+            let visibleCourses;
+            if (isAdmin()) {
+              visibleCourses = res.metadata;
+            } else {
+              visibleCourses = res.metadata.filter(
+                (course) => course.teacher === currentTeacherId
+              );
+            }
+            setCourses(visibleCourses);
+          }
+          setIsLoading(false);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else {
+      setCourses(courses?.metadata || courses);
+    }
+  }, [course, selectedCategory, categories, updateCourse]);
 
   //table data
   let data = [];
@@ -124,7 +150,7 @@ export default function Courses() {
     });
   });
 
-  //handleDeleteCourse
+  // handleDeleteCourse
   const handleDeleteCourse = (id) => {
     setLoadingStates((prev) => ({ ...prev, [id]: true }));
     dispatch(deleteCourse(id))
@@ -138,7 +164,7 @@ export default function Courses() {
         fetchCategories();
       })
       .catch((error) => {
-        setIsLoading(false);
+        message.error("Có lỗi xảy ra khi xóa khóa học. Vui lòng thử lại.");
       })
       .finally(() => {
         setLoadingStates((prev) => ({ ...prev, [id]: false }));
@@ -147,12 +173,7 @@ export default function Courses() {
 
   return (
     <>
-      <div
-        className="max-w-screen-2xl mx-auto min-h-screen relative"
-        style={{
-          paddingBottom: "100px", // Adjust this value to match the footer's height
-        }}
-      >
+      <div className="max-w-screen-2xl mx-auto min-h-screen relative p-3">
         <AddCourse
           refresh={() => setUpdateCourse(updateCourse + 1)}
           fetchCategories={fetchCategories}
@@ -239,15 +260,36 @@ export default function Courses() {
                       height={186}
                       fill
                       className="object-cover"
-                      alt="course image"
-                      fallback="data:image/png;base64,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"
+                      alt="Hình ảnh khóa học"
+                      fallback="data:image/png;base64,iVBORw0KGgoAAAA
+                      NSUhEUgAAAMIAAADDCAYAAADQvc6UAAABRWlDQ1BJQ0MgUHJvZ
+                      mlsZQAAKJFjYGASSSwoyGFhYGDIzSspCnJ3UoiIjFJgf8LAw
+                      SDCIMogwMCcmFxc4BgQ4ANUwgCjUcG3awyMIPqyLsis7PPOq
+                      3QdDFcvjV3jOD1boQVTPQrgSkktTgbSf4A4LbmgqISBgTEFy
+                      FYuLykAsTuAbJEioKOA7DkgdjqEvQHEToKwj4DVhAQ5A9k3g
+                      GyB5IxEoBmML4BsnSQk8XQkNtReEOBxcfXxUQg1Mjc0dyHgXNJBSWp
+                      FCYh2zi+oLMpMzyhRcASGUqqCZ16yno6CkYGRAQMDKMwhqj/fAIcl
+                      oxgHQqxAjIHBEugw5sUIsSQpBobtQPdLciLEVJYzMPBHMDBsayhILEqEO4
+                      DxG0txmrERhM29nYGBddr//5/DGRjYNRkY/l7////39v///y4Dmn+LgeHANwD
+                      rkl1AuO+pmgAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqA
+                      CAAQAAAABAAAAwqADAAQAAAABAAAAwwAAAAD9b/HnAAAHlklEQVR4Ae3dP3PT
+                      WBSGcbGzM6GCKqlIBRV0dHRJFarQ0eUT8LH4BnRU0NHR0UEFVdIlFRV7TzRksom
+                      PY8uykTk/zewQfKw/9znv4yvJynLv4uLiV2dBoDiBf4qP3/ARuCRABEFAoBEgghggQ
+                      AQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkA
+                      EEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAn
+                      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"
                       src={item?.image_url}
                     />
                   </div>
                   <div className="flex flex-col pt-2">
-                    <div className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2">
+                    <a
+                      className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2"
+                      onClick={() =>
+                        router.push(`/admin/courses/Lesson/${item?._id}`)
+                      }
+                    >
                       {item.name} ({item.showCourse ? "Công khai" : "Riêng tư"})
-                    </div>
+                    </a>
                     <p className="text-xs text-muted-foreground"></p>
                     <div className="my-3 flex items-center gap-x-2 text-sm md:text-xs">
                       <div className="flex items-center gap-x-1 text-slate-500">
@@ -287,9 +329,9 @@ export default function Courses() {
                                 )
                               }
                             >
-                              Xem chi tiết
+                              Bài học
                             </Button>
-                            <Button
+                            {/* <Button
                               courseId={item?._id}
                               onClick={() =>
                                 router.push(
@@ -298,7 +340,7 @@ export default function Courses() {
                               }
                             >
                               Học viên
-                            </Button>
+                            </Button> */}
                             <Popconfirm
                               title="Xóa khóa học"
                               description="Bạn có chắc xóa khóa học?"
@@ -333,9 +375,12 @@ export default function Courses() {
             </div>
           ) : (
             filteredCourses?.length === 0 && (
-              <Empty className="text-center text-sm text-muted-foreground mt-10">
-                Khóa học không tồn tại
-              </Empty>
+              <Empty
+                className="text-center text-sm text-muted-foreground mt-10"
+                description="
+                Không có khóa học nào
+              "
+              />
             )
           )}
         </div>

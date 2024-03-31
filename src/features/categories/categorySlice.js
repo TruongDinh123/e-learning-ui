@@ -4,7 +4,6 @@ import { CategoriesService } from "./categoryService";
 export const createCategory = createAsyncThunk(
   "/e-learning/create-category",
   async (data, { rejectWithValue }) => {
-    console.log("🚀 ~ data:", data);
     try {
       const response = await CategoriesService.createCategory(data);
       return response;
@@ -74,7 +73,7 @@ const initialState = {
   message: "",
 };
 
-export const resetState = createAction("Reset_all");
+export const resetStateCategory = createAction("Reset_all_category");
 
 const categorySlice = createSlice({
   name: "category",
@@ -96,7 +95,8 @@ const categorySlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.message = "Something went wrong!";
-      });
+      })
+      .addCase(resetStateCategory, () => initialState);
   },
 });
 

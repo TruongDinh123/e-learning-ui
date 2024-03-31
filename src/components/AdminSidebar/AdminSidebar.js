@@ -5,20 +5,59 @@ import {
   FileAddOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
-import Cookies from "js-cookie";
-import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
-import { getAUser, logOut, resetState } from "@/features/User/userSlice";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { isMentor } from "@/middleware";
+import { useEffect, useState } from "react";
 const logo3 = "/images/logo5.png";
+const newlogo = "/images/new.png";
 
 const { Sider } = Layout;
 
+// const showComingSoonModal = () => {
+//   Modal.info({
+//     title: 'Tính năng sắp ra mắt',
+//     content: (
+//       <div>
+//         <p>Đây là tính năng sắp ra mắt, dành cho giáo viên đặc biệt. Để sử dụng tính năng này vui lòng liên hệ qua 247learn@gmail.com</p>
+//       </div>
+//     ),
+//     onOk() {},
+//     type: 'confirm',
+//     okButtonProps: {className: 'custom-button'}
+//   });
+// };
+
 export default function AdminSidebar(props) {
-  const { collapsed, setCollapsed } = props;
+  const { collapsed } = props;
   const router = useRouter();
+  const pathname = usePathname()
+  const getCurrentKey = (path) => {
+    if (pathname.includes('/admin/courses')) {
+      return 'courses';
+    } else if (pathname.includes('/admin/quiz/create-quiz')) {
+      return 'quiz/create-quiz';
+    }  else if (pathname.includes('/admin/quiz/view-quiz')) {
+      return 'quiz/view-quiz';
+    } else if (pathname.includes('admin/quiz/template-quiz')) {
+      return 'quiz/template-quiz';
+    } else if (pathname.includes('/admin/users/trainee')) {
+      return 'users/trainee';
+    } else if (pathname.includes('/admin/users/view-teachers')) {
+      return 'users/view-teachers';
+    } else if (pathname.includes('/admin/users/view-users')) {
+      return 'users/view-users';
+    } else if (pathname.includes('/admin/users/view-role')) {
+      return 'users/view-role';
+    } else if (pathname.includes('/admin/category')) {
+      return 'category';
+    }
+    return '1';
+  };
+  const [selectedKey, setSelectedKey] = useState(getCurrentKey(pathname));
+
+  useEffect(() => {
+    setSelectedKey(getCurrentKey(pathname));
+  }, [pathname]);
 
   const menuItems = [
     {
@@ -53,6 +92,17 @@ export default function AdminSidebar(props) {
           icon: <UserOutlined />,
           label: "Bài tập mẫu",
         },
+        // {
+        //   key: "quiz/bank-quiz",
+        //   icon: (
+        //     <span>
+        //        <img src={newlogo} alt="New" style={{ width: '20px' }} />
+        //     </span>
+        //   ),
+        //   label: (
+        //     <span style={{ color: 'red' }}>Ngân hàng đề thi</span>
+        //   ),
+        // },
       ],
     },
     {
@@ -63,7 +113,12 @@ export default function AdminSidebar(props) {
         {
           key: "users/trainee",
           icon: <UserOutlined />,
-          label: "Học viên",
+          label: "Bài tập học viên",
+        },
+        {
+          key: "users/view-teachers",
+          icon: <UserOutlined />,
+          label: "Học viên khoá học",
         },
       ],
     },
@@ -82,11 +137,6 @@ export default function AdminSidebar(props) {
         label: "Vai trò",
       },
       {
-        key: "users/view-teachers",
-        icon: <UserOutlined />,
-        label: "Khóa học",
-      },
-      {
         key: "category",
         icon: <UserOutlined />,
         label: "Danh mục",
@@ -101,8 +151,14 @@ export default function AdminSidebar(props) {
       collapsed={collapsed}
       breakpoint="lg"
       collapsedWidth="0"
+      width={220}
       style={{
-        height: "calc(100vh + 432px)",
+        minHeight: "calc(100vh + 200px)",
+        overflow: "auto",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        zIndex: 2000,
       }}
     >
       <div className="demo-logo-vertical d-flex justify-content-center align-items-center py-3">
@@ -121,10 +177,13 @@ export default function AdminSidebar(props) {
         theme="dark"
         mode="inline"
         style={{ flex: 1 }}
-        defaultSelectedKeys={["1"]}
+        selectedKeys={[selectedKey]}
         onClick={({ key }) => {
-          router.push(`/admin/${key}`);
-          props.setCollapsed(true);
+          if (key === "quiz/bank-quiz") {
+            showComingSoonModal();
+          } else {
+            router.push(`/admin/${key}`);
+          }
         }}
         items={menuItems}
       />

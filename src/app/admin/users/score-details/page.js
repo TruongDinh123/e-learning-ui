@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { getScoreByUserId } from "@/features/Quiz/quizSlice";
 
 export default function ViewScoreDetail(props) {
-  const { quizId, userId, refresh } = props;
+  const { refresh } = props;
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [dataStudent, setData] = useState([]);

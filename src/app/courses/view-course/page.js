@@ -1,35 +1,51 @@
 "use client";
-import { getStudentCourses } from "@/features/Courses/courseSlice";
+import {
+  getCourseSummary,
+  getStudentCourses,
+} from "@/features/Courses/courseSlice";
 import { BookOutlined, FolderOpenOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Breadcrumb, Image, Spin } from "antd";
+import { Breadcrumb, Button, Empty, Image, Spin } from "antd";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import "react-quill/dist/quill.snow.css";
 
 export default function Course() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   //viewCourses api
   useEffect(() => {
-    setIsLoading(true);
-    dispatch(getStudentCourses())
-      .then(unwrapResult)
-      .then((res) => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const res = await dispatch(getCourseSummary()).then(unwrapResult);
         if (res.status) {
           setCourse(res.metadata);
         }
+      } catch (error) {
+        console.error(error);
+      } finally {
         setIsLoading(false);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-      });
+      }
+    };
+
+    fetchData();
   }, [dispatch]);
 
+  const navigateToNonExpiredCourses = useCallback(
+    (courseId) => {
+      router.push(`/courses/view-details/${courseId}`);
+    },
+    [router]
+  );
+
   return (
-    <div className="mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-24">
       <Breadcrumb className="pt-3 pl-5">
         <Breadcrumb.Item>
           <Link href="/">Trang chủ</Link>
@@ -40,9 +56,6 @@ export default function Course() {
           </Link>
         </Breadcrumb.Item>
       </Breadcrumb>
-      <h1 className="mt-2 pl-5 text-3xl font-extrabold tracking-tight text-gray-900">
-        Khóa học của tôi
-      </h1>
 
       <div className="flex p-4">
         <div className="content flex-1">
@@ -50,8 +63,8 @@ export default function Course() {
             <div className="flex justify-center items-center h-screen">
               <Spin />
             </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 pb-28">
+          ) : course.length ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 pb-72">
               {course &&
                 course.map((item, index) => (
                   <div
@@ -76,27 +89,41 @@ export default function Course() {
                         <h3 className="text-lg md:text-xl font-semibold group-hover:text-sky-600 transition duration-300 ease-in-out line-clamp-2">
                           {item.name}
                         </h3>
-                        <p className="text-sm text-gray-600 font-light md:text-base group-hover:text-sky-600 transition duration-300 ease-in-out line-clamp-1 mt-1">
-                          Mô tả: {item.title}
-                        </p>
+                        <p
+                          className="text-sm text-gray-600 font-light md:text-base group-hover:text-sky-600 transition duration-300 ease-in-out line-clamp-1 mt-1"
+                          dangerouslySetInnerHTML={{
+                            __html: `${item.title}`,
+                          }}
+                        />
                         <p className="text-xs font-medium text-gray-500 mt-2">
-                          Giáo viên: {item.teacher?.lastName}
+                          Giáo viên: {item.teacher?.firstName}
                         </p>
                       </Link>
-
                       <div className="mt-4 flex items-center gap-x-4 text-sm md:text-xs">
                         <div className="flex items-center gap-x-1 text-gray-500">
                           <BookOutlined className="text-sky-500" />
-                          <span>Bài học: {item.lessons.length}</span>
+                          <span>Bài học: {item?.totalLesson}</span>
                         </div>
-                        <div className="flex items-center gap-x-1 text-gray-500">
+                        <div className="flex items-center gap-x-1 text-gray-500 cursor-pointer">
                           <FolderOpenOutlined className="text-sky-500" />
-                          <span>Bài tập: {item.quizzes?.length}</span>
+                          <span>Bài tập: {item.totalQuizCount}</span>
                         </div>
+                      </div>
+                      <div
+                        className="w-full mt-4"
+                        onClick={() => navigateToNonExpiredCourses(item._id)}
+                      >
+                        <Button type="primary" className="custom-button w-full">
+                          <span>Đi đến danh sách bài tập</span>
+                        </Button>
                       </div>
                     </div>
                   </div>
                 ))}
+            </div>
+          ) : (
+            <div className="flex justify-center items-center h-screen">
+              <Empty description="Bạn chưa có khóa học" />
             </div>
           )}
         </div>

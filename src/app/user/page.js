@@ -1,12 +1,11 @@
 "use client";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { Avatar, Button, Card, DatePicker, Upload, message } from "antd";
 import {
   getAUser,
   updateUser,
-  updateUserProfile,
   uploadImageUser,
 } from "@/features/User/userSlice";
 import { useDispatch } from "react-redux";
@@ -76,7 +75,6 @@ export default function UpdateInfoUser() {
                 if (res.status) {
                   setFile(null);
                   setImageUrl(res.metadata.image_url);
-                  dispatch(updateUserProfile(res.metadata));
                   setLoading(false);
                   messageApi.open({
                     type: "Thành công",
@@ -90,7 +88,6 @@ export default function UpdateInfoUser() {
           return res;
         })
         .then(() => {
-          window.location.reload();
           setLoading(false);
         })
         .catch((error) => {
@@ -117,9 +114,6 @@ export default function UpdateInfoUser() {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   return (
@@ -282,6 +276,10 @@ export default function UpdateInfoUser() {
           type="primary"
         >
           Lưu
+        </Button>
+        <div className="pb-2"></div>
+        <Button href="/" type="default" className="ml-auto w-full">
+          Hủy
         </Button>
       </Card>
     </div>

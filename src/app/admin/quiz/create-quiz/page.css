@@ -12,3 +12,11 @@
     color: black;
   }
 }
+
+.input-question-container {
+  overflow-wrap: break-word;
+}
+
+.input-answer-container {
+  width: 100%;
+}

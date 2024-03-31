@@ -11,6 +11,7 @@ import { Col } from "react-bootstrap";
 import { deleteTemplates, viewQuizTemplates } from "@/features/Quiz/quizSlice";
 import "../template-quiz/page.css";
 import UpdateQuizTemplate from "../update-quiz-template/page";
+import "react-quill/dist/quill.snow.css";
 
 export default function TeamplateQuiz() {
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ export default function TeamplateQuiz() {
   const [currentQuiz, setCurrentQuiz] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [updateQuizTemplate, setUpdateQuizTemplate] = useState(0);
+  const isDesktop = useMediaQuery({ minWidth: 992 });
 
   // viewCourses api
   useEffect(() => {
@@ -32,7 +34,6 @@ export default function TeamplateQuiz() {
         setIsLoading(false);
       })
       .catch((error) => {
-        
         setIsLoading(false);
       });
   }, [updateQuizTemplate]);
@@ -61,7 +62,6 @@ export default function TeamplateQuiz() {
         setIsLoading(false);
       })
       .catch((error) => {
-        
         setIsLoading(false);
       });
   };
@@ -79,7 +79,7 @@ export default function TeamplateQuiz() {
     });
   });
   return (
-    <>
+    <div className="p-3">
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />
@@ -179,9 +179,23 @@ export default function TeamplateQuiz() {
         <div className="overflow-auto scrollbar scrollbar-thin h-screen">
           {currentQuiz?.questions?.map((question, index) => (
             <div key={index} className="p-3 border-b border-gray-200">
-              <h3 className="font-semibold py-3 text-lg">
-                {question?.question}
-              </h3>
+              <h3
+                className={`overflow-hidden font-semibold py-3 text-lg ${
+                  isDesktop ? "view ql-editor" : ""
+                }`}
+                dangerouslySetInnerHTML={{
+                  __html: `${question.question}`,
+                }}
+              />
+              {question?.image_url && (
+                <div className="mb-2">
+                  <img
+                    src={question.image_url}
+                    alt={`Câu hỏi ${index + 1}`}
+                    className="max-w-full h-auto rounded-lg shadow"
+                  />
+                </div>
+              )}
               <ul className="list-disc list-inside space-y-2 mb-3">
                 {question?.options?.map((option, index) => (
                   <li key={index} className="text-blue-600">
@@ -197,6 +211,6 @@ export default function TeamplateQuiz() {
           ))}
         </div>
       </Drawer>
-    </>
+    </div>
   );
 }

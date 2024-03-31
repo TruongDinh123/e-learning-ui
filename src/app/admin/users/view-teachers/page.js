@@ -5,12 +5,15 @@ import {
   viewCourses,
 } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Empty, Modal, Popconfirm, Select, Table, message } from "antd";
+import { Button, Empty, Popconfirm, Select, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import "../view-teachers/page.css";
 import UpdateTeacherToCourse from "../../courses/update-teacher-course/page";
 import AddTeacherToCourse from "../../courses/add-teacher-course/page";
+import useCoursesData from "@/hooks/useCoursesData";
+import AddStudentToCourse from "../../courses/add-student-course/page";
+import { isAdmin, isMentor } from "@/middleware";
 
 const { Option } = Select;
 
@@ -22,52 +25,77 @@ export default function ViewTeachersCourse() {
   const [update, setUpdate] = useState(0);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courses, setCourses] = useState([]);
-  const [scores, setScores] = useState({}); // Change to an object
-  const [selectedCourseDetails, setSelectedCourseDetails] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState({}); // Change to an object
   const [showTable, setShowTable] = useState(false);
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
 
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
-    setSelectedCourseDetails(null); // Reset giá trị của selectedCourseDetails
   };
 
+  // const handleDeleteStudent = ({ courseId, userId }) => {
+  //   dispatch(removeStudentFromCourse({ courseId, userId }))
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       if (res.status) {
+  //         setUpdate(update + 1);
+  //         getACourseData(selectedCourse);
+  //       }
+  //     });
+  // };
+
   const handleDeleteStudent = ({ courseId, userId }) => {
+    const updatedStudents = dataStudent.filter(
+      (student) => student._id !== userId
+    );
+    setData(updatedStudents);
+
     dispatch(removeStudentFromCourse({ courseId, userId }))
       .then(unwrapResult)
       .then((res) => {
-        if (res.status) {
-          setUpdate(update + 1);
-          getACourseData(selectedCourse);
+        if (!res.status) {
+          setData(dataStudent);
+          message.error("Có lỗi xảy ra khi xóa học viên. Vui lòng thử lại.");
         }
+      })
+      .catch((error) => {
+        setData(dataStudent);
+        message.error("Có lỗi xảy ra khi xóa học viên. Vui lòng thử lại.");
       });
   };
 
-  useEffect(() => {
-    dispatch(viewCourses())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          messageApi
-            .open({
-              type: "Thành công",
-              content: "Đang thực hiện...",
-              duration: 1.5,
-            })
-            .then(() => {
-              setCourses(res.metadata);
-            });
-        }
-      });
-  }, []);
+  const courseState = useCoursesData();
 
-  // useEffect(() => {
-  //   getACourseData();
-  // }, [update]);
+  useEffect(() => {
+    const currentTeacherId = localStorage.getItem("x-client-id");
+    let visibleCourses;
+    if (courseState.length === 0) {
+      setLoading(true);
+      dispatch(viewCourses())
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            if (isAdmin()) {
+              visibleCourses = res.metadata;
+            } else {
+              visibleCourses = res.metadata.filter(
+                (course) => course.teacher === currentTeacherId
+              );
+            }
+            setCourses(visibleCourses);
+            setLoading(false);
+          }
+        });
+    } else {
+      // Áp dụng lọc cũng cho dữ liệu từ store
+      if (isAdmin()) {
+        visibleCourses = courseState.metadata;
+      } else if (isMentor()) {
+        visibleCourses = courseState.metadata.filter(
+          (course) => course.teacher === currentTeacherId
+        );
+      }
+      setCourses(visibleCourses);
+    }
+  }, [update]);
 
   // Định nghĩa một hàm mới để tái sử dụng cho việc cập nhật dữ liệu
   const refreshCourseData = () => {
@@ -93,17 +121,8 @@ export default function ViewTeachersCourse() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          messageApi
-            .open({
-              type: "Thành công",
-              content: "Đang thực hiện...",
-              duration: 1.5,
-            })
-            .then(() => {
-              setData(res?.metadata?.students);
-              setTeacher(res?.metadata?.teacher);
-              setSelectedCourseDetails(res?.metadata);
-            });
+          setData(res?.metadata?.students);
+          setTeacher(res?.metadata?.teacher);
         }
       });
   };
@@ -115,9 +134,9 @@ export default function ViewTeachersCourse() {
     },
     {
       title: "Tên",
-      dataIndex: "lastName",
-      key: "lastName",
-      sorter: (a, b) => a.lastName.localeCompare(b.lastName),
+      dataIndex: "firstName",
+      key: "firstName",
+      sorter: (a, b) => a.firstName.localeCompare(b.firstName),
       sortDirections: ["descend"],
     },
     {
@@ -136,12 +155,10 @@ export default function ViewTeachersCourse() {
   let data = [];
   dataStudent?.forEach((student, index) => {
     const userId = student?._id;
-    const studentScores = scores[userId];
-    const isStudentModalOpen = isModalOpen[userId];
 
     data.push({
       key: index + 1,
-      lastName: student?.lastName,
+      firstName: student?.firstName,
       email: student?.email,
       action: (
         <React.Fragment>
@@ -162,81 +179,15 @@ export default function ViewTeachersCourse() {
           >
             <Button danger>Xóa</Button>
           </Popconfirm>
-          <Modal
-            title=""
-            open={isStudentModalOpen}
-            onOk={handleOk}
-            footer={[
-              <Button key="back" onClick={handleOk}>
-                OK
-              </Button>,
-            ]}
-          >
-            {(() => {
-              let displayedCourseName = ""; // Biến để lưu trữ tên khóa học đã hiển thị
-              let dataSource = [];
-
-              studentScores?.forEach((score, index) => {
-                const course = courses.find(
-                  (course) => course._id === score.lesson?.courseId
-                );
-
-                if (course && course.name !== displayedCourseName) {
-                  displayedCourseName = course?.name; // Lưu trữ tên khóa học đã hiển thị
-                  score?.score.forEach((studentScore, studentIndex) => {
-                    dataSource.push({
-                      key: `${index}-${studentIndex}`,
-                      courseName: course?.name,
-                      lessonName: score?.lesson.name,
-                      score: studentScore?.score,
-                    });
-                  });
-                } else {
-                  score?.score.forEach((studentScore, studentIndex) => {
-                    dataSource.push({
-                      key: `${index}-${studentIndex}`,
-                      lessonName: score?.lesson.name,
-                      score: studentScore?.score,
-                    });
-                  });
-                }
-              });
-
-              const columns = [
-                {
-                  title: "Course Name",
-                  dataIndex: "courseName",
-                  key: "courseName",
-                },
-                {
-                  title: "Lesson Name",
-                  dataIndex: "lessonName",
-                  key: "lessonName",
-                },
-                {
-                  title: "Score",
-                  dataIndex: "score",
-                  key: "score",
-                },
-              ];
-
-              return (
-                <Table
-                  dataSource={dataSource}
-                  columns={columns}
-                  pagination={false}
-                />
-              );
-            })()}
-          </Modal>
         </React.Fragment>
       ),
     });
   });
 
   return (
-    <React.Fragment>
+    <div className="p-3">
       {contextHolder}
+      <h1 className="text-lg font-bold text-[#002c6a]">Quản lý khóa học</h1>
       <div className="py-3">
         <Select
           placeholder="Chọn khóa học"
@@ -258,10 +209,23 @@ export default function ViewTeachersCourse() {
         >
           Xem
         </Button>
+        {showTable && (
+          <AddStudentToCourse
+            courseId={selectedCourse}
+            refresh={() => {
+              setUpdate(update + 1); // Đánh dấu cần cập nhật
+              getACourseData(selectedCourse); // Tải lại dữ liệu cho khóa học hiện tại
+            }}
+            dataStudent={dataStudent}
+          >
+            Thêm học viên
+          </AddStudentToCourse>
+        )}
       </div>
+
       {showTable ? (
         teacher ? (
-          <div className="border p-4 rounded-md my-4 d-flex align-items-center justify-content-between">
+          <div className="border p-4 rounded-md mb-4 d-flex align-items-center justify-content-between">
             <div>
               <h2 className="font-bold text-lg">
                 Giáo viên: {teacher?.lastName}
@@ -284,10 +248,13 @@ export default function ViewTeachersCourse() {
           </div>
         )
       ) : (
-        <div className="border p-4 rounded-md my-4 flex flex-col items-center justify-center space-y-4">
-          <p className="text-lg font-bold text-[#002c6a]">
-            Hãy chọn khoá học bạn muốn xem thông tin
-          </p>
+        <div className="flex justify-center items-center h-[45vh]">
+          <Empty
+            className="text-center text-lg font-bold text-[#002c6a]"
+            description="
+                Hãy chọn khoá học bạn muốn xem thông tin.
+              "
+          />
         </div>
       )}
       {showTable && (
@@ -298,6 +265,6 @@ export default function ViewTeachersCourse() {
           className="grid-container"
         />
       )}
-    </React.Fragment>
+    </div>
   );
 }

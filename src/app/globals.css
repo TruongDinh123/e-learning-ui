@@ -6,15 +6,23 @@
   width: fit-content;
 }
 
-.ant-layout {
+.ant-layout-admin {
   min-height: 100vh;
   height: 100%;
   background-color: white;
 }
 
-/* .anticon svg {
-  color: #fff;
-} */
+@media (max-width: 768px) {
+  .ant-layout-content {
+    padding: 0 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ant-layout-content {
+    padding: 0 12px;
+  }
+}
 
 html,
 body {
@@ -22,7 +30,14 @@ body {
   display: flex;
   flex-direction: column;
   max-width: 100vw;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
+}
+
+.noCopy {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
 }
 
 .content {
@@ -70,10 +85,54 @@ body {
   margin: auto;
 }
 
+.carousel-item-container {
+  max-width: 100%; /* Adjust this value as needed */
+  max-height: 500px; /* Adjust this value as needed */
+  margin: auto; /* Centers the item if it's smaller than the max width */
+}
+
+.carousel-item-container img {
+  width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* This will ensure the image is scaled properly */
+}
+
 .carousel-item {
   height: 300px; /* Adjust the height as needed */
   display: flex;
   flex-direction: column;
   justify-content: center;
   object-fit: cover;
+}
+
+
+.ql-editor .ql-indent-1 { padding-left: 3em; }
+.ql-editor .ql-indent-2 { padding-left: 6em; }
+.ql-editor .ql-indent-3 { padding-left: 9em; }
+.ql-editor .ql-align-justify { text-align: justify; }
+
+.fixedButton{
+  position: fixed;
+  bottom: 0px;
+  right: 20px;
+  padding: 20px;
+  z-index: 10000;
+}
+.roundedFixedBtn{
+  align-items: center;
+  height: 50px;
+  padding: 10px;
+  /*width: 60px;*/
+  font-size: 2em;
+  font-weight: bold;
+  border-radius: 5px;
+  background-color: #fc1d1d;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  z-index: 10000;
+}
+
+.ant-statistic-content {
+  color: white !important;
 }

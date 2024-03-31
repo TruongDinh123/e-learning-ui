@@ -25,6 +25,28 @@ export default function ButtonStart(props) {
       console.error(error);
     }
   };
+  
+  // if (!startQuiz) {
+  //   return (
+  //     <div className="pt-52 pb-52 flex justify-center items-center">
+  //       <div className="rounded-lg bg-slate-100 p-4 items-center justify-center">
+  //         <h3 className="my-4 text-center text-3xl font-semibold text-gray-700">
+  //           Bài kiểm tra
+  //         </h3>
+  //         <p className="w-[230px] text-center font-bold text-red-600">
+  //           Không được phép thoát ra khỏi màn hình khi thời gian chưa kết thúc.
+  //         </p>
+  //         <Button
+  //           type="primary"
+  //           onClick={handleStartQuiz}
+  //           className="mx-auto block px-6 custom-button text-white font-bold rounded mt-10 text-center text-base"
+  //         >
+  //           Kiểm tra
+  //         </Button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex items-center justify-center">

@@ -18,13 +18,9 @@ const registerAUser = async (data) => {
   return res.data;
 };
 
-const getAllUser = async (page, limit, search, role) => {
-  let query = `/e-learning/users?page=${page}&limit=${limit}`;
-  if (search) query += `&search=${encodeURIComponent(search)}`;
-  if (role) query += `&role=${encodeURIComponent(role)}`;
-
+const getAllUser = async (data) => {
   const res = await axiosInstance({
-    url: query,
+    url: '/e-learning/users',
     method: "GET",
   });
   return res.data;

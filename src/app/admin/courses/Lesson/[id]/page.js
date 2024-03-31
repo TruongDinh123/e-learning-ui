@@ -19,14 +19,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteLesson, viewLesson } from "@/features/Lesson/lessonSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import VideoLesson from "../view-lesson-video/[id]/page";
 import CreateLesson from "../create-lesson/page";
 import Link from "next/link";
 import { BookOutlined } from "@ant-design/icons";
 import { useMediaQuery } from "react-responsive";
 import "../[id]/page.css";
 import EditLesson from "../update-lesson/page";
-import { AiOutlineFundView } from "react-icons/ai";
 
 export default function Lesson({ params }) {
   const dispatch = useDispatch();
@@ -90,15 +88,16 @@ export default function Lesson({ params }) {
   };
 
   return (
-    <div className="">
-      <Breadcrumb>
+    <div className="p-4">
+      <Breadcrumb className="pt-4">
         <Breadcrumb.Item>
-          <Link href="/admin/courses">Courses</Link>
+          <Link href="/admin/courses">Khóa học</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Link href={`/admin/courses/Lesson/${params?.id}`}>
+          <span className="font-medium"
+          >
             {lesson[0]?.name}
-          </Link>
+          </span>
         </Breadcrumb.Item>
       </Breadcrumb>
       {isLoading ? (
@@ -289,7 +288,7 @@ export default function Lesson({ params }) {
               </div>
               {lessonIds?.length === 0 && (
                 <Empty
-                  description="Không có bài tập nào được tạo."
+                  description="Không có bài học nào được tạo."
                   className="text-center text-sm text-muted-foreground mt-10"
                 ></Empty>
               )}

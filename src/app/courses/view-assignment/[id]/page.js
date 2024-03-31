@@ -27,7 +27,6 @@ export default function HandleStart({ params }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log('fetchData is called');
       try {
         const assignmentPromise = dispatch(
           viewAssignmentByCourseId({ courseId: params?.id })

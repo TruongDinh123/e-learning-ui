@@ -1,4 +1,4 @@
-import { getAUser, logOut, resetState } from "@/features/User/userSlice";
+import { getAUser, logOut, resetState, setUser, setUserName } from "@/features/User/userSlice";
 import {
   LockOutlined,
   LoginOutlined,
@@ -8,25 +8,24 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Layout, Button, Avatar, Menu, Dropdown, Popover } from "antd";
+import { Button, Avatar, Menu, Dropdown, message, Progress, Tooltip } from "antd";
 import Link from "next/link";
-import { useEffect, useState, Fragment } from "react";
-import { Nav } from "react-bootstrap";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { useMediaQuery } from "react-responsive";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Dialog, Disclosure, Transition } from "@headlessui/react";
+import { Dialog, Disclosure } from "@headlessui/react";
+import { resetStateCourse } from "@/features/Courses/courseSlice";
+import { resetStateCategory } from "@/features/categories/categorySlice";
+import { resetStateLesson } from "@/features/Lesson/lessonSlice";
+import { resetStateQuiz } from "@/features/Quiz/quizSlice";
 
-const { Header } = Layout;
 const logo3 = "/images/logo5.png";
-
-const headerStyle = { padding: 0, background: "#02354B" };
 
 export default function AdminHeader(props) {
   const { setCollapsed, collapsed } = props;
-  const userProfile = useSelector((state) => state.user.profile);
+  const userProfile = useSelector((state) => state?.user?.user);
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const userState = JSON.parse(localStorage.getItem("user"));
@@ -36,15 +35,17 @@ export default function AdminHeader(props) {
   const dispatch = useDispatch();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
-
   const userName =
-    useSelector((state) => state.user.userName) ||
+    useSelector((state) => state?.user?.userName) ||
     JSON.parse(localStorage.getItem("userName"));
 
   useEffect(() => {
-    getAUsereData();
-  }, []);
+    if (!userProfile) {
+      getAUsereData();
+    } else {
+      setData(userProfile);
+    }
+  }, [userProfile]);
 
   const getAUsereData = () => {
     dispatch(getAUser(id))
@@ -80,20 +81,27 @@ export default function AdminHeader(props) {
     </Menu>
   );
 
+  const clearAuthState = () => {
+    localStorage.clear();
+    Cookies.remove("Bearer");
+    Cookies.remove("refreshToken");
+    dispatch(resetState());
+    dispatch(setUserName(null));
+    dispatch(setUser(null));
+    dispatch(resetStateCourse());
+    dispatch(resetStateCategory());
+    dispatch(resetStateLesson());
+    dispatch(resetStateQuiz());
+    setIsLoading(false);
+  };
+
   const handleLogOut = () => {
     setIsLoading(true);
     dispatch(logOut())
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          // Clear any local storage or cookies that might persist state
-          localStorage.clear();
-          Cookies.remove("Bearer");
-
-          // Reset the Redux state
-          dispatch(resetState());
-          setIsLoading(false);
-          // Redirect to the login page
+          clearAuthState();
           router.push("/login");
         } else {
           setIsLoading(false);
@@ -101,27 +109,88 @@ export default function AdminHeader(props) {
         }
       })
       .catch((error) => {
-        setIsLoading(false);
+        if (
+          error.message === "Invalid client id" ||
+          error.response?.status === 401 ||
+          error.response?.status === 403
+        ) {
+          clearAuthState();
+          router.push("/login");
+        } else {
+          setIsLoading(false);
+          // Hiển thị thông báo lỗi nếu có
+          message.error("Đã có lỗi xảy ra", 2.5);
+        }
       });
   };
 
+  const { isLoadingQuiz, newQuizCreated } = useSelector((state) => state?.quiz);
+  const [showProgress, setShowProgress] = useState(false);
+  const [progressPercent, setProgressPercent] = useState(0);
+  const [initiated, setInitiated] = useState(false);
+  
+  useEffect(() => {
+    let intervalId;
+  
+    if (isLoadingQuiz) {
+      setShowProgress(true);
+      setProgressPercent(0);
+      setInitiated(true);
+      intervalId = setInterval(() => {
+        setProgressPercent((prevPercent) => {
+          if (prevPercent >= 75) {
+            clearInterval(intervalId);
+            return 75;
+          }
+          return prevPercent + 1;
+        });
+      }, 20);
+    } else if (newQuizCreated && initiated) {
+      clearInterval(intervalId);
+      setProgressPercent(75);
+      intervalId = setInterval(() => {
+        setProgressPercent((prevPercent) => {
+          if (prevPercent >= 100) {
+            clearInterval(intervalId);
+            setTimeout(() => {
+              setShowProgress(false);
+              message.success("Bài thi đã được tạo thành công. Email thông báo đang được gửi.", 2.5);
+              setInitiated(false);
+            }, 2000);
+            return 100;
+          }
+          return prevPercent + 1;
+        });
+      }, 20);
+    }
+  
+    return () => clearInterval(intervalId);
+  }, [isLoadingQuiz, newQuizCreated, initiated]);
+
+
   return (
-    <header className="bg-[#02354B] sticky top-0 z-20">
+    <header className="bg-[#02354B] sticky top-0 z-30" style={{ paddingLeft: collapsed ? "80px" : "280px" }}>
       <div className="max-w-[105rem] mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between h-[75px]">
-          <div className="flex items-center">
+          <div className="flex items-center justify-center">
             <Button
               type="text"
               icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
               onClick={() => setCollapsed(!collapsed)}
               style={{
                 fontSize: "16px",
-                width: 64,
-                height: 64,
+                width: "auto",
+                height: "auto",
                 color: "#fff",
+                backgroundColor: "#1890ff",
+                border: "none",
+                padding: "10px 20px",
               }}
-            />
-            <div className="flex-shrink-0">
+              className="text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 font-medium rounded-lg dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800"
+            >
+              Menu
+            </Button>
+            <div className="flex-shrink-0 mx-5">
               <a href="/">
                 <img className="h-36 w-auto" src={logo3} alt="" />
               </a>
@@ -156,7 +225,7 @@ export default function AdminHeader(props) {
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
-              <div className="ml-3 relative">
+              <div className="ml-3 relative"> 
                 <div className="ml-10 flex items-center space-x-4">
                   {userState == null && (
                     <Link href="/login" icon={<LoginOutlined />}>
@@ -168,7 +237,12 @@ export default function AdminHeader(props) {
 
                   {userState !== null && (
                     <Dropdown overlay={menu} placement="bottomLeft">
-                      <div className="ml-3 relative">
+                      <div className="ml-3 relative flex items-center">
+                        {showProgress && (
+                          <Tooltip title={isLoadingQuiz ? "Đang tạo bài thi" : "Bài thi đã được tạo thành công!"}>
+                            <Progress type="circle" percent={progressPercent} width={40} />
+                          </Tooltip>
+                        )}
                         <div className="flex items-center space-x-4">
                           <a
                             aria-current="page"
@@ -181,10 +255,11 @@ export default function AdminHeader(props) {
                               icon={<UserOutlined />}
                               src={
                                 userProfile?.image_url ||
-                                data?.image_url ||
+                                data?.metadata?.account?.image_url ||
                                 `https://xsgames.co/randomusers/avatar.php?g=pixel`
                               }
                             />
+                            <span className="ml-2 text-white">{userName}</span>
                           </a>
                         </div>
                       </div>

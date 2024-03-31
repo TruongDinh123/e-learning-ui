@@ -27,9 +27,9 @@ export const registerUser = createAsyncThunk(
 
 export const getAllUser = createAsyncThunk(
   "/e-learning/users",
-  async ({ page, limit, search, role }, { rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
     try {
-      const response = await authService.getAllUser(page, limit, search, role);
+      const response = await authService.getAllUser(data);
       return response;
     } catch (err) {
       return rejectWithValue(err);
@@ -51,11 +51,17 @@ export const deleteUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
   "/e-learning/update-user",
-  async (data, { rejectWithValue, dispatch }) => {
+  async (data, { rejectWithValue }) => {
     try {
       const response = await authService.updateUser(data);
       if (response.status) {
-        const userName = response.data?.metadata.lastName;
+        const userName =
+          (response.data?.metadata.firstName
+            ? response.data?.metadata.firstName + " "
+            : "") +
+          (response.data?.metadata.lastName
+            ? response.data?.metadata.lastName
+            : "");
         localStorage.setItem("userName", JSON.stringify(userName));
       }
       return response.data;
@@ -78,6 +84,18 @@ export const uploadImageUser = createAsyncThunk(
 );
 
 export const getAUser = createAsyncThunk(
+  "/e-learning/user",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await authService.getAUser(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const refreshAUser = createAsyncThunk(
   "/e-learning/user",
   async (data, { rejectWithValue }) => {
     try {
@@ -195,17 +213,12 @@ if (typeof window !== "undefined") {
   userNameFromLocalStogare = JSON.parse(localStorage?.getItem("userName"));
 }
 
-// let getUserFromLocalStorage = () => {
-//   if (typeof window !== "undefined") {
-//     const user = localStorage?.getItem("user");
-//     return JSON.parse(user);
-//   }
-//   return null;
-// };
-
 const initialState = {
   user: userFromLocalStorage,
   userName: userNameFromLocalStogare,
+  profile: {},
+  allUsers: [],
+  allRoles: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -213,7 +226,6 @@ const initialState = {
 };
 
 export const resetState = createAction("Reset_all");
-export const updateUserProfile = createAction("user/updateProfile");
 
 const userSlice = createSlice({
   name: "login",
@@ -224,9 +236,6 @@ const userSlice = createSlice({
     },
     setUserName: (state, action) => {
       state.userName = action.payload;
-    },
-    updateUserProfile: (state, action) => {
-      state.user = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -268,6 +277,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        state.allUsers = action.payload;
       })
       .addCase(deleteUser.pending, (state, action) => {
         state.isLoading = true;
@@ -276,6 +286,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        state.allUsers = state.allUsersStore?.metadata?.users?.filter(user => user._id !== action.meta.arg);
       })
       .addCase(deleteUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -289,6 +300,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        state.allRoles = action.payload;
       })
       .addCase(getAllRole.rejected, (state, action) => {
         state.isLoading = false;
@@ -341,15 +353,75 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.user = action.payload;
+        const { firstName, lastName, email, phoneNumber, dob, gender } =
+          action.payload.metadata;
+        if (firstName) state.user.firstName = firstName;
+        if (lastName) state.user.lastName = lastName;
+        if (email) state.user.email = email;
+        if (phoneNumber) state.user.phoneNumber = phoneNumber;
+        if (dob) state.user.dob = dob;
+        if (gender) state.user.gender = gender;
+
+        // Lấy dữ liệu người dùng hiện tại từ localStorage
+        const currentUser = JSON.parse(localStorage.getItem("user"));
+
+        // Cập nhật dữ liệu người dùng với thông tin mới
+        const updatedUser = {
+          ...currentUser,
+          ...(firstName && { firstName }),
+          ...(lastName && { lastName }),
+          ...(email && { email }),
+        };
+
+        // Lưu dữ liệu người dùng đã cập nhật vào localStorage
+        localStorage.setItem("user", JSON.stringify(updatedUser));
       })
+
       .addCase(updateUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
       })
-      .addCase(updateUserProfile, (state, action) => {
-        state.profile = action.payload;
+      .addCase(uploadImageUser.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(uploadImageUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+
+        const { image_url } = action.payload.metadata;
+
+        if (image_url) state.user.image_url = image_url;
+
+        const currentUserImg = JSON.parse(localStorage.getItem("user"));
+
+        const updatedUser = {
+          ...currentUserImg,
+          ...(image_url && { image_url }),
+        };
+
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+      })
+      .addCase(uploadImageUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+      })
+      .addCase(refreshAUser.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(refreshAUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.user = action.payload.metadata;
+      })
+
+      .addCase(refreshAUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
       })
       .addCase(resetState, () => initialState);
   },

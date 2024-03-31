@@ -16,21 +16,16 @@ import {
 import React from "react";
 
 const Userchema = yup.object({
-  lastName: yup
-    .string()
-    .trim("Tên không được bắt đầu hoặc kết thúc bằng khoảng trắng")
-    .matches(/^\S*$/, "Tên không được chứa khoảng trắng"),
+  lastName: yup.string(),
 
-  firstName: yup
-    .string()
-    .trim("Tên không được bắt đầu hoặc kết thúc bằng khoảng trắng")
-    .matches(/^\S*$/, "Tên không được chứa khoảng trắng"),
+  firstName: yup.string(),
 
   email: yup.string().email().required("Yêu cầu nhập email"),
 });
 
 export default function EditUser(props) {
-  const { id, refresh } = props;
+  const { id, refresh, optimisticUpdateUser } = props;
+
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -221,7 +216,7 @@ export default function EditUser(props) {
             id="role"
             value={selectedRoleId}
             onChange={handleRoleChange}
-            style={{ width: '100%' }} // Adjust width as needed
+            style={{ width: "100%" }} // Adjust width as needed
           >
             {roles.map((role) => (
               <Select.Option key={role._id} value={role._id}>

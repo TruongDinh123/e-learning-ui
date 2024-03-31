@@ -32,6 +32,15 @@ const viewCourse = async (data) => {
   return res;
 };
 
+const selectCourse = async (data) => {
+  const res = await axiosInstance({
+    url: "/e-learning/select-course",
+    method: "GET",
+    data: data,
+  });
+  return res;
+};
+
 const deleteCourse = async (data) => {
   const res = await axiosInstance({
     url: "/e-learning/course/" + data,
@@ -52,6 +61,14 @@ const editCourse = async (data) => {
 const getACourse = async (data) => {
   const res = await axiosInstance({
     url: "/e-learning/course/" + data,
+    method: "GET",
+  });
+  return res.data;
+};
+
+const getACourseByInfo = async (data) => {
+  const res = await axiosInstance({
+    url: "/e-learning/get-info-course/" + data,
     method: "GET",
   });
   return res.data;
@@ -95,6 +112,14 @@ const removeStudentFromCourse = async (data) => {
 const getStudentCourses = async () => {
   const res = await axiosInstance({
     url: "/e-learning/get-student-course",
+    method: "GET",
+  });
+  return res.data;
+};
+
+const getCourseSummary = async () => {
+  const res = await axiosInstance({
+    url: "/e-learning/users/courses/summary",
     method: "GET",
   });
   return res.data;
@@ -158,6 +183,14 @@ const getAllSubCourses = async (data) => {
   return res.data;
 };
 
+const getStudentScoresByCourse = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/course/${data}/getStudentScores`,
+    method: "GET",
+  });
+  return res.data;
+};
+
 export const courseService = {
   createCourse,
   viewCourse,
@@ -177,4 +210,8 @@ export const courseService = {
   updateCourseTeacher,
   getAllSubCourses,
   getAllSubCoursesById,
+  selectCourse,
+  getACourseByInfo,
+  getCourseSummary,
+  getStudentScoresByCourse,
 };

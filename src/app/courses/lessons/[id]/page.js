@@ -24,11 +24,9 @@ import { getCourseCompletion } from "@/features/Courses/courseSlice";
 export default function Lesson({ params }) {
   const dispatch = useDispatch();
   const [lesson, setLesson] = useState([]);
-  console.log("🚀 ~ lesson:", lesson);
   const [updateProgress, setUpdateProgress] = useState(0);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedLesson, setSelectedLesson] = useState(null);
-  console.log("🚀 ~ selectedLesson:", selectedLesson);
   const [selectedLessonContent, setSelectedLessonContent] = useState(null);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);

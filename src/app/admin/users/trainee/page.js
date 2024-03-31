@@ -2,15 +2,17 @@
 import {
   getACourse,
   removeStudentFromCourse,
+  removeStudentFromCourseSuccess,
   viewCourses,
 } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Empty, Modal, Popconfirm, Select, Table, message } from "antd";
+import { Button, Empty, Modal, Popconfirm, Select, Table, Tooltip, message } from "antd";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useDispatch } from "react-redux";
-import AddStudentToCourse from "../../courses/add-student-course/page";
-import { getScoreByQuizId, viewQuiz } from "@/features/Quiz/quizSlice";
-import { isAdmin } from "@/middleware";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllScoresByCourseId, viewQuiz } from "@/features/Quiz/quizSlice";
+import { isAdmin, isMentor } from "@/middleware";
+import "./page.css";
+import BarChart1 from "@/config/barchar1";
 
 const { Option } = Select;
 
@@ -23,23 +25,30 @@ export default function ViewStudentsCourse() {
   const [update, setUpdate] = useState(0);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courses, setCourses] = useState([]);
-  const [scores, setScores] = useState({}); // Change to an object
+  const [scores, setScores] = useState({});
   const [loading, setLoading] = useState(false);
   const [viewSuccess, setViewSuccess] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState({});
+  const [chartData, setChartData] = useState([]);
 
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
-    const selectedCourse = courses.find((course) => course._id === value);
   };
 
   const handleViewCourse = useCallback(() => {
-    getACourseData(selectedCourse);
-  }, [selectedCourse]);
+    setLoading(true);
+    getACourseData(selectedCourse).then(() => {
+      loadCourseData(selectedCourse);
+    });
+  }, [selectedCourse, dispatch, messageApi]);
 
   const handleDeleteStudent = ({ courseId, userId }) => {
     dispatch(removeStudentFromCourse({ courseId, userId }))
       .then(unwrapResult)
       .then((res) => {
+        dispatch(
+          removeStudentFromCourseSuccess({ courseId, studentId: userId })
+        );
         if (res.status) {
           setUpdate(update + 1);
         } else {
@@ -49,82 +58,74 @@ export default function ViewStudentsCourse() {
       .catch((error) => {});
   };
 
-  useEffect(() => {
-    setLoading(true);
-    dispatch(viewCourses())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          messageApi
-            .open({
-              type: "Thành công",
-              content: "Đang thực hiện...",
-              duration: 0.5,
-            })
-            .then(() => {
-              const currentTeacherId = localStorage.getItem("x-client-id");
-              const user = JSON.parse(localStorage?.getItem("user"));
-
-              // const isAdmin =
-              //   user?.roles?.includes("Admin") ||
-              //   user?.roles?.includes("Super-Admin");
-              let visibleCourses;
-
-              if (isAdmin()) {
-                visibleCourses = res.metadata;
-              } else {
-                visibleCourses = res.metadata.filter(
-                  (course) => course.teacher === currentTeacherId
-                );
-              }
-              setCourses(visibleCourses);
-              setLoading(true);
-            });
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        messageApi.error(error);
-      });
-  }, []);
+  const coursesFromStore = useSelector((state) => state.course.courses);
 
   useEffect(() => {
-    getACourseData();
-  }, [update, selectedCourse]);
+    const currentTeacherId = localStorage.getItem("x-client-id");
+    let visibleCourses;
+    if (coursesFromStore.length === 0) {
+      setLoading(true);
+      dispatch(viewCourses())
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            if (isAdmin()) {
+              visibleCourses = res.metadata;
+            } else {
+              visibleCourses = res.metadata.filter(
+                (course) => course.teacher === currentTeacherId
+              );
+            }
+            setCourses(visibleCourses);
+            setLoading(false);
+          }
+        });
+    } else {
+      // Áp dụng lọc cũng cho dữ liệu từ store
+      if (isAdmin()) {
+        visibleCourses = coursesFromStore.metadata;
+      } else if (isMentor()) {
+        visibleCourses = coursesFromStore.metadata.filter(
+          (course) => course.teacher === currentTeacherId
+        );
+      }
+      setCourses(visibleCourses);
+    }
+  }, [coursesFromStore]);
 
-  useEffect(() => {
-    dispatch(viewQuiz({ courseIds: selectedCourse }))
+  const loadCourseData = (courseId) => {
+    dispatch(viewQuiz({ courseIds: courseId }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
           setQuizzes(res.metadata);
-          const quizIds = res.metadata?.map((quiz) => quiz?._id);
-          dataStudent.forEach((student) => {
-            const userId = student._id;
-            quizIds.forEach((quizId) => {
-              dispatch(getScoreByQuizId({ quizId: quizId, userId: userId }))
-                .then(unwrapResult)
-                .then((res) => {
-                  if (res.status) {
-                    setScores((prevScores) => ({
-                      ...prevScores,
-                      [quizId]: res.metadata.map((item) => ({
-                        userId: item.user?._id,
-                        score: item?.score,
-                      })),
-                    }));
-                  } else {
-                    messageApi.error(res.message);
-                  }
-                });
-            });
-          });
+          return dispatch(getAllScoresByCourseId({ courseId }));
+        } else {
+          throw new Error(res.message);
         }
       })
-      .catch((error) => {});
-  }, [selectedCourse, dispatch, dataStudent]);
+      .then(unwrapResult)
+      .then((scoresRes) => {
+        if (scoresRes.status) {
+          setScores(
+            scoresRes.metadata.reduce((acc, current) => {
+              acc[current.quizId] = current.scores;
+              return acc;
+            }, {})
+          );
+        } else {
+          throw new Error(scoresRes.message);
+        }
+      })
+      .catch((error) => {
+        messageApi.error(
+          error.message || "An error occurred while fetching quizzes or scores."
+        );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   const getACourseData = () => {
     return dispatch(getACourse(selectedCourse))
@@ -138,26 +139,37 @@ export default function ViewStudentsCourse() {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {});
+      .catch((error) => {
+        messageApi.error("An error occurred while fetching course data.");
+        setLoading(false);
+      });
   };
 
   const quizColumns = useMemo(
     () =>
       quizzes.map((quiz, index) => ({
-        title: `Bài ${index + 1}`,
+        // title: `Bài ${index + 1}`,
+        title: (
+          <Tooltip title={quiz.name}>
+            {`Bài ${quiz.name.length > 10 ? quiz.name.substring(0, 20) + '...' : quiz.name}`}
+          </Tooltip>
+        ),
         dataIndex: quiz._id,
         key: quiz._id,
         render: (text, record) => {
-          // Tìm điểm cho bài quiz này trong dữ liệu của học viên
           const studentScore = scores[quiz._id]?.find(
             (score) => score?.userId === record?.userId
           );
-          const submissionTime = new Date(quiz?.submissionTime);
+  
+          const hasSubmissionTime = quiz.hasOwnProperty('submissionTime');
+          const submissionTime = hasSubmissionTime ? new Date(quiz.submissionTime) : null;
           const now = new Date();
-          if (submissionTime < now) {
-            return "Hết hạn nộp";
+  
+          if (!hasSubmissionTime || (submissionTime && now < submissionTime)) {
+            return studentScore ? studentScore.score : "Chưa làm";
+          } else {
+            return studentScore?.isComplete ? studentScore.score : "Hết hạn nộp";
           }
-          return studentScore ? studentScore.score : "Chưa làm";
         },
       })),
     [quizzes, scores]
@@ -165,11 +177,10 @@ export default function ViewStudentsCourse() {
 
   const columns = [
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Họ tên",
+      dataIndex: "fullName",
+      key: "fullName",
       fixed: "left",
-      sorter: (a, b) => a.email.localeCompare(b.email),
       sortDirections: ["descend"],
     },
     ...quizColumns,
@@ -182,40 +193,70 @@ export default function ViewStudentsCourse() {
     },
   ];
 
+  const handleViewChart = (studentId) => {
+    // Cập nhật dữ liệu biểu đồ cho học viên cụ thể
+    const studentScores = quizzes.map((quiz) => {
+      const score = scores[quiz._id]?.find((s) => s.userId === studentId);
+      return {
+        x: `Bài ${quiz.name}`,
+        y: score ? score.score : 0,
+      };
+    });
+    setChartData(studentScores);
+    setIsModalVisible(studentId);
+  };
+
   const data = useMemo(
     () =>
       dataStudent.map((student, index) => ({
         key: index + 1,
         userId: student?._id,
-        lastName: student?.lastName,
+        fullName: [student?.lastName, student?.firstName]
+          .filter(Boolean)
+          .join(" "),
         email: student?.email,
         action: (
-          <Popconfirm
-            title="Xóa học viên"
-            description="Bạn có muốn xóa học viên?"
-            okText="Có"
-            cancelText="Không"
-            okButtonProps={{
-              style: { backgroundColor: "red" },
-            }}
-            onConfirm={() =>
-              handleDeleteStudent({
-                courseId: selectedCourse,
-                userId: student?._id,
-              })
-            }
-          >
-            <Button danger>Xóa</Button>
-          </Popconfirm>
+          <>
+            <Button
+              type="primary"
+              onClick={() => handleViewChart(student._id)}
+              className="me-3 custom-button"
+            >
+              Xem biểu đồ
+            </Button>
+            {isModalVisible === student._id && (
+              <Modal
+                title={`Biểu đồ điểm số của ${student.lastName} ${student.firstName}`}
+                visible={isModalVisible === student._id}
+                onCancel={() => setIsModalVisible(null)}
+                width={1000}
+                footer={[
+                  <Button
+                    key="cancel"
+                    onClick={() => setIsModalVisible(null)}
+                    style={{ marginRight: 8 }}
+                  >
+                    Hủy
+                  </Button>,
+                  <></>,
+                ]}
+              >
+                <BarChart1 chartData={chartData} />
+              </Modal>
+            )}
+          </>
         ),
       })),
-    [dataStudent]
+    [dataStudent, isModalVisible, quizzes, scores, chartData]
   );
 
   return (
-    <React.Fragment>
+    <div className="p-3">
       {contextHolder}
-      <div className="py-3">
+      <h1 className="text-lg font-bold text-[#002c6a]">
+        Quản lý bài tập học viên
+      </h1>
+      <div className="py-3 grid-container ">
         <Select
           placeholder="Chọn khóa học"
           onChange={handleCourseChange}
@@ -236,18 +277,12 @@ export default function ViewStudentsCourse() {
           Xem
         </Button>
 
-        {viewSuccess && (
+        {viewSuccess ? (
           <>
-            <AddStudentToCourse
-              courseId={selectedCourse}
-              refresh={() => setUpdate(update + 1)}
-            >
-              Thêm học viên
-            </AddStudentToCourse>
             {teacher && (
-              <div className="border p-4 rounded-md my-4">
+              <div className="border p-4 rounded-md">
                 <h2 className="font-bold text-lg">
-                  Giáo viên: {teacher?.lastName}
+                  Giáo viên: {teacher?.firstName}
                 </h2>
                 <p className="text-sm">Email: {teacher?.email}</p>
               </div>
@@ -255,22 +290,26 @@ export default function ViewStudentsCourse() {
             <Table
               columns={columns}
               dataSource={data}
-              pagination={{ pageSize: 5, position: ["bottomLeft"] }}
+              pagination={{ pageSize: 10, position: ["bottomLeft"] }}
               scroll={{
                 x: 1300,
               }}
-              className="pt-3 grid-container"
+              // className="pt-3 grid-container"
             />
+          </>
+        ) : (
+          <>
+            {dataStudent?.length === 0 && (
+              <div className="flex justify-center items-center h-[45vh]">
+                <Empty
+                  className="text-center text-lg font-bold text-[#002c6a]"
+                  description="Hãy chọn khóa học bạn muốn xem học viên"
+                />
+              </div>
+            )}
           </>
         )}
       </div>
-
-      {dataStudent?.length === 0 && (
-        <Empty
-          description="Không tìm thấy dữ liệu."
-          className="text-center text-sm text-muted-foreground mt-10"
-        ></Empty>
-      )}
-    </React.Fragment>
+    </div>
   );
 }

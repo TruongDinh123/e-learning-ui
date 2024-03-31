@@ -27,7 +27,7 @@ export default function CustomFooter() {
             <h5 className="font-bold mb-4 text-[#C89F65]">CỘNG ĐỒNG</h5>
             <ul className="space-y-2">
               <li>
-                <a href="#">Chăm sóc khách hàng</a>
+                <a href="https://zalo.me/g/ndgbpp653">Chăm sóc khách hàng</a>
               </li>
               <li>
                 <a href="#">Blog</a>
@@ -41,16 +41,13 @@ export default function CustomFooter() {
             <h5 className="font-bold mb-4 text-[#C89F65]">ĐỊA CHỈ</h5>
             <ul className="space-y-2">
               <li>
-                <span>95IDEAL TECHNOLOGY SOLUTIONS</span>
+                <span>95EdTech From 95 Solutions Team</span>
               </li>
               <li>
-                <span>MST: 12345678</span>
+                <span>Địa chỉ: Hưng Nhượng, Giồng Trôm, Bến Tre</span>
               </li>
               <li>
-                <span>Địa chỉ: Hồ Chí Minh</span>
-              </li>
-              <li>
-                <span>Email: customerservice.95lab@gmail.com</span>
+                <span>Email: 247learn.vn@gmail.com</span>
               </li>
             </ul>
           </div>
@@ -83,8 +80,8 @@ export default function CustomFooter() {
           </div> */}
         </div>
         <div className="flex flex-col md:flex-row justify-between items-center mt-8 border-t border-gray-700 pt-4">
-          <div className="flex items-center space-x-4 mb-4 md:mb-0">
-            {/* <img
+          {/* <div className="flex items-center space-x-4 mb-4 md:mb-0">
+            <img
               alt="Registered"
               height="40"
               style={{
@@ -92,15 +89,15 @@ export default function CustomFooter() {
                 objectFit: "cover",
               }}
               width="40"
-            /> */}
+            />
             <span>Đã đăng ký Bộ Công Thương</span>
           </div>
           <div className="flex space-x-4">
             <FacebookIcon className="h-6 w-6" />
             <YoutubeIcon className="h-6 w-6" />
-          </div>
+          </div> */}
         </div>
-        <p className="text-center mt-8">© 2024 95IDEAL TECHNOLOGY SOLUTIONS</p>
+        <p className="text-center mt-8">© 2024 95EdTech From 95 Solutions Team</p>
       </div>
     </footer>
   );

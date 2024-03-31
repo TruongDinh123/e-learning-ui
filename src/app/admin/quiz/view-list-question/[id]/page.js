@@ -1,12 +1,8 @@
 "use client";
-import { Button, Popconfirm, Spin, Breadcrumb, Tabs, Empty } from "antd";
+import { Spin, Breadcrumb, Tabs } from "antd";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import {
-  deleteQuizQuestion,
-  getScoreByQuizId,
-  viewAQuiz,
-} from "@/features/Quiz/quizSlice";
+import { getScoreByQuizId, viewAQuiz } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import React from "react";
 import Link from "next/link";
@@ -14,25 +10,29 @@ import TabPane from "antd/es/tabs/TabPane";
 import ViewListScore from "../score-trainee/page";
 import "../[id]/page.css";
 import moment from "moment";
+import ScoreStatisticsCourse from "../score-statistics/page";
+import "react-quill/dist/quill.snow.css";
+import { useMediaQuery } from "react-responsive";
 
 export default function ViewListQuestion({ params }) {
   const dispatch = useDispatch();
   const [quiz, setquiz] = useState([]);
-  console.log("🚀 ~ quiz:", quiz);
   const [score, setScore] = useState([]);
   const [updateQuiz, setUpdateQuiz] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-
+  const isDesktop = useMediaQuery({ minWidth: 992 });
   useEffect(() => {
-    dispatch(viewAQuiz({ quizId: params?.id }))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setquiz(res.metadata);
-        } else {
-        }
-      })
-      .catch((error) => {});
+    const timer = setTimeout(() => {
+      dispatch(viewAQuiz({ quizId: params?.id }))
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+            setquiz(res.metadata);
+          }
+        });
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }, [updateQuiz]);
 
   useEffect(() => {
@@ -42,33 +42,34 @@ export default function ViewListQuestion({ params }) {
         if (res.status) {
           setScore(res.metadata);
         }
-      })
-      .catch((error) => {});
+      });
   }, []);
 
-  const handleDeleteQuiz = ({ quizId, questionId }) => {
-    setIsLoading(true);
-    dispatch(deleteQuizQuestion({ quizId, questionId }))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setUpdateQuiz(updateQuiz + 1);
-        } else {
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {});
-  };
+  // const handleDeleteQuiz = ({ quizId, questionId }) => {
+  //   setIsLoading(true);
+  //   dispatch(deleteQuizQuestion({ quizId, questionId }))
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       if (res.status) {
+  //         setUpdateQuiz(updateQuiz + 1);
+  //       } else {
+  //       }
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {});
+  // };
+
+  const totalQuestions = quiz[0]?.questions?.length;
 
   return (
-    <div className="mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="mx-auto px-4 sm:px-6 lg:px-8 p-3">
       {isLoading ? (
-        <div className="flex justify-center items-center h-screen">
+        <div className="flex justify-center items-center">
           <Spin />
         </div>
       ) : (
         <React.Fragment>
-          <Breadcrumb>
+          <Breadcrumb className="py-4">
             <Breadcrumb.Item>
               <Link href="/admin/quiz/view-quiz">Bài tập</Link>
             </Breadcrumb.Item>
@@ -76,27 +77,35 @@ export default function ViewListQuestion({ params }) {
               <span className="font-medium">Chi tiết</span>
             </Breadcrumb.Item>
           </Breadcrumb>
+          <div className="sticky">
+            {quiz?.map((quiz, quizIndex) => (
+              <div
+                className="bg-blue-100 p-4 rounded-md shadow-md"
+                key={quizIndex}
+              >
+                <h2 className="text-2xl font-bold text-blue-700">
+                  Tên khóa học: {quiz.courseIds[0]?.name}{" "}
+                  {quiz.lessonId?.courseId?.name}
+                </h2>
+                {quiz?.submissionTime && (
+                  <p className="text-blue-600">
+                    Thời gian hoàn thành:{" "}
+                    {moment(quiz.submissionTime).format("DD/MM/YYYY HH:mm")}
+                  </p>
+                )}
+                <p className="text-blue-600">
+                  Loại bài tập:{" "}
+                  {quiz.type === "multiple_choice" ? "Trắc nghiệm" : "Tự luận"}
+                </p>
+              </div>
+            ))}
+          </div>
           <Tabs defaultActiveKey="0">
             {quiz?.map((quiz, quizIndex) => (
               <>
                 <TabPane tab={`Câu hỏi`} key={quizIndex}>
-                  <div className="mb-4 bg-blue-100 p-4 rounded-md shadow-md">
-                    <h2 className="text-2xl font-bold text-blue-700">
-                      Tên khóa học: {quiz.courseIds[0]?.name}
-                    </h2>
-                    <p className="text-blue-600">
-                      Thời gian hoàn thành:{" "}
-                      {moment(quiz.submissionTime).format("DD/MM/YYYY HH:mm")}
-                    </p>
-                    <p className="text-blue-600">
-                      Loại bài tập:{" "}
-                      {quiz.type === "multiple_choice"
-                        ? "Trắc nghiệm"
-                        : "Tự luận"}
-                    </p>
-                  </div>
                   {quiz.type === "multiple_choice" ? (
-                    <div className="grid-container">
+                    <div className="">
                       <div className="flex flex-col sm:flex-row justify-between items-center">
                         <div className="border-gray-300">
                           <span className="pr-4 text-green-600 block sm:inline">
@@ -119,18 +128,37 @@ export default function ViewListQuestion({ params }) {
                           </h2>
                           {quiz.questions?.map((question, questionIndex) => (
                             <ul key={questionIndex}>
-                              <li className="border p-3 mb-2">
+                              <li className="border p-3 mb-2 li-content">
                                 <div className="mb-2">
-                                  <span className="font-bold">
-                                    Câu {questionIndex + 1}: {question.question}
-                                  </span>
+                                  <div>
+                                    <span className="font-bold">
+                                      Câu {questionIndex + 1}:
+                                    </span>{" "}
+                                    <span
+                                      className={`overflow-hidden ${
+                                        isDesktop ? "view ql-editor" : ""
+                                      }`}
+                                      dangerouslySetInnerHTML={{
+                                        __html: `${question.question}`,
+                                      }}
+                                    />
+                                  </div>
                                 </div>
+                                {question?.image_url && (
+                                  <div className="mb-2">
+                                    <img
+                                      src={question.image_url}
+                                      alt={`Câu hỏi ${questionIndex + 1}`}
+                                      className="max-w-auto"
+                                    />
+                                  </div>
+                                )}
                                 {question.options.map((option, optionIndex) => (
                                   <label
                                     className="block mb-2"
                                     key={optionIndex}
                                   >
-                                    <span>
+                                    <span className="font-mono">
                                       Câu {optionIndex + 1}: {option}
                                     </span>
                                   </label>
@@ -138,25 +166,6 @@ export default function ViewListQuestion({ params }) {
                                 <span className="text-sm text-green-700 font-bold text-center mb-5">
                                   Đáp án: {question.answer}
                                 </span>
-                                <div className="mt-3">
-                                  <Popconfirm
-                                    title="Xóa bài tập"
-                                    description="Bạn có chắc muốn xóa bài tập?"
-                                    okText="Có"
-                                    cancelText="Không"
-                                    okButtonProps={{
-                                      style: { backgroundColor: "red" },
-                                    }}
-                                    onConfirm={() =>
-                                      handleDeleteQuiz({
-                                        quizId: quiz?._id,
-                                        questionId: question?._id,
-                                      })
-                                    }
-                                  >
-                                    <Button danger>Xóa</Button>
-                                  </Popconfirm>
-                                </div>
                               </li>
                             </ul>
                           ))}
@@ -212,7 +221,13 @@ export default function ViewListQuestion({ params }) {
                   )}
                 </TabPane>
                 <TabPane tab={`Điểm học viên`} key={quizIndex + 1}>
-                  <ViewListScore quizId={params?.id} />
+                  <ViewListScore
+                    quizId={params?.id}
+                    totalQuestions={totalQuestions}
+                  />
+                </TabPane>
+                <TabPane tab={`Thống kê điểm`}>
+                  <ScoreStatisticsCourse quizId={params?.id} />
                 </TabPane>
               </>
             ))}

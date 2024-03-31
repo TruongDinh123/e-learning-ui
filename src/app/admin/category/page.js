@@ -1,9 +1,8 @@
 "use client";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import { Button, Dropdown, Menu, Popconfirm, Space, Spin, Table } from "antd";
+import { Button, Dropdown, Menu, Popconfirm, Space, Spin, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
-import EditRole from "../users/edit-role/page";
 import { useMediaQuery } from "react-responsive";
 import {
   deleteCategory,
@@ -57,19 +56,37 @@ export default function ViewCategories() {
   const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
 
   //handleDelete
+  // const handleDelete = (categoryId) => {
+  //   setIsLoading(true);
+  //   dispatch(deleteCategory(categoryId))
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       if (res.status) {
+  //         setUpdate(update + 1);
+  //       }
+  //       setUpdate(update + 1);
+  //     })
+  //     .catch((error) => {
+  //       setIsLoading(false);
+  //     });
+  // };
+
   const handleDelete = (categoryId) => {
-    setIsLoading(true);
+    const updatedCategories = category.filter((c) => c._id !== categoryId);
+    setCategory(updatedCategories);
+  
     dispatch(deleteCategory(categoryId))
       .then(unwrapResult)
       .then((res) => {
-        if (res.status) {
-          setUpdate(update + 1);
+        if (!res.status) {
+          setCategory(category);
+          message.error("Có lỗi xảy ra khi xóa danh mục. Vui lòng thử lại.");
         }
-        setUpdate(update + 1);
       })
       .catch((error) => {
-        setIsLoading(false);
-      });
+        setCategory(category);
+        message.error("Có lỗi xảy ra khi xóa danh mục. Vui lòng thử lại.");
+      })
   };
 
   //table role
@@ -141,7 +158,7 @@ export default function ViewCategories() {
   });
 
   return (
-    <div>
+    <div className="p-3">
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />

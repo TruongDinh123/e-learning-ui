@@ -1,6 +1,5 @@
 "use client";
 import {
-  addTeacherToCourse,
   updateCourseTeacher,
 } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -12,6 +11,7 @@ import CustomInput from "@/components/comman/CustomInput";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { getAllUser } from "@/features/User/userSlice";
+import { isAdmin, isMentor } from "@/middleware";
 
 const EmailSchema = yup.object({
   email: yup.string().email().required("Yêu cầu nhập email!"),
@@ -27,9 +27,11 @@ export default function UpdateTeacherToCourse(props) {
     current: 1,
     pageSize: 5,
   });
+  const [isUserAdmin, setIsUserAdmin] = useState(false);
   
   useEffect(() => {
     getAUserData();
+    setIsUserAdmin(isAdmin() && !isMentor());
   }, []);
 
   const getAUserData = () => {
@@ -87,9 +89,11 @@ export default function UpdateTeacherToCourse(props) {
   return (
     <React.Fragment>
       {contextHolder}
-      <Button type="primary" onClick={showModal} className="me-3 custom-button">
-        Cập nhật giáo viên
-      </Button>
+      {isUserAdmin && (
+        <Button type="primary" onClick={showModal} className="me-3 custom-button">
+          Cập nhật giáo viên
+        </Button>
+      )}
       <Modal
         title="Thêm bằng Email"
         open={isModalOpen}

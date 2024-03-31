@@ -3,12 +3,11 @@ import CustomInput from "@/components/comman/CustomInput";
 import {
   getAUser,
   updateUser,
-  updateUserProfile,
   uploadImageUser,
 } from "@/features/User/userSlice";
 import { AntDesignOutlined, UploadOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Avatar, Button, Card, DatePicker, Input, Upload, message } from "antd";
+import { Avatar, Button, Card, DatePicker, Upload, message } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
@@ -82,7 +81,6 @@ export default function EditUserForm() {
       gender: data?.gender,
     },
     onSubmit: (values) => {
-      values.lastName = values.lastName.trim();
       dispatch(updateUser({ id: id, values }))
         .then(unwrapResult)
         .then((res) => {
@@ -93,7 +91,6 @@ export default function EditUserForm() {
                 if (res.status) {
                   setFile(null);
                   setImageUrl(res.metadata.image_url);
-                  dispatch(updateUserProfile(res.metadata));
                   setLoading(false);
                   messageApi.open({
                     type: "Thành công",
@@ -120,7 +117,7 @@ export default function EditUserForm() {
     },
   });
   return (
-    <div className="mx-auto max-w-md space-y-6 overflow-x-hidden grid-container">
+    <div className="mx-auto max-w-md space-y-6 overflow-x-hidden grid-container pt-3">
       {contextHolder}
       <div className="space-y-2 text-center">
         <h1 className="text-3xl font-bold">Thông tin của bạn</h1>
@@ -279,6 +276,14 @@ export default function EditUserForm() {
           className="ml-auto w-full custom-button"
         >
           Lưu
+        </Button>
+        <div className="pb-2"></div>
+        <Button
+          href="/"
+          type="default"
+          className="ml-auto w-full"
+        >
+          Hủy
         </Button>
       </Card>
     </div>

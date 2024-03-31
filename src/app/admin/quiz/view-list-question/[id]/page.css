@@ -28,7 +28,22 @@
   }
 }
 
-.grid-container {
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;
+.li-content {
+  word-break: break-all;
 }
+
+.sticky {
+  position: -webkit-sticky; 
+  position: sticky;
+  top: 0; 
+  z-index: 1000;
+}
+
+.grid-container {
+  max-height: calc(100vh - 200px);
+}
+
+.ql-editor .ql-indent-1 { padding-left: 3em; }
+.ql-editor .ql-indent-2 { padding-left: 6em; }
+.ql-editor .ql-indent-3 { padding-left: 9em; }
+.ql-editor .ql-align-justify { text-align: justify; }
