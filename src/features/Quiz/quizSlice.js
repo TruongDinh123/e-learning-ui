@@ -241,6 +241,18 @@ export const deleteQuizQuestion = createAsyncThunk(
   }
 );
 
+export const deleteQuestionImage = createAsyncThunk(
+  "/e-learning/delete-question-img",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await QuizService.deleteQuestionImage(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 export const deleteQuiz = createAsyncThunk(
   "/e-learning/delete-quiz",
   async (data, { rejectWithValue }) => {
@@ -577,6 +589,31 @@ const quizSlice = createSlice({
         }
       })
       .addCase(uploadQuestionImage.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      })
+      .addCase(deleteQuestionImage.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteQuestionImage.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        const { quizId, questionId } = action.meta.arg;
+
+        const quizIndex = state.getdraftQuiz.findIndex(quiz => quiz._id === quizId);
+
+        if (quizIndex !== -1) {
+          const questionIndex = state.getdraftQuiz[quizIndex].questions.findIndex(question => question._id === questionId);
+
+          if (questionIndex !== -1) {
+            state.getdraftQuiz[quizIndex].questions[questionIndex].image_url = '';
+          }
+        }
+      })
+      .addCase(deleteQuestionImage.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;

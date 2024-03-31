@@ -182,6 +182,15 @@ const deleteQuiz = async (data) => {
   return res.data;
 };
 
+const deleteQuestionImage = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/quiz/delete-image-question`,
+    method: "DELETE",
+    data: data,
+  });
+  return res.data;
+}
+
 const deleteScorebyQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/score/${data.scoreId}/delete-score`,
@@ -299,4 +308,5 @@ export const QuizService = {
   getAllScoresByCourseId,
   getDraftQuiz,
   DeletedraftQuiz,
+  deleteQuestionImage,
 };
