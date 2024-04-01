@@ -109,7 +109,7 @@ export default function RootLayout({ children }) {
                         <h1
                           className="text-4xl font-bold text-center"
                           style={{
-                            color: "#13C57C",
+                            color: "#002c6a",
                           }}
                         >
                           Trung tâm giáo dục Tường Ân

@@ -81,10 +81,11 @@ export default function SiderCustom() {
         theme="light"
         style={{
           height: "100%",
-          background: "linear-gradient(#002979, #1C4185)",
+          background: "#02354B",
           borderRadius: borderRadiusLG,
           color: "#ffffff",
         }}
+        className="text-base"
         onClick={({ key }) => {
           router.push(`${key}`);
         }}
