@@ -36,15 +36,9 @@ export default function SiderCustom() {
 
   const items = [
     {
-      key: `/courses/view-course-details/${courseId}/info`,
+      key: `/courses/view-course-details/${courseId}`,
       icon: React.createElement(InfoCircleOutlined),
       label: "Thông tin",
-      children: [
-        {
-          key: `/courses/view-course-details/${courseId}/info`,
-          label: "Hướng dẫn",
-        },
-      ],
     },
     {
       key: `/courses/view-course-details/${courseId}/ranking`,
@@ -81,10 +75,11 @@ export default function SiderCustom() {
         theme="light"
         style={{
           height: "100%",
-          background: "linear-gradient(#002979, #1C4185)",
+          background: "#02354B",
           borderRadius: borderRadiusLG,
           color: "#ffffff",
         }}
+        className="text-base"
         onClick={({ key }) => {
           router.push(`${key}`);
         }}

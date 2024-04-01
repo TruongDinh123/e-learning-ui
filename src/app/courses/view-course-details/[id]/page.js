@@ -115,7 +115,7 @@ export default function CourseDetails({ params }) {
         </div>
       ) : (
         <div className="border-r border-gray-200 md:border-r-2">
-          <h3 className="text-xl font-semibold text-[#13C57C]">
+          <h3 className="text-xl font-bold text-[#002c6a]">
             Thông tin khóa học:
           </h3>
           <p

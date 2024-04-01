@@ -109,7 +109,7 @@ export default function RootLayout({ children }) {
                         <h1
                           className="text-4xl font-bold text-center"
                           style={{
-                            color: "#13C57C",
+                            color: "#002c6a",
                           }}
                         >
                           Trung tâm giáo dục Tường Ân
@@ -143,7 +143,7 @@ export default function RootLayout({ children }) {
                         color: "white",
                       }}
                     >
-                      © 2024 95EdTech From 95 Solutions Team
+                      © 2024 95EdTech From 95 Solutions Team (version 1.6.1)
                     </Footer>
                   </React.Fragment>
                 </Layout>

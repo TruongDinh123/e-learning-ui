@@ -8,11 +8,13 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { useRouter } from "next/navigation";
 import { startQuiz } from "@/features/Quiz/quizSlice";
 import "react-quill/dist/quill.snow.css";
+import Link from "next/link";
 
 export default function Quizzes({ params }) {
   const dispatch = useDispatch();
   const [dataCourse, setDataCourse] = useState([]);
   const [isStudentOfCourse, setIsStudentOfCourse] = useState(false);
+
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadingQuizzes, setLoadingQuizzes] = useState({});
@@ -144,9 +146,21 @@ export default function Quizzes({ params }) {
         <>
           {isStudentOfCourse || isAdmin ? (
             <div>
-              <h2 className="text-lg font-semibold text-[#002c6a] sm:text-base">
-                Danh sách bài tập
-              </h2>
+              <div className="flex justify-between items-center">
+                <h2 className="text-lg font-semibold text-[#002c6a] sm:text-base">
+                  Danh sách bài tập
+                </h2>
+                {dataCourse.quizzes.length > 0 && (
+                  <div className="ml-auto">
+                    <Link
+                      href={`/courses/view-details/${dataCourse?._id}`}
+                      className="text-white bg-[#002c6a] hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#002c6a] dark:hover:bg-blue-600 dark:focus:ring-blue-800 shadow-lg"
+                    >
+                      Đi tới danh sách bài tập
+                    </Link>
+                  </div>
+                )}
+              </div>
               <ul className="pl-5 sm:pl-4 list-none">
                 {dataCourse.quizzes.map((quiz, index) => {
                   // Kiểm tra xem thời gian làm bài đã hết hay chưa
@@ -204,6 +218,19 @@ export default function Quizzes({ params }) {
               </ul>
             </div>
           ) : null}
+          {dataCourse.quizzes.length === 0 && (
+            <div className="flex justify-center items-center">
+              <Result
+                status="404"
+                title="Hiện tại chưa có bài tập nào."
+                extra={
+                  <Button type="primary" key="console" href="/">
+                    Trang chủ
+                  </Button>
+                }
+              />
+            </div>
+          )}
         </>
       )}
     </div>

@@ -41,7 +41,7 @@ export default function RankingStudent() {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold text-[#13C57C] mb-4">Xếp hạng</h1>
+      <h1 className="text-2xl font-bold text-[#002c6a] mb-4">Xếp hạng</h1>
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
         <div className="flex justify-around items-center mb-8">
           {rankingData.slice(0, 3).map((student, index) => (

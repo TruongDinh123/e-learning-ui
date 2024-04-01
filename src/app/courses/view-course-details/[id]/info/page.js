@@ -1,6 +1,7 @@
 "use client";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
+import { Button, Result } from "antd";
 
 const ReactQuill = dynamic(
   () => import("react-quill").then((mod) => mod.default),
@@ -9,7 +10,7 @@ const ReactQuill = dynamic(
 export default function InfoCourse() {
   return (
     <main className="bg-white text-black overflow-auto">
-      <ReactQuill
+      {/* <ReactQuill
         theme="snow"
         placeholder="Thêm mô tả"
         className="bg-white"
@@ -38,6 +39,12 @@ export default function InfoCourse() {
             ["clean"],
           ],
         }}
+      /> */}
+      <Result
+        status="403"
+        title="403"
+        subTitle="Đang cập nhật..."
+        extra={<Button className="custom-button" type="primary">Quay về trang chủ</Button>}
       />
     </main>
   );

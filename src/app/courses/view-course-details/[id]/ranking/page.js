@@ -7,7 +7,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function RankingStudent({ params }) {
-  console.log(params);
   const dispatch = useDispatch();
   const router = useRouter();
   const [rankingData, setRankingData] = useState([]);
@@ -50,7 +49,6 @@ export default function RankingStudent({ params }) {
           : [];
         setRankingData(rankingArray);
       } catch (error) {
-        console.log(error);
         message.error("Không thể lấy dữ liệu bảng xếp hạng.");
         setRankingData([]);
       } finally {
@@ -85,7 +83,7 @@ export default function RankingStudent({ params }) {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold text-[#13C57C] mb-4">Xếp hạng</h1>
+      <h1 className="text-2xl font-bold text-[#002c6a] mb-4">Xếp hạng</h1>
       {isLoading ? (
         <div className="flex justify-center items-center">
           <Spin size="large" />
