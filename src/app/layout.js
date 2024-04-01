@@ -143,7 +143,7 @@ export default function RootLayout({ children }) {
                         color: "white",
                       }}
                     >
-                      © 2024 95EdTech From 95 Solutions Team
+                      © 2024 95EdTech From 95 Solutions Team (version 1.6.1)
                     </Footer>
                   </React.Fragment>
                 </Layout>
