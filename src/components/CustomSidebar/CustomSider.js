@@ -13,14 +13,22 @@ import { usePathname, useRouter } from "next/navigation";
 
 const { Sider } = Layout;
 
-export default function TeacherSidebar() {
+export default function SiderCustom() {
   const router = useRouter();
   const pathname = usePathname();
-  const getCurrentKey = (path) => {
-    if (pathname.includes("/teacher")) {
-      return "teacher";
-    } else if (pathname.includes("/teacher/ranking")) {
-      return "teacher/ranking";
+
+  const getCourseIdFromPath = (pathname) => {
+    const match = pathname.match(/\/courses\/view-course-details\/([^\/]+)/);
+    return match ? match[1] : null;
+  };
+
+  const courseId = getCourseIdFromPath(pathname);
+
+  const getCurrentKey = () => {
+    if (pathname.includes("/info")) {
+      return "info";
+    } else if (pathname.includes(`/courses/view-course-details/${courseId}`)) {
+      return `/courses/view-course-details/${courseId}/ranking`;
     }
     return "1";
   };
@@ -28,23 +36,23 @@ export default function TeacherSidebar() {
 
   const items = [
     {
-      key: "/teacher",
+      key: `/courses/view-course-details/${courseId}/info`,
       icon: React.createElement(InfoCircleOutlined),
       label: "Thông tin",
       children: [
         {
-          key: "/teacher",
+          key: `/courses/view-course-details/${courseId}/info`,
           label: "Hướng dẫn",
         },
       ],
     },
     {
-      key: "/teacher/ranking",
+      key: `/courses/view-course-details/${courseId}/ranking`,
       icon: React.createElement(OrderedListOutlined),
       label: "Bảng Xếp hạng",
     },
     {
-      key: "3",
+      key: `/courses/view-course-details/${courseId}/quizzes`,
       icon: React.createElement(SolutionOutlined),
       label: "Quản trị bài tập",
     },
@@ -61,7 +69,7 @@ export default function TeacherSidebar() {
   return (
     <Sider
       style={{
-        color: "#ffffff", 
+        color: "#ffffff",
         borderRadius: borderRadiusLG,
       }}
       width={200}
@@ -75,7 +83,7 @@ export default function TeacherSidebar() {
           height: "100%",
           background: "linear-gradient(#002979, #1C4185)",
           borderRadius: borderRadiusLG,
-          color: "#ffffff", 
+          color: "#ffffff",
         }}
         onClick={({ key }) => {
           router.push(`${key}`);
