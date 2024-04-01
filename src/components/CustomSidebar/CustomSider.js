@@ -36,15 +36,9 @@ export default function SiderCustom() {
 
   const items = [
     {
-      key: `/courses/view-course-details/${courseId}/info`,
+      key: `/courses/view-course-details/${courseId}`,
       icon: React.createElement(InfoCircleOutlined),
       label: "Thông tin",
-      children: [
-        {
-          key: `/courses/view-course-details/${courseId}/info`,
-          label: "Hướng dẫn",
-        },
-      ],
     },
     {
       key: `/courses/view-course-details/${courseId}/ranking`,
