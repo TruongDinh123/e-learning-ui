@@ -7,6 +7,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { getStudentCourses } from "@/features/Courses/courseSlice";
 import "react-quill/dist/quill.snow.css";
 import { refreshAUser } from "@/features/User/userSlice";
+import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
 const ScoreManagement = () => {
   const dispatch = useDispatch();
@@ -159,9 +160,16 @@ const ScoreManagement = () => {
                       const answer = answerObj
                         ? Object.values(answerObj)[0]
                         : "";
+
+                      const studentAnswer = answerObj
+                        ? Object.values(answerObj)[0]
+                        : null;
                       return (
                         <List.Item>
                           <div className="p-3">
+                            <h1 className="text-base">
+                              Câu {idxQuestion + 1}:
+                            </h1>
                             <h3
                               className="font-semibold py-3"
                               dangerouslySetInnerHTML={{
@@ -171,6 +179,16 @@ const ScoreManagement = () => {
                             {question.options.map((option, idxOption) => (
                               <p key={idxOption}>
                                 {idxOption + 1}: {option}
+                                {studentAnswer === option &&
+                                  (studentAnswer === question.answer ? (
+                                    <CheckCircleOutlined
+                                      style={{ color: "green", marginLeft: 8 }}
+                                    />
+                                  ) : (
+                                    <CloseCircleOutlined
+                                      style={{ color: "red", marginLeft: 8 }}
+                                    />
+                                  ))}
                               </p>
                             ))}
                             {question?.image_url && (

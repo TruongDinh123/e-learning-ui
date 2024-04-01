@@ -8,14 +8,14 @@ import CustomFooter from "@/components/Footer/footer";
 import AdminFooter from "@/components/AdminFooter/AdminFooter";
 import AdminHeader from "@/components/AdminHeaeder/AdminHeader";
 import AdminSidebar from "@/components/AdminSidebar/AdminSidebar";
-import TeacherSidebar from "@/components/TeacherSidebar/TeacherSidebar";
 import TeacherHeader from "@/components/TeacherHeader/TeacherHeader";
 import { Layout, Spin, theme } from "antd";
 import React, { Suspense, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Cookies from "js-cookie";
 import { isAdmin, isMentor } from "@/middleware";
-import 'animate.css';
+import "animate.css";
+import SiderCustom from "@/components/CustomSidebar/CustomSider";
 const logo = "/images/logoimg.jpg";
 
 const Providers = dynamic(() => import("@/Provider"), { ssr: false });
@@ -73,14 +73,18 @@ export default function RootLayout({ children }) {
             </div>
           ) : (
             <Suspense fallback={<Spin size="large"></Spin>}>
-              {pathname.includes("/teacher") ? (
+              {pathname.includes("/courses/view-course-details") ||
+              pathname.includes("/teacher") ? (
                 <Layout>
                   <React.Fragment>
                     {/* header teacher */}
                     {pathname.includes("/teacher") && <TeacherHeader />}
+                    {!pathname.includes("/admin") && pathname !== "/login" && (
+                      <Header />
+                    )}
                     <Content
                       style={{
-                        padding: "0 48px",
+                        padding: pathname.includes("/teacher") ? "0 48px" : "64px 48px",
                         overflowY: "auto",
                       }}
                     >
@@ -102,10 +106,13 @@ export default function RootLayout({ children }) {
                           }}
                           width="100"
                         />
-                        <h1 className="text-4xl font-bold text-center" style={{
-                          color: "#13C57C"
-                        }}>
-                          Trung tâm khóa học Tường Ân
+                        <h1
+                          className="text-4xl font-bold text-center"
+                          style={{
+                            color: "#002c6a",
+                          }}
+                        >
+                          Trung tâm giáo dục Tường Ân
                         </h1>
                       </header>
                       <Layout
@@ -116,7 +123,7 @@ export default function RootLayout({ children }) {
                           minHeight: "80%",
                         }}
                       >
-                        <TeacherSidebar />
+                        <SiderCustom />
                         <Content
                           style={{
                             padding: "0 24px",
@@ -136,7 +143,7 @@ export default function RootLayout({ children }) {
                         color: "white",
                       }}
                     >
-                      © 2024 95EdTech From 95 Solutions Team
+                      © 2024 95EdTech From 95 Solutions Team (version 1.6.1)
                     </Footer>
                   </React.Fragment>
                 </Layout>

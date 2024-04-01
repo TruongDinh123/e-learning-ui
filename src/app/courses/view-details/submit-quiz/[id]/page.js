@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import "react-quill/dist/quill.snow.css";
 import { useMediaQuery } from "react-responsive";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
 const logo = "/images/logoimg.jpg";
 
@@ -40,7 +41,6 @@ export default function Quizs({ params }) {
     (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
   );
 
-  const isDesktop = useMediaQuery({ minWidth: 992 });
   //fetch API
   useEffect(() => {
     const fetchQuizInfo = async () => {
@@ -177,14 +177,14 @@ export default function Quizs({ params }) {
 
   const showConfirmSubmit = () => {
     Modal.confirm({
-      title: 'Bạn có chắc chắn muốn nộp bài?',
-      content: 'Một khi đã nộp, bạn không thể chỉnh sửa các câu trả lời.',
-      okText: 'Nộp bài',
-      cancelText: 'Hủy bỏ',
+      title: "Bạn có chắc chắn muốn nộp bài?",
+      content: "Một khi đã nộp, bạn không thể chỉnh sửa các câu trả lời.",
+      okText: "Nộp bài",
+      cancelText: "Hủy bỏ",
       onOk() {
         handleSubmit();
       },
-      okButtonProps: {className: 'custom-button'},
+      okButtonProps: { className: "custom-button" },
     });
   };
 
@@ -264,6 +264,22 @@ export default function Quizs({ params }) {
 
   // Khi hiển thị thông tin cho người dùng
   const correctAnswersCount = calculateCorrectAnswers();
+
+  const calculateAnswersStatus = () => {
+    let answersStatus = {};
+    quiz[0]?.questions?.forEach((question) => {
+      const studentAnswer = quizSubmission?.answers?.find(
+        (answer) => answer[question._id]
+      );
+      answersStatus[question._id] =
+        studentAnswer && studentAnswer[question._id] === question.answer;
+    });
+    return answersStatus;
+  };
+
+  // Khi hiển thị thông tin cho người dùng
+  const answersStatus = calculateAnswersStatus();
+
   const totalQuestions = quiz[0]?.questions?.length;
 
   const currentTime = new Date();
@@ -406,7 +422,17 @@ export default function Quizs({ params }) {
                             {question.options.map((option) => (
                               <label
                                 key={option}
-                                className="flex items-center pl-4"
+                                className={`flex items-center pl-4 ${
+                                  submitted || isComplete
+                                    ? answersStatus[question._id] === true &&
+                                      option === studentAnswer
+                                      ? "text-green-500"
+                                      : answersStatus[question._id] === false &&
+                                        option === studentAnswer
+                                      ? "text-red-500"
+                                      : ""
+                                    : ""
+                                }`}
                               >
                                 <input
                                   type="radio"
@@ -417,11 +443,25 @@ export default function Quizs({ params }) {
                                   }
                                   checked={option === studentAnswer}
                                   disabled={submitted || isComplete}
-                                  className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out"
                                 />
                                 <span className="ml-2 text-gray-700">
                                   {option}
                                 </span>
+                                {submitted || isComplete ? (
+                                  <span className="form-radio-icon">
+                                    {answersStatus[question._id] === true &&
+                                    option === studentAnswer ? (
+                                      <CheckOutlined style={{ marginLeft: '8px' }} />
+                                    ) : (
+                                      answersStatus[question._id] === false &&
+                                      option === studentAnswer && (
+                                        <CloseOutlined style={{ marginLeft: '8px' }} />
+                                      )
+                                    )}
+                                  </span>
+                                ) : (
+                                  <span className="form-radio-placeholder"></span>
+                                )}
                               </label>
                             ))}
                           </div>
