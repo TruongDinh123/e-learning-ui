@@ -4,8 +4,8 @@ import Cookies from "js-cookie";
 const axiosInstance = axios.create({
   baseURL: process.env.API_URL || process.env.API_URL_PRODUCTION,
   // baseURL: "https://e-learning-95lab-productionv1.onrender.com/v1/api",
-  // baseURL: "https://www.247learn.vn/v1/api",
-  baseURL: "https://www.navibot.vn/v1/api",
+  baseURL: "https://www.247learn.vn/v1/api",
+  // baseURL: "https://www.navibot.vn/v1/api",
   headers: {
     "Content-Type": "application/json",
     "x-api-key":
@@ -21,7 +21,7 @@ async function handleLogout() {
     const clientId = localStorage.getItem('x-client-id');
     await axios({
       method: 'post',
-      url: 'https://www.navibot.vn/v1/api/e-learning/logout',
+      url: 'https://www.247learn.vn/v1/api/e-learning/logout',
       headers: {
         'x-api-key': '8ccaf2db9e10264dc29abdcc653f1c59673144131bd08c870751ce80490d926c407ad256fcf7c409df42c6af17f779b94c2695b769f3d1eb76f726e97a12773b',
         'x-client-id': clientId,
@@ -43,7 +43,7 @@ async function refreshToken() {
     const refreshTokenValue = Cookies.get('refreshToken');
     const response = await axios({
       method: 'post',
-      url: 'https://www.navibot.vn/v1/api/e-learning/handleRefreshToken',
+      url: 'https://www.247learn.vn/v1/api/e-learning/handleRefreshToken',
       headers: {
         'x-api-key': '8ccaf2db9e10264dc29abdcc653f1c59673144131bd08c870751ce80490d926c407ad256fcf7c409df42c6af17f779b94c2695b769f3d1eb76f726e97a12773b',
         'x-client-id': localStorage.getItem('x-client-id'),
