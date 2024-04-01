@@ -14,6 +14,7 @@ export default function Quizzes({ params }) {
   const dispatch = useDispatch();
   const [dataCourse, setDataCourse] = useState([]);
   const [isStudentOfCourse, setIsStudentOfCourse] = useState(false);
+
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadingQuizzes, setLoadingQuizzes] = useState({});
@@ -217,6 +218,19 @@ export default function Quizzes({ params }) {
               </ul>
             </div>
           ) : null}
+          {dataCourse.quizzes.length === 0 && (
+            <div className="flex justify-center items-center">
+              <Result
+                status="404"
+                title="Hiện tại chưa có bài tập nào."
+                extra={
+                  <Button type="primary" key="console" href="/">
+                    Trang chủ
+                  </Button>
+                }
+              />
+            </div>
+          )}
         </>
       )}
     </div>
