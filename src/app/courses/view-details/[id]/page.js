@@ -305,18 +305,19 @@ export default function ViewQuiz({ params }) {
         };
       });
 
-      const confirmStartQuiz = (quizId, quizType) => {
-        Modal.confirm({
-          title: 'Vui lòng xác nhận bắt đầu làm bài thi',
-          content: 'Lưu ý, trong quá trình làm bài, nếu bạn có các hành vi như: đóng hoặc tải lại trình duyệt, hệ thống sẽ ghi nhận trạng thái là đã hoàn thành.',
-          okText: 'Xác nhận',
-          cancelText: 'Huỷ',
-          onOk() {
-            handleStartQuiz(quizId, quizType);
-          },
-          okButtonProps: { className: "custom-button" },
-        });
-      };
+    const confirmStartQuiz = (quizId, quizType) => {
+      Modal.confirm({
+        title: "Vui lòng xác nhận bắt đầu làm bài thi",
+        content:
+          "Lưu ý, trong quá trình làm bài, nếu bạn có các hành vi như: đóng hoặc tải lại trình duyệt, hệ thống sẽ ghi nhận trạng thái là đã hoàn thành.",
+        okText: "Xác nhận",
+        cancelText: "Huỷ",
+        onOk() {
+          handleStartQuiz(quizId, quizType);
+        },
+        okButtonProps: { className: "custom-button" },
+      });
+    };
 
     useEffect(() => {
       setExpiredCount(notCompletedQuizzes.length);

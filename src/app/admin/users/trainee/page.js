@@ -12,15 +12,12 @@ import React, {
   useEffect,
   useMemo,
   useState,
-  useRef,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllScoresByCourseId, viewQuiz } from "@/features/Quiz/quizSlice";
 import { isAdmin, isMentor } from "@/middleware";
 import "./page.css";
 import BarChart1 from "@/config/barchar1";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 
 const { Option } = Select;
 
@@ -146,19 +143,19 @@ export default function ViewStudentsCourse() {
           const studentScore = scores[quiz._id]?.find(
             (score) => score?.userId === record?.userId
           );
-
+  
           const hasSubmissionTime = quiz.hasOwnProperty("submissionTime");
           const submissionTime = hasSubmissionTime
             ? new Date(quiz.submissionTime)
             : null;
           const now = new Date();
-
+  
           if (!hasSubmissionTime || (submissionTime && now < submissionTime)) {
-            return studentScore ? studentScore.score : "Chưa làm";
+            return studentScore ? (studentScore.score !== undefined ? studentScore.score : "0") : "Chưa làm";
           } else {
             return studentScore?.isComplete
-              ? studentScore.score
-              : "Hết hạn nộp";
+              ? (studentScore.score !== undefined ? studentScore.score : "0")
+              : "Chưa làm";
           }
         },
       })),
@@ -260,15 +257,16 @@ export default function ViewStudentsCourse() {
     ];
 
     // Chuyển đổi dữ liệu thành chuỗi CSV
+    const BOM = "\uFEFF";
     const csvContent = [
+      BOM,
       courseInfoHeader,
       headers.join(","), // thêm tiêu đề vào đầu
       ...dataStudent.map((student, index) =>
         [
           index + 1, // STT
           [student?.lastName, student?.firstName].filter(Boolean).join(" "), // Full Name
-          student.email, // Email
-          // Lấy điểm số cho mỗi quiz của học viên
+          student.email,
           ...quizzes.map((quiz) => {
             const studentScore = scores[quiz._id]?.find(
               (score) => score?.userId === student._id
@@ -278,16 +276,15 @@ export default function ViewStudentsCourse() {
               ? new Date(quiz.submissionTime)
               : null;
             const now = new Date();
-
             if (
               !hasSubmissionTime ||
               (submissionTime && now < submissionTime)
             ) {
-              return studentScore ? studentScore.score : "Chưa làm";
+              return studentScore ? (studentScore.score !== undefined ? studentScore.score : "0") : "Chưa làm";
             } else {
               return studentScore?.isComplete
-                ? studentScore.score
-                : "Hết hạn nộp";
+              ? (studentScore.score !== undefined ? studentScore.score : "0")
+              : "Hết hạn nộp";
             }
           }),
         ]
@@ -300,7 +297,7 @@ export default function ViewStudentsCourse() {
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
-    link.setAttribute("download", "students_scores.csv");
+    link.setAttribute("download", "Danh_sách_điểm.csv");
     link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();

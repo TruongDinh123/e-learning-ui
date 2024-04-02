@@ -1149,9 +1149,14 @@ export default function QuizCreator() {
                                                     onChange={(e) => {
                                                       const updatedOptions = [...form.getFieldValue(["questions", field.name, "options"])];
                                                       updatedOptions[subIndex] = { option: e.target.value };
-                                                      form.setFieldsValue({
-                                                        questions: form.getFieldValue("questions").map((q, qi) => qi === field.name ? { ...q, options: updatedOptions } : q)
+                                                      const newQuestions = form.getFieldValue("questions").map((q, qi) => {
+                                                        if (qi === field.name) {
+                                                          return { ...q, options: updatedOptions, answer: '' };
+                                                        }
+                                                        return q;
                                                       });
+
+                                                      form.setFieldsValue({ questions: newQuestions });
                                                     }}
                                                   />
                                                 </Form.Item>
