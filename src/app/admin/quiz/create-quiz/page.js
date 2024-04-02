@@ -75,7 +75,6 @@ export default function QuizCreator() {
   const [initialQuestions, setInitialQuestions] = useState([]);
   const [isLoadingDraft, setIsLoadingDraft] = useState(false);
   const [deletedQuestionIds, setDeletedQuestionIds] = useState([]);
-  const [options, setOptions] = useState([]);
 
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
@@ -103,11 +102,6 @@ export default function QuizCreator() {
   };
 
   const dispatch = useDispatch();
-
-  const updateOptions = (subFields) => {
-    const newOptions = subFields.map((subField) => subField.name[1]);
-    setOptions(newOptions);
-  };
 
   useEffect(() => {
     const currentTeacherId = localStorage.getItem("x-client-id");
