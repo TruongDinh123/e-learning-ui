@@ -58,10 +58,12 @@ export default function RootLayout({ children }) {
         router.push("/login");
       } else if (pathname.includes("/admin") && !(isAdmin() || isMentor())) {
         router.push("/unauthorized");
+      } else if (token && pathname === "/login") {
+        router.push("/");
       }
     }
     setLoading(false);
-  }, [pathname]);
+  }, [pathname, loading]);
 
   return (
     <html>

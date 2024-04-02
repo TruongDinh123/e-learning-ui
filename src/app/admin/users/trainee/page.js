@@ -6,13 +6,21 @@ import {
   viewCourses,
 } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Empty, Modal, Popconfirm, Select, Table, Tooltip, message } from "antd";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Button, Empty, Modal, Select, Table, Tooltip, message } from "antd";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllScoresByCourseId, viewQuiz } from "@/features/Quiz/quizSlice";
 import { isAdmin, isMentor } from "@/middleware";
 import "./page.css";
 import BarChart1 from "@/config/barchar1";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const { Option } = Select;
 
@@ -20,9 +28,9 @@ export default function ViewStudentsCourse() {
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [dataStudent, setData] = useState([]);
+  console.log(dataStudent);
   const [teacher, setTeacher] = useState(null);
   const [quizzes, setQuizzes] = useState([]);
-  const [update, setUpdate] = useState(0);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courses, setCourses] = useState([]);
   const [scores, setScores] = useState({});
@@ -41,22 +49,6 @@ export default function ViewStudentsCourse() {
       loadCourseData(selectedCourse);
     });
   }, [selectedCourse, dispatch, messageApi]);
-
-  const handleDeleteStudent = ({ courseId, userId }) => {
-    dispatch(removeStudentFromCourse({ courseId, userId }))
-      .then(unwrapResult)
-      .then((res) => {
-        dispatch(
-          removeStudentFromCourseSuccess({ courseId, studentId: userId })
-        );
-        if (res.status) {
-          setUpdate(update + 1);
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {});
-  };
 
   const coursesFromStore = useSelector((state) => state.course.courses);
 
@@ -148,27 +140,26 @@ export default function ViewStudentsCourse() {
   const quizColumns = useMemo(
     () =>
       quizzes.map((quiz, index) => ({
-        // title: `Bài ${index + 1}`,
-        title: (
-          <Tooltip title={quiz.name}>
-            {`Bài ${quiz.name.length > 10 ? quiz.name.substring(0, 20) + '...' : quiz.name}`}
-          </Tooltip>
-        ),
+        title: `MS ${(index + 1).toString().padStart(2, "0")}`,
         dataIndex: quiz._id,
         key: quiz._id,
         render: (text, record) => {
           const studentScore = scores[quiz._id]?.find(
             (score) => score?.userId === record?.userId
           );
-  
-          const hasSubmissionTime = quiz.hasOwnProperty('submissionTime');
-          const submissionTime = hasSubmissionTime ? new Date(quiz.submissionTime) : null;
+
+          const hasSubmissionTime = quiz.hasOwnProperty("submissionTime");
+          const submissionTime = hasSubmissionTime
+            ? new Date(quiz.submissionTime)
+            : null;
           const now = new Date();
-  
+
           if (!hasSubmissionTime || (submissionTime && now < submissionTime)) {
             return studentScore ? studentScore.score : "Chưa làm";
           } else {
-            return studentScore?.isComplete ? studentScore.score : "Hết hạn nộp";
+            return studentScore?.isComplete
+              ? studentScore.score
+              : "Hết hạn nộp";
           }
         },
       })),
@@ -195,10 +186,10 @@ export default function ViewStudentsCourse() {
 
   const handleViewChart = (studentId) => {
     // Cập nhật dữ liệu biểu đồ cho học viên cụ thể
-    const studentScores = quizzes.map((quiz) => {
+    const studentScores = quizzes.map((quiz, index) => {
       const score = scores[quiz._id]?.find((s) => s.userId === studentId);
       return {
-        x: `Bài ${quiz.name}`,
+        x: `MS ${(index + 1).toString().padStart(2, "0")}`,
         y: score ? score.score : 0,
       };
     });
@@ -250,13 +241,80 @@ export default function ViewStudentsCourse() {
     [dataStudent, isModalVisible, quizzes, scores, chartData]
   );
 
+  const exportToCSV = () => {
+
+    const currentCourse = courses.find(course => course._id === selectedCourse);
+    const courseName = currentCourse ? currentCourse.name : "Không xác định";
+    const teacherName = teacher ? `${teacher.lastName} ${teacher.firstName}` : "Không xác định";
+    const teacherEmail = teacher ? teacher.email : "Không xác định";
+
+    const courseInfoHeader = `Tên khóa học: ${courseName}, Tên giáo viên: ${teacherName}, Email giáo viên: ${teacherEmail}\n\n`;
+
+    // Tạo tiêu đề cho CSV
+    const headers = [
+      "STT",
+      "Full Name",
+      "Email",
+      ...quizzes.map(
+        (quiz, index) => `MS ${(index + 1).toString().padStart(2, "0")}`
+      ), // Tiêu đề cho mỗi quiz
+    ];
+
+    // Chuyển đổi dữ liệu thành chuỗi CSV
+    const csvContent = [
+      courseInfoHeader,
+      headers.join(","), // thêm tiêu đề vào đầu
+      ...dataStudent.map((student, index) =>
+        [
+          index + 1, // STT
+          [student?.lastName, student?.firstName].filter(Boolean).join(" "), // Full Name
+          student.email, // Email
+          // Lấy điểm số cho mỗi quiz của học viên
+          ...quizzes.map((quiz) => {
+            const studentScore = scores[quiz._id]?.find(
+              (score) => score?.userId === student._id
+            );
+            const hasSubmissionTime = quiz.hasOwnProperty("submissionTime");
+            const submissionTime = hasSubmissionTime
+              ? new Date(quiz.submissionTime)
+              : null;
+            const now = new Date();
+
+            if (
+              !hasSubmissionTime ||
+              (submissionTime && now < submissionTime)
+            ) {
+              return studentScore ? studentScore.score : "Chưa làm";
+            } else {
+              return studentScore?.isComplete
+                ? studentScore.score
+                : "Hết hạn nộp";
+            }
+          }),
+        ]
+          .map((field) => `"${field}"`)
+          .join(",")
+      ),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "students_scores.csv");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="p-3">
       {contextHolder}
       <h1 className="text-lg font-bold text-[#002c6a]">
         Quản lý bài tập học viên
       </h1>
-      <div className="py-3 grid-container ">
+      <div className="py-3 grid-container">
         <Select
           placeholder="Chọn khóa học"
           onChange={handleCourseChange}
@@ -276,7 +334,13 @@ export default function ViewStudentsCourse() {
         >
           Xem
         </Button>
-
+        <Button
+          type="primary"
+          onClick={exportToCSV}
+          className="me-3 custom-button"
+        >
+          Export CSV
+        </Button>
         {viewSuccess ? (
           <>
             {teacher && (
