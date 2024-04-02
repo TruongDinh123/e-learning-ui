@@ -28,7 +28,6 @@ export default function ViewStudentsCourse() {
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [dataStudent, setData] = useState([]);
-  console.log(dataStudent);
   const [teacher, setTeacher] = useState(null);
   const [quizzes, setQuizzes] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -334,13 +333,17 @@ export default function ViewStudentsCourse() {
         >
           Xem
         </Button>
-        <Button
+
+        {viewSuccess ? (
+          <Button
           type="primary"
           onClick={exportToCSV}
           className="me-3 custom-button"
         >
           Export CSV
         </Button>
+        ): null}
+
         {viewSuccess ? (
           <>
             {teacher && (
