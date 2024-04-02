@@ -23,7 +23,6 @@ ChartJS.register(
 const BarChart1 = ({ chartData }) => {
   const labels = chartData.map((data) => data.x);
   const dataValues = chartData.map((data) => data.y);
-
   const data = {
     defaultFontFamily: "Poppins",
     labels: labels,
