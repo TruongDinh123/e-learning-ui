@@ -14,6 +14,7 @@ function addCustomClassesToHtml(htmlString) {
     .replace("<ol>", '<ol class="custom-ol">')
     .replace(/<li>/g, '<li class="custom-li">');
 }
+const avatar = "/images/imagedefault.jpg";
 
 export default function CourseDetails({ params }) {
   const dispatch = useDispatch();
@@ -114,9 +115,32 @@ export default function CourseDetails({ params }) {
           />
         </div>
       ) : (
-        <div className="border-r border-gray-200 md:border-r-2">
+        <div className="border-r border-gray-200 md:border-r-2 text-[#002c6a]">
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 pb-2">
+            {dataCourse?.teacher ? (
+              <div className="flex flex-col items-center">
+                <img
+                  alt="Teacher's avatar"
+                  className="rounded-full"
+                  src={dataCourse?.teacher?.image_url || avatar}
+                  style={{
+                    width: "64px",
+                    height: "64px",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+            ) : null}
+            <div className="flex flex-col justify-center">
+              <div className="text-lg font-medium">
+                {dataCourse?.teacher?.lastName} {dataCourse?.teacher?.firstName}
+              </div>
+              <div className="text-gray-500">{dataCourse?.teacher?.email}</div>
+            </div>
+          </div>
           <h3 className="text-xl font-bold text-[#002c6a]">
-            Thông tin khóa học:
+            Thông tin khóa học -{" "}
+            <span className="text-black">{dataCourse?.name}</span>
           </h3>
           <p
             className="mt-2 text-gray-600"
