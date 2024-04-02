@@ -5,7 +5,7 @@ import { Spin, Table, message } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import "./page.css";
 export default function RankingStudent({ params }) {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -14,6 +14,7 @@ export default function RankingStudent({ params }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const userState = useSelector((state) => state.user);
+  const loggedInUserId = localStorage.getItem("x-client-id");
   const isLoggedIn =
     userState.user?.status === 200 ||
     !!userState.userName ||
@@ -23,10 +24,7 @@ export default function RankingStudent({ params }) {
     const roles =
       userState.user?.roles || userState.user?.metadata?.account?.roles;
     const isAdminState = roles?.some(
-      (role) =>
-        role.name === "Admin" ||
-        role.name === "Super-Admin" ||
-        role.name === "Mentor"
+      (role) => role.name === "Admin" || role.name === "Super-Admin"
     );
     setIsAdmin(isAdminState);
   }, [userState.user, userState.user?.metadata?.account?.roles]);
@@ -120,7 +118,7 @@ export default function RankingStudent({ params }) {
                       boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
                     }}
                   >
-                    { index === 1 ? "🥈": index === 0 ? "🥇"  : "🥉"}
+                    {index === 1 ? "🥈" : index === 0 ? "🥇" : "🥉"}
                   </div>
                 )}
                 <span className="text-4xl font-bold">{index + 1}</span>
@@ -130,12 +128,12 @@ export default function RankingStudent({ params }) {
             ))}
           </div>
           <Table
-            dataSource={rankingData}
+            dataSource={rankingData.slice(3)}
             columns={columns}
             rowKey="email"
-            rowClassName={(record, index) =>
-              index < 3 ? "top-ranking-row" : ""
-            }
+            rowClassName={(record, index) => {
+              return record._id === loggedInUserId ? "highlight-row" : "";
+            }}
             pagination={false}
             scroll={{ x: 400 }}
             style={{
