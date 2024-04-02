@@ -63,6 +63,11 @@ export default function RankingStudent({ params }) {
 
   const columns = [
     {
+      title: "STT (Hạng)",
+      key: "index",
+      render: (text, record, index) => index + 4,
+    },
+    {
       title: "Tên",
       dataIndex: "name",
       key: "name",
