@@ -24,7 +24,10 @@ export default function RankingStudent({ params }) {
     const roles =
       userState.user?.roles || userState.user?.metadata?.account?.roles;
     const isAdminState = roles?.some(
-      (role) => role.name === "Admin" || role.name === "Super-Admin"
+      (role) =>
+        role.name === "Admin" ||
+        role.name === "Super-Admin" ||
+        role.name === "Mentor"
     );
     setIsAdmin(isAdminState);
   }, [userState.user, userState.user?.metadata?.account?.roles]);
@@ -56,6 +59,7 @@ export default function RankingStudent({ params }) {
 
     fetchRankingData();
   }, [dispatch, params?.id]);
+  const shouldShowEmailColumn = rankingData.some(student => student.email.trim() !== "");
 
   const columns = [
     {
@@ -63,15 +67,12 @@ export default function RankingStudent({ params }) {
       dataIndex: "name",
       key: "name",
     },
-    ...(isAdmin
-      ? [
-          {
-            title: "Email",
-            dataIndex: "email",
-            key: "email",
-          },
-        ]
-      : []),
+    ...(shouldShowEmailColumn ? [{
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      render: email => email ? email : null,
+    }] : []),
     {
       title: "Điểm",
       dataIndex: "totalScore",
