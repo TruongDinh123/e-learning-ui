@@ -247,7 +247,7 @@ export default function QuizCreator() {
     onRemove: () => {
       setQuestionImages((prevImages) => {
         const newQuestionImages = [...prevImages];
-        newQuestionImages[key] = {file: null, deleteQuestionImage: true};
+        newQuestionImages[key] = { file: null, deleteQuestionImage: true };
         return newQuestionImages;
       });
     },
@@ -477,7 +477,7 @@ export default function QuizCreator() {
                 );
                 uploadPromises.push(imageUploadPromise);
                 imageFile.uploaded = true;
-              } else if(imageFile && imageFile.deleteQuestionImage){
+              } else if (imageFile && imageFile.deleteQuestionImage) {
                 const imageDeletePromise = dispatch(
                   deleteQuestionImage({
                     quizId: quizId,
@@ -485,8 +485,8 @@ export default function QuizCreator() {
                     isTemplateMode,
                   })
                 );
-                  uploadPromises.push(imageDeletePromise);
-                }
+                uploadPromises.push(imageDeletePromise);
+              }
             });
           }
           if (action !== "save_draft") {
@@ -1126,10 +1126,7 @@ export default function QuizCreator() {
                                                     subField.name,
                                                     "option",
                                                   ]}
-                                                  fieldKey={[
-                                                    subField.fieldKey,
-                                                    "option",
-                                                  ]}
+                                                  key={[subField.key, "option"]}
                                                   rules={[
                                                     {
                                                       required: true,
@@ -1149,6 +1146,18 @@ export default function QuizCreator() {
                                                       maxRows: 5,
                                                     }}
                                                     style={{ width: "100%" }}
+                                                    onChange={(e) => {
+                                                      const updatedOptions = [...form.getFieldValue(["questions", field.name, "options"])];
+                                                      updatedOptions[subIndex] = { option: e.target.value };
+                                                      const newQuestions = form.getFieldValue("questions").map((q, qi) => {
+                                                        if (qi === field.name) {
+                                                          return { ...q, options: updatedOptions, answer: '' };
+                                                        }
+                                                        return q;
+                                                      });
+
+                                                      form.setFieldsValue({ questions: newQuestions });
+                                                    }}
                                                   />
                                                 </Form.Item>
                                                 <CloseOutlined
@@ -1186,10 +1195,22 @@ export default function QuizCreator() {
                                         },
                                       ]}
                                     >
-                                      <Input.TextArea
-                                        autoSize={{ minRows: 1, maxRows: 3 }}
-                                        placeholder="Đáp án"
-                                      />
+                                      <Select placeholder="Chọn đáp án">
+                                        {form
+                                          .getFieldValue([
+                                            "questions",
+                                            field.name,
+                                            "options",
+                                          ])
+                                          ?.map((option, optionIndex) => (
+                                            <Select.Option
+                                              key={optionIndex}
+                                              value={option?.option}
+                                            >
+                                              {option?.option}
+                                            </Select.Option>
+                                          ))}
+                                      </Select>
                                     </Form.Item>
                                   </Card>
                                 </div>

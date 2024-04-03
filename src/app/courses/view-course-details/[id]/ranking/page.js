@@ -1,19 +1,21 @@
 "use client";
 import { getStudentScoresByCourse } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Spin, Table, message } from "antd";
+import { Result, Spin, Table, message } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import "./page.css";
 export default function RankingStudent({ params }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const [rankingData, setRankingData] = useState([]);
+  console.log(rankingData);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const userState = useSelector((state) => state.user);
+  const loggedInUserId = localStorage.getItem("x-client-id");
   const isLoggedIn =
     userState.user?.status === 200 ||
     !!userState.userName ||
@@ -58,22 +60,25 @@ export default function RankingStudent({ params }) {
 
     fetchRankingData();
   }, [dispatch, params?.id]);
+  const shouldShowEmailColumn = rankingData.some(student => student.email.trim() !== "");
 
   const columns = [
+    {
+      title: "STT (Hạng)",
+      key: "index",
+      render: (text, record, index) => index + 4,
+    },
     {
       title: "Tên",
       dataIndex: "name",
       key: "name",
     },
-    ...(isAdmin
-      ? [
-          {
-            title: "Email",
-            dataIndex: "email",
-            key: "email",
-          },
-        ]
-      : []),
+    ...(shouldShowEmailColumn ? [{
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      render: email => email ? email : null,
+    }] : []),
     {
       title: "Điểm",
       dataIndex: "totalScore",
@@ -88,7 +93,15 @@ export default function RankingStudent({ params }) {
         <div className="flex justify-center items-center">
           <Spin size="large" />
         </div>
-      ) : (
+      ) : rankingData.length === 0 ? 
+      (
+        <Result
+          status="404"
+          title="Không có dữ liệu"
+          subTitle="Hiện tại không có dữ liệu xếp hạng cho khóa học này."
+        />
+      )
+      : (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <div className="flex justify-around items-center mb-8">
             {rankingData?.slice(0, 3).map((student, index) => (
@@ -120,7 +133,7 @@ export default function RankingStudent({ params }) {
                       boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
                     }}
                   >
-                    { index === 1 ? "🥈": index === 0 ? "🥇"  : "🥉"}
+                    {index === 1 ? "🥈" : index === 0 ? "🥇" : "🥉"}
                   </div>
                 )}
                 <span className="text-4xl font-bold">{index + 1}</span>
@@ -129,19 +142,23 @@ export default function RankingStudent({ params }) {
               </div>
             ))}
           </div>
-          <Table
-            dataSource={rankingData}
-            columns={columns}
-            rowKey="email"
-            rowClassName={(record, index) =>
-              index < 3 ? "top-ranking-row" : ""
-            }
-            pagination={false}
-            scroll={{ x: 400 }}
-            style={{
-              backgroundColor: "#f0f2f5",
-            }}
-          />
+          {rankingData.length > 3 && (
+            <div className="bg-white shadow-md rounded-lg overflow-hidden">
+              <Table
+                dataSource={rankingData.slice(3)}
+                columns={columns}
+                rowKey="email"
+                rowClassName={(record, index) => {
+                  return record._id === loggedInUserId ? "highlight-row" : "";
+                }}
+                pagination={false}
+                scroll={{ x: 400 }}
+                style={{
+                  backgroundColor: "#f0f2f5",
+                }}
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
