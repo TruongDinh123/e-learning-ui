@@ -483,7 +483,7 @@ export default function ViewStudentsCourse() {
           Xem
         </Button>
 
-        {viewSuccess ? (
+        {/* {viewSuccess ? (
           <Button
             type="primary"
             onClick={exportToExcelStyled}
@@ -491,7 +491,7 @@ export default function ViewStudentsCourse() {
           >
             Xuất file
           </Button>
-        ) : null}
+        ) : null} */}
 
         {viewSuccess ? (
           <>
