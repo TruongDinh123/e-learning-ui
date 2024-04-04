@@ -546,11 +546,14 @@ const quizSlice = createSlice({
         );
         if (index !== -1) {
           const updatedQuestions = action.payload.metadata.questions.filter(
-            (question) => !action.meta.arg.formattedValues.deletedQuestionIds.includes(question._id)
+            (question) =>
+              !action.meta.arg.formattedValues.deletedQuestionIds.includes(
+                question._id
+              )
           );
           state.getdraftQuiz[index] = {
             ...action.payload.metadata,
-            questions: updatedQuestions
+            questions: updatedQuestions,
           };
         } else {
           state.getdraftQuiz.push(action.payload.metadata);
@@ -569,19 +572,29 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        if(action.payload.metadata.quiz.isDraft){
+        if (action.payload.metadata.quiz.isDraft) {
           const updatedQuizInfo = action.payload.metadata.quiz;
           const updatedQuestionId = action.meta.arg.questionId;
 
-          const quizIndex = state.getdraftQuiz.findIndex(quiz => quiz._id === updatedQuizInfo._id);
+          const quizIndex = state.getdraftQuiz.findIndex(
+            (quiz) => quiz._id === updatedQuizInfo._id
+          );
 
           if (quizIndex !== -1) {
-            const questionIndex = state.getdraftQuiz[quizIndex].questions.findIndex(question => question._id === updatedQuestionId);
+            const questionIndex = state.getdraftQuiz[
+              quizIndex
+            ].questions.findIndex(
+              (question) => question._id === updatedQuestionId
+            );
 
             if (questionIndex !== -1) {
-              const updatedQuestion = updatedQuizInfo.questions.find(question => question._id === updatedQuestionId);
+              const updatedQuestion = updatedQuizInfo.questions.find(
+                (question) => question._id === updatedQuestionId
+              );
               if (updatedQuestion && updatedQuestion.image_url) {
-                state.getdraftQuiz[quizIndex].questions[questionIndex].image_url = updatedQuestion.image_url;
+                state.getdraftQuiz[quizIndex].questions[
+                  questionIndex
+                ].image_url = updatedQuestion.image_url;
               }
             }
           }
@@ -602,13 +615,18 @@ const quizSlice = createSlice({
         state.isSuccess = true;
         const { quizId, questionId } = action.meta.arg;
 
-        const quizIndex = state.getdraftQuiz.findIndex(quiz => quiz._id === quizId);
+        const quizIndex = state.getdraftQuiz.findIndex(
+          (quiz) => quiz._id === quizId
+        );
 
         if (quizIndex !== -1) {
-          const questionIndex = state.getdraftQuiz[quizIndex].questions.findIndex(question => question._id === questionId);
+          const questionIndex = state.getdraftQuiz[
+            quizIndex
+          ].questions.findIndex((question) => question._id === questionId);
 
           if (questionIndex !== -1) {
-            state.getdraftQuiz[quizIndex].questions[questionIndex].image_url = '';
+            state.getdraftQuiz[quizIndex].questions[questionIndex].image_url =
+              "";
           }
         }
       })

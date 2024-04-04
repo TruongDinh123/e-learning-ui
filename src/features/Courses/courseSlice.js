@@ -277,6 +277,7 @@ const initialState = {
   subCourses: [],
   courses: [],
   Acourse: {},
+  getACourse: {},
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -456,6 +457,7 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        state.getACourse = action.payload;
       })
       .addCase(getACourse.rejected, (state, action) => {
         state.isLoading = false;

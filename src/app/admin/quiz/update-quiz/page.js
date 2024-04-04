@@ -21,7 +21,6 @@ import {
   uploadFileQuiz,
   uploadQuestionImage,
   viewAQuiz,
-  viewQuiz,
 } from "@/features/Quiz/quizSlice";
 import { useRouter } from "next/navigation";
 import "react-quill/dist/quill.snow.css";

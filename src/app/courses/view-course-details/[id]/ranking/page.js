@@ -10,7 +10,6 @@ export default function RankingStudent({ params }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const [rankingData, setRankingData] = useState([]);
-  console.log(rankingData);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 

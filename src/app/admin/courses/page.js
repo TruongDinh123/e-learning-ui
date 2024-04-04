@@ -144,6 +144,7 @@ export default function Courses() {
       title: i?.title,
       _id: i?._id,
       name: i?.name,
+      nameCenter: i?.nameCenter,
       image_url: i?.image_url,
       lessons: i?.lessons,
       showCourse: i?.showCourse,
