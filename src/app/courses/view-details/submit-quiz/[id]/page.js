@@ -348,14 +348,14 @@ export default function Quizs({ params }) {
                         alt="School Logo"
                         className="h-24 w-auto"
                       />
-                      <h2 className="text-xl font-semibold text-gray-800">
+                      <h2 className="text-xl font-semibold text-gray-800 text-center">
                         Trung tâm giáo dục Tường Ân
                       </h2>
                     </div>
                     <div className="flex items-center">
-                      <div className="mr-4 text-lg font-semibold text-gray-700">
+                      <div className="mr-4 text-lg font-semibold text-gray-700 text-center" >
                         Số câu đã hoàn thành:
-                        <span className="text-black">
+                        <span className="text-black" style={{marginLeft: '5px'}}>
                           {Object.keys(selectedAnswers).length}
                         </span>
                         /
