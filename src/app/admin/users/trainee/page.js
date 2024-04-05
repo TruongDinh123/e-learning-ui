@@ -38,7 +38,7 @@ export default function ViewStudentsCourse() {
   const handleViewCourse = useCallback(() => {
     getACourseData(selectedCourse).then(() => {
       loadCourseData(selectedCourse).finally(() => {
-        setLoading(false); // Kết thúc tải
+        setLoading(false);
       });
     });
   }, [selectedCourse, dispatch, messageApi]);
@@ -489,16 +489,6 @@ export default function ViewStudentsCourse() {
             Xuất file
           </Button>
         )}
-
-        {viewSuccess ? (
-          <Button
-            type="primary"
-            onClick={exportToExcelStyled}
-            className="me-3 custom-button"
-          >
-            Xuất file
-          </Button>
-        ) : null}
 
         {viewSuccess ? (
           <>
