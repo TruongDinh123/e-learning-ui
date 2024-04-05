@@ -1,8 +1,9 @@
+"use client";
 import { getACourse } from "@/features/Courses/courseSlice";
 import { Spin } from "antd";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const logodefault = "/images/imagedefault.jpg";
 
