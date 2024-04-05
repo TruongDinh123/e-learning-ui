@@ -1,6 +1,8 @@
 import { Spin } from "antd";
 import { useSelector } from "react-redux";
 
+const logodefault = "/images/imagedefault.jpg";
+
 export default function InfoCourse() {
   const { metadata, isLoading } = useSelector((state) => ({
     metadata: state?.course?.getACourse?.metadata,
