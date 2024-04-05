@@ -10,10 +10,10 @@ const logo = "/images/logoimg.jpg";
 const logodefault = "/images/placeholder.jpg";
 
 export default function InfoCourse() {
-
   const stateACourse = useSelector(
     (state) => state?.course?.getACourse?.metadata
   );
+
   return (
     <header
       className="flex items-center space-x-4 pt-20 pb-3 lg:pt-0 lg:mt-4"
@@ -35,7 +35,7 @@ export default function InfoCourse() {
           color: "#002c6a",
         }}
       >
-        {stateACourse?.nameCenter || "Tên trung tâm đang cập nhật..."}
+        {stateACourse?.nameCenter || stateACourse?.name}
       </h1>
     </header>
   );
