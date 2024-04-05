@@ -1,0 +1,15 @@
+@media only screen and (min-width: 768px) {
+  .bg-flower {
+    background-image: url("https://myaloha.vn/image/contest/left_flower.svg"),
+      url("https://myaloha.vn/image/contest/right_flower.svg");
+    background-position: 1%, 99%;
+  }
+}
+
+.bg-img {
+  background-image: url("https://myaloha.vn/image/contest/leaderboard.png");
+}
+
+#components-collapse-demo-collapsible .ant-space {
+  width: 100%;
+}
