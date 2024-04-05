@@ -28,12 +28,12 @@ import {
   createNotification,
   getACourseByInfo,
   viewCourses,
+  getCourseSummary,
 } from "@/features/Courses/courseSlice";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
 import { DateTime } from "luxon";
-const logo = "/images/logoimg.jpg";
 
 const avatar = "/images/imagedefault.jpg";
 const { Sider, Content, Header } = Layout;
@@ -42,6 +42,7 @@ export default function ViewQuiz({ params }) {
 
   const [isLoading, setLoading] = useState([]);
   const dispatch = useDispatch();
+  const [course, setCourse] = useState([]);
   const [quiz, setquiz] = useState([]);
   const [score, setScore] = useState([]);
   const [dataCourse, setDataCourse] = useState([]);
@@ -69,6 +70,26 @@ export default function ViewQuiz({ params }) {
 
   // const getACourseState = useSelector((state) => state.course.Acourse.metadata);
 
+  // image
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await dispatch(getCourseSummary()).then(unwrapResult);
+        if (res.status) {
+          const desiredCourse = res.metadata.find(course => course._id === params?.id);
+          if (desiredCourse) {
+            setCourse(desiredCourse);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } 
+    };
+
+    fetchData();
+  }, [dispatch, params?.id]);
+
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -93,6 +114,8 @@ export default function ViewQuiz({ params }) {
     };
     fetchData();
   }, [dispatch, params?.id]);
+
+  console.log('dataCourse', dataCourse)
 
 
   
@@ -674,7 +697,7 @@ export default function ViewQuiz({ params }) {
         <div className="flex flex-col md:w-1/2 space-y-2 border-gray-200 dark:border-gray-300">
           <div className="flex items-center">
             <img
-              src={logo}
+              src={course?.image_url}
               className="h-24 w-24 mr-4"
               alt="Logo"
               style={{
