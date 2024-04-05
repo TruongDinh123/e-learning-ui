@@ -10,7 +10,6 @@ export default function RankingStudent({ params }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const [rankingData, setRankingData] = useState([]);
-  console.log(rankingData);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -60,7 +59,9 @@ export default function RankingStudent({ params }) {
 
     fetchRankingData();
   }, [dispatch, params?.id]);
-  const shouldShowEmailColumn = rankingData.some(student => student.email.trim() !== "");
+  const shouldShowEmailColumn = rankingData.some(
+    (student) => student.email.trim() !== ""
+  );
 
   const columns = [
     {
@@ -73,12 +74,16 @@ export default function RankingStudent({ params }) {
       dataIndex: "name",
       key: "name",
     },
-    ...(shouldShowEmailColumn ? [{
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-      render: email => email ? email : null,
-    }] : []),
+    ...(shouldShowEmailColumn
+      ? [
+          {
+            title: "Email",
+            dataIndex: "email",
+            key: "email",
+            render: (email) => (email ? email : null),
+          },
+        ]
+      : []),
     {
       title: "Điểm",
       dataIndex: "totalScore",
@@ -93,21 +98,19 @@ export default function RankingStudent({ params }) {
         <div className="flex justify-center items-center">
           <Spin size="large" />
         </div>
-      ) : rankingData.length === 0 ? 
-      (
+      ) : rankingData.length === 0 ? (
         <Result
           status="404"
           title="Không có dữ liệu"
           subTitle="Hiện tại không có dữ liệu xếp hạng cho khóa học này."
         />
-      )
-      : (
+      ) : (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
-          <div className="flex justify-around items-center mb-8">
+          <div className="flex sm:flex-row justify-around items-center mb-8">
             {rankingData?.slice(0, 3).map((student, index) => (
               <div
                 key={student.id}
-                className={`flex flex-col items-center p-4 rounded-lg animate__animated ${
+                className={`flex flex-col items-center p-2 sm:p-4 rounded-lg animate__animated ${
                   index === 0
                     ? "bg-yellow-300 text-yellow-800 animate__bounceIn"
                     : index === 1
@@ -122,7 +125,7 @@ export default function RankingStudent({ params }) {
               >
                 {index < 3 && (
                   <div
-                    className={`absolute -top-3 -right-3 w-10 h-10 flex items-center justify-center rounded-full text-white text-lg font-bold ${
+                    className={`absolute -top-3 -right-3 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-white text-lg font-bold ${
                       index === 0
                         ? "bg-[#13C57C]"
                         : index === 1
@@ -136,9 +139,13 @@ export default function RankingStudent({ params }) {
                     {index === 1 ? "🥈" : index === 0 ? "🥇" : "🥉"}
                   </div>
                 )}
-                <span className="text-4xl font-bold">{index + 1}</span>
-                <span className="text-lg font-semibold">{student.name}</span>
-                <span className="text-md">{student.totalScore}</span>
+                <span className="text-3xl sm:text-4xl font-bold">
+                  {index + 1}
+                </span>
+                <span className="text-md sm:text-lg font-semibold">
+                  {student.name}
+                </span>
+                <span className="text-sm sm:text-md">{student.totalScore}</span>
               </div>
             ))}
           </div>

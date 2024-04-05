@@ -92,6 +92,7 @@ export default function AddCourse(props) {
     initialValues: {
       title: "",
       name: "",
+      nameCenter: "",
       categoryId: "" || (categories && categories[0]?._id),
       isPublic: true,
     },
@@ -242,6 +243,17 @@ export default function AddCourse(props) {
                 ? formik.errors.name
                 : null
             }
+          />
+
+          <label htmlFor="nameCenter" className="text-lg font-medium">
+            Tên trung tâm:
+          </label>
+          <CustomInput
+            id="nameCenter"
+            placeholder="Thêm tên trung tâm"
+            onChange={formik.handleChange("nameCenter")}
+            onBlur={formik.handleBlur("nameCenter")}
+            value={formik.values.nameCenter}
           />
 
           <label

@@ -1,8 +1,7 @@
 "use client";
 import { getCoursePublic } from "@/features/Courses/courseSlice";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Carousel, Image, Tabs } from "antd";
+import { Carousel, Image, Tabs } from "antd";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -118,16 +117,10 @@ export default function Home1() {
         </p>
         <Tabs defaultActiveKey="1" className="mt-4 flex space-x-4">
           <TabPane tab="Tất cả" key="all">
-            {/* <Button
-              className="carousel-control left"
-              onClick={() => carouselRefs.current.all.current.prev()}
-              icon={<LeftOutlined />}
-            /> */}
             <CarouselProvider
               naturalSlideWidth={100}
               naturalSlideHeight={125}
               totalSlides={course.length}
-              // visibleSlides={Math.min(5, course.length)}
               visibleSlides={
                 isMobile
                   ? Math.min(1, course.length)
@@ -145,21 +138,33 @@ export default function Home1() {
                 {course.map((course, index) => (
                   <Slide index={index} key={index} className="pr-3">
                     <div className="bg-[#f7f7f7] p-4 rounded-lg shadow-md cursor-pointer flex flex-col items-center min-w-0">
+                      <div
+                        className="image-container"
+                        style={{
+                          width: "auto",
+                          height: "200px",
+                          overflow: "hidden",
+                          borderRadius: "8px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Image
+                          alt="Hình ảnh khóa học"
+                          className="object-cover"
+                          src={course?.image_url || placeholder}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "contain",
+                          }}
+                        />
+                      </div>
                       <Link
                         href={`/courses/view-course-details/${course._id}`}
                         className="cursor-pointer"
                       >
-                        <img
-                          alt="Hình ảnh khóa học"
-                          className="w-full h-auto rounded-lg mb-2"
-                          src={course?.image_url || placeholder} 
-                          style={{
-                            aspectRatio: "150/150",
-                            objectFit: "cover",
-                          }}
-                          width="150"
-                          height="150"
-                        />
                         <div className="flex-grow">
                           <div className="text-yellow-500 text-lg font-semibold mb-1">
                             {course.category?.name}
@@ -240,45 +245,59 @@ export default function Home1() {
                       .map((course, index) => (
                         <Slide index={index} key={index} className="pr-3">
                           <div className="bg-[#f7f7f7] p-4 rounded-lg shadow-md cursor-pointer flex flex-col items-center min-w-0">
+                            <div
+                              className="image-container"
+                              style={{
+                                width: "auto",
+                                height: "200px",
+                                overflow: "hidden",
+                                borderRadius: "8px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Image
+                                alt="Hình ảnh khóa học"
+                                className="object-cover"
+                                src={course?.image_url || placeholder}
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "contain",
+                                }}
+                              />
+                            </div>
                             <Link
                               href={`/courses/view-course-details/${course._id}`}
                               className="cursor-pointer"
                             >
-                              <img
-                                alt="Hình ảnh khóa học"
-                                className="w-full h-auto rounded-lg mb-2"
-                                src={course?.image_url || placeholder}
-                                style={{
-                                  aspectRatio: "150/150",
-                                  objectFit: "cover",
-                                }}
-                                width="150"
-                                height="150"
-                              />
-                              <div className="text-yellow-500 text-lg font-semibold mb-1">
-                                {course.category?.name}
+                              <div className="flex-grow">
+                                <div className="text-yellow-500 text-lg font-semibold mb-1">
+                                  {course.category?.name}
+                                </div>
+                                <h3 className="text-lg font-semibold text-blue-950 mb-1 line-clamp-1">
+                                  {course.name}
+                                </h3>
+                                {isMobile ? null : (
+                                  <p
+                                    className={`overflow-hidden text-sm text-gray-600 mb-4 line-clamp-2 ${
+                                      isMobile ? "view ql-editor" : ""
+                                    }`}
+                                    dangerouslySetInnerHTML={{
+                                      __html: `${
+                                        course?.title ||
+                                        "Thông tin khóa học chưa được cập nhật"
+                                      }`,
+                                    }}
+                                  />
+                                )}
+                                <p className="text-sm text-gray-900 font-medium mb-4 line-clamp-1">
+                                  {course?.teacher?.lastName
+                                    ? `${course.teacher.lastName} ${course.teacher.firstName}`
+                                    : "Chưa có giáo viên"}
+                                </p>
                               </div>
-                              <h3 className="text-lg font-semibold text-blue-950 mb-1 line-clamp-1">
-                                {course.name}
-                              </h3>
-                              {isMobile ? null : (
-                                <p
-                                  className={`overflow-hidden text-sm text-gray-600 mb-4 line-clamp-2 ${
-                                    isMobile ? "view ql-editor" : ""
-                                  }`}
-                                  dangerouslySetInnerHTML={{
-                                    __html: `${
-                                      course?.title ||
-                                      "Thông tin khóa học chưa được cập nhật"
-                                    }`,
-                                  }}
-                                />
-                              )}
-                              <p className="text-sm text-gray-900 font-medium mb-4 line-clamp-1">
-                                {course?.teacher?.lastName
-                                  ? `${course.teacher.lastName} ${course.teacher.firstName}`
-                                  : "Chưa có giáo viên"}
-                              </p>
                             </Link>
                           </div>
                         </Slide>

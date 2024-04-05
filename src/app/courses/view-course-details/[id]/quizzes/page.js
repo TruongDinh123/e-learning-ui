@@ -146,15 +146,15 @@ export default function Quizzes({ params }) {
         <>
           {isStudentOfCourse || isAdmin ? (
             <div>
-              <div className="flex justify-between items-center">
-                <h2 className="text-lg font-semibold text-[#002c6a] sm:text-base">
+              <div className="flex justify-between items-center flex-col sm:flex-row">
+                <h2 className="text-base sm:text-lg font-semibold text-[#002c6a] sm:mb-0 text-center sm:text-left">
                   Danh sách bài tập
                 </h2>
                 {dataCourse.quizzes.length > 0 && (
-                  <div className="ml-auto">
+                  <div className="ml-auto sm:ml-auto my-4">
                     <Link
                       href={`/courses/view-details/${dataCourse?._id}`}
-                      className="text-white bg-[#002c6a] hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#002c6a] dark:hover:bg-blue-600 dark:focus:ring-blue-800 shadow-lg"
+                      className="text-white bg-[#002c6a] hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-base px-5 py-3 text-center mr-2 mb-2 dark:bg-[#002c6a] dark:hover:bg-blue-600 dark:focus:ring-blue-800 shadow-lg"
                     >
                       Đi tới danh sách bài tập
                     </Link>

@@ -1,19 +1,22 @@
 import {
   InfoCircleOutlined,
   LaptopOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
   NotificationOutlined,
   OrderedListOutlined,
   SolutionOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme } from "antd";
+import { Button, Layout, Menu, theme } from "antd";
 import React, { useEffect, useState } from "react";
 import "./teachersidebar.css";
 import { usePathname, useRouter } from "next/navigation";
-
+import { useMediaQuery } from 'react-responsive';
 const { Sider } = Layout;
 
-export default function SiderCustom() {
+export default function SiderCustom(props) {
+  const { collapsed, setCollapsed } = props;
   const router = useRouter();
   const pathname = usePathname();
 
@@ -33,6 +36,10 @@ export default function SiderCustom() {
     return "1";
   };
   const [selectedKey, setSelectedKey] = useState(getCurrentKey(pathname));
+
+  const isDesktopOrLaptop = useMediaQuery({
+    query: '(min-width: 1024px)'
+  });
 
   const items = [
     {
@@ -54,37 +61,47 @@ export default function SiderCustom() {
 
   useEffect(() => {
     setSelectedKey(getCurrentKey(pathname));
-  }, [pathname]);
+    if (isDesktopOrLaptop) {
+      setCollapsed(false);
+    }
+  }, [pathname, isDesktopOrLaptop]);
 
   const {
     token: { borderRadiusLG },
   } = theme.useToken();
 
   return (
-    <Sider
-      style={{
-        color: "#ffffff",
-        borderRadius: borderRadiusLG,
-      }}
-      width={200}
-    >
-      <Menu
-        mode="inline"
-        defaultSelectedKeys={["1"]}
-        defaultOpenKeys={["sub1"]}
-        theme="light"
+    <>
+      <Sider
         style={{
-          height: "100%",
-          background: "#02354B",
-          borderRadius: borderRadiusLG,
           color: "#ffffff",
+          borderRadius: borderRadiusLG,
         }}
-        className="text-base"
-        onClick={({ key }) => {
-          router.push(`${key}`);
-        }}
-        items={items}
-      />
-    </Sider>
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+        collapsedWidth="0"
+        width={200}
+        breakpoint="lg"
+      >
+        <Menu
+          mode="inline"
+          defaultSelectedKeys={["1"]}
+          defaultOpenKeys={["sub1"]}
+          theme="light"
+          style={{
+            height: "100%",
+            background: "#02354B",
+            borderRadius: borderRadiusLG,
+            color: "#ffffff",
+          }}
+          className="text-base"
+          onClick={({ key }) => {
+            router.push(`${key}`);
+          }}
+          items={items}
+        />
+      </Sider>
+    </>
   );
 }

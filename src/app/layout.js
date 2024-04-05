@@ -9,18 +9,20 @@ import AdminFooter from "@/components/AdminFooter/AdminFooter";
 import AdminHeader from "@/components/AdminHeaeder/AdminHeader";
 import AdminSidebar from "@/components/AdminSidebar/AdminSidebar";
 import TeacherHeader from "@/components/TeacherHeader/TeacherHeader";
-import { Layout, Spin, theme } from "antd";
+import { Button, Layout, Spin, theme } from "antd";
 import React, { Suspense, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Cookies from "js-cookie";
 import { isAdmin, isMentor } from "@/middleware";
 import "animate.css";
 import SiderCustom from "@/components/CustomSidebar/CustomSider";
-const logo = "/images/logoimg.jpg";
+import InfoCourse from "./courses/view-course-details/[id]/info/page";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import ExempleOnline from "./user/exem-online/page";
 
 const Providers = dynamic(() => import("@/Provider"), { ssr: false });
 
-const { Content, Footer, Header: HeaderTeacher } = Layout;
+const { Content, Footer } = Layout;
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
@@ -85,38 +87,29 @@ export default function RootLayout({ children }) {
                       <Header />
                     )}
                     <Content
-                      style={{
-                        padding: pathname.includes("/teacher") ? "0 48px" : "64px 48px",
-                        overflowY: "auto",
-                      }}
+                      className={`${
+                        pathname.includes("/teacher") ? "px-12" : "py-16 px-12"
+                      } overflow-y-auto sm:py-0 sm:px-6 lg:py-16 lg:px-12`}
+                      // style={{
+                      //   padding: pathname.includes("/teacher")
+                      //     ? "0 48px"
+                      //     : "64px 48px",
+                      //   overflowY: "auto",
+                      // }}
                     >
-                      <header
-                        className="flex items-center space-x-4"
-                        style={{
-                          margin: "16px 0",
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        <img
-                          src={logo}
-                          className="h-24 w-24"
-                          height="100"
-                          style={{
-                            aspectRatio: "100/100",
-                            objectFit: "cover",
-                          }}
-                          width="100"
-                        />
-                        <h1
-                          className="text-4xl font-bold text-center"
-                          style={{
-                            color: "#002c6a",
-                          }}
-                        >
-                          Trung tâm giáo dục Tường Ân
-                        </h1>
-                      </header>
+                      <InfoCourse />
+                      <Button
+                        type="text"
+                        icon={
+                          collapsed ? (
+                            <MenuUnfoldOutlined />
+                          ) : (
+                            <MenuFoldOutlined />
+                          )
+                        }
+                        onClick={() => setCollapsed(!collapsed)}
+                        className="lg:hidden text-base w-16 h-16"
+                      />
                       <Layout
                         style={{
                           background: colorBgContainer,
@@ -125,15 +118,11 @@ export default function RootLayout({ children }) {
                           minHeight: "80%",
                         }}
                       >
-                        <SiderCustom />
-                        <Content
-                          style={{
-                            padding: "0 24px",
-                            color: "white",
-                            overflow: "auto",
-                            background: "#E8EFF6",
-                          }}
-                        >
+                        <SiderCustom
+                          collapsed={collapsed}
+                          setCollapsed={setCollapsed}
+                        />
+                        <Content className="p-6 text-white overflow-auto bg-[#E8EFF6] sm:p-3 lg:p-6">
                           {children}
                         </Content>
                       </Layout>
@@ -158,9 +147,9 @@ export default function RootLayout({ children }) {
                     />
                   )}
                   <Layout>
-                    {!pathname.includes("/admin") && pathname !== "/login" && (
-                      <Header />
-                    )}
+                    {!pathname.includes("/admin") &&
+                      !pathname.includes("/user/exem-online") &&
+                      pathname !== "/login" && <Header />}
                     {pathname.includes("/admin") && (
                       <AdminHeader
                         setCollapsed={setCollapsed}

@@ -1,51 +1,42 @@
 "use client";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
-import { Button, Result } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { getACourse } from "@/features/Courses/courseSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { usePathname } from "next/navigation";
+const logo = "/images/logoimg.jpg";
+const logodefault = "/images/placeholder.jpg";
 
-const ReactQuill = dynamic(
-  () => import("react-quill").then((mod) => mod.default),
-  { ssr: false }
-);
 export default function InfoCourse() {
+  const stateACourse = useSelector(
+    (state) => state?.course?.getACourse?.metadata
+  );
+
   return (
-    <main className="bg-white text-black overflow-auto">
-      {/* <ReactQuill
-        theme="snow"
-        placeholder="Thêm mô tả"
-        className="bg-white"
-        modules={{
-          toolbar: [
-            [{ header: [1, 2, false] }],
-            ["bold", "italic", "underline", "strike"],
-            ["blockquote", "code-block"],
-
-            [{ list: "ordered" }, { list: "bullet" }],
-            [{ script: "sub" }, { script: "super" }],
-            [{ indent: "-1" }, { indent: "+1" }],
-            [{ direction: "rtl" }],
-
-            [
-              {
-                size: ["small", false, "large", "huge"],
-              },
-            ],
-            [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-            [{ color: [] }, { background: [] }],
-            [{ font: [] }],
-            [{ align: [] }],
-
-            ["clean"],
-          ],
+    <header
+      className="flex items-center space-x-4 pt-20 pb-3 lg:pt-0 lg:mt-4"
+      style={{
+        display: "flex",
+        alignItems: "center",
+      }}
+    >
+      <img
+        src={stateACourse?.image_url || logodefault}
+        className="h-16 w-16 lg:h-24 lg:w-24 object-cover"
+        style={{
+          aspectRatio: "1 / 1",
         }}
-      /> */}
-      <Result
-        status="403"
-        title="403"
-        subTitle="Đang cập nhật..."
-        extra={<Button className="custom-button" type="primary">Quay về trang chủ</Button>}
       />
-    </main>
+      <h1
+        className="text-2xl lg:text-4xl font-bold text-center"
+        style={{
+          color: "#002c6a",
+        }}
+      >
+        {stateACourse?.nameCenter || stateACourse?.name}
+      </h1>
+    </header>
   );
 }

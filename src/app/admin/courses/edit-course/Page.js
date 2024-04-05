@@ -39,7 +39,6 @@ export default function EditCourses(props) {
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentCategory, setCurrentCategory] = useState(null);
-  const router = useRouter();
   const categories = useSelector(
     (state) => state.category?.categories?.metadata
   );
@@ -65,19 +64,6 @@ export default function EditCourses(props) {
     fileList: file ? [file] : [],
   };
 
-  // const getACourseData = () => {
-  //   dispatch(getACourse(id))
-  //     .then(unwrapResult)
-  //     .then((res) => {
-  //       if (res.status) {
-  //         setData(res.metadata);
-  //       } else {
-  //         messageApi.error(res.message);
-  //       }
-  //     })
-  //     .catch((error) => {});
-  // };
-
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -96,6 +82,7 @@ export default function EditCourses(props) {
     initialValues: {
       title: data?.title,
       name: data?.name,
+      nameCenter: data?.nameCenter,
       isPublic: data?.showCourse,
       categoryId: currentCategory?._id || categoryId,
     },
@@ -117,7 +104,7 @@ export default function EditCourses(props) {
                 fetchCategories();
                 refresh();
                 setIsLoading(false);
-                window.location.reload()
+                window.location.reload();
                 return res;
               });
           }
@@ -200,6 +187,15 @@ export default function EditCourses(props) {
             onBlur={formik.handleBlur("name")}
             value={formik.values.name}
             error={formik.touched.name && formik.errors.name}
+          />
+
+          <label htmlFor="nameCenter" className="fs-6 font-medium">
+            Tên Trung tâm:
+          </label>
+          <CustomInput
+            onChange={formik.handleChange("nameCenter")}
+            onBlur={formik.handleBlur("nameCenter")}
+            value={formik.values.nameCenter}
           />
 
           <label

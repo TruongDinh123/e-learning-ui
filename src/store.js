@@ -10,7 +10,7 @@ import categoryReducer from "./features/categories/categorySlice";
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['course', 'quiz', 'user', 'lesson', 'quiz', 'category'] // chỉ lưu trữ user và course reducers, thêm hoặc bỏ qua các reducers khác tùy ý
+  whitelist: ['course', 'quiz', 'user', 'lesson', 'category'] // chỉ lưu trữ user và course reducers, thêm hoặc bỏ qua các reducers khác tùy ý
 };
 
 const rootReducer = combineReducers({

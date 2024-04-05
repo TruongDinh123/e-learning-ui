@@ -403,7 +403,7 @@ export default function ViewStudentsCourse() {
       { s: { r: 0, c: 5 }, e: { r: 0, c: 6 } },
     ];
     ws["!merges"] = merge;
-    
+
     // Áp dụng style cho các ô đã merge
     ["A1", "D1", "F1"].forEach((cellRef) => {
       if (!ws[cellRef]) {
@@ -483,7 +483,7 @@ export default function ViewStudentsCourse() {
           Xem
         </Button>
 
-        {/* {viewSuccess ? (
+        {viewSuccess ? (
           <Button
             type="primary"
             onClick={exportToExcelStyled}
@@ -491,7 +491,17 @@ export default function ViewStudentsCourse() {
           >
             Xuất file
           </Button>
-        ) : null} */}
+        ) : null}
+
+        {viewSuccess ? (
+          <Button
+            type="primary"
+            onClick={exportToExcelStyled}
+            className="me-3 custom-button"
+          >
+            Xuất file
+          </Button>
+        ) : null}
 
         {viewSuccess ? (
           <>
