@@ -494,6 +494,16 @@ export default function ViewStudentsCourse() {
         ) : null}
 
         {viewSuccess ? (
+          <Button
+            type="primary"
+            onClick={exportToExcelStyled}
+            className="me-3 custom-button"
+          >
+            Xuất file
+          </Button>
+        ) : null}
+
+        {viewSuccess ? (
           <>
             {teacher && (
               <div className="border p-4 rounded-md">

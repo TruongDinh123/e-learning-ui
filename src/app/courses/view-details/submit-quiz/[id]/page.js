@@ -11,6 +11,9 @@ import {
   Modal,
 } from "antd";
 import { getScore, submitQuiz, viewAQuiz } from "@/features/Quiz/quizSlice";
+import {
+  getCourseSummary,
+} from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
@@ -37,9 +40,42 @@ export default function Quizs({ params }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [questionsPerPage] = useState(10);
 
+  const [course, setCourse] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const quizzesByStudentState = useSelector(
     (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
   );
+
+  // lấy id khóa học để call api lấy ảnh khóa học
+  const courseIds = quiz.map(quiz => quiz.courseIds[0]._id);
+  // lấy tên khóa học
+  const courseName = quiz.map(quiz => quiz.courseIds[0].name);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await dispatch(getCourseSummary()).then(unwrapResult);
+        if (res.status === 200) {
+          const desiredCourse = res.metadata.find((course) =>
+            courseIds.includes(course._id)
+          );
+          if (desiredCourse) {
+            setCourse(desiredCourse);
+          }
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+      }
+    };
+    if (isLoading) {
+      fetchData();
+    }
+  }, [dispatch, courseIds, isLoading]);
+  
 
   //fetch API
   useEffect(() => {
@@ -344,18 +380,18 @@ export default function Quizs({ params }) {
                   <div className="sticky top-16 z-40 bg-white shadow-md p-2 mb-4 flex items-center justify-between">
                     <div className="flex items-center">
                       <img
-                        src={logo}
+                        src={course?.image_url}
                         alt="School Logo"
-                        className="h-24 w-auto"
+                        className="h-20 w-20 mr-3"
                       />
-                      <h2 className="text-xl font-semibold text-gray-800">
-                        Trung tâm giáo dục Tường Ân
+                      <h2 className="text-xl font-semibold text-gray-800 text-center">
+                        {courseName}
                       </h2>
                     </div>
                     <div className="flex items-center">
-                      <div className="mr-4 text-lg font-semibold text-gray-700">
+                      <div className="mr-4 text-lg font-semibold text-gray-700 text-center" >
                         Số câu đã hoàn thành:
-                        <span className="text-black">
+                        <span className="text-black" style={{marginLeft: '5px'}}>
                           {Object.keys(selectedAnswers).length}
                         </span>
                         /
