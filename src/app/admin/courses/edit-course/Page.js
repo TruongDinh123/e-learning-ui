@@ -190,7 +190,7 @@ export default function EditCourses(props) {
           />
 
           <label htmlFor="nameCenter" className="fs-6 font-medium">
-            Tên Trung tâm (nếu có):
+            Tên Trung tâm:
           </label>
           <CustomInput
             onChange={formik.handleChange("nameCenter")}

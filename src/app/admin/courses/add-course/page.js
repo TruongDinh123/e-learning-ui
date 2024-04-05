@@ -246,7 +246,7 @@ export default function AddCourse(props) {
           />
 
           <label htmlFor="nameCenter" className="text-lg font-medium">
-            Tên trung tâm (nếu có):
+            Tên trung tâm:
           </label>
           <CustomInput
             id="nameCenter"

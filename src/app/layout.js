@@ -18,6 +18,7 @@ import "animate.css";
 import SiderCustom from "@/components/CustomSidebar/CustomSider";
 import InfoCourse from "./courses/view-course-details/[id]/info/page";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import ExempleOnline from "./user/exem-online/page";
 
 const Providers = dynamic(() => import("@/Provider"), { ssr: false });
 
@@ -146,9 +147,9 @@ export default function RootLayout({ children }) {
                     />
                   )}
                   <Layout>
-                    {!pathname.includes("/admin") && pathname !== "/login" && (
-                      <Header />
-                    )}
+                    {!pathname.includes("/admin") &&
+                      !pathname.includes("/user/exem-online") &&
+                      pathname !== "/login" && <Header />}
                     {pathname.includes("/admin") && (
                       <AdminHeader
                         setCollapsed={setCollapsed}
