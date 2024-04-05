@@ -45,7 +45,6 @@ export default function ViewQuiz({ params }) {
   const [quiz, setquiz] = useState([]);
   const [score, setScore] = useState([]);
   const [dataCourse, setDataCourse] = useState([]);
-  console.log("🚀 ~ dataCourse:", dataCourse);
   const ArrDataCourse = [dataCourse?.teacher];
   const [coursesData, setCoursesData] = useState([]);
   const [apiCourses, setApiCourses] = useState(false);
@@ -696,15 +695,16 @@ export default function ViewQuiz({ params }) {
       >
         <div className="flex flex-col md:w-1/2 space-y-2 border-gray-200 dark:border-gray-300">
           <div className="flex items-center">
-            <img
-              src={dataCourse?.image_url}
-              className="h-24 w-24 mr-4"
-              alt="Logo"
-              style={{
-                aspectRatio: "1/1",
-                objectFit: "cover",
-              }}
-            />
+            {dataCourse?.image_url && (
+              <img
+                src={dataCourse?.image_url}
+                className="h-24 w-24 mr-4"
+                style={{
+                  aspectRatio: "1/1",
+                  objectFit: "cover",
+                }}
+              />
+            )}
             <h1 className="text-3xl text-[#002c6a] font-medium">
               {dataCourse?.name}
             </h1>

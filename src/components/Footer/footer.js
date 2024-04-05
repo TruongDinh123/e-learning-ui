@@ -97,7 +97,9 @@ export default function CustomFooter() {
             <YoutubeIcon className="h-6 w-6" />
           </div> */}
         </div>
-        <p className="text-center mt-8">© 2024 95EdTech From 95 Solutions Team (version 1.6.1) </p>
+        <p className="text-center mt-8">
+          © 2024 95EdTech From 95 Solutions Team (version 1.7){" "}
+        </p>
       </div>
     </footer>
   );
