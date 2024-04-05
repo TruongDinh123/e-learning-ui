@@ -11,11 +11,15 @@ import {
   Modal,
 } from "antd";
 import { getScore, submitQuiz, viewAQuiz } from "@/features/Quiz/quizSlice";
+import {
+  getCourseSummary,
+} from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import "react-quill/dist/quill.snow.css";
 import { useMediaQuery } from "react-responsive";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
 const logo = "/images/logoimg.jpg";
 
@@ -36,11 +40,43 @@ export default function Quizs({ params }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [questionsPerPage] = useState(10);
 
+  const [course, setCourse] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const quizzesByStudentState = useSelector(
     (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
   );
 
-  const isDesktop = useMediaQuery({ minWidth: 992 });
+  // lấy id khóa học để call api lấy ảnh khóa học
+  const courseIds = quiz.map(quiz => quiz.courseIds[0]._id);
+  // lấy tên khóa học
+  const courseName = quiz.map(quiz => quiz.courseIds[0].name);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await dispatch(getCourseSummary()).then(unwrapResult);
+        if (res.status === 200) {
+          const desiredCourse = res.metadata.find((course) =>
+            courseIds.includes(course._id)
+          );
+          if (desiredCourse) {
+            setCourse(desiredCourse);
+          }
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+      }
+    };
+    if (isLoading) {
+      fetchData();
+    }
+  }, [dispatch, courseIds, isLoading]);
+  
+
   //fetch API
   useEffect(() => {
     const fetchQuizInfo = async () => {
@@ -177,14 +213,14 @@ export default function Quizs({ params }) {
 
   const showConfirmSubmit = () => {
     Modal.confirm({
-      title: 'Bạn có chắc chắn muốn nộp bài?',
-      content: 'Một khi đã nộp, bạn không thể chỉnh sửa các câu trả lời.',
-      okText: 'Nộp bài',
-      cancelText: 'Hủy bỏ',
+      title: "Bạn có chắc chắn muốn nộp bài?",
+      content: "Một khi đã nộp, bạn không thể chỉnh sửa các câu trả lời.",
+      okText: "Nộp bài",
+      cancelText: "Hủy bỏ",
       onOk() {
         handleSubmit();
       },
-      okButtonProps: {className: 'custom-button'},
+      okButtonProps: { className: "custom-button" },
     });
   };
 
@@ -264,6 +300,22 @@ export default function Quizs({ params }) {
 
   // Khi hiển thị thông tin cho người dùng
   const correctAnswersCount = calculateCorrectAnswers();
+
+  const calculateAnswersStatus = () => {
+    let answersStatus = {};
+    quiz[0]?.questions?.forEach((question) => {
+      const studentAnswer = quizSubmission?.answers?.find(
+        (answer) => answer[question._id]
+      );
+      answersStatus[question._id] =
+        studentAnswer && studentAnswer[question._id] === question.answer;
+    });
+    return answersStatus;
+  };
+
+  // Khi hiển thị thông tin cho người dùng
+  const answersStatus = calculateAnswersStatus();
+
   const totalQuestions = quiz[0]?.questions?.length;
 
   const currentTime = new Date();
@@ -328,18 +380,18 @@ export default function Quizs({ params }) {
                   <div className="sticky top-16 z-40 bg-white shadow-md p-2 mb-4 flex items-center justify-between">
                     <div className="flex items-center">
                       <img
-                        src={logo}
+                        src={course?.image_url}
                         alt="School Logo"
-                        className="h-24 w-auto"
+                        className="h-20 w-20 mr-3"
                       />
-                      <h2 className="text-xl font-semibold text-gray-800">
-                        Trung tâm giáo dục Tường Ân
+                      <h2 className="text-xl font-semibold text-gray-800 text-center">
+                        {courseName}
                       </h2>
                     </div>
                     <div className="flex items-center">
-                      <div className="mr-4 text-lg font-semibold text-gray-700">
+                      <div className="mr-4 text-lg font-semibold text-gray-700 text-center" >
                         Số câu đã hoàn thành:
-                        <span className="text-black">
+                        <span className="text-black" style={{marginLeft: '5px'}}>
                           {Object.keys(selectedAnswers).length}
                         </span>
                         /
@@ -406,7 +458,17 @@ export default function Quizs({ params }) {
                             {question.options.map((option) => (
                               <label
                                 key={option}
-                                className="flex items-center pl-4"
+                                className={`flex items-center pl-4 ${
+                                  submitted || isComplete
+                                    ? answersStatus[question._id] === true &&
+                                      option === studentAnswer
+                                      ? "text-green-500"
+                                      : answersStatus[question._id] === false &&
+                                        option === studentAnswer
+                                      ? "text-red-500"
+                                      : ""
+                                    : ""
+                                }`}
                               >
                                 <input
                                   type="radio"
@@ -417,11 +479,25 @@ export default function Quizs({ params }) {
                                   }
                                   checked={option === studentAnswer}
                                   disabled={submitted || isComplete}
-                                  className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out"
                                 />
                                 <span className="ml-2 text-gray-700">
                                   {option}
                                 </span>
+                                {submitted || isComplete ? (
+                                  <span className="form-radio-icon">
+                                    {answersStatus[question._id] === true &&
+                                    option === studentAnswer ? (
+                                      <CheckOutlined style={{ marginLeft: '8px' }} />
+                                    ) : (
+                                      answersStatus[question._id] === false &&
+                                      option === studentAnswer && (
+                                        <CloseOutlined style={{ marginLeft: '8px' }} />
+                                      )
+                                    )}
+                                  </span>
+                                ) : (
+                                  <span className="form-radio-placeholder"></span>
+                                )}
                               </label>
                             ))}
                           </div>

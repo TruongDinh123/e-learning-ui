@@ -28,6 +28,7 @@ import {
   createNotification,
   getACourseByInfo,
   viewCourses,
+  getCourseSummary,
 } from "@/features/Courses/courseSlice";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import Link from "next/link";
@@ -38,11 +39,16 @@ const avatar = "/images/imagedefault.jpg";
 const { Sider, Content, Header } = Layout;
 
 export default function ViewQuiz({ params }) {
+
+  const [isLoading, setLoading] = useState([]);
   const dispatch = useDispatch();
+  const [course, setCourse] = useState([]);
   const [quiz, setquiz] = useState([]);
   const [score, setScore] = useState([]);
   const [dataCourse, setDataCourse] = useState([]);
-  const [isLoading, setLoading] = useState([]);
+  const ArrDataCourse = [dataCourse?.teacher]
+  const [coursesData, setCoursesData] = useState([]);
+  const [apiCourses, setApiCourses] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState("2");
   const [collapsed, setCollapsed] = useState(false);
   const [nonExpiredCount, setNonExpiredCount] = useState(0);
@@ -50,65 +56,126 @@ export default function ViewQuiz({ params }) {
   const [allCourseCount, setAllCourse] = useState(0);
   const [isAdminOrMentorSidebar, setIsAdminOrMentor] = useState(false);
   const [isLoadingRoleCheck, setIsLoadingRoleCheck] = useState(true);
+  const [isLoadingAlQuizzesComponent, setIsLoadingAlQuizzesComponent] = useState(true);
+
   const router = useRouter();
 
-  const quizzesByStudentState = useSelector(
-    (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
-  );
-  const getScoreState = useSelector(
-    (state) => state.quiz.getScoreState.metadata
-  );
+  // const quizzesByStudentState = useSelector(
+  //   (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
+  // );
 
-  const getACourseState = useSelector((state) => state.course.Acourse.metadata);
+  // const getScoreState = useSelector(
+  //   (state) => state.quiz.getScoreState.metadata
+  // );
+
+  // const getACourseState = useSelector((state) => state.course.Acourse.metadata);
+
+  // image
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await dispatch(getCourseSummary()).then(unwrapResult);
+        if (res.status) {
+          const desiredCourse = res.metadata.find(course => course._id === params?.id);
+          if (desiredCourse) {
+            setCourse(desiredCourse);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      } 
+    };
+
+    fetchData();
+  }, [dispatch, params?.id]);
+
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [quizzesResult, scoreResult, courseResult] = await Promise.all([
-          quizzesByStudentState
-            ? Promise.resolve({ status: true, metadata: quizzesByStudentState })
-            : dispatch(
-                getQuizzesByStudentAndCourse({ courseId: params?.id })
-              ).then(unwrapResult),
-          getScoreState
-            ? Promise.resolve({ status: true, metadata: getScoreState })
-            : dispatch(getScoreByInfo()).then(unwrapResult),
-          getACourseState
-            ? Promise.resolve({ status: true, metadata: getACourseState })
-            : dispatch(getACourseByInfo(params?.id)).then(unwrapResult),
+        // Gọi các hàm dispatch và chờ cho đến khi chúng hoàn thành, sử dụng Promise.all
+        const [quizzesByStudentState1, getScoreState1, getACourseState1] = await Promise.all([
+          dispatch(getQuizzesByStudentAndCourse({ courseId: params?.id })),
+          dispatch(getScoreByInfo()),
+          dispatch(getACourseByInfo(params?.id))
         ]);
+        
+        // Lưu trữ dữ liệu vào state khi fetch thành công
+        setquiz(quizzesByStudentState1.payload.metadata);
+        setScore(getScoreState1.payload.metadata);
+        setDataCourse(getACourseState1.payload.metadata);
 
-        if (quizzesResult.status) {
-          setquiz(quizzesResult.metadata);
-        }
-
-        if (scoreResult.status) {
-          setScore(scoreResult.metadata);
-        }
-
-        if (courseResult.status) {
-          setDataCourse(courseResult.metadata);
-        }
       } catch (error) {
+        console.error('Error fetching data:', error);
       } finally {
-        setLoading(false);
+        setLoading(false); 
       }
     };
     fetchData();
-  }, [
-    dispatch,
-    params?.id,
-    quizzesByStudentState,
-    getScoreState,
-    getACourseState,
-  ]);
-
-  useEffect(() => {
-    dispatch(getQuizzesByStudentAndCourse({ courseId: params?.id }));
-    dispatch(getScoreByInfo());
-    dispatch(getACourseByInfo(params?.id));
   }, [dispatch, params?.id]);
+
+  console.log('dataCourse', dataCourse)
+
+
+  
+  // // còn gọi api 4 lần
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setLoading(true);
+  //     try {
+  //       // thực hiện 3 cái cùng lúc
+  //       // nếu tồn tại dữ liệu thì hiện status: true và metadata = dữ liệu tương ứng
+  //       // còn không tồn tại dữ liệu từ trước: thì truyền id nhận từ params vào tiền hành call api để lấy dữ liệu
+  //       const [quizzesResult, scoreResult, courseResult] = await Promise.all([
+  //         quizzesByStudentState
+  //           ? Promise.resolve({ status: true, metadata: quizzesByStudentState })
+  //           : dispatch(
+  //               getQuizzesByStudentAndCourse({ courseId: params?.id })
+  //             ).then(unwrapResult),
+  //         getScoreState
+  //           ? Promise.resolve({ status: true, metadata: getScoreState })
+  //           : dispatch(getScoreByInfo()).then(unwrapResult),
+  //         getACourseState
+  //           ? Promise.resolve({ status: true, metadata: getACourseState })
+  //           : dispatch(getACourseByInfo(params?.id)).then(unwrapResult),
+  //       ]);
+
+  //       // nếu đã có dữ liệu thì khi đó status = true thì thực hiện
+  //       // bắt đầu set dữ liệu tương ứng vào
+  //       if (quizzesResult.status) {
+  //         setquiz(quizzesResult.metadata);
+  //       }
+
+  //       if (scoreResult.status) {
+  //         setScore(scoreResult.metadata);
+  //       }
+
+  //       if (courseResult.status) {
+  //         setDataCourse(courseResult.metadata);
+  //       }
+  //     } catch (error) {
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [
+  //   dispatch,
+  //   params?.id,
+  //   quizzesByStudentState,
+  //   getScoreState,
+  //   getACourseState,
+  // ]);
+
+
+  // // -------gấy ra vấn đề call api nhiều lần 9 lần-----------
+  // useEffect(() => {
+  //   dispatch(getQuizzesByStudentAndCourse({ courseId: params?.id }));
+  //   dispatch(getScoreByInfo());
+  //   dispatch(getACourseByInfo(params?.id));
+  // }, [dispatch, params?.id]);
+  
 
   useEffect(() => {
     setSelectedMenu("2");
@@ -244,33 +311,36 @@ export default function ViewQuiz({ params }) {
             </div>
           )}
         </div>
+
         <div className="w-full p-2">
           <div className="bg-white flex flex-col p-6 rounded-lg shadow-md border border-gray-200">
             <div className="flex items-center mb-4">
               <h2 className="text-lg font-semibold text-gray-700">Thông báo</h2>
             </div>
-            {dataCourse?.notifications?.map((noti, notiIndex) => (
+            {ArrDataCourse?.map((noti, notiIndex) => (
               <div
                 key={notiIndex}
                 className="w-full p-4 mb-4 rounded border border-gray-300 bg-gray-50"
               >
                 <div className="flex flex-col sm:flex-row">
                   <div className="rounded-full h-8 w-8 bg-teal-500 flex items-center justify-center mr-4 mb-2 sm:mb-0">
-                    <Image fallback="data:image/png;base64,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" />
+                    <Image src={noti?.image_url} />
                   </div>
                   <p className="mb-2 font-semibold text-gray-700">
-                    Giáo viên: {dataCourse?.teacher.lastName}
+                    Giáo viên: {noti?.lastName}
                     <span className="text-sm text-gray-500">
-                      {format(new Date(noti?.date), "HH:mm:ss")}
+                      {/* {format(new Date(noti?.date), "HH:mm:ss")} */}
                     </span>
                   </p>
                 </div>
 
-                <p className="text-gray-600">{noti?.message}</p>
+                <div dangerouslySetInnerHTML={{ __html: dataCourse?.title }} />
+
               </div>
             ))}
           </div>
         </div>
+
       </>
     );
   };
@@ -296,38 +366,40 @@ export default function ViewQuiz({ params }) {
           questions: (
             <Button
               className="w-full text-white custom-button bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 text-center"
-              style={{ width: "100%" }}
+              style={{ width: "100%", height: '38px'}}
               onClick={() => confirmStartQuiz(i?._id, i?.type)}
             >
-              Bắt đầu thi
+              <div style={{marginLeft: '-5px', marginTop: '-2px'}}>Bắt đầu thi</div>
             </Button>
           ),
         };
       });
 
-      const confirmStartQuiz = (quizId, quizType) => {
-        Modal.confirm({
-          title: 'Vui lòng xác nhận bắt đầu làm bài thi',
-          content: 'Lưu ý, trong quá trình làm bài, nếu bạn có các hành vi như: đóng hoặc tải lại trình duyệt, hệ thống sẽ ghi nhận trạng thái là đã hoàn thành.',
-          okText: 'Xác nhận',
-          cancelText: 'Huỷ',
-          onOk() {
-            handleStartQuiz(quizId, quizType);
-          },
-          okButtonProps: { className: "custom-button" },
-        });
-      };
+    const confirmStartQuiz = (quizId, quizType) => {
+      Modal.confirm({
+        title: "Vui lòng xác nhận bắt đầu làm bài thi",
+        content:
+          "Lưu ý, trong quá trình làm bài, nếu bạn có các hành vi như: đóng hoặc tải lại trình duyệt, hệ thống sẽ ghi nhận trạng thái là đã hoàn thành.",
+        okText: "Xác nhận",
+        cancelText: "Huỷ",
+        onOk() {
+          handleStartQuiz(quizId, quizType);
+        },
+        okButtonProps: { className: "custom-button" },
+      });
+    };
 
     useEffect(() => {
       setExpiredCount(notCompletedQuizzes.length);
     }, [notCompletedQuizzes]);
 
     return notCompletedQuizzes.length > 0 ? (
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-4">
         {notCompletedQuizzes.map((item, index) => (
           <div
             key={index}
             className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl"
+            style={{width: '100%'}}
           >
             <div className="p-4">
               <h5 className="text-lg font-semibold mb-2 truncate">
@@ -364,8 +436,8 @@ export default function ViewQuiz({ params }) {
   const NonExpiredCoursesComponent = () => {
     const completedQuizzes = filteredQuizzes
       ?.filter((quiz) => {
-        const correspondingScore = score.find((s) => s.quiz?._id === quiz?._id);
-        return correspondingScore?.isComplete;
+        const correspondingScore = score.find((s) => s.quiz?._id === quiz?._id); // chú ý call api nhìu
+        return correspondingScore?.isComplete;  
       })
       .map((quiz, index) => ({
         key: index + 1,
@@ -381,7 +453,7 @@ export default function ViewQuiz({ params }) {
         questions: (
           <Button
             className="me-3"
-            style={{ width: "100%" }}
+            style={{ width: "100%", height: '38px' }}
             onClick={() => {
               const path =
                 quiz?.type === "multiple_choice"
@@ -390,7 +462,7 @@ export default function ViewQuiz({ params }) {
               router.push(path);
             }}
           >
-            Xem chi tiết
+            <div style={{marginLeft: '-5px', marginTop: '-2px'}}>Xem chi tiết</div>
           </Button>
         ),
       }));
@@ -400,7 +472,7 @@ export default function ViewQuiz({ params }) {
     }, [completedQuizzes]);
 
     return completedQuizzes.length > 0 ? (
-      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-2">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-4">
         {isLoading ? (
           <div className="flex justify-center items-center h-screen">
             <Spin />
@@ -451,8 +523,9 @@ export default function ViewQuiz({ params }) {
                               `/courses/view-details/handle-submit-essay/${item._id}`
                             )
                       }
+                      style={{width: '100%', height: '38px'}}
                     >
-                      Xem chi tiết
+                      <div style={{marginLeft: '-5px', marginTop: '-2px'}}>Xem chi tiết</div>
                     </Button>
                   </div>
                 </div>
@@ -471,12 +544,28 @@ export default function ViewQuiz({ params }) {
     );
   };
 
+  // hiển thị tất cả bài bên giáo viên
   const AllQuizzesComponent = () => {
-    const allCourses = useSelector(
-      (state) => state?.course?.courses?.metadata,
-      shallowEqual
-    );
-    const currentCourse = allCourses?.find(
+    useEffect(() => {
+      const fetchDataCourses = async () => {
+        try {
+          const coursesData = await dispatch(viewCourses()); 
+          if(coursesData.length === 0) {
+            const coursesData = await dispatch(viewCourses()); 
+            setCoursesData(coursesData.payload.metadata);
+          }
+          setCoursesData(coursesData.payload.metadata); 
+          setApiCourses(true)
+        } catch (error) {
+          console.error('Error fetching courses:', error);
+        }
+      };
+      if(!apiCourses) {
+        fetchDataCourses();
+      }
+    }, [dispatch, params?.id, setCoursesData, apiCourses ]);
+
+    const currentCourse = coursesData?.find(
       (course) => course?._id === params?.id
     );
 
@@ -491,14 +580,11 @@ export default function ViewQuiz({ params }) {
     }, [currentCourse]);
 
     useEffect(() => {
-      if (!allCourses) {
-        dispatch(viewCourses());
-      }
       setAllCourse(allQuizzes?.length);
-    }, [allQuizzes, allCourses, dispatch]);
+    }, [allQuizzes, dispatch]);
 
     return allQuizzes.length > 0 ? (
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 p-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-4">
         {isLoading ? (
           <div className="flex justify-center items-center h-screen">
             <Spin />
@@ -609,10 +695,18 @@ export default function ViewQuiz({ params }) {
         }}
       >
         <div className="flex flex-col md:w-1/2 space-y-2 border-gray-200 dark:border-gray-300">
-          <h1 className="text-3xl text-[#002c6a]">
-            {" "}
-            <span className="font-medium">{dataCourse?.name}</span>
-          </h1>
+          <div className="flex items-center">
+            <img
+              src={course?.image_url}
+              className="h-24 w-24 mr-4"
+              alt="Logo"
+              style={{
+                aspectRatio: "1/1",
+                objectFit: "cover",
+              }}
+            />
+            <h1 className="text-3xl text-[#002c6a] font-medium">{dataCourse?.name}</h1>
+          </div>
         </div>
         <div className="md:flex-row justify-between items-center p-4 md:p-6">
           <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">

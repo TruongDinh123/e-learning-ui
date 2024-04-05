@@ -541,7 +541,6 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        console.log('action', action);
         const index = state.getdraftQuiz.findIndex(
           (quiz) => quiz._id === action.payload.metadata._id
         );
