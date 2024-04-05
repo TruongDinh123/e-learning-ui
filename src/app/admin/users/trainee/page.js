@@ -26,7 +26,7 @@ export default function ViewStudentsCourse() {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courses, setCourses] = useState([]);
   const [scores, setScores] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [viewSuccess, setViewSuccess] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState({});
   const [chartData, setChartData] = useState([]);
@@ -36,9 +36,10 @@ export default function ViewStudentsCourse() {
   };
 
   const handleViewCourse = useCallback(() => {
-    setLoading(true);
     getACourseData(selectedCourse).then(() => {
-      loadCourseData(selectedCourse);
+      loadCourseData(selectedCourse).finally(() => {
+        setLoading(false); // Kết thúc tải
+      });
     });
   }, [selectedCourse, dispatch, messageApi]);
 
@@ -48,7 +49,6 @@ export default function ViewStudentsCourse() {
     const currentTeacherId = localStorage.getItem("x-client-id");
     let visibleCourses;
     if (coursesFromStore.length === 0) {
-      setLoading(true);
       dispatch(viewCourses())
         .then(unwrapResult)
         .then((res) => {
@@ -61,7 +61,6 @@ export default function ViewStudentsCourse() {
               );
             }
             setCourses(visibleCourses);
-            setLoading(false);
           }
         });
     } else {
@@ -78,7 +77,8 @@ export default function ViewStudentsCourse() {
   }, [coursesFromStore]);
 
   const loadCourseData = (courseId) => {
-    dispatch(viewQuiz({ courseIds: courseId }))
+    setLoading(true); // Bắt đầu tải
+    return dispatch(viewQuiz({ courseIds: courseId }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
@@ -106,9 +106,7 @@ export default function ViewStudentsCourse() {
           error.message || "An error occurred while fetching quizzes or scores."
         );
       })
-      .finally(() => {
-        setLoading(false);
-      });
+
   };
 
   const getACourseData = () => {
@@ -125,7 +123,6 @@ export default function ViewStudentsCourse() {
       })
       .catch((error) => {
         messageApi.error("An error occurred while fetching course data.");
-        setLoading(false);
       });
   };
 
@@ -483,7 +480,7 @@ export default function ViewStudentsCourse() {
           Xem
         </Button>
 
-        {viewSuccess ? (
+        {!loading && (
           <Button
             type="primary"
             onClick={exportToExcelStyled}
@@ -491,7 +488,7 @@ export default function ViewStudentsCourse() {
           >
             Xuất file
           </Button>
-        ) : null}
+        )}
 
         {viewSuccess ? (
           <Button

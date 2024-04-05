@@ -13,7 +13,7 @@ import {
   Tooltip,
   Modal,
 } from "antd";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   getQuizzesByStudentAndCourse,
@@ -39,14 +39,13 @@ const avatar = "/images/imagedefault.jpg";
 const { Sider, Content, Header } = Layout;
 
 export default function ViewQuiz({ params }) {
-
   const [isLoading, setLoading] = useState([]);
   const dispatch = useDispatch();
   const [course, setCourse] = useState([]);
   const [quiz, setquiz] = useState([]);
   const [score, setScore] = useState([]);
   const [dataCourse, setDataCourse] = useState([]);
-  const ArrDataCourse = [dataCourse?.teacher]
+  const ArrDataCourse = [dataCourse?.teacher];
   const [coursesData, setCoursesData] = useState([]);
   const [apiCourses, setApiCourses] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState("2");
@@ -56,7 +55,8 @@ export default function ViewQuiz({ params }) {
   const [allCourseCount, setAllCourse] = useState(0);
   const [isAdminOrMentorSidebar, setIsAdminOrMentor] = useState(false);
   const [isLoadingRoleCheck, setIsLoadingRoleCheck] = useState(true);
-  const [isLoadingAlQuizzesComponent, setIsLoadingAlQuizzesComponent] = useState(true);
+  const [isLoadingAlQuizzesComponent, setIsLoadingAlQuizzesComponent] =
+    useState(true);
 
   const router = useRouter();
 
@@ -76,49 +76,46 @@ export default function ViewQuiz({ params }) {
       try {
         const res = await dispatch(getCourseSummary()).then(unwrapResult);
         if (res.status) {
-          const desiredCourse = res.metadata.find(course => course._id === params?.id);
+          const desiredCourse = res.metadata.find(
+            (course) => course._id === params?.id
+          );
           if (desiredCourse) {
             setCourse(desiredCourse);
           }
         }
       } catch (error) {
         console.error(error);
-      } 
+      }
     };
 
     fetchData();
   }, [dispatch, params?.id]);
-
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         // Gọi các hàm dispatch và chờ cho đến khi chúng hoàn thành, sử dụng Promise.all
-        const [quizzesByStudentState1, getScoreState1, getACourseState1] = await Promise.all([
-          dispatch(getQuizzesByStudentAndCourse({ courseId: params?.id })),
-          dispatch(getScoreByInfo()),
-          dispatch(getACourseByInfo(params?.id))
-        ]);
-        
+        const [quizzesByStudentState1, getScoreState1, getACourseState1] =
+          await Promise.all([
+            dispatch(getQuizzesByStudentAndCourse({ courseId: params?.id })),
+            dispatch(getScoreByInfo()),
+            dispatch(getACourseByInfo(params?.id)),
+          ]);
+
         // Lưu trữ dữ liệu vào state khi fetch thành công
         setquiz(quizzesByStudentState1.payload.metadata);
         setScore(getScoreState1.payload.metadata);
         setDataCourse(getACourseState1.payload.metadata);
-
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
     fetchData();
   }, [dispatch, params?.id]);
 
-  console.log('dataCourse', dataCourse)
-
-
-  
   // // còn gọi api 4 lần
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -168,14 +165,12 @@ export default function ViewQuiz({ params }) {
   //   getACourseState,
   // ]);
 
-
   // // -------gấy ra vấn đề call api nhiều lần 9 lần-----------
   // useEffect(() => {
   //   dispatch(getQuizzesByStudentAndCourse({ courseId: params?.id }));
   //   dispatch(getScoreByInfo());
   //   dispatch(getACourseByInfo(params?.id));
   // }, [dispatch, params?.id]);
-  
 
   useEffect(() => {
     setSelectedMenu("2");
@@ -335,12 +330,10 @@ export default function ViewQuiz({ params }) {
                 </div>
 
                 <div dangerouslySetInnerHTML={{ __html: dataCourse?.title }} />
-
               </div>
             ))}
           </div>
         </div>
-
       </>
     );
   };
@@ -366,10 +359,12 @@ export default function ViewQuiz({ params }) {
           questions: (
             <Button
               className="w-full text-white custom-button bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 text-center"
-              style={{ width: "100%", height: '38px'}}
+              style={{ width: "100%", height: "38px" }}
               onClick={() => confirmStartQuiz(i?._id, i?.type)}
             >
-              <div style={{marginLeft: '-5px', marginTop: '-2px'}}>Bắt đầu thi</div>
+              <div style={{ marginLeft: "-5px", marginTop: "-2px" }}>
+                Bắt đầu thi
+              </div>
             </Button>
           ),
         };
@@ -399,7 +394,7 @@ export default function ViewQuiz({ params }) {
           <div
             key={index}
             className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl"
-            style={{width: '100%'}}
+            style={{ width: "100%" }}
           >
             <div className="p-4">
               <h5 className="text-lg font-semibold mb-2 truncate">
@@ -437,7 +432,7 @@ export default function ViewQuiz({ params }) {
     const completedQuizzes = filteredQuizzes
       ?.filter((quiz) => {
         const correspondingScore = score.find((s) => s.quiz?._id === quiz?._id); // chú ý call api nhìu
-        return correspondingScore?.isComplete;  
+        return correspondingScore?.isComplete;
       })
       .map((quiz, index) => ({
         key: index + 1,
@@ -453,7 +448,7 @@ export default function ViewQuiz({ params }) {
         questions: (
           <Button
             className="me-3"
-            style={{ width: "100%", height: '38px' }}
+            style={{ width: "100%", height: "38px" }}
             onClick={() => {
               const path =
                 quiz?.type === "multiple_choice"
@@ -462,7 +457,9 @@ export default function ViewQuiz({ params }) {
               router.push(path);
             }}
           >
-            <div style={{marginLeft: '-5px', marginTop: '-2px'}}>Xem chi tiết</div>
+            <div style={{ marginLeft: "-5px", marginTop: "-2px" }}>
+              Xem chi tiết
+            </div>
           </Button>
         ),
       }));
@@ -523,9 +520,11 @@ export default function ViewQuiz({ params }) {
                               `/courses/view-details/handle-submit-essay/${item._id}`
                             )
                       }
-                      style={{width: '100%', height: '38px'}}
+                      style={{ width: "100%", height: "38px" }}
                     >
-                      <div style={{marginLeft: '-5px', marginTop: '-2px'}}>Xem chi tiết</div>
+                      <div style={{ marginLeft: "-5px", marginTop: "-2px" }}>
+                        Xem chi tiết
+                      </div>
                     </Button>
                   </div>
                 </div>
@@ -549,21 +548,21 @@ export default function ViewQuiz({ params }) {
     useEffect(() => {
       const fetchDataCourses = async () => {
         try {
-          const coursesData = await dispatch(viewCourses()); 
-          if(coursesData.length === 0) {
-            const coursesData = await dispatch(viewCourses()); 
+          const coursesData = await dispatch(viewCourses());
+          if (coursesData.length === 0) {
+            const coursesData = await dispatch(viewCourses());
             setCoursesData(coursesData.payload.metadata);
           }
-          setCoursesData(coursesData.payload.metadata); 
-          setApiCourses(true)
+          setCoursesData(coursesData.payload.metadata);
+          setApiCourses(true);
         } catch (error) {
-          console.error('Error fetching courses:', error);
+          console.error("Error fetching courses:", error);
         }
       };
-      if(!apiCourses) {
+      if (!apiCourses) {
         fetchDataCourses();
       }
-    }, [dispatch, params?.id, setCoursesData, apiCourses ]);
+    }, [dispatch, params?.id, setCoursesData, apiCourses]);
 
     const currentCourse = coursesData?.find(
       (course) => course?._id === params?.id
@@ -705,7 +704,9 @@ export default function ViewQuiz({ params }) {
                 objectFit: "cover",
               }}
             />
-            <h1 className="text-3xl text-[#002c6a] font-medium">{dataCourse?.name}</h1>
+            <h1 className="text-3xl text-[#002c6a] font-medium">
+              {course?.name}
+            </h1>
           </div>
         </div>
         <div className="md:flex-row justify-between items-center p-4 md:p-6">
