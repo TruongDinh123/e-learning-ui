@@ -133,6 +133,14 @@ const getCourseCompletion = async (data) => {
   return res.data;
 };
 
+const getCourseById = async (courseID) => {
+  const res = await axiosInstance({
+    url: `/e-learning/get-info-course/${courseID}`,
+    method: "GET",
+  });
+  return res.data;
+};
+
 const getPublicCourse = async (data) => {
   const res = await axiosInstance({
     url: "/e-learning/public-course/",
@@ -214,4 +222,5 @@ export const courseService = {
   getACourseByInfo,
   getCourseSummary,
   getStudentScoresByCourse,
+  getCourseById,
 };

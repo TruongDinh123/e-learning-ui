@@ -61,48 +61,26 @@ export default function AdminSidebar(props) {
 
   const menuItems = [
     {
-      key: "1",
+      key: "courses",
       icon: <VideoCameraOutlined />,
-      label: "Khóa học",
-      children: [
-        {
-          key: "courses",
-          icon: <UserOutlined />,
-          label: "Bảng khóa học",
-        },
-      ],
+      label: "Contest",
     },
     {
       key: "2",
       icon: <FileAddOutlined />,
-      label: "Bài tập",
+      label: "Exam paper",
       children: [
         {
           key: "quiz/create-quiz",
           icon: <UserOutlined />,
-          label: "Tạo bài tập",
+          label: "Create Examination",
         },
         {
           key: "quiz/view-quiz",
           icon: <UserOutlined />,
-          label: "Xem bài tập",
+          label: "View Examination",
         },
-        {
-          key: "quiz/template-quiz",
-          icon: <UserOutlined />,
-          label: "Bài tập mẫu",
-        },
-        // {
-        //   key: "quiz/bank-quiz",
-        //   icon: (
-        //     <span>
-        //        <img src={newlogo} alt="New" style={{ width: '20px' }} />
-        //     </span>
-        //   ),
-        //   label: (
-        //     <span style={{ color: 'red' }}>Ngân hàng đề thi</span>
-        //   ),
-        // },
+
       ],
     },
     {
