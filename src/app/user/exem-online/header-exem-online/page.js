@@ -4,12 +4,13 @@ import { Image } from "antd";
 
 const logo3 = "/images/logo.jpg";
 
-export default function HeaderExemplOnline() {
+export default function HeaderExemplOnline({title, bannerUrl}) {
+    console.log(bannerUrl);
   return (
     <header className="bg-[#002c6a]">
       <nav className="px-4 lg:px-6 py-2.5 text-white">
         <div className="flex items-center justify-between gap-8 mx-auto max-w-screen-xl">
-          <a className="flex items-center" href="/user/exem-online">
+          <a className="flex items-center" href="/">
             <Image
               src={logo3}
               className="lg:w-12"
@@ -24,29 +25,8 @@ export default function HeaderExemplOnline() {
                 href=""
                 className="font-medium rounded-lg lg:text-xl focus:outline-none px-2.5 py-2"
               >
-                Đăng nhập
+                Đăng ký tham dự
               </a>
-            </div>
-            <div className="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1 grow">
-              <ul className="flex items-center text-xl">
-                <li>
-                  <a
-                    href=""
-                    className="relative block py-2 px-4 ml-4 text-white"
-                  >
-                    Trang chủ
-                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 border-t-2 border-solid w-14"></div>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href=""
-                    className="relative block py-2 px-4 ml-4 text-white"
-                  >
-                    Thể lệ
-                  </a>
-                </li>
-              </ul>
             </div>
           </div>
         </div>
@@ -54,13 +34,13 @@ export default function HeaderExemplOnline() {
       <div className="px-4 lg:px-6">
         <div className="max-w-screen-xl mx-auto mt-4 lg:mt-8">
           <img
-            src="https://myaloha.vn/upload/images/banner/banner_1011571_1684482408_ceafed9c-c81f-4aaa-9abb-3b4954db9d5f.png"
+            src={bannerUrl ?? "https://myaloha.vn/upload/images/banner/banner_1011571_1684482408_ceafed9c-c81f-4aaa-9abb-3b4954db9d5f.png"}
             className="max-w-full h-auto mx-auto rounded-xl"
           />
         </div>
       </div>
       <div className="px-4 lg:px-6 py-2 uppercase text-lg lg:text-4xl text-center text-white bg-[#00436ad0] mt-4 lg:mt-12">
-        Cuộc thi trực tuyến “Tìm hiểu về công tác bảo vệ môi trường” năm 2023
+          {title ?? "Cuộc thi trực tuyến “Tìm hiểu về công tác bảo vệ môi trường” năm 2023"}
       </div>
     </header>
   );

@@ -55,20 +55,8 @@ export default function ViewQuiz({ params }) {
   const [allCourseCount, setAllCourse] = useState(0);
   const [isAdminOrMentorSidebar, setIsAdminOrMentor] = useState(false);
   const [isLoadingRoleCheck, setIsLoadingRoleCheck] = useState(true);
-  const [isLoadingAlQuizzesComponent, setIsLoadingAlQuizzesComponent] =
-    useState(true);
 
   const router = useRouter();
-
-  // const quizzesByStudentState = useSelector(
-  //   (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
-  // );
-
-  // const getScoreState = useSelector(
-  //   (state) => state.quiz.getScoreState.metadata
-  // );
-
-  // const getACourseState = useSelector((state) => state.course.Acourse.metadata);
 
   // image
   useEffect(() => {
@@ -115,62 +103,6 @@ export default function ViewQuiz({ params }) {
     };
     fetchData();
   }, [dispatch, params?.id]);
-
-  // // còn gọi api 4 lần
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     setLoading(true);
-  //     try {
-  //       // thực hiện 3 cái cùng lúc
-  //       // nếu tồn tại dữ liệu thì hiện status: true và metadata = dữ liệu tương ứng
-  //       // còn không tồn tại dữ liệu từ trước: thì truyền id nhận từ params vào tiền hành call api để lấy dữ liệu
-  //       const [quizzesResult, scoreResult, courseResult] = await Promise.all([
-  //         quizzesByStudentState
-  //           ? Promise.resolve({ status: true, metadata: quizzesByStudentState })
-  //           : dispatch(
-  //               getQuizzesByStudentAndCourse({ courseId: params?.id })
-  //             ).then(unwrapResult),
-  //         getScoreState
-  //           ? Promise.resolve({ status: true, metadata: getScoreState })
-  //           : dispatch(getScoreByInfo()).then(unwrapResult),
-  //         getACourseState
-  //           ? Promise.resolve({ status: true, metadata: getACourseState })
-  //           : dispatch(getACourseByInfo(params?.id)).then(unwrapResult),
-  //       ]);
-
-  //       // nếu đã có dữ liệu thì khi đó status = true thì thực hiện
-  //       // bắt đầu set dữ liệu tương ứng vào
-  //       if (quizzesResult.status) {
-  //         setquiz(quizzesResult.metadata);
-  //       }
-
-  //       if (scoreResult.status) {
-  //         setScore(scoreResult.metadata);
-  //       }
-
-  //       if (courseResult.status) {
-  //         setDataCourse(courseResult.metadata);
-  //       }
-  //     } catch (error) {
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [
-  //   dispatch,
-  //   params?.id,
-  //   quizzesByStudentState,
-  //   getScoreState,
-  //   getACourseState,
-  // ]);
-
-  // // -------gấy ra vấn đề call api nhiều lần 9 lần-----------
-  // useEffect(() => {
-  //   dispatch(getQuizzesByStudentAndCourse({ courseId: params?.id }));
-  //   dispatch(getScoreByInfo());
-  //   dispatch(getACourseByInfo(params?.id));
-  // }, [dispatch, params?.id]);
 
   useEffect(() => {
     setSelectedMenu("2");
