@@ -27,14 +27,12 @@ const ReactQuill = dynamic(
 const CourseSchema = yup.object({
   title: yup
     .string()
-    .required("Nhập tiêu đề")
+    .required("Input the title")
     .trim("Title must not start or end with whitespace"),
   name: yup
     .string()
-    .required("Nhập tên")
-    .trim("Name must not start or end with whitespace"),
-  isPublic: yup.boolean().required("Visibility is required"),
-  categoryId: yup.string().required("Chọn danh mục tương ứng"),
+    .required("Input the organizer")
+    .trim("Name must not start or end with whitespace")
 });
 
 export default function AddCourse(props) {
@@ -45,20 +43,6 @@ export default function AddCourse(props) {
   const [file, setFile] = useState(null);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   dispatch(getAllCategoryAndSubCourses())
-  //     .then(unwrapResult)
-  //     .then((res) => {
-  //       if (res.status) {
-  //       } else {
-  //         messageApi.error(res.message);
-  //       }
-  //     })
-  // }, []);
-
-  const categories = useSelector(
-    (state) => state.category?.categories?.metadata
-  );
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -93,13 +77,11 @@ export default function AddCourse(props) {
       title: "",
       name: "",
       nameCenter: "",
-      categoryId: "" || (categories && categories[0]?._id),
       isPublic: true,
     },
     onSubmit: (values) => {
       values.name = values.name.trim();
       values.title = values.title.trim();
-      values.categoryId = values.categoryId.trim();
       setIsLoading(true);
 
       dispatch(createCourse(values))
@@ -194,7 +176,7 @@ export default function AddCourse(props) {
           title={
             <div className="flex items-center justify-center">
               <PlusOutlined />
-              <span className="ml-1">Tạo khóa học</span>
+              <span className="ml-1">Add Contest</span>
             </div>
           }
           onClick={showModal}
@@ -203,7 +185,7 @@ export default function AddCourse(props) {
       )}
       <Modal
         title={
-          <h1 className="text-2xl font-bold text-blue-500">Tạo khóa học</h1>
+          <h1 className="text-2xl font-bold text-blue-500">Create contest</h1>
         }
         open={isModalOpen}
         onCancel={handleCancel}
@@ -212,7 +194,7 @@ export default function AddCourse(props) {
         footer={
           <div>
             <Button key="cancel" onClick={handleCancel}>
-              Hủy
+              Cancel
             </Button>
             <Button
               key="save"
@@ -221,18 +203,18 @@ export default function AddCourse(props) {
               onClick={handleOk}
               loading={isLoading}
             >
-              Lưu
+              Save
             </Button>
           </div>
         }
       >
         <div className="mt-10">
           <label htmlFor="course" className="text-lg font-medium">
-            Tên khóa học:
+            Contest title:
           </label>
           <CustomInput
             id="course"
-            placeholder="Thêm tên"
+            placeholder="Input the title"
             onChange={formik.handleChange("name")}
             onBlur={formik.handleBlur("name")}
             value={formik.values.name}
@@ -246,11 +228,11 @@ export default function AddCourse(props) {
           />
 
           <label htmlFor="nameCenter" className="text-lg font-medium">
-            Tên trung tâm:
+            Organizer:
           </label>
           <CustomInput
             id="nameCenter"
-            placeholder="Thêm tên trung tâm"
+            placeholder="Input the organizer"
             onChange={formik.handleChange("nameCenter")}
             onBlur={formik.handleBlur("nameCenter")}
             value={formik.values.nameCenter}
@@ -260,14 +242,14 @@ export default function AddCourse(props) {
             htmlFor="courseDescription"
             className="text-lg font-medium mt-3"
           >
-            Mô tả khóa học:
+            Description and Regulation:
           </label>
           <ReactQuill
             theme="snow"
             value={formik.values.title}
             onChange={(content) => formik.setFieldValue("title", content)}
             onBlur={() => formik.setFieldTouched("title", true, true)}
-            placeholder="Thêm mô tả"
+            placeholder="Add description and regulation"
             className="bg-white"
             modules={{
               toolbar: [
@@ -298,55 +280,17 @@ export default function AddCourse(props) {
           {formik.submitCount > 0 && formik.touched.title && formik.errors.title
             ? formik.errors.title
             : null}
-
-          <label htmlFor="category" className="text-lg font-medium mt-3">
-            Danh mục:
-          </label>
-          <select
-            id="category"
-            onChange={formik.handleChange("categoryId")}
-            onBlur={formik.handleBlur("categoryId")}
-            value={formik.values.categoryId}
-            className="mx-2"
-          >
-            {categories &&
-              categories.map((category) => (
-                <option key={category._id} value={category._id}>
-                  {category.name}
-                </option>
-              ))}
-          </select>
-          {formik.submitCount > 0 &&
-          formik.touched.categoryId &&
-          formik.errors.categoryId
-            ? formik.errors.categoryId
-            : null}
         </div>
 
         <div>
           <label htmlFor="course" className="text-lg font-medium mt-3 mr-3">
-            Hình ảnh khóa học:
+            Banner image:
           </label>
           <Upload {...propsUdateImage}>
             <Button className="mt-3" icon={<UploadOutlined />}>
-              Chọn hình ảnh
+              Choose image
             </Button>
           </Upload>
-        </div>
-
-        <div className="mt-3">
-          <label htmlFor="visibility" className="text-lg font-medium pr-2">
-            Tùy chọn:
-          </label>
-          <Radio.Group
-            id="visibility"
-            onChange={(e) => formik.setFieldValue("isPublic", e.target.value)}
-            onBlur={formik.handleBlur("isPublic")}
-            value={formik.values.isPublic}
-          >
-            <Radio value={true}>Public</Radio>
-            <Radio value={false}>Private</Radio>
-          </Radio.Group>
         </div>
       </Modal>
     </React.Fragment>

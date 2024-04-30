@@ -37,27 +37,6 @@ export default function Courses() {
   const router = useRouter();
   const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
 
-  const categories = useSelector(
-    (state) => state.category.categories.metadata || []
-  );
-
-  const fetchCategories = () => {
-    setIsLoading(true);
-    dispatch(getAllCategoryAndSubCourses())
-      .then(unwrapResult)
-      .then(() => {
-        setIsLoading(false);
-      })
-      .catch(() => {
-        setIsLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    if (categories.length === 0 && !isLoading) {
-      fetchCategories();
-    }
-  }, []);
 
   useEffect(() => {
     const currentTeacherId = localStorage.getItem("x-client-id");
@@ -69,16 +48,8 @@ export default function Courses() {
       );
     }
 
-    const newFilteredCourses = selectedCategory
-      ? categories
-          .find((c) => c._id === selectedCategory)
-          ?.courses?.filter(
-            (course) => isAdmin() || course.teacher === currentTeacherId
-          ) ?? []
-      : visibleCourses;
-
-    setFilteredCourses(newFilteredCourses);
-  }, [course, selectedCategory, categories]);
+    setFilteredCourses(visibleCourses);
+  }, [course]);
 
   // Xử lý khi danh mục được chọn thay đổi
   const handleCategoryChange = (value) => {
@@ -134,7 +105,7 @@ export default function Courses() {
     } else {
       setCourses(courses?.metadata || courses);
     }
-  }, [course, selectedCategory, categories, updateCourse]);
+  }, [course, updateCourse]);
 
   //table data
   let data = [];
@@ -159,10 +130,8 @@ export default function Courses() {
       .then((res) => {
         if (res.status) {
           setUpdateCourse(updateCourse + 1);
-          fetchCategories();
         }
         setUpdateCourse(updateCourse + 1);
-        fetchCategories();
       })
       .catch((error) => {
         message.error("Có lỗi xảy ra khi xóa khóa học. Vui lòng thử lại.");
@@ -177,32 +146,10 @@ export default function Courses() {
       <div className="max-w-screen-2xl mx-auto min-h-screen relative p-3">
         <AddCourse
           refresh={() => setUpdateCourse(updateCourse + 1)}
-          fetchCategories={fetchCategories}
         />
-        <div className="space-y-4 mt-2 mb-3">
-          <label htmlFor="category-select">Chọn danh mục:</label>
-          <Select
-            showSearch
-            style={{ width: 200 }}
-            placeholder="Chọn danh mục"
-            optionFilterProp="children"
-            onChange={handleCategoryChange}
-            filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-            defaultValue={null}
-            className="mx-3"
-          >
-            <Select.Option value={null}>Tất cả</Select.Option>
-            {categories.map((category) => (
-              <Select.Option key={category._id} value={category._id}>
-                {category.name}
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
 
         <div className="space-y-4">
+
           <div className="grid scrollbar-thin sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 grid-container-courses">
             {filteredCourses.map((item, index) => {
               const menu = (
@@ -213,7 +160,6 @@ export default function Courses() {
                       id={item?._id}
                       categoryId={selectedCategory}
                       refresh={() => setUpdateCourse(updateCourse + 1)}
-                      fetchCategories={fetchCategories}
                     />
                   </Menu.Item>
                   <Menu.Item>
@@ -222,10 +168,10 @@ export default function Courses() {
                       style={{ width: "100%" }}
                       courseId={item?._id}
                       onClick={() =>
-                        router.push(`/admin/courses/Lesson/${item?._id}`)
+                        router.push(`/user/exem-online/${item?._id}`)
                       }
                     >
-                      Xem chi tiết
+                      View Detail
                     </Button>
                   </Menu.Item>
                   <Menu.Item>
@@ -286,18 +232,12 @@ export default function Courses() {
                     <a
                       className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2"
                       onClick={() =>
-                        router.push(`/admin/courses/Lesson/${item?._id}`)
+                        router.push(`/user/exem-online/${item?._id}`)
                       }
                     >
-                      {item.name} ({item.showCourse ? "Công khai" : "Riêng tư"})
+                      {item.name}
                     </a>
-                    <p className="text-xs text-muted-foreground"></p>
-                    <div className="my-3 flex items-center gap-x-2 text-sm md:text-xs">
-                      <div className="flex items-center gap-x-1 text-slate-500">
-                        <BookOutlined />
-                        <span>bài học: {item.lessons?.length}</span>
-                      </div>
-                    </div>
+
                     {isMobile ? (
                       <Dropdown overlay={menu}>
                         <Button
@@ -308,7 +248,7 @@ export default function Courses() {
                         </Button>
                       </Dropdown>
                     ) : (
-                      <Col lg="12">
+                      <Col lg="12" className="mt-5">
                         <Space
                           size="large"
                           direction="vertical"
@@ -320,33 +260,12 @@ export default function Courses() {
                               course={item}
                               categoryId={selectedCategory}
                               refresh={() => setUpdateCourse(updateCourse + 1)}
-                              fetchCategories={fetchCategories}
                             />
-                            <Button
-                              courseId={item?._id}
-                              onClick={() =>
-                                router.push(
-                                  `/admin/courses/Lesson/${item?._id}`
-                                )
-                              }
-                            >
-                              Bài học
-                            </Button>
-                            {/* <Button
-                              courseId={item?._id}
-                              onClick={() =>
-                                router.push(
-                                  `/courses/view-details/${item?._id}`
-                                )
-                              }
-                            >
-                              Học viên
-                            </Button> */}
                             <Popconfirm
-                              title="Xóa khóa học"
-                              description="Bạn có chắc xóa khóa học?"
-                              okText="Có"
-                              cancelText="Không"
+                              title="Detele the Contest"
+                              description="Confirm to delete the contest"
+                              okText="Yes"
+                              cancelText="No"
                               okButtonProps={{
                                 style: { backgroundColor: "red" },
                               }}
@@ -358,7 +277,7 @@ export default function Courses() {
                                 style={{ margin: 0 }}
                                 loading={loadingStates[item?._id]}
                               >
-                                Xóa
+                                Delete
                               </Button>
                             </Popconfirm>
                           </Space>
@@ -370,12 +289,13 @@ export default function Courses() {
               );
             })}
           </div>
+
           {isLoading ? (
             <div className="flex justify-center items-center h-screen">
               <Spin />
             </div>
           ) : (
-            filteredCourses?.length === 0 && (
+              filteredCourses?.length === 0 && (
               <Empty
                 className="text-center text-sm text-muted-foreground mt-10"
                 description="

@@ -24,10 +24,8 @@ const ReactQuill = dynamic(
 );
 
 const CourseSchema = yup.object({
-  title: yup.string().min(2).required("Nhập tiêu đề"),
-
-  name: yup.string().min(2).required("Nhập tên"),
-  isPublic: yup.boolean().required("Visibility is required"),
+  title: yup.string().min(2).required("Input the title"),
+  name: yup.string().min(2).required("Input the organizer"),
 });
 
 export default function EditCourses(props) {
@@ -148,12 +146,12 @@ export default function EditCourses(props) {
         style={{ width: "100%" }}
         loading={isLoading}
       >
-        Cập nhật
+        Update content
       </Button>
       <Modal
         title={
           <h1 className="text-3xl font-bold text-blue-500">
-            Cập nhật khóa học
+            Update the contest
           </h1>
         }
         width={1000}
@@ -166,7 +164,7 @@ export default function EditCourses(props) {
             onClick={handleCancel}
             style={{ marginRight: 8 }}
           >
-            Hủy
+            Cancel
           </Button>,
           <Button
             key="ok"
@@ -174,13 +172,13 @@ export default function EditCourses(props) {
             onClick={handleOk}
             className="custom-button"
           >
-            Lưu
+            Save
           </Button>,
         ]}
       >
         <div className="mt-10">
           <label htmlFor="course" className="fs-6 font-medium">
-            Tên khóa học:
+            Contest title:
           </label>
           <CustomInput
             onChange={formik.handleChange("name")}
@@ -190,7 +188,7 @@ export default function EditCourses(props) {
           />
 
           <label htmlFor="nameCenter" className="fs-6 font-medium">
-            Tên Trung tâm:
+            Organizer:
           </label>
           <CustomInput
             onChange={formik.handleChange("nameCenter")}
@@ -202,7 +200,7 @@ export default function EditCourses(props) {
             htmlFor="courseDescription"
             className="text-lg font-medium mt-3"
           >
-            Mô tả khóa học:
+            Description and Regulation:
           </label>
           <ReactQuill
             theme="snow"
@@ -237,60 +235,18 @@ export default function EditCourses(props) {
               ],
             }}
           />
-          {formik.submitCount > 0 && formik.touched.title && formik.errors.title
-            ? formik.errors.title
-            : null}
-
-          <label htmlFor="category" className="text-lg font-medium mt-3">
-            Danh mục:
-          </label>
-          <select
-            id="category"
-            onChange={formik.handleChange("categoryId")}
-            onBlur={formik.handleBlur("categoryId")}
-            value={formik.values.categoryId}
-            className="mx-2"
-          >
-            {!currentCategory && <option value="">Chưa có danh mục</option>}
-            {categories &&
-              categories.map((category) => (
-                <option key={category._id} value={category._id}>
-                  {category.name}
-                </option>
-              ))}
-          </select>
-          {formik.submitCount > 0 &&
-          formik.touched.categoryId &&
-          formik.errors.categoryId
-            ? formik.errors.categoryId
-            : null}
         </div>
 
         <div>
           <label htmlFor="course" className="fs-6 font-medium mt-3 mr-3">
-            Hình ảnh khóa học:
+            Banner images:
           </label>
 
           <Upload {...propsUdateImage}>
             <Button className="mt-3" icon={<UploadOutlined />}>
-              Chọn hình ảnh
+              Choose image
             </Button>
           </Upload>
-        </div>
-
-        <div className="mt-3">
-          <label htmlFor="visibility" className="fs-6 font-medium pr-2">
-            Tùy chọn:
-          </label>
-          <Radio.Group
-            id="visibility"
-            onChange={(e) => formik.setFieldValue("isPublic", e.target.value)}
-            onBlur={formik.handleBlur("isPublic")}
-            value={formik.values.isPublic}
-          >
-            <Radio value={true}>Public</Radio>
-            <Radio value={false}>Private</Radio>
-          </Radio.Group>
         </div>
       </Modal>
     </React.Fragment>
