@@ -145,7 +145,7 @@ export default function CourseDetails({ params }) {
           <p
             className="mt-2 text-gray-600"
             dangerouslySetInnerHTML={{
-              __html: addCustomClassesToHtml(dataCourse?.title),
+              __html: addCustomClassesToHtml(dataCourse?.title || ""),
             }}
           />
         </div>
