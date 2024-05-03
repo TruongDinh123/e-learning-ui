@@ -218,7 +218,7 @@ export default function ContentExemplOnline() {
       <section>
         <div className="container mx-auto px-2 lg:px-4 mt-6 lg:mt-16">
           <div className="text-center text-xl lg:text-4xl font-bold text-[#002c6a]">
-            HƯỚNG DẪN
+            THỂ LỆ CUỘC THI
           </div>
           <div className="mt-6 lg:mt-12">
             <Space

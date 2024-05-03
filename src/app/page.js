@@ -162,7 +162,7 @@ export default function Home1() {
                         />
                       </div>
                       <Link
-                        href={`/courses/view-course-details/${course._id}`}
+                        href={`/user/exem-online/${course._id}`}
                         className="cursor-pointer"
                       >
                         <div className="flex-grow">

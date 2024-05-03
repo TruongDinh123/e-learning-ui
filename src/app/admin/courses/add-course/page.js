@@ -41,6 +41,7 @@ export default function AddCourse(props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState(null);
+  const [logoOrg, setLogoOrg] = useState(null);
   const dispatch = useDispatch();
 
 
@@ -59,18 +60,33 @@ export default function AddCourse(props) {
     setIsModalOpen(false);
   };
 
-  const propsUdateImage = {
+  const handleOrganizerUpload = {
     onRemove: () => {
-      setFile(null);
+      setLogoOrg(null);
       formik.setFieldValue("filename", ""); // reset filename when file is removed
     },
-    beforeUpload: (file) => {
-      setFile(file);
-      formik.setFieldValue("filename", file.name); // set filename when a new file is uploaded
+    beforeUpload: (logo) => {
+      setLogoOrg(logo);
+      formik.setFieldValue("filename", logo.name); // set filename when a new file is uploaded
+      return false;
+    },
+    fileList: logoOrg ? [logoOrg] : [],
+  };
+
+  const handleBannerUpload = {
+    onRemove: () => {
+      setFile(null);
+      formik.setFieldValue("banner-contest", "");
+    },
+    beforeUpload: (banner) => {
+      setFile(banner);
+      formik.setFieldValue("banner-contest", banner.name);
       return false;
     },
     fileList: file ? [file] : [],
+
   };
+
   const formik = useFormik({
     validationSchema: CourseSchema,
     initialValues: {
@@ -89,78 +105,21 @@ export default function AddCourse(props) {
         .then((res) => {
           const courseId = res.metadata?._id;
           if (file) {
-            dispatch(uploadImageCourse({ courseId: courseId, filename: file }))
+            dispatch(uploadImageCourse({ courseId: courseId, filename: logoOrg, bannerURL: file }))
               .then(unwrapResult)
               .then((res) => {
                 if (res.status) {
                   const imageUrl = res.metadata?.findCourse?.image_url;
                   dispatch(updateCourseImage({ courseId, imageUrl }));
-
-                  if (values.isPublic) {
-                    fetchCategories();
-                    refresh();
-                    dispatch(buttonPublicCourse(courseId));
-                  } else {
-                    fetchCategories();
-                    refresh();
-                    dispatch(buttonPriavteourse(courseId));
-                  }
                   refresh();
                   setFile(null);
                   setIsLoading(false);
-                  messageApi
-                    .open({
-                      type: "Thành công",
-                      content: "Đang thực hiện...",
-                      duration: 2.5,
-                    })
-                    .then((res) => {
-                      message.success(res.message, 0.5);
-                      fetchCategories();
-                      setIsLoading(false);
-                      setIsModalOpen(false);
-                      refresh();
-                      formik.resetForm();
-                    })
-                    .catch((error) => {
-                      setIsLoading(false);
-                      message.error(error.response?.data?.message, 3.5);
-                    });
+                  setIsModalOpen(false);
+                  formik.resetForm();
                 }
               })
               .catch((error) => {
                 setIsLoading(false);
-              });
-          } else {
-            if (values.isPublic) {
-              fetchCategories();
-              refresh();
-              dispatch(buttonPublicCourse(courseId));
-            } else {
-              fetchCategories();
-              refresh();
-              dispatch(buttonPriavteourse(courseId));
-            }
-            fetchCategories();
-            refresh();
-            setIsLoading(false);
-            messageApi
-              .open({
-                type: "Thành công",
-                content: "Đang thực hiện...",
-                duration: 2.5,
-              })
-              .then((res) => {
-                message.success(res.message, 0.5);
-                fetchCategories();
-                setIsLoading(false);
-                setIsModalOpen(false);
-                refresh();
-                formik.resetForm();
-              })
-              .catch((error) => {
-                setIsLoading(false);
-                message.error(error.response?.data?.message, 3.5);
               });
           }
         });
@@ -237,6 +196,16 @@ export default function AddCourse(props) {
             onBlur={formik.handleBlur("nameCenter")}
             value={formik.values.nameCenter}
           />
+          <div>
+            <label htmlFor="banner-img" className="text-lg font-medium mt-3 mr-3">
+              Banner contest image:
+            </label>
+            <Upload {...handleBannerUpload}>
+              <Button className="mt-3" icon={<UploadOutlined />}>
+                Choose banner
+              </Button>
+            </Upload>
+          </div>
 
           <label
             htmlFor="courseDescription"
@@ -284,11 +253,11 @@ export default function AddCourse(props) {
 
         <div>
           <label htmlFor="course" className="text-lg font-medium mt-3 mr-3">
-            Banner image:
+            Organizer logo:
           </label>
-          <Upload {...propsUdateImage}>
+          <Upload {...handleOrganizerUpload}>
             <Button className="mt-3" icon={<UploadOutlined />}>
-              Choose image
+              Choose logo
             </Button>
           </Upload>
         </div>

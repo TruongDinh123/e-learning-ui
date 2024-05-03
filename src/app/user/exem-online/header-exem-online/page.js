@@ -4,15 +4,14 @@ import { Image } from "antd";
 
 const logo3 = "/images/logo.jpg";
 
-export default function HeaderExemplOnline({title, bannerUrl}) {
-    console.log(bannerUrl);
+export default function HeaderExemplOnline({title,logoOrg, bannerUrl}) {
   return (
     <header className="bg-[#002c6a]">
       <nav className="px-4 lg:px-6 py-2.5 text-white">
         <div className="flex items-center justify-between gap-8 mx-auto max-w-screen-xl">
           <a className="flex items-center" href="/">
             <Image
-              src={logo3}
+              src={logoOrg ?? logo3}
               className="lg:w-12"
               style={{
                 width: "4.5rem",

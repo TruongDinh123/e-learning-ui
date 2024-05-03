@@ -15,6 +15,7 @@ export default function ExempleOnline({params}) {
         const fetchData = async () => {
             try {
                 const res = await dispatch(getCourseById(params.id)).then(unwrapResult);
+                console.log(res);
                 if (res.status === 200) {
                     const desiredCourse = res.metadata
                     setCourse(desiredCourse);
@@ -29,7 +30,7 @@ export default function ExempleOnline({params}) {
 
   return (
     <>
-      <HeaderExemplOnline title={course.name} bannerUrl={course.image_url}/>
+      <HeaderExemplOnline title={course.name} logoOrg={course.image_url} bannerUrl={course.banner_url}/>
       <ContentExemplOnline contest={course} />
     </>
   );

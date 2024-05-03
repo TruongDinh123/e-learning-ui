@@ -11,7 +11,8 @@ const createCourse = async (data) => {
 
 const uploadImageCourse = async (data) => {
   const formData = new FormData();
-  formData.append("filename", data.filename);
+  formData.append("files", data.filename);
+  formData.append("files", data.bannerURL);
   const res = await axiosInstance({
     url: `/e-learning/course/${data.courseId}/upload-image`,
     method: "POST",
