@@ -1,13 +1,11 @@
 "use client";
 import CustomInput from "@/components/comman/CustomInput";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as yup from "yup";
-import { Button, Modal, Radio, Upload, message } from "antd";
+import { Button, Modal, Upload, message } from "antd";
 import {
-  buttonPriavteourse,
-  buttonPublicCourse,
   createCourse,
   updateCourseImage,
   uploadImageCourse,
@@ -104,7 +102,7 @@ export default function AddCourse(props) {
         .then(unwrapResult)
         .then((res) => {
           const courseId = res.metadata?._id;
-          if (file) {
+          if (file || logoOrg){
             dispatch(uploadImageCourse({ courseId: courseId, filename: logoOrg, bannerURL: file }))
               .then(unwrapResult)
               .then((res) => {

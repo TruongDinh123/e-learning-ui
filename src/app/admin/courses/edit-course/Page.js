@@ -35,6 +35,7 @@ export default function EditCourses(props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState(null);
   const [file, setFile] = useState(null);
+  const [logoOrg, setLogoOrg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentCategory, setCurrentCategory] = useState(null);
   const categories = useSelector(
@@ -49,14 +50,27 @@ export default function EditCourses(props) {
     );
   }, [course, categories]);
 
-  const propsUdateImage = {
+  const handleOrganizerUpload = {
     onRemove: () => {
-      setFile(null);
+      setLogoOrg(null);
       formik.setFieldValue("filename", ""); // reset filename when file is removed
     },
-    beforeUpload: (file) => {
-      setFile(file);
-      formik.setFieldValue("filename", file.name); // set filename when a new file is uploaded
+    beforeUpload: (logo) => {
+      setLogoOrg(logo);
+      formik.setFieldValue("filename", logo.name); // set filename when a new file is uploaded
+      return false;
+    },
+    fileList: logoOrg ? [logoOrg] : [],
+  };
+
+  const handleBannerUpload = {
+    onRemove: () => {
+      setFile(null);
+      formik.setFieldValue("banner-contest", "");
+    },
+    beforeUpload: (banner) => {
+      setFile(banner);
+      formik.setFieldValue("banner-contest", banner.name);
       return false;
     },
     fileList: file ? [file] : [],
@@ -82,52 +96,31 @@ export default function EditCourses(props) {
       name: data?.name,
       nameCenter: data?.nameCenter,
       isPublic: data?.showCourse,
-      categoryId: currentCategory?._id || categoryId,
     },
     onSubmit: (values) => {
       setIsLoading(true);
       dispatch(editCourse({ id: props?.id, values }))
         .then(unwrapResult)
         .then((res) => {
-          if (file) {
-            return dispatch(uploadImageCourse({ courseId: id, filename: file }))
+          if (file || logoOrg) {
+            return dispatch(uploadImageCourse({ courseId: id, filename: file,  bannerURL: file }))
               .then(unwrapResult)
               .then((res) => {
                 if (res.status) {
                   setFile(null);
-                  fetchCategories();
+                  setLogoOrg(null)
                   refresh();
                   setIsLoading(false);
                 }
-                fetchCategories();
                 refresh();
                 setIsLoading(false);
                 window.location.reload();
                 return res;
               });
           }
-          fetchCategories();
           refresh();
           setIsLoading(false);
           return res;
-        })
-        .then((res) => {
-          if (values.isPublic) {
-            fetchCategories();
-            refresh();
-            setIsLoading(false);
-            return dispatch(buttonPublicCourse(id));
-          } else {
-            fetchCategories();
-            refresh();
-            setIsLoading(false);
-            return dispatch(buttonPriavteourse(id));
-          }
-        })
-        .then(() => {
-          fetchCategories();
-          refresh();
-          setIsLoading(false);
         })
         .catch((error) => {
           setIsLoading(false);
@@ -196,6 +189,18 @@ export default function EditCourses(props) {
             value={formik.values.nameCenter}
           />
 
+          <div>
+            <label htmlFor="banner-img" className="text-lg font-medium mt-3 mr-3">
+              Banner contest image:
+            </label>
+            <Upload {...handleBannerUpload}>
+              <Button className="mt-3" icon={<UploadOutlined />}>
+                Choose banner
+              </Button>
+            </Upload>
+          </div>
+
+
           <label
             htmlFor="courseDescription"
             className="text-lg font-medium mt-3"
@@ -238,13 +243,12 @@ export default function EditCourses(props) {
         </div>
 
         <div>
-          <label htmlFor="course" className="fs-6 font-medium mt-3 mr-3">
-            Banner images:
+          <label htmlFor="course" className="text-lg font-medium mt-3 mr-3">
+            Organizer logo:
           </label>
-
-          <Upload {...propsUdateImage}>
+          <Upload {...handleOrganizerUpload}>
             <Button className="mt-3" icon={<UploadOutlined />}>
-              Choose image
+              Choose logo
             </Button>
           </Upload>
         </div>
