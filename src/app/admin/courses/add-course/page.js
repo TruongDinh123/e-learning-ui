@@ -16,6 +16,7 @@ import CustomButton from "@/components/comman/CustomBtn";
 import { isAdmin } from "@/middleware";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
+import { dataFileInit } from '../common';
 
 const ReactQuill = dynamic(
   () => import("react-quill").then((mod) => mod.default),
@@ -102,8 +103,10 @@ export default function AddCourse(props) {
         .then(unwrapResult)
         .then((res) => {
           const courseId = res.metadata?._id;
-          if (file || logoOrg){
-            dispatch(uploadImageCourse({ courseId: courseId, filename: logoOrg, bannerURL: file }))
+          const dataInit = dataFileInit({bannerFile:file, logoFile:logoOrg});
+
+          if (dataInit.length) {
+            dispatch(uploadImageCourse({ courseId: courseId, dataPackage: dataInit }))
               .then(unwrapResult)
               .then((res) => {
                 if (res.status) {

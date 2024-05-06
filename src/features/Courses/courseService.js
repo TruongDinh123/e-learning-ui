@@ -1,3 +1,5 @@
+import { extractDataFile } from '../../app/admin/courses/common';
+
 const { default: axiosInstance } = require("@/config/axios");
 
 const createCourse = async (data) => {
@@ -10,9 +12,8 @@ const createCourse = async (data) => {
 };
 
 const uploadImageCourse = async (data) => {
-  const formData = new FormData();
-  formData.append("files", data.filename);
-  formData.append("files", data.bannerURL);
+  const formData = extractDataFile(data.dataPackage);
+  
   const res = await axiosInstance({
     url: `/e-learning/course/${data.courseId}/upload-image`,
     method: "POST",

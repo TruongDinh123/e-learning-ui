@@ -6,7 +6,7 @@ import {
   uploadImageCourse,
 } from "@/features/Courses/courseSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Modal, Radio, Upload, message } from "antd";
+import { Image, Modal, Radio, Upload, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "antd";
@@ -17,6 +17,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
+import { dataFileInit } from '../common';
 
 const ReactQuill = dynamic(
   () => import("react-quill").then((mod) => mod.default),
@@ -102,8 +103,10 @@ export default function EditCourses(props) {
       dispatch(editCourse({ id: props?.id, values }))
         .then(unwrapResult)
         .then((res) => {
-          if (file || logoOrg) {
-            return dispatch(uploadImageCourse({ courseId: id, filename: file,  bannerURL: file }))
+          const dataInit = dataFileInit({bannerFile:file, logoFile:logoOrg});
+
+          if (dataInit.length) {
+            return dispatch(uploadImageCourse({ courseId: id, dataPackage: dataInit }))
               .then(unwrapResult)
               .then((res) => {
                 if (res.status) {
@@ -198,6 +201,16 @@ export default function EditCourses(props) {
                 Choose banner
               </Button>
             </Upload>
+            {course?.banner_url && !file && <Image
+              alt="Hình ảnh khóa học"
+              className="edit-course-preview"
+              src={course?.banner_url}
+              style={{
+                width: "20%",
+                height: "20%",
+                objectFit: "contain",
+              }}
+            />}
           </div>
 
 
@@ -251,6 +264,16 @@ export default function EditCourses(props) {
               Choose logo
             </Button>
           </Upload>
+          {course?.image_url && !logoOrg && <Image
+              alt="Hình ảnh khóa học"
+              className="edit-course-preview"
+              src={course?.image_url}
+              style={{
+                width: "20%",
+                height: "20%",
+                objectFit: "contain",
+              }}
+            />}
         </div>
       </Modal>
     </React.Fragment>
