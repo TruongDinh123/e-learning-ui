@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { dataFileInit } from '../common';
+import { IMAGE_DEFAULT } from '../../../../constants';
 
 const ReactQuill = dynamic(
   () => import("react-quill").then((mod) => mod.default),
@@ -132,6 +133,7 @@ export default function EditCourses(props) {
     },
   });
 
+  data && console.log(data, 'datadatadata', logoOrg, file, data.image_url, data.banner_url);
   return (
     <React.Fragment>
       {contextHolder}
@@ -201,10 +203,11 @@ export default function EditCourses(props) {
                 Choose banner
               </Button>
             </Upload>
-            {course?.banner_url && !file && <Image
+            {data?.banner_url && !file && <Image
               alt="Hình ảnh khóa học"
               className="edit-course-preview"
-              src={course?.banner_url}
+              fallback= {IMAGE_DEFAULT}
+              src={data.banner_url}
               style={{
                 width: "20%",
                 height: "20%",
@@ -264,10 +267,11 @@ export default function EditCourses(props) {
               Choose logo
             </Button>
           </Upload>
-          {course?.image_url && !logoOrg && <Image
-              alt="Hình ảnh khóa học"
+          {data?.image_url && !logoOrg && <Image
+              alt="Hình logo ảnh khóa học"
               className="edit-course-preview"
-              src={course?.image_url}
+              fallback= {IMAGE_DEFAULT}
+              src={data.image_url}
               style={{
                 width: "20%",
                 height: "20%",
