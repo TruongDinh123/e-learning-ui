@@ -17,6 +17,7 @@ import { isAdmin } from "@/middleware";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { dataFileInit } from '../common';
+import ImageBlock from './imageBlock';
 
 const ReactQuill = dynamic(
   () => import("react-quill").then((mod) => mod.default),
@@ -198,14 +199,10 @@ export default function AddCourse(props) {
             value={formik.values.nameCenter}
           />
           <div>
-            <label htmlFor="banner-img" className="text-lg font-medium mt-3 mr-3">
-              Banner contest image:
-            </label>
-            <Upload {...handleBannerUpload}>
-              <Button className="mt-3" icon={<UploadOutlined />}>
-                Choose banner
-              </Button>
-            </Upload>
+            <ImageBlock
+              handleBannerUpload={handleBannerUpload}
+              handleOrganizerUpload={handleOrganizerUpload}
+            />
           </div>
 
           <label
@@ -250,17 +247,6 @@ export default function AddCourse(props) {
           {formik.submitCount > 0 && formik.touched.title && formik.errors.title
             ? formik.errors.title
             : null}
-        </div>
-
-        <div>
-          <label htmlFor="course" className="text-lg font-medium mt-3 mr-3">
-            Organizer logo:
-          </label>
-          <Upload {...handleOrganizerUpload}>
-            <Button className="mt-3" icon={<UploadOutlined />}>
-              Choose logo
-            </Button>
-          </Upload>
         </div>
       </Modal>
     </React.Fragment>

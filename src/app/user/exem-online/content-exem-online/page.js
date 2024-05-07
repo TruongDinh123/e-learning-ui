@@ -1,6 +1,7 @@
 "use client";
 import { Collapse, Space, theme } from "antd";
 import "./page.css";
+import Countdown from './countdown';
 
 export default function ContentExemplOnline() {
   const text = `
@@ -45,7 +46,8 @@ export default function ContentExemplOnline() {
       <section>
         <div className="mx-auto py-6 lg:py-16 bg-[length:33%_95%,_33%_95%] bg-no-repeat bg-flower">
           <div className="text-center text-[#002c6a] text-xl lg:text-4xl font-bold uppercase">
-            Cuộc thi đã kết thúc
+            Cuộc thi đã kết thúc<br/>
+            <Countdown />
           </div>
           <div className="mt-4 lg:mt-8">
             <div className="flex items-center justify-center gap-4 lg:gap-8">

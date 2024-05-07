@@ -33,7 +33,8 @@ export default function SignUp() {
       password: "",
     },
     onSubmit: (values) => {
-      dispatch(registerUser(values))
+      if(values.password && values.email && values.lastName) {
+        dispatch(registerUser(values))
         .then(unwrapResult)
         .then((res) => {
           messageApi
@@ -47,8 +48,11 @@ export default function SignUp() {
               router.push("/login");
             });
         });
+      }
+      
     },
   });
+  
   return (
     <div className="container-fluid bg-white">
       {contextHolder}
@@ -103,7 +107,7 @@ export default function SignUp() {
                     color: "black",
                   }}
                 >
-                  Already have an account? <b>Register</b>
+                  Already have an account? <b>Login</b>
                 </span>
               </Link>
             </div>

@@ -56,6 +56,7 @@ export default function RootLayout({ children }) {
 
     if (!loading && !isLessonPage && !isCourseDetailnPage) {
       if (!token && pathname !== "/login" && pathname !== "/") {
+        if(pathname === "/signup") return;
         router.push("/login");
       } else if (pathname.includes("/admin") && !(isAdmin() || isMentor())) {
         router.push("/unauthorized");

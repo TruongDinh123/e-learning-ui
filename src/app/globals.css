@@ -136,3 +136,8 @@ body {
 .ant-statistic-content {
   color: white !important;
 }
+
+.app {
+  box-sizing: border-box;
+  min-height: fit-content;
+}
