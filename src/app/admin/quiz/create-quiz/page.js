@@ -1264,7 +1264,7 @@ export default function QuizCreator() {
                                 });
                               }}
                             >
-                              Giao Bài Tập
+                              Hoàn Thành
                             </Button>
                             <Modal
                               title="Chọn Học Viên"

@@ -1,14 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
-  Card,
-  Radio,
   Button,
   message,
   Spin,
   Statistic,
   Breadcrumb,
   Modal,
+  Input, Tooltip
 } from "antd";
 import { getScore, submitQuiz, viewAQuiz } from "@/features/Quiz/quizSlice";
 import {
@@ -18,9 +17,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import "react-quill/dist/quill.snow.css";
-import { useMediaQuery } from "react-responsive";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-
 const logo = "/images/logoimg.jpg";
 
 export default function Quizs({ params }) {
@@ -39,7 +36,7 @@ export default function Quizs({ params }) {
   const [submitting, setSubmitting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [questionsPerPage] = useState(10);
-
+  const [predictAmount, onChangePredictAmount] = useState('');
   const [course, setCourse] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -187,7 +184,7 @@ export default function Quizs({ params }) {
     setSubmitting(true);
     try {
       const res = await dispatch(
-        submitQuiz({ quizId: idQuiz, answer: formattedAnswers })
+        submitQuiz({ quizId: idQuiz, answer: formattedAnswers, predictAmount })
       ).then(unwrapResult);
       if (res.status) {
         await messageApi.open({
@@ -249,37 +246,6 @@ export default function Quizs({ params }) {
     }
   }, [quiz, startTime, isComplete]);
 
-  //không cho copy
-  // useEffect(() => {
-  //   const preventCopy = (event) => {
-  //     event.preventDefault();
-  //     message.error("Sao chép nội dung không được phép!");
-  //   };
-
-  //   const preventInspect = (event) => {
-  //     if (
-  //       event.keyCode === 123 ||
-  //       (event.ctrlKey &&
-  //         event.shiftKey &&
-  //         (event.keyCode === 73 || event.keyCode === 74))
-  //     ) {
-  //       event.preventDefault();
-  //       message.error("Không được phép kiểm tra!");
-  //       return false;
-  //     }
-  //   };
-
-  //   document.addEventListener("copy", preventCopy);
-  //   document.addEventListener("contextmenu", preventCopy);
-  //   document.addEventListener("keydown", preventInspect);
-
-  //   return () => {
-  //     document.removeEventListener("copy", preventCopy);
-  //     document.removeEventListener("contextmenu", preventCopy);
-  //     document.removeEventListener("keydown", preventInspect);
-  //   };
-  // }, []);
-
   let submissionTime;
   if (quiz[0] && quiz[0]?.submissionTime) {
     submissionTime = new Date(quiz[0]?.submissionTime);
@@ -321,6 +287,30 @@ export default function Quizs({ params }) {
   const currentTime = new Date();
 
   const isTimeExceeded = currentTime > submissionTime;
+  const formatNumber = (value) => new Intl.NumberFormat().format(value);
+  const handleChangeInputNumber = (e) => {
+    const { value: inputValue } = e.target;
+    const reg = /^-?\d*(\.\d*)?$/;
+    if (reg.test(inputValue) || inputValue === '' || inputValue === '-') {
+      onChangePredictAmount(inputValue);
+    }
+  };
+
+  // '.' at the end or only '-' in the input box.
+  const handleBlurInputNumber = () => {
+    let valueTemp = predictAmount;
+    if (predictAmount.charAt(predictAmount.length - 1) === '.' || predictAmount === '-') {
+      valueTemp = predictAmount.slice(0, -1);
+    }
+    onChangePredictAmount(valueTemp.replace(/0*(\d+)/, '$1'));
+  };
+  const titleInputNumber = predictAmount ? (
+      <span className="numeric-input-title">{predictAmount !== '-' ? formatNumber(Number(predictAmount)) : '-'}</span>
+  ) : (
+      'Hãy nhập con số dự đoán'
+  );
+
+  const isLastPage = quiz[0]?.questions?.length <= indexOfLastQuestion;
 
   return (
     <div className="bg-blue-200 p-4">
@@ -380,7 +370,7 @@ export default function Quizs({ params }) {
                   <div className="sticky top-16 z-40 bg-white shadow-md p-2 mb-4 flex items-center justify-between">
                     <div className="flex items-center">
                       <img
-                        src={course?.image_url}
+                        src={course?.image_url ?? logo}
                         alt="School Logo"
                         className="h-20 w-20 mr-3"
                       />
@@ -392,11 +382,11 @@ export default function Quizs({ params }) {
                       <div className="mr-4 text-lg font-semibold text-gray-700 text-center" >
                         Số câu đã hoàn thành:
                         <span className="text-black" style={{marginLeft: '5px'}}>
-                          {Object.keys(selectedAnswers).length}
+                          {predictAmount ? Object.keys(selectedAnswers).length + 1 : Object.keys(selectedAnswers).length}
                         </span>
-                        /
-                        <span className="text-black">
-                          {quiz[0]?.questions?.length}
+                          /
+                          <span className="text-black">
+                          {quiz[0]?.questions?.length + 1}
                         </span>
                       </div>
                       {!isTimeExceeded && !submitted && !isComplete && (
@@ -508,6 +498,33 @@ export default function Quizs({ params }) {
                         </div>
                       );
                     })}
+
+                    {
+                        isLastPage &&
+
+                        <div className="flex items-center justify-content-md-start  border-t border-gray-200 pt-4 mt-4 first:border-t-0 first:mt-0">
+                        <span className="font-medium text-black">
+                              Câu {quiz[0]?.questions?.length + 1}:{" "}
+                            </span>
+                          <div className="text-purple-950 font-bold mr-5">
+                            Dự đoán số người tham dự:
+                          </div>
+
+                          <Tooltip trigger={['focus']} title={titleInputNumber} placement="topLeft" overlayClassName="numeric-input">
+                            <Input
+                                onChange={handleChangeInputNumber}
+                                onBlur={handleBlurInputNumber}
+                                placeholder="Input a number"
+                                maxLength={16}
+                                value={predictAmount}
+                                style={{
+                                  width: 200,
+                                }}
+                            />
+                          </Tooltip>
+                        </div>
+                    }
+
                     <div className="flex justify-between mt-4">
                       {currentPage > 1 && (
                         <button
