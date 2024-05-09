@@ -28,10 +28,12 @@ export default function ExempleOnline({params}) {
         fetchData();
     }, [dispatch, params?.id]);
 
+    console.log(course, 'coursecourse');
+
   return (
     <>
       <HeaderExemplOnline title={course.name} logoOrg={course.image_url} bannerUrl={course.banner_url}/>
-      <ContentExemplOnline contest={course} />
+      <ContentExemplOnline contest={course} params={params} />
     </>
   );
 }

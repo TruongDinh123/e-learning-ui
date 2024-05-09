@@ -141,3 +141,7 @@ body {
   box-sizing: border-box;
   min-height: fit-content;
 }
+
+main {
+  background: inherit;
+}

@@ -361,6 +361,18 @@ export const deleteScorebyQuiz = createAsyncThunk(
   }
 );
 
+export const getSubmissionTimeLatestQuizByCourseId = createAsyncThunk(
+  "/e-learning/delete-score-by-quiz",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await QuizService.getSubmissionTimeLatestQuizByCourseId(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 const initialState = {
   quiz: "",
   getQuizzesByStudentAndCourse: [],
@@ -373,6 +385,7 @@ const initialState = {
   newQuizCreated: false,
   isLoadingQuiz: false,
   message: "",
+  submissionTimeLatestQuizByCourseId: ""
 };
 
 export const resetStateQuiz = createAction("Reset_all_quiz");
@@ -383,6 +396,9 @@ const quizSlice = createSlice({
   reducers: {
     resetNewQuizCreatedFlag: (state) => {
       state.newQuizCreated = false;
+    },
+    setSubmissionTimeLatestQuizByCourseId: (state) => {
+      state.submissionTimeLatestQuizByCourseId = state.payload;
     },
   },
   extraReducers: (builder) => {
@@ -674,10 +690,26 @@ const quizSlice = createSlice({
       .addCase(resetNewQuizCreatedFlag, (state) => {
         state.newQuizCreated = false;
       })
-      .addCase(resetStateQuiz, () => initialState);
+      .addCase(resetStateQuiz, () => initialState)
+      .addCase(getSubmissionTimeLatestQuizByCourseId.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getSubmissionTimeLatestQuizByCourseId.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        console.log(action.payload);
+        state.submissionTimeLatestQuizByCourseId = action.payload;
+      })
+      .addCase(getSubmissionTimeLatestQuizByCourseId.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = "Something went wrong!";
+      });
   },
 });
 
-export const { resetNewQuizCreatedFlag } = quizSlice.actions;
+export const { resetNewQuizCreatedFlag, setSubmissionTimeLatestQuizByCourseId } = quizSlice.actions;
 
 export default quizSlice.reducer;

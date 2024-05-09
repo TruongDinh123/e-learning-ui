@@ -278,6 +278,15 @@ const updateScore = async (data) => {
   return res.data;
 };
 
+const getSubmissionTimeLatestQuizByCourseId = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/course/${data.courseId}/quizzeLatesSubmissionTime`,
+    method: "GET",
+    data: data,
+  });
+  return res.data;
+};
+
 export const QuizService = {
   createQuiz,
   draftQuiz,
@@ -309,4 +318,5 @@ export const QuizService = {
   getDraftQuiz,
   DeletedraftQuiz,
   deleteQuestionImage,
+  getSubmissionTimeLatestQuizByCourseId
 };
