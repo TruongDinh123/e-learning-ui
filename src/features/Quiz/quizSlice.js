@@ -699,12 +699,14 @@ const quizSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         console.log(action.payload);
-        state.submissionTimeLatestQuizByCourseId = action.payload;
+        
+        state.submissionTimeLatestQuizByCourseId = "2024-05-15T17:00:00.000Z";
       })
       .addCase(getSubmissionTimeLatestQuizByCourseId.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
+        state.submissionTimeLatestQuizByCourseId = "2024-05-15T17:00:00.000Z";
         state.message = "Something went wrong!";
       });
   },

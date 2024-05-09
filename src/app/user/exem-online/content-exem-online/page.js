@@ -38,10 +38,6 @@ export default function ContentExemplOnline({params}) {
     border: "none",
   };
 
-
-
-
-
   return (
     <main
       style={{
@@ -53,30 +49,10 @@ export default function ContentExemplOnline({params}) {
         <div className="mx-auto py-6 lg:py-16">
           <div className="text-center text-[#002c6a] text-xl lg:text-4xl font-bold uppercase">
             Cuộc thi đã kết thúc<br/>
-            <Countdown params={params} />
           </div>
-          <div className="mt-4 lg:mt-8">
-            <div className="flex items-center justify-center gap-4 lg:gap-8">
-              <div className="px-4 py-6 shadow-md min-w-[70px] lg:min-w-[130px] text-center rounded-lg">
-                <div className="text-xl lg:text-4xl text-[#002c6a] font-bold">
-                  --
-                </div>
-                <div className="lg:text-xl mt-2 text-[#686868]">Ngày</div>
-              </div>
-              <div className="px-4 py-6 shadow-md min-w-[70px] lg:min-w-[130px] text-center rounded-lg">
-                <div className="text-xl lg:text-4xl text-[#002c6a] font-bold">
-                  --
-                </div>
-                <div className="lg:text-xl mt-2 text-[#686868]">Tháng</div>
-              </div>
-              <div className="px-4 py-6 shadow-md min-w-[70px] lg:min-w-[130px] text-center rounded-lg">
-                <div className="text-xl lg:text-4xl text-[#002c6a] font-bold">
-                  --
-                </div>
-                <div className="lg:text-xl mt-2 text-[#686868]">Năm</div>
-              </div>
-            </div>
-          </div>
+          
+          <Countdown params={params} />
+
           <div className="mt-4 lg:mt-8 flex items-center justify-center gap-4 lg:gap-8">
             <button
               type="button"
