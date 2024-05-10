@@ -209,7 +209,7 @@ export default function Login() {
 
                 <div className='text-center'>
                   <CustomButton
-                    title={isLoading ? <Spin /> : 'Tạo tài khoản mới'}
+                    title={'Tạo tài khoản mới'}
                     type='primary'
                     disabled={isLoading}
                     onClick={() => router.push('/signup')}

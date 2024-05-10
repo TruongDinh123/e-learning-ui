@@ -43,18 +43,26 @@ export default function SignUp() {
         dispatch(registerUser(values))
         .then(unwrapResult)
         .then((res) => {
-          console.log(res)
-          // TODO: FIX ME
-          messageApi
-            .open({
-              type: "Thành công",
-              content: "Register successfully...",
-              duration: 2.5,
-            })
-            .then(() => message.info("Redirecting to login page...", 2.5))
-            .then(() => {
-              router.push("/login");
-            });
+          if(res.user){
+            messageApi
+                .open({
+                  type: "Thành công",
+                  content: "Đăng ký thành công",
+                  duration: 1,
+                })
+                .then(() => message.info("Di chuyển qua trang đăng nhập", 1))
+                .then(() => {
+                  router.push("/login");
+                });
+          } else {
+            messageApi
+                .open({
+                  type: "Thất bại",
+                  content: res.message ?? "Có lỗi xảy ra",
+                  duration: 2,
+                })
+          }
+
         });
       }
       
@@ -85,7 +93,7 @@ export default function SignUp() {
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm md:max-w-md">
           <h1 className="text-3xl font-bold p-2">Đăng ký tài khoản</h1>
           <form
-              action=""
+              action="signup"
               onSubmit={formik.handleSubmit}
               className="p-4  rounded"
           >
@@ -139,8 +147,6 @@ export default function SignUp() {
                 className="py-1 px-8 bg-blue-900 hover:bg-blue-400 mt-5
                 text-white text-center inline-block text-lg
                 my-1 mx-1 rounded-lg cursor-pointer border-none w-full"
-
-                onClick={() => formik.handleSubmit()}
             />
 
             <div className="mt-2 mb-2">

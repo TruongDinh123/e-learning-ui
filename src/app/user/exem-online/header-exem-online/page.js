@@ -22,10 +22,10 @@ export default function HeaderExemplOnline({title,logoOrg, bannerUrl}) {
           <div className="bg-[#00436ad0] flex items-center justify-end lg:grow lg:py-2 lg:px-4 rounded-full">
             <div className="flex items-center lg:order-2">
               <a
-                href=""
+                href="/"
                 className="font-medium rounded-lg lg:text-xl focus:outline-none px-2.5 py-2"
               >
-                Đăng ký tham dự
+                Trở về trang chủ
               </a>
             </div>
           </div>
