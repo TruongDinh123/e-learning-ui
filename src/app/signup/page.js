@@ -87,7 +87,7 @@ export default function SignUp() {
           <form
               action=""
               onSubmit={formik.handleSubmit}
-              className="form-wrapper p-4  rounded"
+              className="p-4  rounded"
           >
             <div className="flex flex-col space-y-4 mb-6">
               <label className="flex flex-col" htmlFor="email">
