@@ -55,8 +55,7 @@ export default function RootLayout({ children }) {
     );
 
     if (!loading && !isLessonPage && !isCourseDetailnPage) {
-      if (!token && pathname !== "/login" && pathname !== "/") {
-        if(pathname === "/signup") return;
+      if (!token && pathname !== "/login" && pathname !== "/" && pathname !== "/signup" && !pathname.startsWith("/user/exem-online")) {
         router.push("/login");
       } else if (pathname.includes("/admin") && !(isAdmin() || isMentor())) {
         router.push("/unauthorized");
@@ -83,7 +82,7 @@ export default function RootLayout({ children }) {
                   <React.Fragment>
                     {/* header teacher */}
                     {pathname.includes("/teacher") && <TeacherHeader />}
-                    {!pathname.includes("/admin") && pathname !== "/login" && (
+                    {!pathname.includes("/admin") && pathname !== "/login"  &&   pathname !== "/signup" &&(
                       <Header />
                     )}
                     <Content
@@ -149,6 +148,7 @@ export default function RootLayout({ children }) {
                   <Layout>
                     {!pathname.includes("/admin") &&
                       !pathname.includes("/user/exem-online") &&
+                        pathname !== "/signup" &&
                       pathname !== "/login" && <Header />}
                     {pathname.includes("/admin") && (
                       <AdminHeader

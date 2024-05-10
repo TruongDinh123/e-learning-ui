@@ -119,8 +119,8 @@ export default function Login() {
               <ForgotPassword onResetForm={handleResetForm} />
               <div className='flex items-center justify-between mt-4'>
                 <a
-                  href='#'
-                  className='text-xs text-blue-600 hover:underline hover:text-blue-800'
+                  href="#"
+                  className="text-xs text-blue-600 hover:underline hover:text-blue-800"
                   onClick={() => setIsForgotPass(false)}
                 >
                   Đăng nhập
@@ -198,7 +198,7 @@ export default function Login() {
                 <div className='flex items-center justify-center mt-2'>
                   <a
                     href='#'
-                    className='text-xs text-blue-600 hover:underline hover:text-blue-800'
+                    className='text-xs text-blue-800 hover:text-blue-800'
                     onClick={() => setIsForgotPass(true)}
                   >
                     Quên mật khẩu
