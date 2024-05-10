@@ -6,6 +6,7 @@ import {unwrapResult} from '@reduxjs/toolkit';
 import {getACourse} from '../../../../features/Courses/courseSlice';
 import {getTimePeriod} from './utils';
 import {useRouter} from 'next/navigation';
+import {Modal} from 'antd';
 
 const Countdown = ({params}) => {
   const router = useRouter();
@@ -15,7 +16,7 @@ const Countdown = ({params}) => {
     minutes: null,
     seconds: null,
     timeRefund: null,
-    checkTime: false
+    checkTime: false,
   });
   const latestQuizByCourseId = useSelector(
     (state) => state.quiz.latestQuizByCourseId
@@ -24,6 +25,22 @@ const Countdown = ({params}) => {
   const userCurrent = useSelector((state) => state.user.user);
 
   const dispatch = useDispatch();
+
+  const confirmStartQuiz = () => {
+    Modal.confirm({
+      title: 'Vui lòng xác nhận bắt đầu làm bài thi',
+      content:
+        'Lưu ý, trong quá trình làm bài, nếu bạn có các hành vi như: đóng hoặc tải lại trình duyệt, hệ thống sẽ ghi nhận trạng thái là đã hoàn thành.',
+      okText: 'Xác nhận',
+      cancelText: 'Huỷ',
+      onOk() {
+        router.push(
+          `/courses/view-details/submit-quiz/${latestQuizByCourseId._id}`
+        );
+      },
+      okButtonProps: {className: 'custom-button'},
+    });
+  };
 
   useEffect(() => {
     const getACourseData = () => {
@@ -48,22 +65,27 @@ const Countdown = ({params}) => {
       const timeMoment = moment(latestQuizByCourseId.submissionTime);
       const now = moment();
       const momentDiff = timeMoment.diff(now);
-      
+
       if (momentDiff > 0) {
         timeRun = setInterval(() => {
           const timeInit = getTimePeriod({
             submissionTime: latestQuizByCourseId.submissionTime,
           });
-          if(!timeInit.days && !timeInit.hours && !timeInit.minutes && !timeInit.seconds) {
+          if (
+            !timeInit.days &&
+            !timeInit.hours &&
+            !timeInit.minutes &&
+            !timeInit.seconds
+          ) {
             setTimeSubmission({
               ...timeInit,
-              checkTime: false
+              checkTime: false,
             });
             clearInterval(timeRun);
           } else {
             setTimeSubmission({
               ...timeInit,
-              checkTime: true
+              checkTime: true,
             });
           }
         }, 1000);
@@ -118,11 +140,8 @@ const Countdown = ({params}) => {
             type='button'
             className='inline-flex justify-center items-center px-4 py-2 border shadow-sm transition ease-in-out duration-150 gap-2 cursor-pointer min-h-[40px] disabled:cursor-not-allowed font-sans rounded-full bg-[#002c6a] border-[#002c6a] text-white hover:shadow-sm min-w-[125px] text-lg lg:text-2xl min-w-[150px] lg:min-w-[200px]'
             onClick={() => {
-              if (userCurrent && timeSubmission.checkTime)
-                router.push(
-                  `/courses/view-details/submit-quiz/${latestQuizByCourseId._id}`
-                );
-              if(!userCurrent) router.push('/login');
+              if (userCurrent && timeSubmission.checkTime) confirmStartQuiz();
+              if (!userCurrent) router.push('/login');
             }}
           >
             Tham gia
