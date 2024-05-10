@@ -22,7 +22,6 @@ export const getTimePeriod = ({submissionTime}) => {
     ? momentDiff % (86400000 * timeInit.days)
     : momentDiff % 86400000;
 
-  console.log(milisecondRefund, 'milisecondRefundmilisecondRefund');
   if (milisecondRefund) {
     timeInit.hours = Math.floor(milisecondRefund / 3600000);
     milisecondRefund = timeInit.hours
