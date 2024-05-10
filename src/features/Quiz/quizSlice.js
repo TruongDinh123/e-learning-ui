@@ -699,7 +699,6 @@ const quizSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
 
-        action.payload.metadata[0].submissionTime = '2024-05-10T04:14:14.000Z'
         state.latestQuizByCourseId = action.payload.metadata[0];
       })
       .addCase(getSubmissionTimeLatestQuizByCourseId.rejected, (state, action) => {
