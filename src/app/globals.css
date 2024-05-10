@@ -142,6 +142,10 @@ body {
   min-height: fit-content;
 }
 
+.justify-center {
+  justify-content: center;
+}
+
 main {
   background: inherit;
 }

@@ -385,7 +385,7 @@ const initialState = {
   newQuizCreated: false,
   isLoadingQuiz: false,
   message: "",
-  submissionTimeLatestQuizByCourseId: ""
+  latestQuizByCourseId: null
 };
 
 export const resetStateQuiz = createAction("Reset_all_quiz");
@@ -398,7 +398,7 @@ const quizSlice = createSlice({
       state.newQuizCreated = false;
     },
     setSubmissionTimeLatestQuizByCourseId: (state) => {
-      state.submissionTimeLatestQuizByCourseId = state.payload;
+      state.latestQuizByCourseId = state.payload;
     },
   },
   extraReducers: (builder) => {
@@ -698,15 +698,15 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        console.log(action.payload);
-        
-        state.submissionTimeLatestQuizByCourseId = "2024-05-15T17:00:00.000Z";
+
+        action.payload.metadata[0].submissionTime = '2024-05-10T04:14:14.000Z'
+        state.latestQuizByCourseId = action.payload.metadata[0];
       })
       .addCase(getSubmissionTimeLatestQuizByCourseId.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.submissionTimeLatestQuizByCourseId = "2024-05-15T17:00:00.000Z";
+       
         state.message = "Something went wrong!";
       });
   },

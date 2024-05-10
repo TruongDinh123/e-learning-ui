@@ -11,6 +11,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import * as yup from "yup";
 import { message } from "antd";
 import { useRouter } from "next/navigation";
+import './signup.css';
 
 const registerSchema = yup.object({
   lastName: yup.string().required("Last name is required"),
@@ -52,7 +53,7 @@ export default function SignUp() {
       
     },
   });
-  
+
   return (
     <div className="container-fluid bg-white">
       {contextHolder}
@@ -93,10 +94,10 @@ export default function SignUp() {
             <CustomButton
               title="register"
               type="primary"
-              className="w-100 d-block mb-3 mt-3"
-              style={{ color: "#fff", backgroundColor: "#1890ff" }}
+              className='py-1 px-8 bg-blue-900 hover:bg-blue-400 text-white text-center inline-block text-lg my-1 ml-0 mx-1 mt-4 rounded-lg cursor-pointer border-none w-full'
               onClick={() => formik.handleSubmit()}
             />
+
             <div className="mt-2 mb-2">
               <Link href="/login">
                 <span
