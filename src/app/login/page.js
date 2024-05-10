@@ -200,10 +200,17 @@ export default function Login() {
                 <div className="flex items-center justify-between mt-4">
                   <a
                     href="#"
-                    className="text-xs text-blue-600 hover:underline hover:text-blue-800"
+                    className="text-xs text-blue-800  hover:text-blue-800"
                     onClick={() => setIsForgotPass(true)}
                   >
                     Quên mật khẩu
+                  </a>
+
+                  <a
+                      href="/signup"
+                      className="text-xs text-blue-800  hover:text-blue-800"
+                  >
+                    <b>Đăng ký tài khoản</b>
                   </a>
                 </div>
               </form>
