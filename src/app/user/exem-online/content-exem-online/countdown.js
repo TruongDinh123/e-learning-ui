@@ -1,9 +1,8 @@
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
-import {getSubmissionTimeLatestQuizByCourseId} from '../../../../features/Quiz/quizSlice';
+import {getScore, getSubmissionTimeLatestQuizByCourseId} from '../../../../features/Quiz/quizSlice';
 import {unwrapResult} from '@reduxjs/toolkit';
-import {getACourse} from '../../../../features/Courses/courseSlice';
 import {getTimePeriod} from './utils';
 import {useRouter} from 'next/navigation';
 import {Modal} from 'antd';
@@ -21,25 +20,36 @@ const Countdown = ({params}) => {
   const latestQuizByCourseId = useSelector(
     (state) => state.quiz.latestQuizByCourseId
   );
+  const [isCompleted, setIsCompleted] = useState(false);
 
   const userCurrent = useSelector((state) => state.user.user);
 
   const dispatch = useDispatch();
 
   const confirmStartQuiz = () => {
-    Modal.confirm({
-      title: 'Vui lòng xác nhận bắt đầu làm bài thi',
-      content:
-        'Lưu ý, trong quá trình làm bài, nếu bạn có các hành vi như: đóng hoặc tải lại trình duyệt, hệ thống sẽ ghi nhận trạng thái là đã hoàn thành.',
-      okText: 'Xác nhận',
-      cancelText: 'Huỷ',
-      onOk() {
-        router.push(
-          `/courses/view-details/submit-quiz/${latestQuizByCourseId._id}`
-        );
-      },
-      okButtonProps: {className: 'custom-button'},
-    });
+    if(!isCompleted) {
+      Modal.confirm({
+        title: 'Vui lòng xác nhận bắt đầu làm bài thi',
+        content:
+            'Lưu ý, trong quá trình làm bài, nếu bạn có các hành vi như: đóng hoặc tải lại trình duyệt, hệ thống sẽ ghi nhận trạng thái là đã hoàn thành.',
+        okText: 'Xác nhận',
+        cancelText: 'Huỷ',
+        onOk() {
+          router.push(
+              `/courses/view-details/submit-quiz/${latestQuizByCourseId._id}`
+          );
+        },
+        okButtonProps: {className: 'custom-button'},
+      });
+    } else {
+      Modal.warning({
+        title: 'Không thể thi lại',
+        content:
+            'Lưu ý, mỗi thí sinh chỉ có thể thi 1 lần, bạn không thể thi lại bài thi này.',
+        okText: 'Xác nhận',
+        okButtonProps: {className: 'custom-button'},
+      });
+    }
   };
 
   useEffect(() => {
@@ -96,6 +106,24 @@ const Countdown = ({params}) => {
       timeRun && clearInterval(timeRun);
     };
   }, [latestQuizByCourseId]);
+
+  useEffect(() => {
+    dispatch(getScore())
+        .then(unwrapResult)
+        .then((res) => {
+          console.log(res);
+          if (res?.status) {
+            const completedQuiz = res?.metadata?.find(
+                (quiz) => quiz.quiz?._id === latestQuizByCourseId._id
+            );
+            console.log(completedQuiz)
+            if (completedQuiz) {
+              setIsCompleted(completedQuiz.isComplete);
+            }
+          }
+
+        })
+  }, [])
 
   return (
     <section>
