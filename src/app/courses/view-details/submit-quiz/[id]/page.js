@@ -343,7 +343,7 @@ export default function Quizs({ params }) {
             <Breadcrumb.Item key={quizIndex}>
               <Link
                 className="font-bold"
-                href={`/courses/view-course-details/${
+                href={`/user/exem-online/${
                   quiz.courseIds[0]?._id || quiz.lessonId?.courseId?._id
                 }`}
               >
