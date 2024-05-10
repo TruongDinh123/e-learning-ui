@@ -100,23 +100,23 @@ const ScoreManagement = () => {
   //table data
   let data = [];
   score?.forEach((i, index) => {
-    const EssayAnswer = ({ essayAnswer, filename }) => (
-      <div className="p-3">
-        <h3 className="font-bold">Câu trả lời của bạn</h3>
-        <div dangerouslySetInnerHTML={{ __html: essayAnswer }} />
-        <div>
-          <h3 className="text-lg font-bold mb-2">File đã nộp:</h3>
-          <a
-            href={filename}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 underline hover:text-blue-700"
-          >
-            Tải xuống tệp
-          </a>
-        </div>
-      </div>
-    );
+    // const EssayAnswer = ({ essayAnswer, filename }) => (
+    //   <div className="p-3">
+    //     <h3 className="font-bold">Câu trả lời của bạn</h3>
+    //     <div dangerouslySetInnerHTML={{ __html: essayAnswer }} />
+    //     <div>
+    //       <h3 className="text-lg font-bold mb-2">File đã nộp:</h3>
+    //       <a
+    //         href={filename}
+    //         target="_blank"
+    //         rel="noopener noreferrer"
+    //         className="text-blue-500 underline hover:text-blue-700"
+    //       >
+    //         Tải xuống tệp
+    //       </a>
+    //     </div>
+    //   </div>
+    // );
 
     const courseName =
       userState?.courses?.find((course) =>
@@ -126,7 +126,7 @@ const ScoreManagement = () => {
         i?.quiz?.courseIds?.includes(course?._id)
       )?.name;
 
-    if ((filter === "tất cả" && courseName) || courseName === filter) {
+    if ((filter === "tất cả") || courseName === filter) {
       data.push({
         key: index + 1,
         name: i?.quiz?.name ? i.quiz?.name : i.assignment?.name,
@@ -214,12 +214,31 @@ const ScoreManagement = () => {
                     style={{ maxHeight: "85vh", overflow: "auto" }}
                   />
                 )}
-                {i?.quiz?.type === "essay" && (
-                  <EssayAnswer
-                    essayAnswer={i?.essayAnswer}
-                    filename={i?.filename}
-                  />
-                )}
+                {/*{i?.quiz?.type === "essay" && (*/}
+                {/*  <EssayAnswer*/}
+                {/*    essayAnswer={i?.essayAnswer}*/}
+                {/*    filename={i?.filename}*/}
+                {/*  />*/}
+                {/*)}*/}
+
+                {i.predictAmount &&
+                (<div className="p-3">
+                  <h1 className="text-base">
+                    Câu {i?.quiz?.questions.length + 1}:
+                  </h1>
+                  <h3
+                      className="font-semibold py-3"
+                  >
+                    Dự đoán số lượng người tham dự
+                  </h3>
+                  <p className="pt-3 text-green-500 font-bold">
+                              <span style={{ color: "red" }}>
+                                Câu trả lời của bạn:
+                              </span>
+                    {i.predictAmount}
+                  </p>
+                  <div className="border-b-2"></div>
+                </div>)}
               </Collapse>
             </Drawer>
           </React.Fragment>

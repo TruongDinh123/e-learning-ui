@@ -516,6 +516,7 @@ export default function Quizs({ params }) {
                                 onBlur={handleBlurInputNumber}
                                 placeholder="Input a number"
                                 maxLength={16}
+                                disabled={submitted || isComplete}
                                 value={predictAmount}
                                 style={{
                                   width: 200,
