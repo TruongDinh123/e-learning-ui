@@ -213,7 +213,7 @@ export default function Login() {
                     type='primary'
                     disabled={isLoading}
                     onClick={() => router.push('/signup')}
-                    className='py-1 px-8 sign-up-block hover:bg-blue-400 text-white text-center inline-block text-lg my-1 mx-1 rounded-lg cursor-pointer border-none w-full'
+                    className='py-1 px-8 bg-blue-900 hover:bg-blue-400 text-white text-center inline-block text-lg my-1 ml-0 mx-1 rounded-lg cursor-pointer border-none w-full'
                   />
                 </div>
               </form>
