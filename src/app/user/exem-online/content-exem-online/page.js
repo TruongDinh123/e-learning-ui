@@ -2,6 +2,7 @@
 import {Collapse, Space, theme} from 'antd';
 import './page.css';
 import Countdown from './countdown';
+import Ranking from './ranking';
 
 export default function ContentExemplOnline({params}) {
   const text = `
@@ -45,22 +46,11 @@ export default function ContentExemplOnline({params}) {
       }}
     >
       <Countdown params={params} />
-      
+
       <section id='leaderboard'>
         <div className='container mx-auto px-2 lg:px-4 mt-6 lg:mt-16'>
           <div className='flex gap-8'>
-            <div className='hidden lg:block min-w-[250px]'>
-              <div className='flex justify-center items-end h-full bg-no-repeat bg-cover bg-center rounded-2xl bg-img'>
-                <div className='grow mx-4'>
-                  <div className='bg-white rounded-2xl w-full text-center py-2 mb-6'>
-                    <div className='text-[#002c6a] font-semibold text-3xl'>
-                      2079
-                    </div>{' '}
-                    lượt đăng ký
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Ranking />
             <div className='block grow'>
               <div className='block md:flex items-center mb-6'>
                 <div className='text-2xl lg:text-4xl text-[#002c6a] font-bold grow mb-2 md:mb-0'>

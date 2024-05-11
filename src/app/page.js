@@ -164,6 +164,9 @@ export default function Home1() {
                       <Link
                         href={`/user/exem-online/${course._id}`}
                         className="cursor-pointer"
+                        style={{
+                          width: "100%"
+                        }}
                       >
                         <div className="flex-grow">
                           <div className="text-yellow-500 text-lg font-semibold mb-1">
