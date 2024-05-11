@@ -146,7 +146,7 @@ export default function AddCourse(props) {
       )}
       <Modal
         title={
-          <h1 className="text-2xl font-bold text-blue-500">Create contest</h1>
+          <h1 className="text-2xl font-bold text-blue-500">Tạo cuộc thi</h1>
         }
         open={isModalOpen}
         onCancel={handleCancel}
@@ -164,14 +164,14 @@ export default function AddCourse(props) {
               onClick={handleOk}
               loading={isLoading}
             >
-              Save
+              Lưu
             </Button>
           </div>
         }
       >
         <div className="mt-10">
           <label htmlFor="course" className="text-lg font-medium">
-            Contest title:
+            Tên cuộc thi:
           </label>
           <CustomInput
             id="course"
@@ -189,7 +189,7 @@ export default function AddCourse(props) {
           />
 
           <label htmlFor="nameCenter" className="text-lg font-medium">
-            Organizer:
+            Tên tổ chức:
           </label>
           <CustomInput
             id="nameCenter"
@@ -209,7 +209,7 @@ export default function AddCourse(props) {
             htmlFor="courseDescription"
             className="text-lg font-medium mt-3"
           >
-            Description and Regulation:
+            Mô tả và thể lệ cuộc thi
           </label>
           <ReactQuill
             theme="snow"

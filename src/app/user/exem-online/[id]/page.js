@@ -15,7 +15,6 @@ export default function ExempleOnline({params}) {
         const fetchData = async () => {
             try {
                 const res = await dispatch(getCourseById(params.id)).then(unwrapResult);
-                console.log(res);
                 if (res.status === 200) {
                     const desiredCourse = res.metadata
                     setCourse(desiredCourse);

@@ -21,7 +21,7 @@ import { resetStateCategory } from "@/features/categories/categorySlice";
 import { resetStateLesson } from "@/features/Lesson/lessonSlice";
 import { resetStateQuiz } from "@/features/Quiz/quizSlice";
 
-const logo3 = "/images/logo5.png";
+const logo3 = "/images/logo-new.png";
 
 export default function AdminHeader(props) {
   const { setCollapsed, collapsed } = props;
