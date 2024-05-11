@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const RankingContent = ({rankingCalculator}) => {
   return (
     <div>
@@ -30,4 +32,4 @@ const RankingContent = ({rankingCalculator}) => {
   );
 };
 
-export default RankingContent;
+export default memo(RankingContent);

@@ -1,9 +1,13 @@
-"use client";
+'use client';
 
+import {
+  getCourseById,
+  updateCourseCurrent,
+} from '@/features/Courses/courseSlice';
+import { getSubmissionTimeLatestQuizByCourseId } from '../../../../features/Quiz/quizSlice';
 import ContentExemplOnline from "../content-exem-online/page";
 import HeaderExemplOnline from "../header-exem-online/page";
 import {useEffect, useState} from "react";
-import {getCourseById} from "@/features/Courses/courseSlice";
 import {unwrapResult} from "@reduxjs/toolkit";
 import {useDispatch, useSelector} from "react-redux";
 import {getAllUserFinishedCourse} from "@/features/Quiz/quizSlice";
@@ -16,21 +20,23 @@ export default function ExempleOnline({params}) {
     );
     const [userFinishedCourse, setUserFinishedCourse] = useState([]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await dispatch(getCourseById(params.id)).then(unwrapResult);
-                if (res.status === 200) {
-                    const desiredCourse = res.metadata
-                    setCourse(desiredCourse);
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await dispatch(getCourseById(params.id)).then(unwrapResult);
+        if (res.status === 200) {
+          const desiredCourse = res.metadata;
 
-        fetchData();
-    }, [dispatch, params?.id]);
+          dispatch(getSubmissionTimeLatestQuizByCourseId({courseId: desiredCourse._id}))
+          dispatch(updateCourseCurrent({courseCurrent: desiredCourse}));
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [dispatch, params?.id]);
 
     useEffect(() => {
         const getDataForRanking = async () => {
@@ -49,8 +55,8 @@ export default function ExempleOnline({params}) {
 
   return (
     <>
-      <HeaderExemplOnline title={course.name} logoOrg={course.image_url} bannerUrl={course.banner_url}/>
-      <ContentExemplOnline contest={course} params={params} userFinishedCourse={userFinishedCourse}/>
+      <HeaderExemplOnline/>
+      <ContentExemplOnline userFinishedCourse={userFinishedCourse}/>
     </>
   );
 }

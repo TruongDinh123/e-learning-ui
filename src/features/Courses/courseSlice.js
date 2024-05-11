@@ -289,7 +289,7 @@ const initialState = {
   course: "",
   subCourses: [],
   courses: [],
-  Acourse: {},
+  courseInfo: {},
   getACourse: {},
   isError: false,
   isSuccess: false,
@@ -303,6 +303,10 @@ const courseSlice = createSlice({
   name: "course",
   initialState,
   reducers: {
+    updateCourseCurrent: (state,action) => {
+      const { courseCurrent } = action.payload;
+      state.courseInfo = courseCurrent;
+    },
     updateCourseImage: (state, action) => {
       const { courseId, imageUrl } = action.payload;
       const courseIndex = state.courses.metadata.findIndex(
@@ -485,7 +489,7 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.Acourse = action.payload;
+        state.courseInfo = action.payload;
       })
       .addCase(getACourseByInfo.rejected, (state, action) => {
         state.isLoading = false;
@@ -516,6 +520,7 @@ export const {
   updateCourseImage,
   addStudentToCourseSuccess,
   removeStudentFromCourseSuccess,
+  updateCourseCurrent,
 } = courseSlice.actions;
 
 export default courseSlice.reducer;

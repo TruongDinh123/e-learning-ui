@@ -41,13 +41,19 @@ export default function CustomFooter() {
             <h5 className="font-bold mb-4 text-[#C89F65]">ĐỊA CHỈ</h5>
             <ul className="space-y-2">
               <li>
-                <span>95EdTech From 95 Solutions Team</span>
+                <span>Chuyên trang trắc nghiệm online ExamOne</span>
               </li>
               <li>
-                <span>Địa chỉ: Hưng Nhượng, Giồng Trôm, Bến Tre</span>
+                <span>Cơ quan chủ quản: Phòng Phổ biến và Theo dõi thi hành pháp luật</span>
               </li>
               <li>
-                <span>Email: 247learn.vn@gmail.com</span>
+                <span>Điện thoại: <a href="tel:+02753839232">02753.839.232</a></span>
+              </li>
+              <li>
+                <span>Địa chỉ: Số 17, đường Cách Mạng Tháng Tám, phường An Hội, thành phố Bến Tre, tỉnh Bến Tre</span>
+              </li>
+              <li>
+                <span>Email: gdpl.stp@bentre.gov.vn</span>
               </li>
             </ul>
           </div>
@@ -98,7 +104,7 @@ export default function CustomFooter() {
           </div> */}
         </div>
         <p className="text-center mt-8">
-          © 2024 95EdTech From 95 Solutions Team (version 1.7){" "}
+          © 2024 95IDEAL TECHNOLOGY BENTRE (version 1.7){" "}
         </p>
       </div>
     </footer>
