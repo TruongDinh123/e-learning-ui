@@ -97,7 +97,7 @@ const Countdown = ({params}) => {
   }, [latestQuizByCourseId]);
 
   useEffect(() => {
-    latestQuizByCourseId._d &&
+    latestQuizByCourseId && latestQuizByCourseId._d &&
       dispatch(getScore())
         .then(unwrapResult)
         .then((res) => {
@@ -107,10 +107,10 @@ const Countdown = ({params}) => {
             );
             if (completedQuiz) {
               setIsCompleted(completedQuiz.isComplete);
-            }
+            }``
           }
         });
-  }, [dispatch, latestQuizByCourseId, latestQuizByCourseId._id]);
+  }, [dispatch, latestQuizByCourseId]);
 
   return (
     <section>
