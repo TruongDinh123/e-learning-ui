@@ -5,14 +5,31 @@ import RankingImage from './rankingImage';
 import RankingContent from './rankingContent';
 import Rules from './rules';
 
-export default function ContentExemplOnline() {
+export default function ContentExemplOnline({userFinishedCourse}) {
 
-  // const panelStyle = {
-  //   marginBottom: 24,
-  //   background: token.colorFillAlter,
-  //   borderRadius: token.borderRadiusLG,
-  //   border: 'none',
-  // };
+  let rankingCalculator = []
+  const completeCaps = {
+    "Cấp xã": 0,
+    "Cấp huyện": 0,
+    "Cấp tỉnh": 0,
+    "Đơn vị khác": 0
+  };
+
+  if (userFinishedCourse) {
+    userFinishedCourse.forEach(user => {
+      const cap = user.cap || 'Đơn vị khác'; // Default to 'Đơn vị khác' if no 'cap' is defined
+      if (completeCaps.hasOwnProperty(cap)) {
+        completeCaps[cap] += 1;
+      } else {
+        completeCaps["Đơn vị khác"] += 1;
+      }
+    });
+
+    // If ranking is necessary, then sort the entries
+    rankingCalculator = Object.entries(completeCaps)
+        .sort((a, b) => b[1] - a[1])
+        .map(([cap, count]) => ({ cap, count }));
+  }
 
 
   return (
@@ -33,28 +50,8 @@ export default function ContentExemplOnline() {
                 <div className='text-2xl lg:text-4xl text-[#002c6a] font-bold grow mb-2 md:mb-0'>
                   BẢNG XẾP HẠNG
                 </div>
-                <div className='flex items-center gap-4'>
-                  <div>
-                    <select
-                      name=''
-                      id=''
-                      className='border custom-select appearance-none border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full p-2 pl-4 pr-8'
-                    >
-                      <option value='group'>Tập thể</option>
-                      <option value='personal'>Cá nhân</option>
-                    </select>
-                  </div>
-                  <div>
-                    <select
-                      className='border custom-select appearance-none border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full p-2 pl-4 pr-8'
-                      style={{
-                        display: 'none',
-                      }}
-                    ></select>
-                  </div>
-                </div>
               </div>
-              <RankingContent />
+              <RankingContent rankingCalculator={rankingCalculator}/>
             </div>
           </div>
         </div>
@@ -96,7 +93,6 @@ export default function ContentExemplOnline() {
         {/*    </div>*/}
         {/*  </div>*/}
         {/*</section>*/}
-      {/* </div> */}
     </main>
   );
 }

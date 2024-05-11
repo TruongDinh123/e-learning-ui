@@ -18,12 +18,6 @@ const RankingImage = () => {
         <div className='star-icon-block'>
         <Image src={star} alt="star" />
         </div>
-        <div className='grow mx-4 rounded-lg ranking-info'>
-          <div className='bg-white w-full text-center py-2 mb-2'>
-            <div className='text-[#002c6a] font-semibold text-3xl'>2079</div>{' '}
-            lượt đăng ký
-          </div>
-        </div>
       </div>
     </div>
   );

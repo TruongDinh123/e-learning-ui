@@ -43,7 +43,7 @@ export default function HeaderExemplOnline() {
         <div className='max-w-screen-xl mx-auto mt-4 lg:mt-8'>
           <Image
             src={
-              courseInfo?.bannerUrl ??
+              courseInfo?.banner_url ??
               'https://myaloha.vn/upload/images/banner/banner_1011571_1684482408_ceafed9c-c81f-4aaa-9abb-3b4954db9d5f.png'
             }
             className='max-w-full h-auto mx-auto rounded-xl'
@@ -54,7 +54,7 @@ export default function HeaderExemplOnline() {
       <div
         dangerouslySetInnerHTML={{
           __html:
-            courseInfo?.title ??
+            courseInfo?.name ??
             'Cuộc thi trực tuyến “Tìm hiểu về công tác bảo vệ môi trường” năm 2023',
         }}
         className='px-4 lg:px-6 py-2 uppercase text-lg lg:text-4xl text-center text-white bg-[#00436ad0] mt-4 lg:mt-12'
