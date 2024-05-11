@@ -107,7 +107,7 @@ const Countdown = ({params}) => {
             );
             if (completedQuiz) {
               setIsCompleted(completedQuiz.isComplete);
-            }``
+            }
           }
         });
   }, [dispatch, latestQuizByCourseId]);
