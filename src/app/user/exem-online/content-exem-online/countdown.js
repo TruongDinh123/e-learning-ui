@@ -1,15 +1,13 @@
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
-import {getScore, getSubmissionTimeLatestQuizByCourseId} from '../../../../features/Quiz/quizSlice';
+import {getScore} from '../../../../features/Quiz/quizSlice';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {getTimePeriod} from './utils';
 import {useRouter} from 'next/navigation';
 import {Modal} from 'antd';
 
 const Countdown = ({params}) => {
-  const courseInfo = useSelector((state) => state.course.courseInfo);
-
   const router = useRouter();
   const [timeSubmission, setTimeSubmission] = useState({
     days: null,
@@ -17,11 +15,15 @@ const Countdown = ({params}) => {
     minutes: null,
     seconds: null,
     timeRefund: null,
-    checkTime: false,
+    checkTime: null,
   });
   const latestQuizByCourseId = useSelector(
     (state) => state.quiz.latestQuizByCourseId
   );
+  const quiz = useSelector((state) => state.quiz);
+
+  console.log(quiz, 'quizquizquiz');
+
   const [isCompleted, setIsCompleted] = useState(false);
 
   const userCurrent = useSelector((state) => state.user.user);
@@ -29,16 +31,16 @@ const Countdown = ({params}) => {
   const dispatch = useDispatch();
 
   const confirmStartQuiz = () => {
-    if(!isCompleted) {
+    if (!isCompleted) {
       Modal.confirm({
         title: 'Vui lòng xác nhận bắt đầu làm bài thi',
         content:
-            'Lưu ý, trong quá trình làm bài, nếu bạn có các hành vi như: đóng hoặc tải lại trình duyệt, hệ thống sẽ ghi nhận trạng thái là đã hoàn thành.',
+          'Lưu ý, trong quá trình làm bài, nếu bạn có các hành vi như: đóng hoặc tải lại trình duyệt, hệ thống sẽ ghi nhận trạng thái là đã hoàn thành.',
         okText: 'Xác nhận',
         cancelText: 'Huỷ',
         onOk() {
           router.push(
-              `/courses/view-details/submit-quiz/${latestQuizByCourseId._id}`
+            `/courses/view-details/submit-quiz/${latestQuizByCourseId._id}`
           );
         },
         okButtonProps: {className: 'custom-button'},
@@ -47,28 +49,12 @@ const Countdown = ({params}) => {
       Modal.warning({
         title: 'Không thể thi lại',
         content:
-            'Lưu ý, mỗi thí sinh chỉ có thể thi 1 lần, bạn không thể thi lại bài thi này.',
+          'Lưu ý, mỗi thí sinh chỉ có thể thi 1 lần, bạn không thể thi lại bài thi này.',
         okText: 'Xác nhận',
         okButtonProps: {className: 'custom-button'},
       });
     }
   };
-
-  useEffect(() => {
-    const getACourseData = () => {
-      dispatch(getSubmissionTimeLatestQuizByCourseId({courseId: courseInfo._id}))
-        .then(unwrapResult)
-        .then((res) => {
-          if (res.status) {
-            refresh();
-          } else {
-            messageApi.error(res.message);
-          }
-        })
-        .catch((error) => {});
-    };
-    courseInfo && getACourseData();
-  }, [courseInfo, courseInfo._id, dispatch]);
 
   useEffect(() => {
     let timeRun = null;
@@ -101,7 +87,11 @@ const Countdown = ({params}) => {
             });
           }
         }, 1000);
+        return;
       }
+      setTimeSubmission({
+        checkTime: false,
+      });
     }
 
     return () => {
@@ -110,26 +100,28 @@ const Countdown = ({params}) => {
   }, [latestQuizByCourseId]);
 
   useEffect(() => {
-    dispatch(getScore())
+    latestQuizByCourseId._d &&
+      dispatch(getScore())
         .then(unwrapResult)
         .then((res) => {
           if (res?.status) {
             const completedQuiz = res?.metadata?.find(
-                (quiz) => quiz.quiz?._id === latestQuizByCourseId._id
+              (quiz) => quiz.quiz?._id === latestQuizByCourseId._id
             );
             if (completedQuiz) {
               setIsCompleted(completedQuiz.isComplete);
             }
           }
-
-        })
-  }, [])
+        });
+  }, [dispatch, latestQuizByCourseId._d, latestQuizByCourseId._id]);
 
   return (
     <section>
       <div className='mx-auto py-6 lg:py-16'>
         <div className='text-center text-[#002c6a] text-xl lg:text-4xl font-bold uppercase'>
-          {timeSubmission.checkTime
+          {timeSubmission.checkTime === null
+            ? '...'
+            : timeSubmission.checkTime
             ? ' CUỘC THI KẾT THÚC TRONG'
             : 'CUỘC THI ĐÃ KẾT THÚC'}
           <br />

@@ -9,6 +9,7 @@ import {
 } from '@/features/Courses/courseSlice';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {useDispatch} from 'react-redux';
+import { getSubmissionTimeLatestQuizByCourseId } from '../../../../features/Quiz/quizSlice';
 
 export default function ExempleOnline({params}) {
   const dispatch = useDispatch();
@@ -19,6 +20,8 @@ export default function ExempleOnline({params}) {
         const res = await dispatch(getCourseById(params.id)).then(unwrapResult);
         if (res.status === 200) {
           const desiredCourse = res.metadata;
+
+          dispatch(getSubmissionTimeLatestQuizByCourseId({courseId: desiredCourse._id}))
           dispatch(updateCourseCurrent({courseCurrent: desiredCourse}));
         }
       } catch (error) {
