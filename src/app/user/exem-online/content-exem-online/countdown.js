@@ -110,7 +110,7 @@ const Countdown = ({params}) => {
             }
           }
         });
-  }, [dispatch, latestQuizByCourseId._d, latestQuizByCourseId._id]);
+  }, [dispatch, latestQuizByCourseId, latestQuizByCourseId._id]);
 
   return (
     <section>
