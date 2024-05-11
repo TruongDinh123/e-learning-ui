@@ -22,7 +22,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { logOut, resetState, setUser, setUserName } from "@/features/User/userSlice";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { getAllCategoryAndSubCourses, resetStateCategory } from "@/features/categories/categorySlice";
+// import { getAllCategoryAndSubCourses, resetStateCategory } from "@/features/categories/categorySlice";
 import { resetStateCourse } from "@/features/Courses/courseSlice";
 import { resetStateLesson } from "@/features/Lesson/lessonSlice";
 import { resetStateQuiz } from "@/features/Quiz/quizSlice";
@@ -106,7 +106,7 @@ export default function HeaderUser() {
         dispatch(setUserName(null));
         dispatch(setUser(null));
         dispatch(resetStateCourse());
-        dispatch(resetStateCategory());
+        // dispatch(resetStateCategory());
         dispatch(resetStateLesson());
         dispatch(resetStateQuiz());
         router.push("/");
@@ -145,25 +145,25 @@ export default function HeaderUser() {
 
   const [categories, setCategories] = useState([]);
 
-  useEffect(() => {
-    dispatch(getAllCategoryAndSubCourses())
-      .then(unwrapResult)
-      .then((res) => {
-        setCategories(res.metadata);
-      })
-      .catch((error) => {
-        console.error("Error fetching categories:", error);
-      });
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getAllCategoryAndSubCourses())
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       setCategories(res.metadata);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching categories:", error);
+  //     });
+  // }, [dispatch]);
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
   };
 
   //lấy ra các category có ít nhất 1 khóa học
-  const categoriesWithCourses = categories.filter(
-    (category) => category.courses && category.courses.length > 0
-  );
+  // const categoriesWithCourses = categories.filter(
+  //   (category) => category.courses && category.courses.length > 0
+  // );
 
   return (
     <header className="bg-[#02354B] fixed w-full top-0 z-50">
@@ -177,92 +177,92 @@ export default function HeaderUser() {
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                <Popover className="relative">
-                  <Popover.Button className="">
-                    <div className="ml-3 relative">
-                      <div className="flex items-center space-x-4">
-                        <a
-                          aria-current="page"
-                          className="text-white py-2 rounded-md text-sm font-medium"
-                          href="#"
-                        >
-                          Danh mục
-                        </a>
-                        <ChevronDownIcon className="h-4 w-4 text-white" />
-                      </div>
-                    </div>
-                  </Popover.Button>
-
-                  <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-200"
-                    enterFrom="opacity-0 translate-y-1"
-                    enterTo="opacity-100 translate-y-0"
-                    leave="transition ease-in duration-150"
-                    leaveFrom="opacity-100 translate-y-0"
-                    leaveTo="opacity-0 translate-y-1"
-                  >
-                    <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-black/5">
-                      <div
-                        className="p-1"
-                        style={{ maxHeight: "500px", overflowY: "auto" }}
-                      >
-                        <div className="flex space-x-6 p-6 bg-white">
-                          <nav aria-label="Main navigation" className="w-3/6">
-                            <ul className="space-y-1">
-                              {categoriesWithCourses.map((category) => (
-                                <li key={category?._id}>
-                                  <a
-                                    className="flex justify-between items-center p-2 hover:bg-gray-100 rounded"
-                                    href="#"
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      handleCategorySelect(category);
-                                    }}
-                                  >
-                                    {category.name}
-                                    <ChevronRightIcon className="w-4 h-4" />
-                                  </a>
-                                </li>
-                              ))}
-                            </ul>
-                          </nav>
-                          <div className="w-5/6 overflow-auto max-h-[500px]">
-                            {selectedCategory && (
-                              <div key={selectedCategory?._id}>
-                                <h2 className="text-xl font-semibold mb-4">
-                                  {selectedCategory.name}
-                                </h2>
-                                {selectedCategory.courses
-                                  .filter(
-                                    (course) => course.showCourse === true
-                                  )
-                                  .map((course) => (
-                                    <div key={course?._id} className="mb-6">
-                                      <Link
-                                        className="text-sm text-[#C89F65] font-medium mb-2"
-                                        href={`/courses/view-course-details/${course?._id}`}
-                                      >
-                                        {course.name}
-                                      </Link>
-                                    </div>
-                                  ))}
-                                <div className="mt-4">
-                                  <a
-                                    className="text-blue-600 hover:underline"
-                                    href="#"
-                                  >
-                                    {/* Tất cả &quot;{selectedCategory.name}&quot; */}
-                                  </a>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </Popover.Panel>
-                  </Transition>
-                </Popover>
+                {/*<Popover className="relative">*/}
+                {/*  <Popover.Button className="">*/}
+                {/*    <div className="ml-3 relative">*/}
+                {/*      <div className="flex items-center space-x-4">*/}
+                {/*        <a*/}
+                {/*          aria-current="page"*/}
+                {/*          className="text-white py-2 rounded-md text-sm font-medium"*/}
+                {/*          href="#"*/}
+                {/*        >*/}
+                {/*          Danh mục*/}
+                {/*        </a>*/}
+                {/*        <ChevronDownIcon className="h-4 w-4 text-white" />*/}
+                {/*      </div>*/}
+                {/*    </div>*/}
+                {/*  </Popover.Button>*/}
+                
+                {/*  <Transition*/}
+                {/*    as={Fragment}*/}
+                {/*    enter="transition ease-out duration-200"*/}
+                {/*    enterFrom="opacity-0 translate-y-1"*/}
+                {/*    enterTo="opacity-100 translate-y-0"*/}
+                {/*    leave="transition ease-in duration-150"*/}
+                {/*    leaveFrom="opacity-100 translate-y-0"*/}
+                {/*    leaveTo="opacity-0 translate-y-1"*/}
+                {/*  >*/}
+                {/*    <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-black/5">*/}
+                {/*      <div*/}
+                {/*        className="p-1"*/}
+                {/*        style={{ maxHeight: "500px", overflowY: "auto" }}*/}
+                {/*      >*/}
+                {/*        <div className="flex space-x-6 p-6 bg-white">*/}
+                {/*          <nav aria-label="Main navigation" className="w-3/6">*/}
+                {/*            <ul className="space-y-1">*/}
+                {/*              {categoriesWithCourses.map((category) => (*/}
+                {/*                <li key={category?._id}>*/}
+                {/*                  <a*/}
+                {/*                    className="flex justify-between items-center p-2 hover:bg-gray-100 rounded"*/}
+                {/*                    href="#"*/}
+                {/*                    onClick={(e) => {*/}
+                {/*                      e.preventDefault();*/}
+                {/*                      handleCategorySelect(category);*/}
+                {/*                    }}*/}
+                {/*                  >*/}
+                {/*                    {category.name}*/}
+                {/*                    <ChevronRightIcon className="w-4 h-4" />*/}
+                {/*                  </a>*/}
+                {/*                </li>*/}
+                {/*              ))}*/}
+                {/*            </ul>*/}
+                {/*          </nav>*/}
+                {/*          <div className="w-5/6 overflow-auto max-h-[500px]">*/}
+                {/*            {selectedCategory && (*/}
+                {/*              <div key={selectedCategory?._id}>*/}
+                {/*                <h2 className="text-xl font-semibold mb-4">*/}
+                {/*                  {selectedCategory.name}*/}
+                {/*                </h2>*/}
+                {/*                {selectedCategory.courses*/}
+                {/*                  .filter(*/}
+                {/*                    (course) => course.showCourse === true*/}
+                {/*                  )*/}
+                {/*                  .map((course) => (*/}
+                {/*                    <div key={course?._id} className="mb-6">*/}
+                {/*                      <Link*/}
+                {/*                        className="text-sm text-[#C89F65] font-medium mb-2"*/}
+                {/*                        href={`/courses/view-course-details/${course?._id}`}*/}
+                {/*                      >*/}
+                {/*                        {course.name}*/}
+                {/*                      </Link>*/}
+                {/*                    </div>*/}
+                {/*                  ))}*/}
+                {/*                <div className="mt-4">*/}
+                {/*                  <a*/}
+                {/*                    className="text-blue-600 hover:underline"*/}
+                {/*                    href="#"*/}
+                {/*                  >*/}
+                {/*                    /!* Tất cả &quot;{selectedCategory.name}&quot; *!/*/}
+                {/*                  </a>*/}
+                {/*                </div>*/}
+                {/*              </div>*/}
+                {/*            )}*/}
+                {/*          </div>*/}
+                {/*        </div>*/}
+                {/*      </div>*/}
+                {/*    </Popover.Panel>*/}
+                {/*  </Transition>*/}
+                {/*</Popover>*/}
 
                 {/* search */}
                 <div className="relative">
