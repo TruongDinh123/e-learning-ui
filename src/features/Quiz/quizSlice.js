@@ -373,6 +373,19 @@ export const getSubmissionTimeLatestQuizByCourseId = createAsyncThunk(
   }
 );
 
+export const getAllUserFinishedCourse = createAsyncThunk(
+    "/e-learning/userFinishedCourses",
+    async (data, { rejectWithValue }) => {
+
+    try {
+        const response = await QuizService.getAllUserFinishedCourse(data);
+        return response;
+    } catch (err) {
+        return rejectWithValue(err);
+    }
+    });
+
+
 const initialState = {
   quiz: "",
   getQuizzesByStudentAndCourse: [],

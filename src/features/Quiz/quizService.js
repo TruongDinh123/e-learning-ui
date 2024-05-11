@@ -287,6 +287,16 @@ const getSubmissionTimeLatestQuizByCourseId = async (data) => {
   return res.data;
 };
 
+const getAllUserFinishedCourse = async (data) => {
+    const res = await axiosInstance({
+        url: `/e-learning/userFinishedCourses/${data._id}`,
+        method: "GET",
+        data: data,
+    });
+    return res.data;
+}
+
+
 export const QuizService = {
   createQuiz,
   draftQuiz,
@@ -318,5 +328,6 @@ export const QuizService = {
   getDraftQuiz,
   DeletedraftQuiz,
   deleteQuestionImage,
-  getSubmissionTimeLatestQuizByCourseId
+  getSubmissionTimeLatestQuizByCourseId,
+  getAllUserFinishedCourse
 };
