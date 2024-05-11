@@ -20,9 +20,6 @@ const Countdown = ({params}) => {
   const latestQuizByCourseId = useSelector(
     (state) => state.quiz.latestQuizByCourseId
   );
-  const quiz = useSelector((state) => state.quiz);
-
-  console.log(quiz, 'quizquizquiz');
 
   const [isCompleted, setIsCompleted] = useState(false);
 

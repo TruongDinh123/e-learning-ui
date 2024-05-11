@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 const RankingContent = () => {
   
 
@@ -74,4 +76,4 @@ const RankingContent = () => {
   );
 };
 
-export default RankingContent;
+export default memo(RankingContent);

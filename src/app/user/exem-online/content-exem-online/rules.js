@@ -1,5 +1,5 @@
 import {Collapse, Space} from 'antd';
-import {useEffect, useState} from 'react';
+import {memo} from 'react';
 import {useSelector} from 'react-redux';
 
 const Rules = () => {
@@ -54,4 +54,4 @@ const Rules = () => {
   );
 };
 
-export default Rules;
+export default memo(Rules);

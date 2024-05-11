@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import ranking_bg from '/public/images/ranking-bg.jpg';
 import star from '/public/images/star.png';
+import { memo } from 'react';
 
 
 const RankingImage = () => {
@@ -28,4 +29,4 @@ const RankingImage = () => {
   );
 };
 
-export default RankingImage;
+export default memo(RankingImage);
