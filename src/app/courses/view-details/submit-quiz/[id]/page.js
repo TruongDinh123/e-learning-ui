@@ -544,75 +544,81 @@ export default function Quizs({ params }) {
                         </button>
                       )}
                     </div>
+
+
                     <div className="mt-4">
-                      {isComplete && (
-                        <div className="text-center text-sm text-blue-500">
-                          <p className="py-4">Bạn đã hoàn thành bài kiểm tra</p>
-                          {quiz.map((quiz, quizIndex) => (
-                            <a
-                              key={quizIndex}
-                              href={`/courses/view-details/${
-                                quiz.courseIds[0]?._id ||
-                                quiz.lessonId?.courseId?._id
-                              }`}
-                              className="inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                            >
-                              Danh sách bài tập
-                            </a>
-                          ))}
-                        </div>
-                      )}
-                      {submitted && (
-                        <div className="text-center">
-                          {quiz.map((quiz, quizIndex) => (
-                            <a
-                              key={quizIndex}
-                              href={`/courses/view-details/${
-                                quiz.courseIds[0]?._id ||
-                                quiz.lessonId?.courseId?._id
-                              }`}
-                              className="inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2"
-                            >
-                              Danh sách bài tập
-                            </a>
-                          ))}
-                          <a
-                            href="/courses/view-score"
-                            className="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                          >
-                            Xem điểm
-                          </a>
-                          <div className="pt-4">
-                            {quizSubmission && (
-                              <div className="bg-white shadow-lg rounded-lg p-5">
-                                <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                                  Kết quả bài kiểm tra
-                                </h3>
-                                <p className="text-lg text-gray-700">
-                                  Điểm số của bạn:{" "}
-                                  <span className="font-bold text-green-500">
-                                    {quizSubmission?.score}/
-                                    {totalQuestions * 10}
-                                  </span>
-                                </p>
-                                <p className="text-lg text-gray-700">
-                                  Số câu trả lời đúng:{" "}
-                                  <span className="font-bold text-blue-500">
-                                    {correctAnswersCount}
-                                  </span>
-                                  /{totalQuestions}
-                                </p>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )}
+                      {/*{isComplete && (*/}
+                      {/*  <div className="text-center text-sm text-blue-500">*/}
+                      {/*    <p className="py-4">Bạn đã hoàn thành bài kiểm tra</p>*/}
+                      {/*    {quiz.map((quiz, quizIndex) => (*/}
+                      {/*      <a*/}
+                      {/*        key={quizIndex}*/}
+                      {/*        href={`/courses/view-details/${*/}
+                      {/*          quiz.courseIds[0]?._id ||*/}
+                      {/*          quiz.lessonId?.courseId?._id*/}
+                      {/*        }`}*/}
+                      {/*        className="inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"*/}
+                      {/*      >*/}
+                      {/*        Danh sách bài tập*/}
+                      {/*      </a>*/}
+                      {/*    ))}*/}
+                      {/*  </div>*/}
+                      {/*)}*/}
+                      {/*{submitted && (*/}
+                      {/*  <div className="text-center">*/}
+                      {/*    {quiz.map((quiz, quizIndex) => (*/}
+                      {/*      <a*/}
+                      {/*        key={quizIndex}*/}
+                      {/*        href={`/courses/view-details/${*/}
+                      {/*          quiz.courseIds[0]?._id ||*/}
+                      {/*          quiz.lessonId?.courseId?._id*/}
+                      {/*        }`}*/}
+                      {/*        className="inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2"*/}
+                      {/*      >*/}
+                      {/*        Danh sách bài tập*/}
+                      {/*      </a>*/}
+                      {/*    ))}*/}
+                      {/*    <a*/}
+                      {/*      href="/courses/view-score"*/}
+                      {/*      className="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"*/}
+                      {/*    >*/}
+                      {/*      Xem điểm*/}
+                      {/*    </a>*/}
+                      {/*    <div className="pt-4">*/}
+                      {/*      {quizSubmission && (*/}
+                      {/*        <div className="bg-white shadow-lg rounded-lg p-5">*/}
+                      {/*          <h3 className="text-xl font-semibold text-gray-800 mb-4">*/}
+                      {/*            Kết quả bài kiểm tra*/}
+                      {/*          </h3>*/}
+                      {/*          <p className="text-lg text-gray-700">*/}
+                      {/*            Điểm số của bạn:{" "}*/}
+                      {/*            <span className="font-bold text-green-500">*/}
+                      {/*              {quizSubmission?.score}/*/}
+                      {/*              {totalQuestions * 10}*/}
+                      {/*            </span>*/}
+                      {/*          </p>*/}
+                      {/*          <p className="text-lg text-gray-700">*/}
+                      {/*            Số câu trả lời đúng:{" "}*/}
+                      {/*            <span className="font-bold text-blue-500">*/}
+                      {/*              {correctAnswersCount}*/}
+                      {/*            </span>*/}
+                      {/*            /{totalQuestions}*/}
+                      {/*          </p>*/}
+                      {/*        </div>*/}
+                      {/*      )}*/}
+                      {/*    </div>*/}
+                      {/*  </div>*/}
+                      {/*)}*/}
+
+
                       {isTimeExceeded && !isComplete && (
                         <div className="font-bold text-sm text-red-500">
                           Thời gian làm bài đã hết
                         </div>
                       )}
                     </div>
+
+
                   </div>
                 </React.Fragment>
               ))}
