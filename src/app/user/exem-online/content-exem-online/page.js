@@ -2,7 +2,8 @@
 import {Collapse, Space, theme} from 'antd';
 import './page.css';
 import Countdown from './countdown';
-import Ranking from './ranking';
+import RankingImage from './rankingImage';
+import RankingContent from './rankingContent';
 
 export default function ContentExemplOnline({params}) {
   const text = `
@@ -50,7 +51,7 @@ export default function ContentExemplOnline({params}) {
       <section id='leaderboard'>
         <div className='container mx-auto px-2 lg:px-4 mt-6 lg:mt-16'>
           <div className='flex gap-8'>
-            <Ranking />
+            <RankingImage />
             <div className='block grow'>
               <div className='block md:flex items-center mb-6'>
                 <div className='text-2xl lg:text-4xl text-[#002c6a] font-bold grow mb-2 md:mb-0'>
@@ -77,85 +78,7 @@ export default function ContentExemplOnline({params}) {
                   </div>
                 </div>
               </div>
-              <div>
-                <div className='min-h-[550px]'>
-                  <div className='grid-cols-12 rounded-xl py-6 px-6 mt-4 first:bg-[#ffe8ac] bg-[#F8F5F5] shadow-md grid'>
-                    <div className='col-span-6 flex items-center gap-4'>
-                      <div className='shrink-0 relative w-8 h-8 flex items-center justify-center font-semibold text-base bg-yellow-300 after:border-t-yellow-300 after:block after:absolute after:left-0 after:w-auto after:border-solid after:border-transparent after:mt-9 after:h-0 after:border-t-4 after:border-l-[16px] after:border-r-[16px]'>
-                        1
-                      </div>
-                      <span className='hidden md:inline-block'>
-                        349 lượt dự thi
-                      </span>
-                    </div>
-                    <div className='col-span-6 flex items-center'>
-                      <span>
-                        <div>Quận Hải Châu - Phường Thanh Bình</div>
-                      </span>
-                    </div>
-                  </div>
-                  <div className='grid-cols-12 rounded-xl py-6 px-6 mt-4 first:bg-[#ffe8ac] bg-[#F8F5F5] shadow-md bg-[#fff1cd] grid'>
-                    <div className='col-span-6 flex items-center gap-4'>
-                      <div className='shrink-0 relative w-8 h-8 flex items-center justify-center font-semibold text-base bg-yellow-300 after:border-t-yellow-300 after:block after:absolute after:left-0 after:w-auto after:border-solid after:border-transparent after:mt-9 after:h-0 after:border-t-4 after:border-l-[16px] after:border-r-[16px]'>
-                        1
-                      </div>
-                      <span className='hidden md:inline-block'>
-                        349 lượt dự thi
-                      </span>
-                    </div>
-                    <div className='col-span-6 flex items-center'>
-                      <span>
-                        <div>Quận Hải Châu - Phường Thanh Bình</div>
-                      </span>
-                    </div>
-                  </div>
-                  <div className='grid-cols-12 rounded-xl py-6 px-6 mt-4 first:bg-[#ffe8ac] bg-[#F8F5F5] shadow-md bg-[#fffaed] grid'>
-                    <div className='col-span-6 flex items-center gap-4'>
-                      <div className='shrink-0 relative w-8 h-8 flex items-center justify-center font-semibold text-base bg-yellow-300 after:border-t-yellow-300 after:block after:absolute after:left-0 after:w-auto after:border-solid after:border-transparent after:mt-9 after:h-0 after:border-t-4 after:border-l-[16px] after:border-r-[16px]'>
-                        1
-                      </div>
-                      <span className='hidden md:inline-block'>
-                        349 lượt dự thi
-                      </span>
-                    </div>
-                    <div className='col-span-6 flex items-center'>
-                      <span>
-                        <div>Quận Hải Châu - Phường Thanh Bình</div>
-                      </span>
-                    </div>
-                  </div>
-                  <div className='grid-cols-12 rounded-xl py-6 px-6 mt-4 first:bg-[#ffe8ac] bg-[#F8F5F5] shadow-md grid'>
-                    <div className='col-span-6 flex items-center gap-4'>
-                      <div className='shrink-0 relative w-8 h-8 flex items-center justify-center font-semibold text-base bg-yellow-300 after:border-t-yellow-300 after:block after:absolute after:left-0 after:w-auto after:border-solid after:border-transparent after:mt-9 after:h-0 after:border-t-4 after:border-l-[16px] after:border-r-[16px]'>
-                        1
-                      </div>
-                      <span className='hidden md:inline-block'>
-                        349 lượt dự thi
-                      </span>
-                    </div>
-                    <div className='col-span-6 flex items-center'>
-                      <span>
-                        <div>Quận Hải Châu - Phường Thanh Bình</div>
-                      </span>
-                    </div>
-                  </div>
-                  <div className='grid-cols-12 rounded-xl py-6 px-6 mt-4 first:bg-[#ffe8ac] bg-[#F8F5F5] shadow-md grid'>
-                    <div className='col-span-6 flex items-center gap-4'>
-                      <div className='shrink-0 relative w-8 h-8 flex items-center justify-center font-semibold text-base bg-yellow-300 after:border-t-yellow-300 after:block after:absolute after:left-0 after:w-auto after:border-solid after:border-transparent after:mt-9 after:h-0 after:border-t-4 after:border-l-[16px] after:border-r-[16px]'>
-                        1
-                      </div>
-                      <span className='hidden md:inline-block'>
-                        349 lượt dự thi
-                      </span>
-                    </div>
-                    <div className='col-span-6 flex items-center'>
-                      <span>
-                        <div>Quận Hải Châu - Phường Thanh Bình</div>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <RankingContent />
             </div>
           </div>
         </div>

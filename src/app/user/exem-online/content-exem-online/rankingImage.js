@@ -4,7 +4,7 @@ import ranking_bg from '/public/images/ranking-bg.jpg';
 import star from '/public/images/star.png';
 
 
-const Ranking = () => {
+const RankingImage = () => {
   return (
     <div className='hidden lg:block w-[250px] '>
       <div
@@ -28,4 +28,4 @@ const Ranking = () => {
   );
 };
 
-export default Ranking;
+export default RankingImage;
