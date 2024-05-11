@@ -34,7 +34,7 @@ const Rules = () => {
                         <br />
                         {courseInfo.rule_file_url && (
                             <a
-                              herf={courseInfo.rule_file_url}
+                              href={courseInfo.rule_file_url}
                               alt={courseInfo.rulesFileName}
                               download
                             >
