@@ -1,43 +1,19 @@
 'use client';
-import {Collapse, Space, theme} from 'antd';
 import './page.css';
 import Countdown from './countdown';
 import RankingImage from './rankingImage';
 import RankingContent from './rankingContent';
+import Rules from './rules';
 
-export default function ContentExemplOnline({params}) {
-  const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
-  const getItems = (panelStyle) => [
-    {
-      key: '1',
-      label: 'This is panel header 1',
-      children: <p>{text}</p>,
-      style: panelStyle,
-    },
-    {
-      key: '2',
-      label: 'This is panel header 2',
-      children: <p>{text}</p>,
-      style: panelStyle,
-    },
-    {
-      key: '3',
-      label: 'This is panel header 3',
-      children: <p>{text}</p>,
-      style: panelStyle,
-    },
-  ];
-  const {token} = theme.useToken();
-  const panelStyle = {
-    marginBottom: 24,
-    background: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    border: 'none',
-  };
+export default function ContentExemplOnline() {
+
+  // const panelStyle = {
+  //   marginBottom: 24,
+  //   background: token.colorFillAlter,
+  //   borderRadius: token.borderRadiusLG,
+  //   border: 'none',
+  // };
+
 
   return (
     <main
@@ -46,10 +22,10 @@ export default function ContentExemplOnline({params}) {
         minHeight: '80%',
       }}
     >
-      <Countdown params={params} />
+      <Countdown />
 
       <section id='leaderboard'>
-        <div className='container mx-auto px-2 lg:px-4 mt-6 lg:mt-16'>
+        <div className='container mx-auto px-2 lg:px-4 pt-6 lg:pt-16'>
           <div className='flex gap-8'>
             <RankingImage />
             <div className='block grow'>
@@ -83,56 +59,8 @@ export default function ContentExemplOnline({params}) {
           </div>
         </div>
       </section>
-      <section>
-        <div className='container mx-auto px-2 lg:px-4 mt-6 lg:mt-16'>
-          <div className='text-center text-xl lg:text-4xl font-bold text-[#002c6a]'>
-            THỂ LỆ CUỘC THI
-          </div>
-          <div className='mt-6 lg:mt-12'>
-            <Space
-              direction='vertical'
-              style={{
-                width: '100%',
-              }}
-            >
-              <Collapse
-                collapsible='header'
-                defaultActiveKey={['1']}
-                items={[
-                  {
-                    key: '1',
-                    label: 'This panel can only be collapsed by clicking text',
-                    children: <p>{text}</p>,
-                  },
-                ]}
-              />
-              <Collapse
-                collapsible='icon'
-                defaultActiveKey={['1']}
-                items={[
-                  {
-                    key: '1',
-                    label: 'This panel can only be collapsed by clicking icon',
-                    children: <p>{text}</p>,
-                  },
-                ]}
-              />
-              <Collapse
-                collapsible='icon'
-                defaultActiveKey={['1']}
-                items={[
-                  {
-                    key: '1',
-                    label: 'This panel can only be collapsed by clicking icon',
-                    children: <p>{text}</p>,
-                  },
-                ]}
-              />
-            </Space>
-          </div>
-        </div>
-      </section>
-      <div className='container mx-auto px-2 lg:px-4 mt-6 lg:mt-16'>
+      <Rules />
+      {/* <div className='container mx-auto px-2 lg:px-4 mt-6 lg:mt-16'> */}
         {/*<section id='blog'>*/}
         {/*  <div className='text-[#002c6a] text-center text-xl lg:text-4xl font-bold'>*/}
         {/*    THÔNG BÁO BAN TỔ CHỨC*/}
@@ -168,7 +96,7 @@ export default function ContentExemplOnline({params}) {
         {/*    </div>*/}
         {/*  </div>*/}
         {/*</section>*/}
-      </div>
+      {/* </div> */}
     </main>
   );
 }

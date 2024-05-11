@@ -1,11 +1,14 @@
 "use client";
 
-import { Image } from "antd";
 import HeaderUser from "@/components/Header/Header";
+import "./page.css";
+import { useSelector } from 'react-redux';
 
 const logo3 = "/images/logo.jpg";
 
-export default function HeaderExemplOnline({title,logoOrg, bannerUrl}) {
+export default function HeaderExemplOnline() {
+  const courseInfo = useSelector((state) => state.course.courseInfo);
+
   return (
     <div className="bg-[#002c6a]">
       {/*<nav className="px-4 lg:px-6 py-2.5 text-white">*/}
@@ -36,16 +39,16 @@ export default function HeaderExemplOnline({title,logoOrg, bannerUrl}) {
       {/*</nav>*/}
 
         <HeaderUser/>
-      <div className="px-4 lg:px-6 mt-5">
+      <div className="px-4 lg:px-6 header-exem-online-block" >
         <div className="max-w-screen-xl mx-auto mt-4 lg:mt-8">
           <img
-            src={bannerUrl ?? "https://myaloha.vn/upload/images/banner/banner_1011571_1684482408_ceafed9c-c81f-4aaa-9abb-3b4954db9d5f.png"}
+            src={courseInfo?.bannerUrl ?? "https://myaloha.vn/upload/images/banner/banner_1011571_1684482408_ceafed9c-c81f-4aaa-9abb-3b4954db9d5f.png"}
             className="max-w-full h-auto mx-auto rounded-xl"
           />
         </div>
       </div>
       <div className="px-4 lg:px-6 py-2 uppercase text-lg lg:text-4xl text-center text-white bg-[#00436ad0] mt-4 lg:mt-12">
-          {title ?? "Cuộc thi trực tuyến “Tìm hiểu về công tác bảo vệ môi trường” năm 2023"}
+          {courseInfo?.title ?? "Cuộc thi trực tuyến “Tìm hiểu về công tác bảo vệ môi trường” năm 2023"}
       </div>
     </div>
   );

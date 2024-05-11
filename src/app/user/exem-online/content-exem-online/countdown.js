@@ -8,6 +8,8 @@ import {useRouter} from 'next/navigation';
 import {Modal} from 'antd';
 
 const Countdown = ({params}) => {
+  const courseInfo = useSelector((state) => state.course.courseInfo);
+
   const router = useRouter();
   const [timeSubmission, setTimeSubmission] = useState({
     days: null,
@@ -54,7 +56,7 @@ const Countdown = ({params}) => {
 
   useEffect(() => {
     const getACourseData = () => {
-      dispatch(getSubmissionTimeLatestQuizByCourseId({courseId: params.id}))
+      dispatch(getSubmissionTimeLatestQuizByCourseId({courseId: courseInfo._id}))
         .then(unwrapResult)
         .then((res) => {
           if (res.status) {
@@ -65,8 +67,8 @@ const Countdown = ({params}) => {
         })
         .catch((error) => {});
     };
-    getACourseData();
-  }, [dispatch, params.id]);
+    courseInfo && getACourseData();
+  }, [courseInfo, courseInfo._id, dispatch]);
 
   useEffect(() => {
     let timeRun = null;
@@ -171,12 +173,6 @@ const Countdown = ({params}) => {
             }}
           >
             Tham gia
-          </button>
-          <button
-            type='button'
-            className='inline-flex justify-center items-center px-4 py-2 border shadow-sm transition ease-in-out duration-150 gap-2 cursor-pointer min-h-[40px] disabled:cursor-not-allowed font-sans rounded-full bg-[#002c6a] border-[#002c6a] text-white hover:shadow-sm min-w-[125px] text-lg lg:text-2xl min-w-[150px] lg:min-w-[200px]'
-          >
-            Thể lệ
           </button>
         </div>
         {!userCurrent && (
