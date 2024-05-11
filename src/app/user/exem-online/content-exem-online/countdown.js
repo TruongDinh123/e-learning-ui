@@ -111,12 +111,10 @@ const Countdown = ({params}) => {
     dispatch(getScore())
         .then(unwrapResult)
         .then((res) => {
-          console.log(res);
           if (res?.status) {
             const completedQuiz = res?.metadata?.find(
                 (quiz) => quiz.quiz?._id === latestQuizByCourseId._id
             );
-            console.log(completedQuiz)
             if (completedQuiz) {
               setIsCompleted(completedQuiz.isComplete);
             }

@@ -2,7 +2,7 @@ import { DownOutlined } from "@ant-design/icons";
 import { Avatar, Dropdown, Layout, Menu } from "antd";
 
 const { Header } = Layout;
-const logo3 = "/images/logo5.png";
+const logo3 = "/images/logo-new.png";
 
 export default function TeacherHeader() {
   const menu = (

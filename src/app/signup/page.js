@@ -84,7 +84,7 @@ export default function SignUp() {
           <h1 className="text-4xl font-bold mb-4">
             <Link href="/">
               <p className="hover:no-underline hover:text-[#007bff]">
-                247learn.vn
+                EXAM-ONE
               </p>
             </Link>
           </h1>
