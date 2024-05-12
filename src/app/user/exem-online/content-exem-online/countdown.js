@@ -130,25 +130,25 @@ const Countdown = () => {
           <div className='flex items-center justify-center gap-4 lg:gap-8'>
             <div className='px-4 py-6 shadow-md min-w-[70px] lg:min-w-[130px] text-center rounded-lg'>
               <div className='text-xl lg:text-4xl text-[#002c6a] font-bold'>
-                {timeSubmission.days || '--'}
+                {!timeSubmission.days ? '00' : `${timeSubmission.days}`.length < 2 ? `0${timeSubmission.days}` : timeSubmission.days }
               </div>
               <div className='lg:text-xl mt-2 text-[#686868]'>Ngày</div>
             </div>
             <div className='px-4 py-6 shadow-md min-w-[70px] lg:min-w-[130px] text-center rounded-lg'>
               <div className='text-xl lg:text-4xl text-[#002c6a] font-bold'>
-                {timeSubmission.hours || '--'}
+                {!timeSubmission.hours ? '00' : `${timeSubmission.hours}`.length < 2 ? `0${timeSubmission.hours}` : timeSubmission.hours }
               </div>
               <div className='lg:text-xl mt-2 text-[#686868]'>Giờ</div>
             </div>
             <div className='px-4 py-6 shadow-md min-w-[70px] lg:min-w-[130px] text-center rounded-lg'>
               <div className='text-xl lg:text-4xl text-[#002c6a] font-bold'>
-                {timeSubmission.minutes || '--'}
+                {!timeSubmission.minutes ? '00' : `${timeSubmission.minutes}`.length < 2 ? `0${timeSubmission.minutes}` : timeSubmission.minutes }
               </div>
               <div className='lg:text-xl mt-2 text-[#686868]'>Phút</div>
             </div>
             <div className='px-4 py-6 shadow-md min-w-[70px] lg:min-w-[130px] text-center rounded-lg'>
               <div className='text-xl lg:text-4xl text-[#002c6a] font-bold'>
-                {timeSubmission.seconds || '--'}
+                {!timeSubmission.seconds ? '00' : `${timeSubmission.seconds}`.length < 2 ? `0${timeSubmission.seconds}` : timeSubmission.seconds }
               </div>
               <div className='lg:text-xl mt-2 text-[#686868]'>Giây</div>
             </div>
