@@ -1,21 +1,22 @@
 'use client';
-import CustomInput from '@/components/comman/CustomInput';
-import {getAUser, updateUser, uploadImageUser} from '@/features/User/userSlice';
-import {AntDesignOutlined, UploadOutlined} from '@ant-design/icons';
-import {unwrapResult} from '@reduxjs/toolkit';
-import {Avatar, Button, Card, DatePicker, Upload, message} from 'antd';
-import {Content} from 'antd/es/layout/layout';
+import React, {useEffect, useState} from 'react';
 import {useFormik} from 'formik';
-import {useEffect, useState} from 'react';
-import {useDispatch} from 'react-redux';
 import * as yup from 'yup';
-import '../../users/edit-user-form/page.css';
-import moment from 'moment/moment';
+import {Avatar, Button, Card, DatePicker, Upload, message} from 'antd';
+import {getAUser, updateUser, uploadImageUser} from '@/features/User/userSlice';
+import {useDispatch} from 'react-redux';
+import {unwrapResult} from '@reduxjs/toolkit';
+import {Content} from 'antd/es/layout/layout';
+import {AntDesignOutlined, UploadOutlined} from '@ant-design/icons';
+import CustomInput from '@/components/comman/CustomInput';
+import moment from 'moment';
+import dayjs from 'dayjs';
+import {MdOutlinePermIdentity} from 'react-icons/md';
 import {RiHome4Line} from 'react-icons/ri';
 import District from './district';
-import {MdOutlinePermIdentity} from 'react-icons/md';
+import './index.css';
 
-const Userchema = yup.object({
+const Userchema = yup.object().shape({
   lastName: yup.string(),
   firstName: yup.string(),
   email: yup.string().email(),
@@ -28,12 +29,14 @@ const Userchema = yup.object({
   donvi: yup.string(),
   donvicon: yup.string(),
 });
-export default function EditUserForm() {
-  const [messageApi, contextHolder] = message.useMessage();
-  const dispatch = useDispatch();
-  const [data, setData] = useState(null);
+
+const UpdateInfo = () => {
+  const id = localStorage.getItem('x-client-id');
+  const [user, setUser] = useState(null);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+  const dispatch = useDispatch();
+  const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
   const [selectedCap, setSelectedCap] = useState('');
   const [selectedDonVi, setSelectedDonVi] = useState('');
@@ -52,53 +55,32 @@ export default function EditUserForm() {
     fileList: file ? [file] : [],
   };
 
-  const id = localStorage.getItem('x-client-id');
-
   const handleOk = () => {
     setLoading(true);
     formik.submitForm();
-  };
-
-  useEffect(() => {
-    getAUsereData();
-  }, []);
-
-  const getAUsereData = () => {
-    dispatch(getAUser(id))
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          setSelectedCap(res.metadata['cap']);
-          setSelectedDonVi(res.metadata['donvi']);
-          setDonViCon(res.metadata['donvicon']);
-          setData(res.metadata);
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {});
   };
 
   const formik = useFormik({
     validationSchema: Userchema,
     enableReinitialize: true,
     initialValues: {
-      lastName: data?.lastName,
-      firstName: data?.firstName,
-      email: data?.email,
-      phoneNumber: data?.phoneNumber,
-      dob: data?.dob,
-      gender: data?.gender,
-      cmnd: data?.cmnd || '',
-      address: data?.address || '',
-      cap: data?.cap || '',
-      donvi: data?.donvi || '',
-      donvicon: data?.donvicon || '',
+      lastName: user?.lastName,
+      firstName: user?.firstName,
+      email: user?.email,
+      phoneNumber: user?.phoneNumber,
+      dob: user && user.dob ? moment(user.dob) : null,
+      gender: user?.gender,
+      cmnd: user?.cmnd || '',
+      address: user?.address || '',
+      cap: user?.cap || '',
+      donvi: user?.donvi || '',
+      donvicon: user?.donvicon || '',
     },
     onSubmit: (values) => {
       values.cap = selectedCap;
       values.donvi = selectedDonVi;
       values.donvicon = donViCon;
+      values.lastName = values.lastName.trim();
       dispatch(updateUser({id: id, values}))
         .then(unwrapResult)
         .then((res) => {
@@ -125,7 +107,6 @@ export default function EditUserForm() {
           return res;
         })
         .then(() => {
-          window.location.reload();
           setLoading(false);
         })
         .catch((error) => {
@@ -138,8 +119,27 @@ export default function EditUserForm() {
     },
   });
 
+  useEffect(() => {
+    getAUsereData();
+  }, []);
+
+  const getAUsereData = () => {
+    dispatch(getAUser(id))
+      .then(unwrapResult)
+      .then((res) => {
+        if (res.status) {
+          setSelectedCap(res.metadata['cap']);
+          setSelectedDonVi(res.metadata['donvi']);
+          setDonViCon(res.metadata['donvicon']);
+          setUser(res.metadata);
+        } else {
+          messageApi.error(res.message);
+        }
+      });
+  };
+
   return (
-    <div className='mx-auto max-w-md space-y-6 overflow-x-hidden grid-container pt-3'>
+    <div className='block-update-info mx-auto max-w-md space-y-6 overflow-x-hidden grid-container'>
       {contextHolder}
       <div className='space-y-2 text-center'>
         <h1 className='text-3xl font-bold'>Thông tin của bạn</h1>
@@ -154,10 +154,10 @@ export default function EditUserForm() {
               <label className='text-base' htmlFor='name'>
                 Ảnh đại diện
               </label>
-              <div className='flex items-center'>
+              <div className='flex items-center mb-2'>
                 <Avatar
                   size={{
-                    xs: 24,
+                    xs: 80,
                     sm: 32,
                     md: 40,
                     lg: 64,
@@ -165,13 +165,13 @@ export default function EditUserForm() {
                     xxl: 100,
                   }}
                   icon={<AntDesignOutlined />}
-                  src={imageUrl || data?.image_url}
+                  src={imageUrl || user?.image_url}
                   className='mr-1'
                 />
-                <Upload {...propsUdateImage}>
-                  <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
-                </Upload>
               </div>
+              <Upload {...propsUdateImage}>
+                <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
+              </Upload>
             </div>
             <div className='grid grid-cols-2 gap-4'>
               <div className='space-y-2'>
@@ -239,11 +239,11 @@ export default function EditUserForm() {
               <DatePicker
                 size='large'
                 className='mb-3 w-full'
+                value={formik.values.dob}
                 onChange={(date, dateString) =>
                   formik.setFieldValue('dob', dateString)
                 }
                 onBlur={formik.handleBlur('dob')}
-                value={formik.values.dob ? moment(formik.values.dob) : null}
               />
               {formik.submitCount > 0 &&
               formik.touched.dob &&
@@ -334,8 +334,8 @@ export default function EditUserForm() {
         <Button
           onClick={handleOk}
           loading={loading}
-          type='primary'
           className='ml-auto w-full custom-button'
+          type='primary'
         >
           Lưu
         </Button>
@@ -346,4 +346,6 @@ export default function EditUserForm() {
       </Card>
     </div>
   );
-}
+};
+
+export default UpdateInfo;

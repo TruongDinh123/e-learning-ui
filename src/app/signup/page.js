@@ -33,14 +33,20 @@ const registerSchema = yup.object({
     .string()
     .min(6, 'Password phải có ít nhất 6 kí tự')
     .required('Yêu cầu nhập mật khẩu'),
+
   phone: yup
     .string()
-    .min(6, 'Phone phải có ít nhất 6 kí tự')
-    .required('Yêu cầu nhập SDT'),
+    .min(6, 'Số điện thoại phải có ít nhất 6 kí tự')
+    .required('Yêu cầu nhập SĐT'),
+
+  cmnd: yup
+    .string()
+    .min(6, 'CMND phải có ít nhất 6 kí tự'),
 
   address: yup
-      .string()
-      .required('Yêu cầu nhập địa chỉ'),
+    .string()
+    .min(6, 'Địa chỉ phải có ít nhất 6 kí tự')
+    .required('Yêu cầu nhập địa chỉ'),
 });
 
 export default function SignUp() {
@@ -63,7 +69,7 @@ export default function SignUp() {
     } else if (selectedCap === 'Cấp huyện') {
       setDonViOptions(Object.keys(options['Cấp huyện']));
     } else {
-      setDonViOptions(options['Cấp xã']);
+      setDonViOptions([]);
     }
     setSelectedDonVi('');
     setSubUnits([]);
@@ -95,8 +101,6 @@ export default function SignUp() {
       values.cap = selectedCap;
       values.donvi = selectedDonVi;
       values.donvicon = donViCon;
-
-      console.log(values);
 
       if (values.password && values.email) {
         dispatch(registerUser(values))
