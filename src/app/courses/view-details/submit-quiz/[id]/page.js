@@ -504,17 +504,17 @@ export default function Quizs({ params }) {
 
                         <div className="flex items-center justify-content-md-start  border-t border-gray-200 pt-4 mt-4 first:border-t-0 first:mt-0">
                         <span className="font-medium text-black">
-                              Câu {quiz[0]?.questions?.length + 1}:{" "}
+                              Câu {quiz[0]?.questions?.length + 1}: {" "}
                             </span>
-                          <div className="text-purple-950 font-bold mr-5">
-                            Dự đoán số người tham dự:
+                          <div className="text-purple-950 font-bold mr-5 ml-1">
+                             Dự đoán số người tham dự:
                           </div>
 
                           <Tooltip trigger={['focus']} title={titleInputNumber} placement="topLeft" overlayClassName="numeric-input">
                             <Input
                                 onChange={handleChangeInputNumber}
                                 onBlur={handleBlurInputNumber}
-                                placeholder="Input a number"
+                                placeholder="Nhập chữ số"
                                 maxLength={16}
                                 disabled={submitted || isComplete}
                                 value={predictAmount}
@@ -532,7 +532,7 @@ export default function Quizs({ params }) {
                           onClick={handlePreviousPage}
                           className="px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition duration-300"
                         >
-                          Previous
+                          Sau
                         </button>
                       )}
                       {quiz[0]?.questions?.length > indexOfLastQuestion && (
