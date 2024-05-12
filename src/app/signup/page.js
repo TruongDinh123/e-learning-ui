@@ -36,17 +36,17 @@ const registerSchema = yup.object({
     .required('Yêu cầu nhập mật khẩu'),
   phone: yup
     .string()
-    .min(6, 'Password phải có ít nhất 6 kí tự')
+    .min(6, 'Số điện thoại phải có ít nhất 6 kí tự')
     .required('Yêu cầu nhập mật khẩu'),
 
   cmnd: yup
     .string()
-    .min(6, 'Password phải có ít nhất 6 kí tự')
+    .min(6, 'CMND phải có ít nhất 6 kí tự')
     .required('Yêu cầu nhập mật khẩu'),
 
   address: yup
     .string()
-    .min(6, 'Password phải có ít nhất 6 kí tự')
+    .min(6, 'Địa chỉ phải có ít nhất 6 kí tự')
     .required('Yêu cầu nhập mật khẩu'),
 
   // unit: yup
@@ -107,8 +107,6 @@ export default function SignUp() {
       values.cap = selectedCap;
       values.donvi = selectedDonVi;
       values.donvicon = donViCon;
-
-      console.log(values);
 
       if (values.password && values.email) {
         dispatch(registerUser(values))

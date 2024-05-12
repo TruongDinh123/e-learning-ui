@@ -140,6 +140,8 @@ body {
 .app {
   box-sizing: border-box;
   min-height: fit-content;
+  height: inherit;
+  background: inherit;
 }
 
 .justify-center {
