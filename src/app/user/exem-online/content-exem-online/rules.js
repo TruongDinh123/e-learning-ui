@@ -8,7 +8,7 @@ const Rules = () => {
   return (
     courseInfo && (
       <section>
-        <div className='container mx-auto px-2 lg:px-4 mt-6 mt-10 lg:mt-16 mb-6 mb-10 lg:mb-16'>
+        <div className='container mx-auto px-2 lg:px-4 pt-10 lg:pt-16 pb-6 pb-10 lg:pb-16'>
           <div className='text-center text-xl lg:text-4xl font-bold text-[#002c6a]'>
             THỂ LỆ CUỘC THI
           </div>
