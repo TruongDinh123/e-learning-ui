@@ -20,6 +20,7 @@ import "react-quill/dist/quill.snow.css";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 const logo = "/images/logoimg.jpg";
 import debounce from 'lodash.debounce';
+import { useRouter } from 'next/navigation';
 
 export default function Quizs({ params }) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -43,6 +44,7 @@ export default function Quizs({ params }) {
   const [initialSize, setInitialSize] = useState({ width: window.innerWidth, height: window.innerHeight });
   const [hasWarned, setHasWarned] = useState(false);
   const resizeTimeoutRef = useRef(null);
+  const router = useRouter();
 
   const quizzesByStudentState = useSelector(
     (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
@@ -254,6 +256,7 @@ export default function Quizs({ params }) {
         setShowCountdown(false);
         localStorage.removeItem("quizAnswers");
         localStorage.removeItem("quizStartTime");
+        router.push('/');
       } else {
         messageApi.error(res.message);
       }
