@@ -77,18 +77,28 @@ export default function Quizs({ params }) {
     }
   }, [dispatch, courseIds, isLoading]);
 
+  useEffect(()=>{
+    setInitialSize({
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+  },[])
+
   useEffect(() => {
     const tolerance = 1;
 
     const sizeWithinTolerance = (current, initial) => {
-      return Math.abs(current - initial) <= tolerance;
+      return Math.abs(current - initial) > tolerance;
     };
 
     const handleResize = debounce(() => {
+      console.log(window.innerWidth,initialSize.width);
+      console.log(window.innerHeight, initialSize.height);
       const widthChangeWithinTolerance = sizeWithinTolerance(window.innerWidth, initialSize.width);
       const heightChangeWithinTolerance = sizeWithinTolerance(window.innerHeight, initialSize.height);
 
       const isSizeChanged = (widthChangeWithinTolerance || heightChangeWithinTolerance);
+      console.log(isSizeChanged);
 
       if (isSizeChanged){
         if (hasWarned){
@@ -122,7 +132,7 @@ export default function Quizs({ params }) {
     },100);
 
     window.addEventListener('resize', handleResize);
-  }, [initialSize, hasWarned]);
+  },[]);
 
   //fetch API
   useEffect(() => {
