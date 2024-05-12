@@ -6,9 +6,14 @@ import {unwrapResult} from '@reduxjs/toolkit';
 import {getTimePeriod} from './utils';
 import {useRouter} from 'next/navigation';
 import {Modal} from 'antd';
+import CountdownNoti from './countdownNoti';
+import {NUMBER_QUIZ_LIMIT} from '../../../../constants';
 
 const Countdown = () => {
   const router = useRouter();
+  const userCurrent = useSelector((state) => state.user.user);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [testCount, setTestCount] = useState(null);
   const [timeSubmission, setTimeSubmission] = useState({
     days: null,
     hours: null,
@@ -20,10 +25,6 @@ const Countdown = () => {
   const latestQuizByCourseId = useSelector(
     (state) => state.quiz.latestQuizByCourseId
   );
-
-  const [isCompleted, setIsCompleted] = useState(false);
-
-  const userCurrent = useSelector((state) => state.user.user);
 
   const dispatch = useDispatch();
 
@@ -97,7 +98,8 @@ const Countdown = () => {
   }, [latestQuizByCourseId]);
 
   useEffect(() => {
-    latestQuizByCourseId && latestQuizByCourseId._d &&
+    latestQuizByCourseId &&
+      latestQuizByCourseId._d &&
       dispatch(getScore())
         .then(unwrapResult)
         .then((res) => {
@@ -152,25 +154,23 @@ const Countdown = () => {
           </div>
         </div>
 
-        <div className='mt-4 lg:mt-8 flex items-center justify-center gap-4 lg:gap-8'>
-          <button
-            type='button'
-            className='inline-flex justify-center items-center px-4 py-2 border shadow-sm transition ease-in-out duration-150 gap-2 cursor-pointer min-h-[40px] disabled:cursor-not-allowed font-sans rounded-full bg-[#002c6a] border-[#002c6a] text-white hover:shadow-sm min-w-[125px] text-lg lg:text-2xl min-w-[150px] lg:min-w-[200px]'
-            onClick={() => {
-              if (userCurrent && timeSubmission.checkTime) confirmStartQuiz();
-              if (!userCurrent) router.push('/login');
-            }}
-          >
-            Tham gia
-          </button>
-        </div>
-        {!userCurrent && (
-          <div className='mt-4 lg:mt-8 text-lg lg:text-2xl text-[#002c6a] text-center'>
-            <div className='bg-[#FFF4D9] w-fit py-3 px-12 mx-auto rounded-full'>
-              Bạn cần đăng nhập để dự thi
-            </div>
+        {testCount < NUMBER_QUIZ_LIMIT && (
+          <div className='mt-4 lg:mt-8 flex items-center justify-center gap-4 lg:gap-8'>
+            <button
+              type='button'
+              className='inline-flex justify-center items-center px-4 py-2 border shadow-sm transition ease-in-out duration-150 gap-2 cursor-pointer min-h-[40px] disabled:cursor-not-allowed font-sans rounded-full bg-[#002c6a] border-[#002c6a] text-white hover:shadow-sm min-w-[125px] text-lg lg:text-2xl min-w-[150px] lg:min-w-[200px]'
+              onClick={() => {
+                console.log(userCurrent, timeSubmission);
+                if (userCurrent && timeSubmission.checkTime) confirmStartQuiz();
+                if (!userCurrent) router.push('/login');
+              }}
+            >
+              Tham gia
+            </button>
           </div>
         )}
+
+        <CountdownNoti testCount={testCount} setTestCount={setTestCount} />
       </div>
     </section>
   );

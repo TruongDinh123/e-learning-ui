@@ -385,6 +385,20 @@ export const getAllUserFinishedCourse = createAsyncThunk(
     }
     });
 
+export const getTestCount = createAsyncThunk(
+  "/e-learning/quiz/getTestCount/:userId",
+  async (data, { rejectWithValue }) => {
+
+  try {
+      const response = await QuizService.getTestCount(data.userId);
+      return response;
+  } catch (err) {
+      return rejectWithValue(err);
+  }
+  });
+
+    
+
 
 const initialState = {
   quiz: "",
