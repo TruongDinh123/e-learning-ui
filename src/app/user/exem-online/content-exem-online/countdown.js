@@ -98,7 +98,8 @@ const Countdown = () => {
   }, [latestQuizByCourseId]);
 
   useEffect(() => {
-    latestQuizByCourseId &&
+    userCurrent &&
+      latestQuizByCourseId &&
       latestQuizByCourseId._id &&
       dispatch(getScore())
         .then(unwrapResult)
@@ -112,7 +113,7 @@ const Countdown = () => {
             }
           }
         });
-  }, [dispatch, latestQuizByCourseId]);
+  }, [dispatch, latestQuizByCourseId, userCurrent]);
 
   return (
     <section>
@@ -160,7 +161,6 @@ const Countdown = () => {
               type='button'
               className='inline-flex justify-center items-center px-4 py-2 border shadow-sm transition ease-in-out duration-150 gap-2 cursor-pointer min-h-[40px] disabled:cursor-not-allowed font-sans rounded-full bg-[#002c6a] border-[#002c6a] text-white hover:shadow-sm min-w-[125px] text-lg lg:text-2xl min-w-[150px] lg:min-w-[200px]'
               onClick={() => {
-                console.log(userCurrent, timeSubmission);
                 if (userCurrent && timeSubmission.checkTime) confirmStartQuiz();
                 if (!userCurrent) router.push('/login');
               }}
