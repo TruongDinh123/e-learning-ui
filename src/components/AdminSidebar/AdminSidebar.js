@@ -79,7 +79,7 @@ export default function AdminSidebar(props) {
   ];
 
   if (!isMentor()) {
-    menuItems[2].children.push(
+    menuItems.push(
       {
         key: "users/view-users",
         icon: <UserOutlined />,
