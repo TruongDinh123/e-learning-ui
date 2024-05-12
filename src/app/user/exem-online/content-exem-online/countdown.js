@@ -7,7 +7,7 @@ import {getTimePeriod} from './utils';
 import {useRouter} from 'next/navigation';
 import {Modal} from 'antd';
 
-const Countdown = ({params}) => {
+const Countdown = () => {
   const router = useRouter();
   const [timeSubmission, setTimeSubmission] = useState({
     days: null,
