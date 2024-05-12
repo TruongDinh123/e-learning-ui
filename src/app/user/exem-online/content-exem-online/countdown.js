@@ -47,7 +47,7 @@ const Countdown = () => {
       Modal.warning({
         title: 'Không thể thi lại',
         content:
-          'Lưu ý, mỗi thí sinh chỉ có thể thi 1 lần, bạn không thể thi lại bài thi này.',
+          'Lưu ý, mỗi thí sinh chỉ có thể thi 5 lần, bạn không thể thi lại bài thi này.',
         okText: 'Xác nhận',
         okButtonProps: {className: 'custom-button'},
       });
