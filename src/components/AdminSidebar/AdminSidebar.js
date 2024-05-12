@@ -66,40 +66,16 @@ export default function AdminSidebar(props) {
       label: "Cuộc Thi",
     },
     {
-      key: "2",
+      key: "quiz/create-quiz",
       icon: <FileAddOutlined />,
-      label: "Đề Thi",
-      children: [
-        {
-          key: "quiz/create-quiz",
-          icon: <UserOutlined />,
-          label: "Tạo đề thi",
-        },
-        {
-          key: "quiz/view-quiz",
-          icon: <UserOutlined />,
-          label: "Xem đề thi",
-        },
-
-      ],
+      label: "Tạo đề thi",
     },
     {
-      key: "3",
+      key: "quiz/view-quiz",
       icon: <UserOutlined />,
-      label: "Quản lý",
-      children: [
-        {
-          key: "users/trainee",
-          icon: <UserOutlined />,
-          label: "Điểm thi",
-        },
-        // {
-        //   key: "users/view-teachers",
-        //   icon: <UserOutlined />,
-        //   label: "Học viên khoá học",
-        // },
-      ],
+      label: "Quản lý đề thi",
     },
+
   ];
 
   if (!isMentor()) {
@@ -136,7 +112,7 @@ export default function AdminSidebar(props) {
         position: "fixed",
         top: 0,
         left: 0,
-        zIndex: 1000,
+        zIndex: 2000,
       }}
     >
       <div className="demo-logo-vertical d-flex justify-content-center align-items-center py-3">
