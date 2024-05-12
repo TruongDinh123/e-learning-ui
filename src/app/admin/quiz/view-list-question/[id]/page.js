@@ -13,6 +13,7 @@ import moment from "moment";
 import ScoreStatisticsCourse from "../score-statistics/page";
 import "react-quill/dist/quill.snow.css";
 import { useMediaQuery } from "react-responsive";
+import { decrypt } from "../../../../../utils"
 
 export default function ViewListQuestion({ params }) {
   const dispatch = useDispatch();
@@ -110,7 +111,9 @@ export default function ViewListQuestion({ params }) {
                           <h2 className="text-2xl font-bold text-center mb-5">
                             Đề thi: {quiz.name}
                           </h2>
-                          {quiz.questions?.map((question, questionIndex) => (
+                          {quiz.questions?.map(async(question, questionIndex) => {
+                            const quizAnswer = await decrypt(question.answer);
+                            return (
                             <ul key={questionIndex}>
                               <li className="border p-3 mb-2 li-content">
                                 <div className="mb-2">
@@ -148,11 +151,11 @@ export default function ViewListQuestion({ params }) {
                                   </label>
                                 ))}
                                 <span className="text-sm text-green-700 font-bold text-center mb-5">
-                                  Đáp án: {question.answer}
+                                  Đáp án: {quizAnswer}
                                 </span>
                               </li>
                             </ul>
-                          ))}
+                          )})}
                         </div>
                       </div>
                     </div>
