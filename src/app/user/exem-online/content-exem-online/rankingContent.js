@@ -26,29 +26,33 @@ const RankingContent = () => {
 
   useEffect(() => {
     if (allUserFinishedCourse && allUserFinishedCourse.length) {
-      let rankingCalculator = [];
-      const completeCaps = {
-        'Cấp xã': 0,
-        'Cấp huyện': 0,
-        'Cấp tỉnh': 0,
-        'Đơn vị khác': 0,
-      };
-
-      allUserFinishedCourse.forEach((user) => {
-        const cap = user.cap || 'Đơn vị khác'; // Default to 'Đơn vị khác' if no 'cap' is defined
-        if (completeCaps.hasOwnProperty(cap)) {
-          completeCaps[cap] += 1;
-        } else {
-          completeCaps['Đơn vị khác'] += 1;
+      const capCount = allUserFinishedCourse.reduce((acc, user) => {
+        const donvi = user.donvi || "";
+        const donvicon = user.donvicon || "";
+        let key = "";
+        if (user.cap === "Cấp tỉnh") {
+          key = `${user.cap} ${donvi}`;
+        } else if (user.cap === "Cấp huyện") {
+          key = `${user.donvi} ${donvicon}`
         }
-      });
+        else if (user.cap === "Cấp xã") {
+          key = `${user.donvi} ${donvicon}`
+        }
+        else {
+          key = "Đơn vị khác"
+        }
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      }, {});
 
-      // If ranking is necessary, then sort the entries
-      rankingCalculator = Object.entries(completeCaps)
-        .sort((a, b) => b[1] - a[1])
-        .map(([cap, count]) => ({cap, count}));
+      const sortedCaps = Object.entries(capCount).sort((a, b) => b[1] - a[1]);
+      const rankedResults = sortedCaps.map((item, index) => ({
+        rank: index + 1,
+        description: item[0],
+        count: item[1]
+      }));
 
-      setRankingCalculatorState(rankingCalculator);
+      setRankingCalculatorState(rankedResults.slice(0, 5));
     }
   }, [allUserFinishedCourse]);
 
@@ -70,14 +74,14 @@ const RankingContent = () => {
               key={index}
               className='grid-cols-12 rounded-xl py-6 px-6 mt-4 first:bg-[#ffe8ac] bg-[#F8F5F5] shadow-md grid'
             >
-              <div className='col-span-6 flex items-center gap-4'>
+              <div className='col-span-3 flex items-center gap-4'>
                 <div className='shrink-0 relative w-8 h-8 flex items-center justify-center font-semibold text-base bg-yellow-300 after:border-t-yellow-300 after:block after:absolute after:left-0 after:w-auto after:border-solid after:border-transparent after:mt-9 after:h-0 after:border-t-4 after:border-l-[16px] after:border-r-[16px]'>
-                  {index + 1}
+                  {item.rank}
                 </div>
               </div>
               <div className='col-span-6 flex items-center'>
                 <span>
-                  <div>{item.cap}</div>
+                  <div>{item.description}</div>
                 </span>
               </div>
             </div>
