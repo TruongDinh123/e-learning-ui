@@ -37,6 +37,7 @@ export default function Quizs({ params }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [questionsPerPage] = useState(10);
   const [predictAmount, onChangePredictAmount] = useState('');
+  const [predictAmountMaxScore, onChangePredictAmountMaxScore] = useState('');
   const [course, setCourse] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -102,6 +103,10 @@ export default function Quizs({ params }) {
             (quiz) => quiz.quiz?._id === params?.id
           );
           if (completedQuiz) {
+            if (completedQuiz.isComplete) {
+              onChangePredictAmount(completedQuiz.predictAmount ? completedQuiz.predictAmount.toString() : "0")
+              onChangePredictAmountMaxScore(completedQuiz.predictAmountMaxScore ? completedQuiz.predictAmountMaxScore.toString() : "0")
+            }
             setStartTime(completedQuiz.startTime);
             setIsComplete(completedQuiz.isComplete);
             const answersObject = completedQuiz.answers.reduce((obj, item) => {
@@ -184,7 +189,7 @@ export default function Quizs({ params }) {
     setSubmitting(true);
     try {
       const res = await dispatch(
-        submitQuiz({ quizId: idQuiz, answer: formattedAnswers, predictAmount })
+        submitQuiz({ quizId: idQuiz, answer: formattedAnswers, predictAmount, predictAmountMaxScore })
       ).then(unwrapResult);
       if (res.status) {
         await messageApi.open({
@@ -296,6 +301,14 @@ export default function Quizs({ params }) {
     }
   };
 
+  const handleChangePredictAmountScore = e => {
+    const { value: inputValue } = e.target;
+    const reg = /^-?\d*(\.\d*)?$/;
+    if (reg.test(inputValue) || inputValue === '' || inputValue === '-') {
+      onChangePredictAmountMaxScore(inputValue);
+    }
+  }
+
   // '.' at the end or only '-' in the input box.
   const handleBlurInputNumber = () => {
     let valueTemp = predictAmount;
@@ -304,13 +317,34 @@ export default function Quizs({ params }) {
     }
     onChangePredictAmount(valueTemp.replace(/0*(\d+)/, '$1'));
   };
+
+  const handleBlurPredictAmountScore = () => {
+    let valueTemp = predictAmountMaxScore;
+    if (predictAmountMaxScore.charAt(predictAmountMaxScore.length - 1) === '.' || predictAmountMaxScore === '-') {
+      valueTemp = predictAmountMaxScore.slice(0, -1);
+    }
+    onChangePredictAmountMaxScore(valueTemp.replace(/0*(\d+)/, '$1'));
+  };
+
   const titleInputNumber = predictAmount ? (
       <span className="numeric-input-title">{predictAmount !== '-' ? formatNumber(Number(predictAmount)) : '-'}</span>
   ) : (
       'Hãy nhập con số dự đoán'
   );
 
+  const titleInputNumberMaxScore = predictAmountMaxScore ? (
+      <span className="numeric-input-title">{predictAmountMaxScore !== '-' ? formatNumber(Number(predictAmountMaxScore)) : '-'}</span>
+  ) : (
+      'Hãy nhập con số dự đoán'
+  );
+
   const isLastPage = quiz[0]?.questions?.length <= indexOfLastQuestion;
+  const completedAmount = () => {
+    const predictedFirst = predictAmount.length !== 0;
+    const predictedSecond = predictAmountMaxScore.length !== 0;
+
+    return Object.keys(selectedAnswers).length + predictedFirst + predictedSecond
+  }
 
   return (
     <div className="bg-blue-200 p-4">
@@ -332,11 +366,8 @@ export default function Quizs({ params }) {
         </>
       )}
       <Breadcrumb className="pb-4 pt-24 ">
-        <Breadcrumb.Item>
+        <Breadcrumb.Item key="homepage">
           <Link href="/">Trang chủ</Link>
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>
-          <Link href="/courses/view-course">Khóa học của bạn</Link>
         </Breadcrumb.Item>
         {quiz?.map((quiz, quizIndex) => (
           <>
@@ -379,16 +410,21 @@ export default function Quizs({ params }) {
                       </h2>
                     </div>
                     <div className="flex items-center">
-                      <div className="mr-4 text-lg font-semibold text-gray-700 text-center" >
-                        Số câu đã hoàn thành:
-                        <span className="text-black" style={{marginLeft: '5px'}}>
-                          {predictAmount ? Object.keys(selectedAnswers).length + 1 : Object.keys(selectedAnswers).length}
+                      {
+                        !isComplete && (
+                              <div className="mr-4 text-lg font-semibold text-gray-700 text-center" >
+                                Số câu đã hoàn thành:
+                                <span className="text-black" style={{marginLeft: '5px'}}>
+                          {completedAmount()}
                         </span>
-                          /
-                          <span className="text-black">
-                          {quiz[0]?.questions?.length + 1}
+                                /
+                                <span className="text-black">
+                          {quiz[0]?.questions?.length + 2}
                         </span>
-                      </div>
+                              </div>
+                          )
+                      }
+
                       {!isTimeExceeded && !submitted && !isComplete && (
                         <Button
                           loading={submitting}
@@ -501,29 +537,53 @@ export default function Quizs({ params }) {
 
                     {
                         isLastPage &&
-
-                        <div className="flex items-center justify-content-md-start  border-t border-gray-200 pt-4 mt-4 first:border-t-0 first:mt-0">
-                        <span className="font-medium text-black">
+                        <>
+                          <div className="flex items-center justify-content-md-start  border-t border-gray-200 pt-4 mt-4 first:border-t-0 first:mt-0">
+                          <span className="font-medium text-black">
                               Câu {quiz[0]?.questions?.length + 1}: {" "}
                             </span>
-                          <div className="text-purple-950 font-bold mr-5 ml-1">
-                             Dự đoán số người tham dự:
+                            <div className="text-purple-950 font-bold mr-5 ml-1">
+                              Dự đoán số người tham dự:
+                            </div>
+
+                            <Tooltip trigger={['focus']} title={titleInputNumber} placement="topLeft" overlayClassName="numeric-input">
+                              <Input
+                                  onChange={handleChangeInputNumber}
+                                  onBlur={handleBlurInputNumber}
+                                  placeholder="Nhập chữ số"
+                                  maxLength={16}
+                                  disabled={submitted || isComplete}
+                                  value={predictAmount}
+                                  style={{
+                                    width: 200,
+                                  }}
+                              />
+                            </Tooltip>
                           </div>
 
-                          <Tooltip trigger={['focus']} title={titleInputNumber} placement="topLeft" overlayClassName="numeric-input">
-                            <Input
-                                onChange={handleChangeInputNumber}
-                                onBlur={handleBlurInputNumber}
-                                placeholder="Nhập chữ số"
-                                maxLength={16}
-                                disabled={submitted || isComplete}
-                                value={predictAmount}
-                                style={{
-                                  width: 200,
-                                }}
-                            />
-                          </Tooltip>
-                        </div>
+                          <div className="flex items-center justify-content-md-start  border-t border-gray-200 pt-4 mt-4 first:border-t-0 first:mt-0">
+                          <span className="font-medium text-black">
+                              Câu {quiz[0]?.questions?.length + 2}:
+                            </span>
+                            <div className="text-purple-950 font-bold mr-5 ml-1">
+                              Dự đoán số người trả lời đúng 100%:
+                            </div>
+
+                            <Tooltip trigger={['focus']} title={titleInputNumberMaxScore} placement="topLeft" overlayClassName="numeric-input">
+                              <Input
+                                  onChange={handleChangePredictAmountScore}
+                                  onBlur={handleBlurPredictAmountScore}
+                                  placeholder="Nhập chữ số"
+                                  maxLength={16}
+                                  disabled={submitted || isComplete}
+                                  value={predictAmountMaxScore}
+                                  style={{
+                                    width: 200,
+                                  }}
+                              />
+                            </Tooltip>
+                          </div>
+                        </>
                     }
 
                     <div className="flex justify-between mt-4">
@@ -532,7 +592,7 @@ export default function Quizs({ params }) {
                           onClick={handlePreviousPage}
                           className="px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition duration-300"
                         >
-                          Sau
+                          Trang trước
                         </button>
                       )}
                       {quiz[0]?.questions?.length > indexOfLastQuestion && (
@@ -540,7 +600,7 @@ export default function Quizs({ params }) {
                           onClick={handleNextPage}
                           className="px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600 transition duration-300"
                         >
-                          Next
+                          Trang sau
                         </button>
                       )}
                     </div>
