@@ -457,7 +457,7 @@ export default function ViewStudentsCourse() {
     <div className="p-3">
       {contextHolder}
       <h1 className="text-lg font-bold text-[#002c6a]">
-        Quản lý bài tập học viên
+        Điểm thi
       </h1>
       <div className="py-3 grid-container">
         <Select
