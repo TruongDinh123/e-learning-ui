@@ -31,7 +31,7 @@ export default function ViewQuiz() {
   const [quiz, setquiz] = useState([]);
   const [hasViewed, setHasViewed] = useState(false);
   const [updateQuiz, setUpdateQuiz] = useState(0);
-  const [courses, setCourses] = useState([]);
+  // const [courses, setCourses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const [selectedCourse, setSelectedCourse] = useState(() => {
@@ -43,24 +43,26 @@ export default function ViewQuiz() {
   const router = useRouter();
 
   // Hàm xử lý khi chọn khóa học
-  const handleCourseChange = (value) => {
-    setSelectedCourse(value);
-    localStorage.setItem("selectedCourseId", value);
-  };
+  // const handleCourseChange = (value) => {
+  //   setSelectedCourse(value);
+  //   localStorage.setItem("selectedCourseId", value);
+  // };
+  //
+  // const currentTeacherId = localStorage.getItem("x-client-id");
+  // const coursesFromStore = useSelector((state) => state.course.courses);
 
-  const currentTeacherId = localStorage.getItem("x-client-id");
-  const coursesFromStore = useSelector((state) => state.course.courses);
-
+  useEffect(() => {
+    handleViewQuiz();
+  }, [])
   const handleViewQuiz = () => {
     setIsLoading(true);
     setHasViewed(true);
-    dispatch(viewInfoQuiz({ courseIds: selectedCourse }))
+    dispatch(viewInfoQuiz({ courseIds: "6634fc03bf25515f1e563504" }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
           setquiz(res?.metadata);
           setUpdateQuiz(updateQuiz + 1);
-          loadCourses();
         } else {
         }
         setIsLoading(false);
@@ -70,39 +72,39 @@ export default function ViewQuiz() {
       });
   };
 
-  useEffect(() => {
-    let visibleCourses;
-    if (coursesFromStore.length === 0) {
-      setIsLoading(true);
-      dispatch(viewCourses())
-        .then(unwrapResult)
-        .then((res) => {
-          if (res.status) {
-            if (isAdmin()) {
-              visibleCourses = res.metadata;
-            } else {
-              visibleCourses = res.metadata.filter(
-                (course) => course.teacher === currentTeacherId
-              );
-            }
-            setCourses(visibleCourses);
-          }
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          setIsLoading(false);
-        });
-    } else {
-      if (isAdmin()) {
-        visibleCourses = coursesFromStore.metadata;
-      } else {
-        visibleCourses = coursesFromStore.metadata.filter(
-          (course) => course.teacher === currentTeacherId
-        );
-      }
-      setCourses(visibleCourses);
-    }
-  }, [updateQuiz, coursesFromStore, dispatch]);
+  // useEffect(() => {
+  //   let visibleCourses;
+  //   if (coursesFromStore.length === 0) {
+  //     setIsLoading(true);
+  //     dispatch(viewCourses())
+  //       .then(unwrapResult)
+  //       .then((res) => {
+  //         if (res.status) {
+  //           if (isAdmin()) {
+  //             visibleCourses = res.metadata;
+  //           } else {
+  //             visibleCourses = res.metadata.filter(
+  //               (course) => course.teacher === currentTeacherId
+  //             );
+  //           }
+  //           setCourses(visibleCourses);
+  //         }
+  //         setIsLoading(false);
+  //       })
+  //       .catch((error) => {
+  //         setIsLoading(false);
+  //       });
+  //   } else {
+  //     if (isAdmin()) {
+  //       visibleCourses = coursesFromStore.metadata;
+  //     } else {
+  //       visibleCourses = coursesFromStore.metadata.filter(
+  //         (course) => course.teacher === currentTeacherId
+  //       );
+  //     }
+  //     setCourses(visibleCourses);
+  //   }
+  // }, [updateQuiz, coursesFromStore, dispatch]);
 
   // const handleDeleteQuiz = ({ quizId }) => {
   //   dispatch(deleteQuiz({ quizId }))
@@ -139,7 +141,7 @@ export default function ViewQuiz() {
       dataIndex: "key",
     },
     {
-      title: "Tên bài tập",
+      title: "Tên đề thi",
       dataIndex: "name",
       onFilter: (value, record) => record.name.indexOf(value) === 0,
       sorter: (a, b) => a.name.length - b.name.length,
@@ -268,29 +270,34 @@ export default function ViewQuiz() {
 
   return (
     <div className="p-3">
-      <div style={{ display: "flex", paddingBottom: "10px" }} className="pt-6">
-        <Select
-          placeholder="Chọn khóa học"
-          onChange={handleCourseChange}
-          value={selectedCourse}
-          className="me-3 w-full sm:w-64 mb-3 md:mb-0"
-        >
-          {courses.map((course) => (
-            <Option key={course._id} value={course._id}>
-              {course.name}
-            </Option>
-          ))}
-        </Select>
-        <div>
-          <Button
-            type="primary"
-            className="custom-button"
-            onClick={handleViewQuiz}
-          >
-            Xem
-          </Button>
-        </div>
-      </div>
+      <h1 className="text-2xl font-bold text-[#002c6a] mb-3">Danh sách đề thi</h1>
+
+      {/*<div style={{ display: "flex", paddingBottom: "10px" }} className="pt-6">*/}
+      {/*  <Select*/}
+      {/*    placeholder="Chọn khóa học"*/}
+      {/*    onChange={handleCourseChange}*/}
+      {/*    value={selectedCourse}*/}
+      {/*    className="me-3 w-full sm:w-64 mb-3 md:mb-0"*/}
+      {/*  >*/}
+      {/*    {courses.map((course) => (*/}
+      {/*      <Option key={course._id} value={course._id}>*/}
+      {/*        {course.name}*/}
+      {/*      </Option>*/}
+      {/*    ))}*/}
+      {/*  </Select>*/}
+      {/*  <div>*/}
+      {/*    <Button*/}
+      {/*      type="primary"*/}
+      {/*      className="custom-button"*/}
+      {/*      onClick={handleViewQuiz}*/}
+      {/*    >*/}
+      {/*      Xem*/}
+      {/*    </Button>*/}
+      {/*  </div>*/}
+      {/*  */}
+      {/*</div>*/}
+
+
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spin />

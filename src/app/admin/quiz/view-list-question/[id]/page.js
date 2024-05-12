@@ -69,14 +69,6 @@ export default function ViewListQuestion({ params }) {
         </div>
       ) : (
         <React.Fragment>
-          <Breadcrumb className="py-4">
-            <Breadcrumb.Item>
-              <Link href="/admin/quiz/view-quiz">Bài tập</Link>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              <span className="font-medium">Chi tiết</span>
-            </Breadcrumb.Item>
-          </Breadcrumb>
           <div className="sticky">
             {quiz?.map((quiz, quizIndex) => (
               <div
@@ -111,20 +103,12 @@ export default function ViewListQuestion({ params }) {
                           <span className="pr-4 text-green-600 block sm:inline">
                             Đã nộp: {score.filter((s) => s.isComplete).length}
                           </span>
-                          <span className="pr-4 border-gray-300 text-yellow-600 block sm:inline">
-                            Chưa nộp:{" "}
-                            {quiz.studentIds.length -
-                              score.filter((s) => s.isComplete).length}
-                          </span>
-                          <span className=" text-red-600 block sm:inline">
-                            Đã giao: {quiz.studentIds.length}
-                          </span>
                         </div>
                       </div>
-                      <div className="flex flex-col items-center justify-center min-h-screen">
-                        <div className="p-6 m-5 bg-white rounded shadow-md w-full sm:w-1/2 lg:w-1/3">
+                      <div className="flex flex-col items-center justify-center ">
+                        <div className="p-6 m-5 bg-white rounded shadow-md w-full sm:w-1/2 lg:w-1/2">
                           <h2 className="text-2xl font-bold text-center mb-5">
-                            Danh sách: {quiz.name}
+                            Đề thi: {quiz.name}
                           </h2>
                           {quiz.questions?.map((question, questionIndex) => (
                             <ul key={questionIndex}>

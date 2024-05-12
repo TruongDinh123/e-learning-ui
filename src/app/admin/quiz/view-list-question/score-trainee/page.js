@@ -1,81 +1,81 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Checkbox, Empty, Spin, Tabs, message } from "antd";
+import {Empty, Spin, Tabs } from "antd";
 import StudentWork from "../trainee-work/page";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { getScoreByQuizId, updateScore } from "@/features/Quiz/quizSlice";
+import { getScoreByQuizId } from "@/features/Quiz/quizSlice";
 import "./page.css";
-import { useMediaQuery } from "react-responsive";
+// import { useMediaQuery } from "react-responsive";
 
 export default function ViewListScore(props) {
-  const [messageApi, contextHolder] = message.useMessage();
+  // const [messageApi, contextHolder] = message.useMessage();
   const { quizId, totalQuestions } = props;
   const dispatch = useDispatch();
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [score, setScore] = useState([]);
-  const [selectAll, setSelectAll] = useState(false);
+  // const [selectAll, setSelectAll] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [update, setUpdate] = useState(0);
 
-  const handleCheckAll = (e) => {
-    setSelectAll(e.target.checked);
-    setScore(
-      score.map((student) => ({ ...student, selected: e.target.checked }))
-    );
-  };
+  // const handleCheckAll = (e) => {
+  //   setSelectAll(e.target.checked);
+  //   setScore(
+  //     score.map((student) => ({ ...student, selected: e.target.checked }))
+  //   );
+  // };
+  //
+  // const handleStudentCheck = (studentId, checked) => {
+  //   setScore(
+  //     score.map((student) =>
+  //       student._id === studentId ? { ...student, selected: checked } : student
+  //     )
+  //   );
+  // };
 
-  const handleStudentCheck = (studentId, checked) => {
-    setScore(
-      score.map((student) =>
-        student._id === studentId ? { ...student, selected: checked } : student
-      )
-    );
-  };
+  // const handleScoreChange = (studentId, newScore) => {
+  //   const maxScore = totalQuestions * 10;
+  //   if (newScore < -1 || newScore > maxScore) {
+  //     messageApi.error(`Điểm phải nằm trong khoảng từ 0 đến ${maxScore}`);
+  //     return;
+  //   }
+  //   setScore(
+  //     score.map((student) =>
+  //       student._id === studentId
+  //         ? { ...student, updateScore: newScore }
+  //         : student
+  //     )
+  //   );
+  // };
 
-  const handleScoreChange = (studentId, newScore) => {
-    const maxScore = totalQuestions * 10;
-    if (newScore < -1 || newScore > maxScore) {
-      messageApi.error(`Điểm phải nằm trong khoảng từ 0 đến ${maxScore}`);
-      return;
-    }
-    setScore(
-      score.map((student) =>
-        student._id === studentId
-          ? { ...student, updateScore: newScore }
-          : student
-      )
-    );
-  };
-
-  const handleReturnWork = () => {
-    const scoresToUpdate = score
-      .filter((student) => student?.selected)
-      .map((student) => ({
-        scoreId: student?._id,
-        updateScore: student?.updateScore,
-      }));
-    setIsLoading(true);
-    dispatch(updateScore(scoresToUpdate))
-      .then(unwrapResult)
-      .then((res) => {
-        messageApi
-          .open({
-            type: "Thành công",
-            content: "Đang thực hiện...",
-            duration: 2.5,
-          })
-          .then(() => {
-            setUpdate(update + 1);
-            setScore(score.map((student) => ({ ...student, selected: false })));
-            setSelectAll(false);
-          });
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-      });
-  };
+  // const handleReturnWork = () => {
+  //   const scoresToUpdate = score
+  //     .filter((student) => student?.selected)
+  //     .map((student) => ({
+  //       scoreId: student?._id,
+  //       updateScore: student?.updateScore,
+  //     }));
+  //   setIsLoading(true);
+  //   dispatch(updateScore(scoresToUpdate))
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       messageApi
+  //         .open({
+  //           type: "Thành công",
+  //           content: "Đang thực hiện...",
+  //           duration: 2.5,
+  //         })
+  //         .then(() => {
+  //           setUpdate(update + 1);
+  //           setScore(score.map((student) => ({ ...student, selected: false })));
+  //           setSelectAll(false);
+  //         });
+  //       setIsLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       setIsLoading(false);
+  //     });
+  // };
 
   useEffect(() => {
     setIsLoading(true);
@@ -103,14 +103,14 @@ export default function ViewListScore(props) {
             ? "selected-student"
             : ""
         }`}
-        style={{ maxWidth: "100%", overflow: "auto", textOverflow: "ellipsis" }}
+        style={{ maxWidth: "100%", overflow: "auto", }}
       >
-        <input
-          type="checkbox"
-          className="mr-4 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-          checked={student.selected}
-          onChange={(e) => handleStudentCheck(student._id, e.target.checked)}
-        />
+        {/*<input*/}
+        {/*  type="checkbox"*/}
+        {/*  className="mr-4 h-4 w-4 text-indigo-600 border-gray-300 rounded"*/}
+        {/*  checked={student.selected}*/}
+        {/*  onChange={(e) => handleStudentCheck(student._id, e.target.checked)}*/}
+        {/*/>*/}
         <div
           onClick={() => setSelectedStudent(student)}
           className="flex flex-1 cursor-pointer items-center"
@@ -127,27 +127,27 @@ export default function ViewListScore(props) {
           </div>
         </div>
         <div className="ml-4 flex-shrink-0">
-          <input
-            type="number"
-            className="text-sm text-gray-500 border-l-2 pl-4"
-            defaultValue={student?.updateScore ?? student?.score ?? ""}
-            onBlur={(e) => handleScoreChange(student._id, e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleScoreChange(student._id, e.target.value);
-              }
-            }}
-            placeholder="_"
-          />
+          {/*<input*/}
+          {/*  type="number"*/}
+          {/*  className="text-sm text-gray-500 border-l-2 pl-4"*/}
+          {/*  defaultValue={student?.updateScore ?? student?.score ?? ""}*/}
+          {/*  onBlur={(e) => handleScoreChange(student._id, e.target.value)}*/}
+          {/*  onKeyDown={(e) => {*/}
+          {/*    if (e.key === "Enter") {*/}
+          {/*      handleScoreChange(student._id, e.target.value);*/}
+          {/*    }*/}
+          {/*  }}*/}
+          {/*  placeholder="_"*/}
+          {/*/>*/}
           <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
-            / {totalQuestions * 10}
+            {student?.updateScore ?? student?.score ?? ""}/ {totalQuestions * 10}
           </span>
         </div>
       </li>
     ),
     key: student._id,
     children: (
-      <div style={{ maxHeight: '45vh', overflowY: 'auto' }}>
+      <div className="mb-5">
         <h1 className="flex justify-center items-center text-xl font-bold pb-4 text-purple-600">
           Bài làm của: {getFullName(student.user)}
         </h1>
@@ -158,7 +158,7 @@ export default function ViewListScore(props) {
 
   return (
     <div>
-      {contextHolder}
+      {/*{contextHolder}*/}
       {isLoading ? (
         <div className="flex justify-center items-center">
           <Spin />
@@ -167,23 +167,23 @@ export default function ViewListScore(props) {
         <React.Fragment>
           {score.length > 0 ? (
             <>
-              <div style={{ marginBottom: 25 }}>
-                <Button
-                  type="primary"
-                  style={{ color: "#fff", backgroundColor: "#1890ff" }}
-                  onClick={handleReturnWork}
-                  loading={isLoading}
-                >
-                  Trả bài cho học viên
-                </Button>
-              </div>
-              <Checkbox
-                checked={selectAll}
-                onChange={handleCheckAll}
-                className="font-bold"
-              >
-                Chọn tất cả học viên
-              </Checkbox>
+              {/*<div style={{ marginBottom: 25 }}>*/}
+              {/*  <Button*/}
+              {/*    type="primary"*/}
+              {/*    style={{ color: "#fff", backgroundColor: "#1890ff" }}*/}
+              {/*    onClick={handleReturnWork}*/}
+              {/*    loading={isLoading}*/}
+              {/*  >*/}
+              {/*    Trả bài cho học viên*/}
+              {/*  </Button>*/}
+              {/*</div>*/}
+              {/*<Checkbox*/}
+              {/*  checked={selectAll}*/}
+              {/*  onChange={handleCheckAll}*/}
+              {/*  className="font-bold"*/}
+              {/*>*/}
+              {/*  Chọn tất cả học viên*/}
+              {/*</Checkbox>*/}
             </>
           ) : (
             <div
@@ -196,7 +196,7 @@ export default function ViewListScore(props) {
         </React.Fragment>
       )}
       {score.length > 0 ? (
-        <Tabs tabPosition="left" items={tabItems} type="line" style={{ maxHeight: "45vh" }} className="scrollbar scrollbar-thin" />
+        <Tabs tabPosition="left" items={tabItems} type="line"  className="scrollbar scrollbar-thin" />
       ) : null}
     </div>
   );

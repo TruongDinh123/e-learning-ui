@@ -44,7 +44,7 @@ export default function StudentWork({ student }) {
     } else if (quiz && quiz.type === "multiple_choice") {
       // Bài tập trắc nghiệm
       return (
-        <div className="space-y-4">
+        <div className="space-y-4 mb-5">
           <h3 className="text-3xl font-bold text-indigo-600">
             Bài tập {quiz?.name}
           </h3>
@@ -72,7 +72,7 @@ export default function StudentWork({ student }) {
                 </ul>
                 <div className="mt-2">
                   <strong className="text-lg text-gray-800">
-                    Câu trả lời của học viên:{" "}
+                    Câu trả lời:{" "}
                     <span
                       className={`font-medium ${studentAnswer ? "text-blue-500" : "text-red-500"}`}
                     >
@@ -85,6 +85,47 @@ export default function StudentWork({ student }) {
               </div>
             );
           })}
+
+            <div  className="p-4 border rounded-lg shadow-sm">
+                <div className="mb-2">
+                    <span className="font-bold text-lg text-green-600">Câu {quiz.questions.length + 1}:</span>
+                    <span
+                        className={`block overflow-hidden ${isDesktop ? "ql-editor" : ""} text-gray-700`}>
+                        Dự đoán số người tham dự:
+                    </span>
+                </div>
+                <div className="mt-2">
+                    <strong className="text-lg text-gray-800">
+                        Câu trả lời:
+                        <span
+                            className="font-medium text-blue-500"
+                        >
+                     {student?.predictAmount ?? "0"}
+                    </span>
+                    </strong>
+                </div>
+            </div>
+
+            <div  className="p-4 border rounded-lg shadow-sm">
+                <div className="mb-2">
+                    <span className="font-bold text-lg text-green-600">Câu {quiz.questions.length + 2}:</span>
+                    <span
+                        className={`block overflow-hidden ${isDesktop ? "ql-editor" : ""} text-gray-700`}>
+                         Dự đoán số người trả lời đúng 100%:
+                    </span>
+                </div>
+                <div className="mt-2">
+                    <strong className="text-lg text-gray-800">
+                        Câu trả lời:
+                        <span
+                            className="font-medium text-blue-500"
+                        >
+                     {student?.predictAmountMaxScore ?? "0"}
+                    </span>
+                    </strong>
+                </div>
+            </div>
+
         </div>
       );
     }
