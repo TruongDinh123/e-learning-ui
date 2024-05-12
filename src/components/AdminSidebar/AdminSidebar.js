@@ -91,13 +91,13 @@ export default function AdminSidebar(props) {
         {
           key: "users/trainee",
           icon: <UserOutlined />,
-          label: "Bài tập học viên",
+          label: "Điểm thi",
         },
-        {
-          key: "users/view-teachers",
-          icon: <UserOutlined />,
-          label: "Học viên khoá học",
-        },
+        // {
+        //   key: "users/view-teachers",
+        //   icon: <UserOutlined />,
+        //   label: "Học viên khoá học",
+        // },
       ],
     },
   ];
@@ -114,11 +114,11 @@ export default function AdminSidebar(props) {
         icon: <UserOutlined />,
         label: "Vai trò",
       },
-      {
-        key: "category",
-        icon: <UserOutlined />,
-        label: "Danh mục",
-      }
+      // {
+      //   key: "category",
+      //   icon: <UserOutlined />,
+      //   label: "Danh mục",
+      // }
     );
   }
 
