@@ -16,6 +16,8 @@ import {useState} from 'react';
 import ForgotPassword from '../user/forgot-password/page';
 import Link from 'next/link';
 import './login.css';
+import backgroundImage from '/public/images/backgroundInit.jpg'
+import Image from 'next/image';
 
 const loginSchema = yup.object({
   email: yup
@@ -95,19 +97,19 @@ export default function Login() {
 
   return (
     <div
-      className='min-h-screen relative bg-no-repeat bg-cover bg-center
+      className='relative bg-no-repeat bg-cover bg-center
       flex items-center justify-center'
-      style={{
-        backgroundImage:
-          'url(https://images.pexels.com/photos/5905445/pexels-photo-5905445.jpeg)',
-      }}
+     
     >
+       <div className='image-block'>
+        <Image src={backgroundImage} alt='background-image' />
+      </div>
       {contextHolder}
-      <div className='flex flex-col md:flex-row items-center justify-center w-full max-w-5xl'>
+      <div className='feature-block flex flex-col md:flex-row items-center justify-center w-full max-w-5xl '>
         <div className='md:w-1/2 text-center md:text-left p-8'>
           <h1 className='text-4xl font-bold mb-4'>
             <Link href='/'>
-              <p className='hover:no-underline hover:text-[#007bff]'>
+              <p className='hover:no-underline hover:text-[#007bff] rounded-lg'>
                 EXAM-ONE
               </p>
             </Link>
@@ -213,7 +215,7 @@ export default function Login() {
                     type='primary'
                     disabled={isLoading}
                     onClick={() => router.push('/signup')}
-                    className='py-1 px-8 bg-blue-900 hover:bg-blue-400 text-white text-center inline-block text-lg my-1 ml-0 mx-1 rounded-lg cursor-pointer border-none w-full'
+                    className='py-1 px-8 text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-lg px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800'
                   />
                 </div>
               </form>

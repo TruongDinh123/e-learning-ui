@@ -136,7 +136,7 @@ export default function AdminSidebar(props) {
         position: "fixed",
         top: 0,
         left: 0,
-        zIndex: 2000,
+        zIndex: 1000,
       }}
     >
       <div className="demo-logo-vertical d-flex justify-content-center align-items-center py-3">
