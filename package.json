@@ -36,6 +36,7 @@
     "js-cookie": "^3.0.5",
     "jspdf": "^2.5.1",
     "katex": "^0.16.9",
+    "lodash.debounce": "^4.0.8",
     "luxon": "^3.4.4",
     "moment": "^2.29.4",
     "next": "^13.5.7-canary.11",

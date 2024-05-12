@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Button,
   message,
@@ -19,6 +19,7 @@ import Link from "next/link";
 import "react-quill/dist/quill.snow.css";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 const logo = "/images/logoimg.jpg";
+import debounce from 'lodash.debounce';
 
 export default function Quizs({ params }) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -39,6 +40,9 @@ export default function Quizs({ params }) {
   const [predictAmount, onChangePredictAmount] = useState('');
   const [course, setCourse] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [initialSize, setInitialSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+  const [hasWarned, setHasWarned] = useState(false);
+  const resizeTimeoutRef = useRef(null);
 
   const quizzesByStudentState = useSelector(
     (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
@@ -72,7 +76,53 @@ export default function Quizs({ params }) {
       fetchData();
     }
   }, [dispatch, courseIds, isLoading]);
+
+  useEffect(() => {
+    const tolerance = 1;
+
+    const sizeWithinTolerance = (current, initial) => {
+      return Math.abs(current - initial) <= tolerance;
+    };
+
+    const handleResize = debounce(() => {
+      const widthChangeWithinTolerance = sizeWithinTolerance(window.innerWidth, initialSize.width);
+      const heightChangeWithinTolerance = sizeWithinTolerance(window.innerHeight, initialSize.height);
+
+      const isSizeChanged = (widthChangeWithinTolerance || heightChangeWithinTolerance);
+
+      if (isSizeChanged){
+        if (hasWarned){
+          // do nothing
+
+        }
+        else {
+          setHasWarned(true); 
+          if (!resizeTimeoutRef.current){
+            messageApi.error("Bạn có dấu hiệu vi phạm. Vui lòng resize như cũ. Nếu 10s nữa bạn chưa thực hiện, bài thi sẽ kết thúc.");
+            resizeTimeoutRef.current = setTimeout(() => {
+              const widthChangeWithinTolerance = sizeWithinTolerance(window.innerWidth, initialSize.width);
+              const heightChangeWithinTolerance = sizeWithinTolerance(window.innerHeight, initialSize.height);
   
+              if (widthChangeWithinTolerance || heightChangeWithinTolerance) {
+                messageApi.error("Bạn vẫn chưa trả màn hình như cũ. Hệ thống sẽ nộp bài trong 10s nữa.");
+                setTimeout(()=>{
+                  handleSubmit();
+                },10000)
+              }
+              else {
+                messageApi.success("Bạn đã trả về màn hình như cũ. Tiếp tục thi.");
+              }
+              resizeTimeoutRef.current = null;
+              setHasWarned(false);
+            }, 10000);
+          }
+        }
+      };
+      
+    },100);
+
+    window.addEventListener('resize', handleResize);
+  }, [initialSize, hasWarned]);
 
   //fetch API
   useEffect(() => {
