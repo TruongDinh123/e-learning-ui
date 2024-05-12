@@ -7,7 +7,6 @@ import {RiLockPasswordLine} from 'react-icons/ri';
 import {MdOutlinePhone} from 'react-icons/md';
 import {RiHome4Line} from 'react-icons/ri';
 import {MdOutlinePermIdentity} from 'react-icons/md';
-import {CiUser} from 'react-icons/ci';
 import {TbUserSearch} from 'react-icons/tb';
 import {TbUserShield} from 'react-icons/tb';
 
@@ -34,25 +33,20 @@ const registerSchema = yup.object({
     .string()
     .min(6, 'Password phải có ít nhất 6 kí tự')
     .required('Yêu cầu nhập mật khẩu'),
+
   phone: yup
     .string()
     .min(6, 'Số điện thoại phải có ít nhất 6 kí tự')
-    .required('Yêu cầu nhập mật khẩu'),
+    .required('Yêu cầu nhập SĐT'),
 
   cmnd: yup
     .string()
-    .min(6, 'CMND phải có ít nhất 6 kí tự')
-    .required('Yêu cầu nhập mật khẩu'),
+    .min(6, 'CMND phải có ít nhất 6 kí tự'),
 
   address: yup
     .string()
     .min(6, 'Địa chỉ phải có ít nhất 6 kí tự')
-    .required('Yêu cầu nhập mật khẩu'),
-
-  // unit: yup
-  //     .string()
-  //     .min(6, "Password phải có ít nhất 6 kí tự")
-  //     .required("Yêu cầu nhập mật khẩu"),
+    .required('Yêu cầu nhập địa chỉ'),
 });
 
 export default function SignUp() {
@@ -281,7 +275,7 @@ export default function SignUp() {
                 </select>
               </label>
               <label className='flex flex-col' htmlFor='donvi'>
-                {selectedCap && selectedCap !== 'Cấp xã' && (
+                {selectedCap && (
                   <select
                     className='mt-2'
                     value={selectedDonVi}
