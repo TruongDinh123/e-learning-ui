@@ -195,7 +195,8 @@ export default function Login() {
                   type='primary'
                   disabled={isLoading}
                   onClick={() => formik.handleSubmit()}
-                  className='py-1 px-8 bg-blue-900 hover:bg-blue-400 text-white text-center inline-block text-lg my-1 ml-0 mx-1 rounded-lg cursor-pointer border-none w-full'
+                  className='py-1 px-8 bg-blue-900 hover:bg-blue-400 text-white text-center inline-block text-lg my-1
+                  ml-0 mx-1 rounded-lg cursor-pointer border-none w-full'
                 />
                 <div className='flex items-center justify-center mt-2'>
                   <a
@@ -215,7 +216,9 @@ export default function Login() {
                     type='primary'
                     disabled={isLoading}
                     onClick={() => router.push('/signup')}
-                    className='py-1 px-8 text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-lg px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800'
+                    className='py-1 px-8 text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-4
+                    focus:ring-blue-300 font-medium rounded-lg text-lg text-center me-2 mb-2 dark:bg-blue-600
+                    dark:hover:bg-blue-900 dark:focus:ring-blue-800'
                   />
                 </div>
               </form>
