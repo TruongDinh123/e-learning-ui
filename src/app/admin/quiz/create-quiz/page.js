@@ -57,7 +57,7 @@ const htmlToJson = (html) => {
 
 export default function QuizCreator() {
   const [messageApi, contextHolder] = message.useMessage();
-  const [selectedCourse, setSelectedCourse] = useState([]);
+  // const [selectedCourse, setSelectedCourse] = useState([]);
   const [showDraftQuizzesSelect, setShowDraftQuizzesSelect] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [courses, setCourses] = useState([]);
@@ -69,13 +69,14 @@ export default function QuizCreator() {
   const [selectedQuizTemplate, setSelectedQuizTemplate] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingApi, setIsLoadingApi] = useState(false);
-  const [quizType, setQuizType] = useState("multiple_choice");
+  // const [quizType, setQuizType] = useState("multiple_choice");
   const [selectedQuizId, setSelectedQuizId] = useState(null);
   const [showStudentSelectModal, setShowStudentSelectModal] = useState(false);
   const [initialQuestions, setInitialQuestions] = useState([]);
   const [isLoadingDraft, setIsLoadingDraft] = useState(false);
   const [deletedQuestionIds, setDeletedQuestionIds] = useState([]);
-
+  const quizType = "multiple_choice";
+  const selectedCourse = "6634fc03bf25515f1e563504";
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
   const router = useRouter();
@@ -103,63 +104,63 @@ export default function QuizCreator() {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const currentTeacherId = localStorage.getItem("x-client-id");
-    dispatch(refreshAUser(currentTeacherId));
-  }, []);
+  // useEffect(() => {
+  //   const currentTeacherId = localStorage.getItem("x-client-id");
+  //   dispatch(refreshAUser(currentTeacherId));
+  // }, []);
 
   // Hàm xử lý khi loại quiz thay đổi
-  const handleQuizTypeChange = (value) => {
-    setQuizType(value);
-  };
+  // const handleQuizTypeChange = (value) => {
+  //   setQuizType(value);
+  // };
 
-  const toggleTemplateMode = () => {
-    setIsTemplateMode(!isTemplateMode);
-  };
+  // const toggleTemplateMode = () => {
+  //   setIsTemplateMode(!isTemplateMode);
+  // };
 
-  const [isCourseSelected, setIsCourseSelected] = useState(false);
+  const [isCourseSelected, setIsCourseSelected] = useState(true);
 
   // Hàm xử lý khi chọn khóa học
-  const handleCourseChange = (value) => {
-    setSelectedCourse(value);
-    setIsCourseSelected(value.length > 0);
-    const hasDraftQuizzesForSelectedCourse =
-      value.length > 0 &&
-      draftQuizzes.some((quiz) => value.includes(quiz.courseIds[0]));
-    setShowDraftQuizzesSelect(hasDraftQuizzesForSelectedCourse);
-
-    if (value.length > 1) {
-      const allStudents = value.flatMap((courseId) => {
-        const course = courses?.find((course) => course?._id === courseId);
-        return course?.students || [];
-      });
-      setStudentsByCourse(allStudents);
-      setSelectedStudents(["all"]);
-    } else if (value.length === 1) {
-      const selectedCourse = courses?.find(
-        (course) => course?._id === value[0]
-      );
-      setStudentsByCourse(selectedCourse?.students || []);
-    } else {
-      setStudentsByCourse([]);
-      setDraftquiz([]);
-      setInitialQuestions([]);
-    }
-  };
+  // const handleCourseChange = (value) => {
+  //   setSelectedCourse(value);
+  //   setIsCourseSelected(value.length > 0);
+  //   const hasDraftQuizzesForSelectedCourse =
+  //     value.length > 0 &&
+  //     draftQuizzes.some((quiz) => value.includes(quiz.courseIds[0]));
+  //   setShowDraftQuizzesSelect(hasDraftQuizzesForSelectedCourse);
+  //
+  //   if (value.length > 1) {
+  //     const allStudents = value.flatMap((courseId) => {
+  //       const course = courses?.find((course) => course?._id === courseId);
+  //       return course?.students || [];
+  //     });
+  //     setStudentsByCourse(allStudents);
+  //     setSelectedStudents(["all"]);
+  //   } else if (value.length === 1) {
+  //     const selectedCourse = courses?.find(
+  //       (course) => course?._id === value[0]
+  //     );
+  //     setStudentsByCourse(selectedCourse?.students || []);
+  //   } else {
+  //     setStudentsByCourse([]);
+  //     setDraftquiz([]);
+  //     setInitialQuestions([]);
+  //   }
+  // };
 
   // Hàm xử lý khi chọn bài học
-  const handleLessonChange = (value) => {
-    setSelectedLesson(value);
-  };
+  // const handleLessonChange = (value) => {
+  //   setSelectedLesson(value);
+  // };
 
   // Hàm xử lý khi chọn học viên
-  const handleStudentChange = (value) => {
-    if (value.includes("all")) {
-      setSelectedStudents(["all"]);
-    } else {
-      setSelectedStudents(value);
-    }
-  };
+  // const handleStudentChange = (value) => {
+  //   if (value.includes("all")) {
+  //     setSelectedStudents(["all"]);
+  //   } else {
+  //     setSelectedStudents(value);
+  //   }
+  // };
 
   // Hàm xử lý khi thêm câu hỏi
   const handleAddQuestion = () => {
@@ -306,6 +307,12 @@ export default function QuizCreator() {
 
   //hàm xử lý save quiz
   const handleSaveQuiz = (values, action) => {
+    if(!values?.submissionTime?.toISOString()){
+      message.error("Thời hạn nạp bài là bắt buộc", 3.5);
+
+      return;
+    }
+
     setIsLoading(true);
 
     // Chuẩn bị dữ liệu câu hỏi
@@ -347,7 +354,7 @@ export default function QuizCreator() {
     let formattedValues = {
       ...values,
       type: quizType,
-      courseIds: selectedCourse,
+      courseIds: [selectedCourse],
       studentIds: action === "assign" ? selectedStudents : [],
       questions: questionsToSave,
       isDraft: action === "save_draft",
@@ -375,7 +382,7 @@ export default function QuizCreator() {
       formattedValues = {
         type: quizType,
         name: values.name,
-        courseIds: selectedCourse,
+        courseIds: [selectedCourse],
         studentIds: studentIds,
         questions: questions.map((question) => ({
           ...question,
@@ -391,7 +398,7 @@ export default function QuizCreator() {
           ...formattedValues,
           type: quizType,
           submissionTime: values?.submissionTime?.toISOString(),
-          courseIds: selectedCourse,
+          courseIds: [selectedCourse],
           studentIds: studentIds,
           timeLimit: values?.timeLimit,
           questions: questions.map((question) => ({
@@ -404,7 +411,7 @@ export default function QuizCreator() {
         formattedValues = {
           type: quizType,
           name: values.essayTitle,
-          courseIds: selectedCourse,
+          courseIds: [selectedCourse],
           studentIds: studentIds,
           submissionTime: values?.submissionTime?.toISOString(),
           essay: {
@@ -431,7 +438,7 @@ export default function QuizCreator() {
     } else {
       formattedValues = {
         ...formattedValues,
-        courseIds: selectedCourse,
+        courseIds: [selectedCourse],
         // ...(selectedQuizId ? { quizIdDraft: selectedQuizId } : {}),
       };
     }
@@ -531,10 +538,10 @@ export default function QuizCreator() {
     }
   };
 
-  const selectCourses = createSelector(
-    [(state) => state.course.courses],
-    (courses) => courses
-  );
+  // const selectCourses = createSelector(
+  //   [(state) => state.course.courses],
+  //   (courses) => courses
+  // );
 
   const selectDraftQuiz = createSelector(
     [(state) => state.quiz.getdraftQuiz],
@@ -546,7 +553,7 @@ export default function QuizCreator() {
     (getQuizTemplates) => getQuizTemplates
   );
 
-  const coursesFromStore = useSelector((state) => selectCourses(state));
+  // const coursesFromStore = useSelector((state) => selectCourses(state));
   const draftQuizFromStore = useSelector((state) => selectDraftQuiz(state));
   const getQuizTemplatesStore = useSelector((state) =>
     selectQuizTemplates(state)
@@ -561,119 +568,120 @@ export default function QuizCreator() {
   }, [userFromStore]);
 
   // Tìm khóa học hiện tại từ danh sách khóa học trong userFromStore
-  const currentCourse = useMemo(() => {
-    return (
-      userFromStore?.user?.metadata?.account?.courses?.find(
-        (course) => course._id === selectedCourse[0]
-      ) ||
-      userFromStore?.user?.courses?.find(
-        (course) => course._id === selectedCourse[0]
-      )
-    );
-  }, [userFromStore, selectedCourse]);
+  // const currentCourse = useMemo(() => {
+  //   return (
+  //     userFromStore?.user?.metadata?.account?.courses?.find(
+  //       (course) => course._id === selectedCourse[0]
+  //     ) ||
+  //     userFromStore?.user?.courses?.find(
+  //       (course) => course._id === selectedCourse[0]
+  //     )
+  //   );
+  // }, [userFromStore, selectedCourse]);
+  //
 
   // Tìm thông tin teacherQuizzes cho giáo viên hiện tại trong khóa học đó
   // Kiểm tra xem giáo viên đã đạt giới hạn tạo bài tập cho khóa học này chưa
-  const isQuizLimitReached = useMemo(() => {
-    const teacherQuizInfo = currentCourse?.teacherQuizzes?.find(
-      (tq) => tq.teacherId === currentTeacherId
-    );
-    return teacherQuizInfo ? teacherQuizInfo.quizCount >= 3 : false;
-  }, [currentCourse, currentTeacherId]);
+  // const isQuizLimitReached = useMemo(() => {
+  //   const teacherQuizInfo = currentCourse?.teacherQuizzes?.find(
+  //     (tq) => tq.teacherId === currentTeacherId
+  //   );
+  //   return teacherQuizInfo ? teacherQuizInfo.quizCount >= 3 : false;
+  // }, [currentCourse, currentTeacherId]);
 
-  useEffect(() => {
-    const currentTeacherId = localStorage.getItem("x-client-id");
-    let visibleCourses;
+  // useEffect(() => {
+  //   const currentTeacherId = localStorage.getItem("x-client-id");
+  //   let visibleCourses;
+  //
+  //   if (coursesFromStore?.length === 0) {
+  //     dispatch(selectCourse())
+  //       .then(unwrapResult)
+  //       .then((res) => {
+  //         if (res.status) {
+  //           if (isAdmin()) {
+  //             visibleCourses = res.metadata;
+  //           } else if (isMentor()) {
+  //             visibleCourses = res.metadata.filter(
+  //               (course) => course.teacher === currentTeacherId
+  //             );
+  //           }
+  //           setCourses(visibleCourses);
+  //         } else {
+  //           messageApi.error(res.message);
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         if (error.response.status === 401) {
+  //           // Handle unauthorized error
+  //           router.push("/login"); // Assuming '/login' is your login route path
+  //         } else {
+  //           messageApi.error("An unexpected error occurred.");
+  //         }
+  //       });
+  //   } else {
+  //     // Áp dụng lọc cũng cho dữ liệu từ store
+  //     if (isAdmin()) {
+  //       visibleCourses = coursesFromStore.metadata;
+  //     } else if (isMentor()) {
+  //       visibleCourses = coursesFromStore.metadata.filter(
+  //         (course) => course.teacher === currentTeacherId
+  //       );
+  //     }
+  //     setCourses(visibleCourses);
+  //   }
+  // }, [coursesFromStore, dispatch]);
 
-    if (coursesFromStore?.length === 0) {
-      dispatch(selectCourse())
-        .then(unwrapResult)
-        .then((res) => {
-          if (res.status) {
-            if (isAdmin()) {
-              visibleCourses = res.metadata;
-            } else if (isMentor()) {
-              visibleCourses = res.metadata.filter(
-                (course) => course.teacher === currentTeacherId
-              );
-            }
-            setCourses(visibleCourses);
-          } else {
-            messageApi.error(res.message);
-          }
-        })
-        .catch((error) => {
-          if (error.response.status === 401) {
-            // Handle unauthorized error
-            router.push("/login"); // Assuming '/login' is your login route path
-          } else {
-            messageApi.error("An unexpected error occurred.");
-          }
-        });
-    } else {
-      // Áp dụng lọc cũng cho dữ liệu từ store
-      if (isAdmin()) {
-        visibleCourses = coursesFromStore.metadata;
-      } else if (isMentor()) {
-        visibleCourses = coursesFromStore.metadata.filter(
-          (course) => course.teacher === currentTeacherId
-        );
-      }
-      setCourses(visibleCourses);
-    }
-  }, [coursesFromStore, dispatch]);
-
-  useEffect(() => {
-    const currentTeacherId = localStorage.getItem("x-client-id");
-    let visibleCourses;
-
-    dispatch(selectCourse())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          if (isAdmin()) {
-            visibleCourses = res.metadata;
-          } else if (isMentor()) {
-            visibleCourses = res.metadata.filter(
-              (course) => course.teacher === currentTeacherId
-            );
-          }
-          setCourses(visibleCourses);
-        } else {
-          messageApi.error(res.message);
-        }
-      })
-      .catch((error) => {
-        if (error.response.status === 401) {
-          // Handle unauthorized error
-          router.push("/login"); // Assuming '/login' is your login route path
-        } else {
-          messageApi.error("An unexpected error occurred.");
-        }
-      });
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const currentTeacherId = localStorage.getItem("x-client-id");
+  //   let visibleCourses;
+  //
+  //   dispatch(selectCourse())
+  //     .then(unwrapResult)
+  //     .then((res) => {
+  //       if (res.status) {
+  //         if (isAdmin()) {
+  //           visibleCourses = res.metadata;
+  //         } else if (isMentor()) {
+  //           visibleCourses = res.metadata.filter(
+  //             (course) => course.teacher === currentTeacherId
+  //           );
+  //         }
+  //         setCourses(visibleCourses);
+  //       } else {
+  //         messageApi.error(res.message);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       if (error.response.status === 401) {
+  //         // Handle unauthorized error
+  //         router.push("/login"); // Assuming '/login' is your login route path
+  //       } else {
+  //         messageApi.error("An unexpected error occurred.");
+  //       }
+  //     });
+  // }, [dispatch]);
 
   // Fetch quiz templates when the component mounts
   //fetch the templates
-  useEffect(() => {
-    if (getQuizTemplatesStore?.length === 0) {
-      dispatch(viewQuizTemplates())
-        .then(unwrapResult)
-        .then((res) => {
-          if (res.status) {
-            setQuizTemplates(res.metadata);
-          } else {
-            messageApi.error(res.message);
-          }
-        });
-    } else {
-      setQuizTemplates(getQuizTemplatesStore.metadata);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (getQuizTemplatesStore?.length === 0) {
+  //     dispatch(viewQuizTemplates())
+  //       .then(unwrapResult)
+  //       .then((res) => {
+  //         if (res.status) {
+  //           setQuizTemplates(res.metadata);
+  //         } else {
+  //           messageApi.error(res.message);
+  //         }
+  //       });
+  //   } else {
+  //     setQuizTemplates(getQuizTemplatesStore.metadata);
+  //   }
+  // }, []);
 
   //fetch the draft
   useEffect(() => {
-    const courseId = selectedCourse[0];
+    const courseId = selectedCourse;
     const filteredDraftQuizzes = draftQuizFromStore?.filter((quiz) =>
       quiz?.courseIds?.includes(courseId)
     );
@@ -711,28 +719,28 @@ export default function QuizCreator() {
   }, [selectedCourse]);
 
   // Handle quiz template selection
-  const handleQuizTemplateChange = (value) => {
-    setSelectedQuizTemplate(value);
-    if (value) {
-      const selectedTemplate = quizTemplates.find(
-        (template) => template._id === value
-      );
-      form.setFieldsValue({ type: selectedTemplate.type });
-      form.setFieldsValue({ name: selectedTemplate.name });
-      form.setFieldsValue({
-        questions: selectedTemplate.questions.map((question) => ({
-          question: question.question,
-          options: question.options.map((option) => ({ option })),
-          answer: question.answer,
-        })),
-      });
-      setSelectedQuizId("");
-    } else {
-      form.setFieldsValue({ type: "" });
-      form.setFieldsValue({ name: "" });
-      form.setFieldsValue({ questions: [{}] });
-    }
-  };
+  // const handleQuizTemplateChange = (value) => {
+  //   setSelectedQuizTemplate(value);
+  //   if (value) {
+  //     const selectedTemplate = quizTemplates.find(
+  //       (template) => template._id === value
+  //     );
+  //     form.setFieldsValue({ type: selectedTemplate.type });
+  //     form.setFieldsValue({ name: selectedTemplate.name });
+  //     form.setFieldsValue({
+  //       questions: selectedTemplate.questions.map((question) => ({
+  //         question: question.question,
+  //         options: question.options.map((option) => ({ option })),
+  //         answer: question.answer,
+  //       })),
+  //     });
+  //     setSelectedQuizId("");
+  //   } else {
+  //     form.setFieldsValue({ type: "" });
+  //     form.setFieldsValue({ name: "" });
+  //     form.setFieldsValue({ questions: [{}] });
+  //   }
+  // };
 
   //Xử lý sự kiện khi một bài tập nháp được chọn
   const handleDraftQuizSelect = (selectedQuizId) => {
@@ -805,7 +813,7 @@ export default function QuizCreator() {
     <div className="p-3">
       {contextHolder}
       <div className="overflow-y-auto h-screen pb-28 scrollbar-thin justify-center items-center grid-container">
-        <h1 className="text-2xl">
+        <h1 className="text-2xl mb-5">
           {isTemplateMode ? "Tạo bài tập mẫu" : "Tạo bài tập"}
         </h1>
         {isLoading || isLoadingApi ? (
@@ -822,74 +830,63 @@ export default function QuizCreator() {
             onFinish={handleSaveQuiz}
             onFinishFailed={handleFinishFailed}
           >
-            <div className="py-2">
-              <Button
-                onClick={toggleTemplateMode}
-                type="primary"
-                htmlType="submit"
-                className="custom-button"
-              >
-                {isTemplateMode ? "Tạo bài tập" : "Tạo bài mẫu"}
-              </Button>
-            </div>
+            {/*<div className="py-2">*/}
+            {/*  <Button*/}
+            {/*    onClick={toggleTemplateMode}*/}
+            {/*    type="primary"*/}
+            {/*    htmlType="submit"*/}
+            {/*    className="custom-button"*/}
+            {/*  >*/}
+            {/*    {isTemplateMode ? "Tạo bài tập" : "Tạo bài mẫu"}*/}
+            {/*  </Button>*/}
+            {/*</div>*/}
             {!isTemplateMode && (
               <>
                 <Row gutter={16} className="">
+                  {/*<Col xs={24} sm={12} md={8} lg={6}>*/}
+                  {/*  <Form.Item*/}
+                  {/*    name="courseIds"*/}
+                  {/*    label="Chọn khóa học của bạn:"*/}
+                  {/*    rules={*/}
+                  {/*      isQuizLimitReached*/}
+                  {/*        ? [*/}
+                  {/*            {*/}
+                  {/*              required: true,*/}
+                  {/*              message:*/}
+                  {/*                "Bạn đã hết số lượng bài tập cho khóa học này.",*/}
+                  {/*            },*/}
+                  {/*          ]*/}
+                  {/*        : [*/}
+                  {/*            {*/}
+                  {/*              required: true,*/}
+                  {/*              message: "Vui lòng chọn khóa học",*/}
+                  {/*            },*/}
+                  {/*          ]*/}
+                  {/*    }*/}
+                  {/*    labelCol={{ span: 24 }}*/}
+                  {/*    wrapperCol={{ span: 24 }}*/}
+                  {/*  >*/}
+                  {/*    <Select*/}
+                  {/*      mode="multiple"*/}
+                  {/*      placeholder="Chọn khóa học"*/}
+                  {/*      onChange={handleCourseChange}*/}
+                  {/*      value={selectedCourse}*/}
+                  {/*      style={{ width: "100%" }}*/}
+                  {/*      // disabled={isQuizLimitReached}*/}
+                  {/*    >*/}
+                  {/*      {courses?.map((course) => (*/}
+                  {/*        <Option key={course._id} value={course._id}>*/}
+                  {/*          {course.name}*/}
+                  {/*        </Option>*/}
+                  {/*      ))}*/}
+                  {/*    </Select>*/}
+                  {/*  </Form.Item>*/}
+                  {/*</Col>*/}
                   <Col xs={24} sm={12} md={8} lg={6}>
-                    <Form.Item
-                      name="courseIds"
-                      label="Chọn khóa học của bạn:"
-                      rules={
-                        isQuizLimitReached
-                          ? [
-                              {
-                                required: true,
-                                message:
-                                  "Bạn đã hết số lượng bài tập cho khóa học này.",
-                              },
-                            ]
-                          : [
-                              {
-                                required: true,
-                                message: "Vui lòng chọn khóa học",
-                              },
-                            ]
-                      }
-                      labelCol={{ span: 24 }}
-                      wrapperCol={{ span: 24 }}
-                    >
-                      <Select
-                        mode="multiple"
-                        placeholder="Chọn khóa học"
-                        onChange={handleCourseChange}
-                        value={selectedCourse}
-                        style={{ width: "100%" }}
-                        // disabled={isQuizLimitReached}
-                      >
-                        {courses?.map((course) => (
-                          <Option key={course._id} value={course._id}>
-                            {course.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={12} md={8} lg={6}>
-                    {showDraftQuizzesSelect && (
+
                       <Form.Item
                         name="quizIdDraft"
                         label="Bài tập nháp"
-                        rules={
-                          isQuizLimitReached
-                            ? [
-                                {
-                                  required: true,
-                                  message:
-                                    "Bạn đã hết số lượng bài tập cho khóa học này.",
-                                },
-                              ]
-                            : null
-                        }
                         labelCol={{ span: 24 }}
                         wrapperCol={{ span: 24 }}
                       >
@@ -901,11 +898,6 @@ export default function QuizCreator() {
                           <Select
                             onChange={handleDraftQuizSelect}
                             placeholder="Chọn bài tập nháp"
-                            disabled={
-                              isQuizLimitReached ||
-                              (selectedQuizTemplate &&
-                                selectedQuizTemplate !== "")
-                            }
                             loading={isLoadingDraft}
                           >
                             <Select.Option value="">Không chọn</Select.Option>
@@ -917,32 +909,32 @@ export default function QuizCreator() {
                           </Select>
                         </Badge>
                       </Form.Item>
-                    )}
+
                   </Col>
                 </Row>
 
-                {!isTemplateMode && quizType !== "essay" && (
-                  <Col xs={24} sm={12} md={8} lg={6} className="pb-4">
-                    <span>Chọn mẫu bài tập:</span>
-                    <Select
-                      placeholder="Chọn mẫu bài tập"
-                      onChange={handleQuizTemplateChange}
-                      style={{ width: "100%" }}
-                      disabled={
-                        !isCourseSelected ||
-                        isQuizLimitReached ||
-                        (selectedQuizId && selectedQuizId !== "")
-                      }
-                    >
-                      <Option value="">Không chọn</Option>
-                      {quizTemplates?.map((template) => (
-                        <Option key={template._id} value={template._id}>
-                          {template.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Col>
-                )}
+                {/*{!isTemplateMode && quizType !== "essay" && (*/}
+                {/*  <Col xs={24} sm={12} md={8} lg={6} className="pb-4">*/}
+                {/*    <span>Chọn mẫu bài tập:</span>*/}
+                {/*    <Select*/}
+                {/*      placeholder="Chọn mẫu bài tập"*/}
+                {/*      onChange={handleQuizTemplateChange}*/}
+                {/*      style={{ width: "100%" }}*/}
+                {/*      disabled={*/}
+                {/*        !isCourseSelected ||*/}
+                {/*        isQuizLimitReached ||*/}
+                {/*        (selectedQuizId && selectedQuizId !== "")*/}
+                {/*      }*/}
+                {/*    >*/}
+                {/*      <Option value="">Không chọn</Option>*/}
+                {/*      {quizTemplates?.map((template) => (*/}
+                {/*        <Option key={template._id} value={template._id}>*/}
+                {/*          {template.name}*/}
+                {/*        </Option>*/}
+                {/*      ))}*/}
+                {/*    </Select>*/}
+                {/*  </Col>*/}
+                {/*)}*/}
               </>
             )}
 
@@ -953,34 +945,12 @@ export default function QuizCreator() {
                     <Form.Item
                       label="Tên bài tập"
                       name="name"
-                      rules={
-                        !isQuizLimitReached || isTemplateMode
-                          ? [
-                              {
-                                required: true,
-                                message: "Vui lòng nhập tên bài tập.",
-                              },
-                            ]
-                          : []
-                      }
                       className="w-full"
                     >
-                      {isTemplateMode ? (
                         <Input
-                          disabled={isQuizLimitReached && !isTemplateMode}
-                          placeholder="Nhập tên bài tập mẫu"
-                          className="w-full"
-                        />
-                      ) : (
-                        <Input
-                          disabled={
-                            !isCourseSelected ||
-                            (isQuizLimitReached && !isTemplateMode)
-                          }
                           placeholder="Nhập tên bài tập"
                           className="w-full"
                         />
-                      )}
                     </Form.Item>
                   </Col>
                   {!isTemplateMode && (
@@ -990,6 +960,12 @@ export default function QuizCreator() {
                           label="Thời hạn nộp"
                           name="submissionTime"
                           className="px-2"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please enter a question",
+                            }
+                          ]}
                         >
                           <DatePicker
                             showTime
@@ -1001,7 +977,6 @@ export default function QuizCreator() {
                               currentDate.setHours(0, 0, 0, 0); // Đặt thời gian về 00:00:00
                               return current && current.toDate() < currentDate;
                             }}
-                            disabled={!isCourseSelected || isQuizLimitReached}
                           />
                         </Form.Item>
                       </Col>
@@ -1013,14 +988,13 @@ export default function QuizCreator() {
                           <InputNumber
                             min={1}
                             placeholder="Nhập thời gian làm bài"
-                            disabled={!isCourseSelected || isQuizLimitReached}
                           />
                         </Form.Item>
                       </Col>
                     </>
                   )}
                 </Row>
-                {isTemplateMode || (isCourseSelected && !isQuizLimitReached) ? (
+                {isTemplateMode || (isCourseSelected) ? (
                   <>
                     <div>
                       <Form.List name="questions">
@@ -1238,7 +1212,7 @@ export default function QuizCreator() {
                         }}
                       </Form.List>
                     </div>
-                    {!isQuizLimitReached ? (
+
                       <div className="pt-2 text-end">
                         {!isTemplateMode && (
                           <>
@@ -1258,81 +1232,75 @@ export default function QuizCreator() {
                             <Button
                               type="primary"
                               className="custom-button"
-                              onClick={() => {
-                                form.validateFields().then((values) => {
-                                  setShowStudentSelectModal(true);
-                                });
-                              }}
+                              onClick={() => {handleSaveQuiz(form.getFieldsValue(), "assign")}}
                             >
                               Hoàn Thành
                             </Button>
-                            <Modal
-                              title="Chọn Học Viên"
-                              visible={showStudentSelectModal}
-                              onCancel={() => setShowStudentSelectModal(false)}
-                              onOk={() => {
-                                setShowStudentSelectModal(false); // Đóng modal chọn học viên
-                                handleSaveQuiz(form.getFieldsValue(), "assign");
-                              }}
-                              okButtonProps={{ className: "custom-button" }}
-                            >
-                              <Form.Item
-                                name="studentIds"
-                                rules={isQuizLimitReached && []}
-                                labelCol={{ span: 24 }}
-                                wrapperCol={{ span: 24 }}
-                              >
-                                <Select
-                                  mode="multiple"
-                                  placeholder="Chọn học viên"
-                                  onChange={handleStudentChange}
-                                  value={selectedStudents}
-                                  disabled={
-                                    selectedCourse?.length > 1 ||
-                                    isQuizLimitReached
-                                  }
-                                  style={{ width: "100%" }}
-                                >
-                                  {selectedCourse?.length > 1 ? (
-                                    <Option key="all" value="all">
-                                      Thêm tất cả
-                                    </Option>
-                                  ) : (
-                                    <>
-                                      <Option key="all" value="all">
-                                        Chọn tất cả
-                                      </Option>
-                                      {studentsByCourse.map((student) => (
-                                        <Option
-                                          key={student._id}
-                                          value={student._id}
-                                        >
-                                          {student?.lastName}{" "}
-                                          {student?.firstName}
-                                        </Option>
-                                      ))}
-                                    </>
-                                  )}
-                                </Select>
-                              </Form.Item>
-                            </Modal>
+                            {/*<Modal*/}
+                            {/*  title="Chọn Học Viên"*/}
+                            {/*  visible={showStudentSelectModal}*/}
+                            {/*  onCancel={() => setShowStudentSelectModal(false)}*/}
+                            {/*  onOk={() => {*/}
+                            {/*    setShowStudentSelectModal(false); // Đóng modal chọn học viên*/}
+                            {/*    handleSaveQuiz(form.getFieldsValue(), "assign");*/}
+                            {/*  }}*/}
+                            {/*  okButtonProps={{ className: "custom-button" }}*/}
+                            {/*>*/}
+                            {/*  <Form.Item*/}
+                            {/*    name="studentIds"*/}
+                            {/*    labelCol={{ span: 24 }}*/}
+                            {/*    wrapperCol={{ span: 24 }}*/}
+                            {/*  >*/}
+                            {/*    <Select*/}
+                            {/*      mode="multiple"*/}
+                            {/*      placeholder="Chọn học viên"*/}
+                            {/*      onChange={handleStudentChange}*/}
+                            {/*      value={selectedStudents}*/}
+                            {/*      disabled={*/}
+                            {/*        selectedCourse?.length > 1*/}
+                            {/*      }*/}
+                            {/*      style={{ width: "100%" }}*/}
+                            {/*    >*/}
+                            {/*      {selectedCourse?.length > 1 ? (*/}
+                            {/*        <Option key="all" value="all">*/}
+                            {/*          Thêm tất cả*/}
+                            {/*        </Option>*/}
+                            {/*      ) : (*/}
+                            {/*        <>*/}
+                            {/*          <Option key="all" value="all">*/}
+                            {/*            Chọn tất cả*/}
+                            {/*          </Option>*/}
+                            {/*          {studentsByCourse.map((student) => (*/}
+                            {/*            <Option*/}
+                            {/*              key={student._id}*/}
+                            {/*              value={student._id}*/}
+                            {/*            >*/}
+                            {/*              {student?.lastName}{" "}*/}
+                            {/*              {student?.firstName}*/}
+                            {/*            </Option>*/}
+                            {/*          ))}*/}
+                            {/*        </>*/}
+                            {/*      )}*/}
+                            {/*    </Select>*/}
+                            {/*  </Form.Item>*/}
+                            {/*</Modal>*/}
                           </>
                         )}
 
-                        {isTemplateMode && (
-                          <Button
-                            className="custom-button"
-                            onClick={() => {
-                              form.validateFields().then((values) => {
-                                handleSaveQuiz(values, "assign");
-                              });
-                            }}
-                          >
-                            Lưu Bài Mẫu
-                          </Button>
-                        )}
+                        {/*{isTemplateMode && (*/}
+                        {/*  <Button*/}
+                        {/*    className="custom-button"*/}
+                        {/*    onClick={() => {*/}
+                        {/*      form.validateFields().then((values) => {*/}
+                        {/*        handleSaveQuiz(values, "assign");*/}
+                        {/*      });*/}
+                        {/*    }}*/}
+                        {/*  >*/}
+                        {/*    Lưu Bài Mẫu*/}
+                        {/*  </Button>*/}
+                        {/*)}*/}
                       </div>
-                    ) : null}
+
                   </>
                 ) : isCourseSelected ? (
                   <Result

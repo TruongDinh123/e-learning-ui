@@ -124,48 +124,48 @@ export default function AdminHeader(props) {
       });
   };
 
-  const { isLoadingQuiz, newQuizCreated } = useSelector((state) => state?.quiz);
-  const [showProgress, setShowProgress] = useState(false);
-  const [progressPercent, setProgressPercent] = useState(0);
-  const [initiated, setInitiated] = useState(false);
+  // const { isLoadingQuiz, newQuizCreated } = useSelector((state) => state?.quiz);
+  // const [showProgress, setShowProgress] = useState(false);
+  // const [progressPercent, setProgressPercent] = useState(0);
+  // const [initiated, setInitiated] = useState(false);
   
-  useEffect(() => {
-    let intervalId;
-  
-    if (isLoadingQuiz) {
-      setShowProgress(true);
-      setProgressPercent(0);
-      setInitiated(true);
-      intervalId = setInterval(() => {
-        setProgressPercent((prevPercent) => {
-          if (prevPercent >= 75) {
-            clearInterval(intervalId);
-            return 75;
-          }
-          return prevPercent + 1;
-        });
-      }, 20);
-    } else if (newQuizCreated && initiated) {
-      clearInterval(intervalId);
-      setProgressPercent(75);
-      intervalId = setInterval(() => {
-        setProgressPercent((prevPercent) => {
-          if (prevPercent >= 100) {
-            clearInterval(intervalId);
-            setTimeout(() => {
-              setShowProgress(false);
-              message.success("Bài thi đã được tạo thành công. Email thông báo đang được gửi.", 2.5);
-              setInitiated(false);
-            }, 2000);
-            return 100;
-          }
-          return prevPercent + 1;
-        });
-      }, 20);
-    }
-  
-    return () => clearInterval(intervalId);
-  }, [isLoadingQuiz, newQuizCreated, initiated]);
+  // useEffect(() => {
+  //   let intervalId;
+  //
+  //   if (isLoadingQuiz) {
+  //     setShowProgress(true);
+  //     setProgressPercent(0);
+  //     setInitiated(true);
+  //     intervalId = setInterval(() => {
+  //       setProgressPercent((prevPercent) => {
+  //         if (prevPercent >= 75) {
+  //           clearInterval(intervalId);
+  //           return 75;
+  //         }
+  //         return prevPercent + 1;
+  //       });
+  //     }, 20);
+  //   } else if (newQuizCreated && initiated) {
+  //     clearInterval(intervalId);
+  //     setProgressPercent(75);
+  //     intervalId = setInterval(() => {
+  //       setProgressPercent((prevPercent) => {
+  //         if (prevPercent >= 100) {
+  //           clearInterval(intervalId);
+  //           setTimeout(() => {
+  //             setShowProgress(false);
+  //             message.success("Bài thi đã được tạo thành công. Email thông báo đang được gửi.", 2.5);
+  //             setInitiated(false);
+  //           }, 2000);
+  //           return 100;
+  //         }
+  //         return prevPercent + 1;
+  //       });
+  //     }, 20);
+  //   }
+  //
+  //   return () => clearInterval(intervalId);
+  // }, [isLoadingQuiz, newQuizCreated, initiated]);
 
 
   return (
@@ -238,11 +238,11 @@ export default function AdminHeader(props) {
                   {userState !== null && (
                     <Dropdown overlay={menu} placement="bottomLeft">
                       <div className="ml-3 relative flex items-center">
-                        {showProgress && (
-                          <Tooltip title={isLoadingQuiz ? "Đang tạo bài thi" : "Bài thi đã được tạo thành công!"}>
-                            <Progress type="circle" percent={progressPercent} width={40} />
-                          </Tooltip>
-                        )}
+                        {/*{showProgress && (*/}
+                        {/*  <Tooltip title={isLoadingQuiz ? "Đang tạo bài thi" : "Bài thi đã được tạo thành công!"}>*/}
+                        {/*    <Progress type="circle" percent={progressPercent} width={40} />*/}
+                        {/*  </Tooltip>*/}
+                        {/*)}*/}
                         <div className="flex items-center space-x-4">
                           <a
                             aria-current="page"
