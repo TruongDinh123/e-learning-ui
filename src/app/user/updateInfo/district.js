@@ -18,7 +18,7 @@ const District = ({
     } else if (selectedCap === 'Cấp huyện') {
       setDonViOptions(Object.keys(options['Cấp huyện']));
     } else {
-      setDonViOptions([]);
+        setDonViOptions(options['Cấp xã']);
     }
     setSelectedDonVi('');
     setSubUnits([]);
@@ -48,7 +48,7 @@ const District = ({
       </label>{' '}
       <br />
       <label className='text-base text-sm mt-1' htmlFor='donvi'>
-        {selectedCap && selectedCap !== 'Cấp xã' && (
+        {selectedCap  && (
           <select
             className='mt-2'
             value={selectedDonVi}

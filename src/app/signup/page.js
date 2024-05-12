@@ -69,7 +69,7 @@ export default function SignUp() {
     } else if (selectedCap === 'Cấp huyện') {
       setDonViOptions(Object.keys(options['Cấp huyện']));
     } else {
-      setDonViOptions([]);
+      setDonViOptions(options['Cấp xã']);
     }
     setSelectedDonVi('');
     setSubUnits([]);
