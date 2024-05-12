@@ -92,13 +92,10 @@ export default function Quizs({ params }) {
     };
 
     const handleResize = debounce(() => {
-      console.log(window.innerWidth,initialSize.width);
-      console.log(window.innerHeight, initialSize.height);
       const widthChangeWithinTolerance = sizeWithinTolerance(window.innerWidth, initialSize.width);
       const heightChangeWithinTolerance = sizeWithinTolerance(window.innerHeight, initialSize.height);
 
       const isSizeChanged = (widthChangeWithinTolerance || heightChangeWithinTolerance);
-      console.log(isSizeChanged);
 
       if (isSizeChanged){
         if (hasWarned){
