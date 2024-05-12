@@ -5,22 +5,17 @@ import {unwrapResult} from '@reduxjs/toolkit';
 
 const RankingContent = () => {
   const dispatch = useDispatch();
-  const latestQuizByCourseId = useSelector(
-    (state) => state.quiz.latestQuizByCourseId
+  const {latestQuizByCourseId, allUserFinishedCourse} = useSelector(
+    (state) => state.quiz
   );
-  const [userFinishedCourse, setUserFinishedCourse] = useState([]);
   const [rankingCalculatorState, setRankingCalculatorState] = useState([]);
 
   useEffect(() => {
     const getDataForRanking = async () => {
       try {
-        const res = await dispatch(
-          getAllUserFinishedCourse(latestQuizByCourseId)
-        ).then(unwrapResult);
-
-        if (res.status === 200) {
-          setUserFinishedCourse(res.metadata);
-        }
+        dispatch(getAllUserFinishedCourse(latestQuizByCourseId)).then(
+          unwrapResult
+        );
       } catch (error) {
         console.error(error);
       }
@@ -30,7 +25,7 @@ const RankingContent = () => {
   }, [dispatch, latestQuizByCourseId]);
 
   useEffect(() => {
-    if (userFinishedCourse && userFinishedCourse.length) {
+    if (allUserFinishedCourse && allUserFinishedCourse.length) {
       let rankingCalculator = [];
       const completeCaps = {
         'Cấp xã': 0,
@@ -39,7 +34,7 @@ const RankingContent = () => {
         'Đơn vị khác': 0,
       };
 
-      userFinishedCourse.forEach((user) => {
+      allUserFinishedCourse.forEach((user) => {
         const cap = user.cap || 'Đơn vị khác'; // Default to 'Đơn vị khác' if no 'cap' is defined
         if (completeCaps.hasOwnProperty(cap)) {
           completeCaps[cap] += 1;
@@ -55,12 +50,13 @@ const RankingContent = () => {
 
       setRankingCalculatorState(rankingCalculator);
     }
-  }, [userFinishedCourse]);
+  }, [allUserFinishedCourse]);
 
   return (
     <div>
       <div className='min-h-[550px]'>
-        {rankingCalculatorState.length === 0 ? (
+        {!allUserFinishedCourse ||
+        (allUserFinishedCourse && rankingCalculatorState.length === 0) ? (
           <div>
             <div className='text-center py-4 mt-4 typewriter'>
               {' '}

@@ -398,7 +398,8 @@ const initialState = {
   newQuizCreated: false,
   isLoadingQuiz: false,
   message: "",
-  latestQuizByCourseId: null
+  latestQuizByCourseId: null,
+  allUserFinishedCourse: null,
 };
 
 export const resetStateQuiz = createAction("Reset_all_quiz");
@@ -715,6 +716,23 @@ const quizSlice = createSlice({
         state.latestQuizByCourseId = action.payload.metadata[0];
       })
       .addCase(getSubmissionTimeLatestQuizByCourseId.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+       
+        state.message = "Something went wrong!";
+      })
+      .addCase(getAllUserFinishedCourse.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllUserFinishedCourse.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+
+        state.allUserFinishedCourse = action.payload.metadata;
+      })
+      .addCase(getAllUserFinishedCourse.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
