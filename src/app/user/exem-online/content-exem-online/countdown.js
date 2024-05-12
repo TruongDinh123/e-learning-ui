@@ -99,7 +99,7 @@ const Countdown = () => {
 
   useEffect(() => {
     latestQuizByCourseId &&
-      latestQuizByCourseId._d &&
+      latestQuizByCourseId._id &&
       dispatch(getScore())
         .then(unwrapResult)
         .then((res) => {
