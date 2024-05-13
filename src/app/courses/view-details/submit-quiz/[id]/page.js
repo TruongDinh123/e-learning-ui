@@ -47,6 +47,10 @@ export default function Quizs({ params }) {
   const resizeTimeoutRef = useRef(null);
   const router = useRouter();
 
+  const courseCurrent = useSelector(
+    (state) => state.course.courseInfo
+  )
+
   const quizzesByStudentState = useSelector(
     (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
   );
@@ -461,7 +465,7 @@ export default function Quizs({ params }) {
                   <div className="sticky top-16 z-40 bg-white shadow-md p-2 mb-4 flex items-center justify-between">
                     <div className="flex items-center">
                       <img
-                        src={course?.image_url ?? logo}
+                        src={course?.image_url || courseCurrent?.image_url || logo}
                         alt="School Logo"
                         className="h-20 w-20 mr-3"
                       />
