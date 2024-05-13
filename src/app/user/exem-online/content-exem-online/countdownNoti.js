@@ -28,7 +28,7 @@ const CountdownNoti = ({testCount, setTestCount}) => {
     <div className='mt-4 lg:mt-8 text-lg lg:text-2xl text-[#002c6a] text-center'>
       <div className='bg-[#FFF4D9] w-fit py-3 px-12 mx-auto rounded-full'>
         {!userCurrent && 'Bạn cần đăng nhập để dự thi'}
-        {testCount !== null && `Bạn có ${testCount}/${NUMBER_QUIZ_LIMIT} lượt thi`}
+        {userCurrent && testCount !== null && `Bạn có ${testCount}/${NUMBER_QUIZ_LIMIT} lượt thi`}
       </div>
     </div>
   );
