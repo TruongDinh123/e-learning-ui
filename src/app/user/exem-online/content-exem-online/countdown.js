@@ -1,6 +1,6 @@
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {getScore} from '../../../../features/Quiz/quizSlice';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {getTimePeriod} from './utils';
@@ -28,7 +28,7 @@ const Countdown = () => {
 
   const dispatch = useDispatch();
 
-  const confirmStartQuiz = () => {
+  const confirmStartQuiz = useCallback(() => {
     if (!isCompleted) {
       Modal.confirm({
         title: 'Vui lòng xác nhận bắt đầu làm bài thi',
@@ -52,7 +52,7 @@ const Countdown = () => {
         okButtonProps: {className: 'custom-button'},
       });
     }
-  };
+  }, [isCompleted, latestQuizByCourseId, router]);
 
   useEffect(() => {
     let timeRun = null;
