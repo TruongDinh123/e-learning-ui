@@ -384,7 +384,7 @@ export default function ViewQuiz({ params }) {
             onClick={() => {
               const path =
                 quiz?.type === "multiple_choice"
-                  ? `/courses/view-details/submit-quiz/${quiz._id}`
+                  ? `/exams/view-details/${quiz._id}`
                   : `/courses/view-details/handle-submit-essay/${quiz._id}`;
               router.push(path);
             }}
@@ -446,7 +446,7 @@ export default function ViewQuiz({ params }) {
                       onClick={() =>
                         item.type === "multiple_choice"
                           ? router.push(
-                              `/courses/view-details/submit-quiz/${item._id}`
+                              `/exams/view-details/${item._id}`
                             )
                           : router.push(
                               `/courses/view-details/handle-submit-essay/${item._id}`

@@ -38,7 +38,7 @@ const Countdown = () => {
         cancelText: 'Huỷ',
         onOk() {
           router.push(
-            `/courses/view-details/submit-quiz/${latestQuizByCourseId._id}`
+            `/exams/view-details/${latestQuizByCourseId._id}`
           );
         },
         okButtonProps: {className: 'custom-button'},

@@ -242,7 +242,7 @@ export default function Lesson({ params }) {
                                 onClick={() =>
                                   quiz?.type === "multiple_choice"
                                     ? router.push(
-                                        `/courses/view-details/submit-quiz/${quiz?._id}`
+                                        `/exams/view-details/${quiz?._id}`
                                       )
                                     : router.push(
                                         `/courses/view-details/handle-submit-essay/${quiz?._id}`
