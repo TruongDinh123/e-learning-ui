@@ -34,18 +34,16 @@ const BreadCrumbBlock = ({
         <Breadcrumb.Item key='homepage'>
           <Link href='/'>Trang chủ</Link>
         </Breadcrumb.Item>
-        {quiz?.map((quiz, quizIndex) => (
-          <>
-            <Breadcrumb.Item key={quizIndex}>
-              <Link className='font-bold' href={'/'}>
-                {courseCurrent?.name}
-              </Link>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              <span className='font-bold'> {quiz.name}</span>
-            </Breadcrumb.Item>
-          </>
-        ))}
+        <Breadcrumb.Item>
+          <Link className='font-bold' href={'/'}>
+            {courseCurrent?.name}
+          </Link>
+        </Breadcrumb.Item>
+        {quiz && (
+          <Breadcrumb.Item>
+            <span className='font-bold'> {quiz.name}</span>
+          </Breadcrumb.Item>
+        )}
       </Breadcrumb>
     </>
   );

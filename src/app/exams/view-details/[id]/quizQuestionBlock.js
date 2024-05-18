@@ -23,14 +23,14 @@ const QuizQuestionBlock = ({
     });
   };
   
-  const currentQuestions = quiz[0]?.questions?.slice(
+  const currentQuestions = quiz?.questions?.slice(
     indexOfFirstQuestion,
     indexOfLastQuestion
   );
 
   const calculateAnswersStatus = () => {
     let answersStatus = {};
-    quiz[0]?.questions?.forEach((question) => {
+    quiz?.questions?.forEach((question) => {
       const studentAnswer = quizSubmission?.answers?.find(
         (answer) => answer[question._id]
       );

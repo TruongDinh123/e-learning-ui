@@ -60,7 +60,7 @@ const HeaderExams = ({
               </span>
               /
               <span className='text-black'>
-                {quiz[0]?.questions?.length + 2}
+                {quiz && quiz.questions?.length + 2}
               </span>
             </div>
           )}

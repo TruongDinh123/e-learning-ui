@@ -1,7 +1,11 @@
 'use client';
 import React, {useEffect, useState, useRef} from 'react';
 import {message, Spin} from 'antd';
-import {getScore, submitQuiz, viewAQuizForUserScreen} from '@/features/Quiz/quizSlice';
+import {
+  getScore,
+  submitQuiz,
+  viewAQuizForUserScreen,
+} from '@/features/Quiz/quizSlice';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {useDispatch, useSelector} from 'react-redux';
 import 'react-quill/dist/quill.snow.css';
@@ -12,7 +16,7 @@ import BreadCrumbBlock from './breadCrumbBlock';
 
 export default function Quizs({params}) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
-  const [quiz, setquiz] = useState([]);
+  const [quiz, setquiz] = useState(null);
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [submitted, setSubmitted] = useState(false);
@@ -42,7 +46,8 @@ export default function Quizs({params}) {
 
   console.log(
     infoCommonScoreByUserId,
-    'infoCommonScoreByUserIdinfoCommonScoreByUserId'
+    'infoCommonScoreByUserIdinfoCommonScoreByUserId',
+    quizzesByStudentState
   );
 
   // lấy tên khóa học
@@ -121,21 +126,13 @@ export default function Quizs({params}) {
     const fetchQuizInfo = async () => {
       setLoading(true);
       try {
-        const storedQuiz = quizzesByStudentState?.find(
-          (quiz) => quiz._id === params?.id
-        );
-        if (storedQuiz) {
-          setquiz([storedQuiz]); // Đảm bảo dữ liệu được đặt trong một mảng
+        const quizResult = await dispatch(
+          viewAQuizForUserScreen({quizId: params?.id})
+        ).then(unwrapResult);
+        if (quizResult.status) {
+          setquiz(quizResult.metadata);
         } else {
-          // Nếu không có trong store, fetch từ API
-          const quizResult = await dispatch(
-            viewAQuizForUserScreen({quizId: params?.id})
-          ).then(unwrapResult);
-          if (quizResult.status) {
-            setquiz(quizResult.metadata);
-          } else {
-            messageApi.error(quizResult.message);
-          }
+          messageApi.error(quizResult.message);
         }
       } catch (error) {
         console.error(error);
@@ -184,8 +181,6 @@ export default function Quizs({params}) {
     }
   }, [isComplete]);
 
-  const idQuiz = quiz.map((item) => item._id);
-
   const handleSubmit = async () => {
     let savedAnswers = selectedAnswers;
     if (Object.keys(savedAnswers).length === 0) {
@@ -207,12 +202,12 @@ export default function Quizs({params}) {
         type: 'Thành công',
         content: 'Đang nộp bài...',
         style: {fontSize: '25px'},
-        key: "submit"
+        key: 'submit',
       });
 
       const res = await dispatch(
         submitQuiz({
-          quizId: idQuiz,
+          quizId: quiz._id,
           answer: formattedAnswers,
           predictAmount,
           predictAmountMaxScore,
@@ -227,7 +222,7 @@ export default function Quizs({params}) {
         localStorage.removeItem('quizStartTime');
         router.push('/');
       } else {
-        messageApi.destroy('submit')
+        messageApi.destroy('submit');
         messageApi.error(res.message);
       }
     } catch (error) {
@@ -240,9 +235,9 @@ export default function Quizs({params}) {
 
   //countdount queries
   useEffect(() => {
-    if (quiz.length > 0 && startTime && !isComplete) {
+    if (quiz && startTime && !isComplete) {
       const startTimeDate = new Date(startTime).getTime();
-      const timeLimitMs = quiz[0]?.timeLimit * 60000;
+      const timeLimitMs = quiz.timeLimit * 60000;
       if (!isNaN(timeLimitMs) && timeLimitMs > 0) {
         const deadlineTime = startTimeDate + timeLimitMs;
         const currentTime = new Date().getTime();
@@ -261,7 +256,7 @@ export default function Quizs({params}) {
         setDeadline(null);
       }
     }
-  }, [quiz, startTime, isComplete]);
+  }, [quiz, startTime, isComplete, messageApi, handleSubmit]);
 
   return (
     <div className='bg-blue-200 p-4'>
@@ -282,27 +277,22 @@ export default function Quizs({params}) {
             </div>
           ) : (
             <React.Fragment>
-              {quiz.map((item, index) => (
-                <QuizItemBlock
-                  key={index}
-                  index={index}
-                  quiz={quiz}
-                  quizItem={item}
-                  submitted={submitted}
-                  submitting={submitting}
-                  selectedAnswers={selectedAnswers}
-                  deadline={deadline}
-                  showCountdown={showCountdown}
-                  predictAmount={predictAmount}
-                  onChangePredictAmount={onChangePredictAmount}
-                  predictAmountMaxScore={predictAmountMaxScore}
-                  onChangePredictAmountMaxScore={onChangePredictAmountMaxScore}
-                  quizSubmission={quizSubmission}
-                  isComplete={isComplete}
-                  setSelectedAnswers={setSelectedAnswers}
-                  handleSubmit={handleSubmit}
-                />
-              ))}
+              <QuizItemBlock
+                quiz={quiz}
+                submitted={submitted}
+                submitting={submitting}
+                selectedAnswers={selectedAnswers}
+                deadline={deadline}
+                showCountdown={showCountdown}
+                predictAmount={predictAmount}
+                onChangePredictAmount={onChangePredictAmount}
+                predictAmountMaxScore={predictAmountMaxScore}
+                onChangePredictAmountMaxScore={onChangePredictAmountMaxScore}
+                quizSubmission={quizSubmission}
+                isComplete={isComplete}
+                setSelectedAnswers={setSelectedAnswers}
+                handleSubmit={handleSubmit}
+              />
             </React.Fragment>
           )}
         </div>

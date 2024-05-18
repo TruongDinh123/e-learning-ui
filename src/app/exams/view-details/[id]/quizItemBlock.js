@@ -5,12 +5,10 @@ import {CheckOutlined, CloseOutlined} from '@ant-design/icons';
 import HeaderExams from './headerExams';
 import QuizItemFooter from './quizItemFooter';
 import QuizQuestionBlock from './quizQuestionBlock';
-import { QUESTION_PER_PAGE } from '../../../../constants';
+import {QUESTION_PER_PAGE} from '../../../../constants';
 
 const QuizItemBlock = ({
-  index,
   quiz,
-  quizItem,
   submitted,
   submitting,
   selectedAnswers,
@@ -23,21 +21,21 @@ const QuizItemBlock = ({
   quizSubmission,
   isComplete,
   setSelectedAnswers,
-  handleSubmit
+  handleSubmit,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const indexOfLastQuestion = currentPage * QUESTION_PER_PAGE;
   const currentTime = new Date();
 
   let submissionTime;
-  if (quiz[0] && quiz[0]?.submissionTime) {
-    submissionTime = new Date(quiz[0]?.submissionTime);
+  if (quiz && quiz.submissionTime) {
+    submissionTime = new Date(quiz.submissionTime);
   }
 
   const isTimeExceeded = currentTime > submissionTime;
 
   return (
-    <React.Fragment key={index}>
+    <React.Fragment>
       <HeaderExams
         quiz={quiz}
         isComplete={isComplete}
@@ -50,9 +48,11 @@ const QuizItemBlock = ({
         handleSubmit={handleSubmit}
       />
       <div className='card bg-white shadow-lg rounded-lg p-6 mb-4'>
-        <h2 className='text-xl font-semibold text-gray-800 mb-4'>
-          {quizItem.name}
-        </h2>
+        {quiz && (
+          <h2 className='text-xl font-semibold text-gray-800 mb-4'>
+            {quiz.name}
+          </h2>
+        )}
         {showCountdown && !isComplete && deadline && (
           <div className='text-red-500 mb-4'>
             <p>

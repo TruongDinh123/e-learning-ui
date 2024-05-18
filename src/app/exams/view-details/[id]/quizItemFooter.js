@@ -80,7 +80,7 @@ const QuizItemFooter = ({
     'Hãy nhập con số dự đoán'
   );
 
-  const isLastPage = quiz[0]?.questions?.length <= indexOfLastQuestion;
+  const isLastPage = quiz?.questions?.length <= indexOfLastQuestion;
 
   return (
     <>
@@ -88,7 +88,7 @@ const QuizItemFooter = ({
         <>
           <div className='flex items-center justify-content-md-start  border-t border-gray-200 pt-4 mt-4 first:border-t-0 first:mt-0'>
             <span className='font-medium text-black'>
-              Câu {quiz[0]?.questions?.length + 1}:{' '}
+              Câu {quiz?.questions?.length + 1}:{' '}
             </span>
             <div className='text-purple-950 font-bold mr-5 ml-1'>
               Dự đoán số người tham dự:
@@ -116,7 +116,7 @@ const QuizItemFooter = ({
 
           <div className='flex items-center justify-content-md-start  border-t border-gray-200 pt-4 mt-4 first:border-t-0 first:mt-0'>
             <span className='font-medium text-black'>
-              Câu {quiz[0]?.questions?.length + 2}:
+              Câu {quiz?.questions?.length + 2}:
             </span>
             <div className='text-purple-950 font-bold mr-5 ml-1'>
               Dự đoán số người trả lời đúng 100%:
@@ -153,7 +153,7 @@ const QuizItemFooter = ({
             Trang trước
           </button>
         )}
-        {quiz[0]?.questions?.length > indexOfLastQuestion && (
+        {quiz?.questions?.length > indexOfLastQuestion && (
           <button
             onClick={handleNextPage}
             className='px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600 transition duration-300'
