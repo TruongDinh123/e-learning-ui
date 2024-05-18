@@ -3,6 +3,7 @@ import React from 'react';
 import {Statistic, Breadcrumb} from 'antd';
 import Link from 'next/link';
 import 'react-quill/dist/quill.snow.css';
+import {useSelector} from 'react-redux';
 
 const BreadCrumbBlock = ({
   quiz,
@@ -12,6 +13,8 @@ const BreadCrumbBlock = ({
   showCountdown,
   deadline,
 }) => {
+  const courseCurrent = useSelector((state) => state.course.courseInfo);
+
   return (
     <>
       {!loading && showCountdown && !isComplete && deadline && (
@@ -34,13 +37,8 @@ const BreadCrumbBlock = ({
         {quiz?.map((quiz, quizIndex) => (
           <>
             <Breadcrumb.Item key={quizIndex}>
-              <Link
-                className='font-bold'
-                href={`/user/exem-online/${
-                  quiz.courseIds[0]?._id || quiz.lessonId?.courseId?._id
-                }`}
-              >
-                {quiz.courseIds[0]?.name || quiz.lessonId?.courseId?.name}
+              <Link className='font-bold' href={'/'}>
+                {courseCurrent?.name}
               </Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>

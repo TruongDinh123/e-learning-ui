@@ -17,7 +17,6 @@ const HeaderExams = ({
   handleSubmit,
 }) => {
   const courseCurrent = useSelector((state) => state.course.courseInfo);
-  console.log(courseCurrent, 'courseCurrentcourseCurrent');
 
   const completedAmount = () => {
     const predictedFirst = predictAmount.length !== 0;
