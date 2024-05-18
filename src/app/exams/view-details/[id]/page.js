@@ -1,7 +1,7 @@
 'use client';
 import React, {useEffect, useState, useRef} from 'react';
 import {message, Spin} from 'antd';
-import {getScore, submitQuiz, viewAQuiz} from '@/features/Quiz/quizSlice';
+import {getScore, submitQuiz, viewAQuizForUserScreen} from '@/features/Quiz/quizSlice';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {useDispatch, useSelector} from 'react-redux';
 import 'react-quill/dist/quill.snow.css';
@@ -129,7 +129,7 @@ export default function Quizs({params}) {
         } else {
           // Nếu không có trong store, fetch từ API
           const quizResult = await dispatch(
-            viewAQuiz({quizId: params?.id})
+            viewAQuizForUserScreen({quizId: params?.id})
           ).then(unwrapResult);
           if (quizResult.status) {
             setquiz(quizResult.metadata);

@@ -149,6 +149,14 @@ const viewAQuiz = async (data) => {
   return res.data;
 };
 
+const viewAQuizForUserScreen = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/quizForUserScreen/${data.quizId}`,
+    method: "GET",
+  });
+  return res.data;
+};
+
 const viewAQuizTemplate = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz-template/${data.quizTemplateId}`,
@@ -327,6 +335,7 @@ export const QuizService = {
   getScoreByUserId,
   getScoreByInfo,
   viewAQuiz,
+  viewAQuizForUserScreen,
   getQuizzesByStudentAndCourse,
   uploadFileQuiz,
   submitQuizEssay,
