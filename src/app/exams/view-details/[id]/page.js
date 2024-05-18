@@ -18,7 +18,6 @@ export default function Quizs({params}) {
   const [submitted, setSubmitted] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [studentAnswers, setStudentAnswers] = useState({});
   const [deadline, setDeadline] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [showCountdown, setShowCountdown] = useState(true);
@@ -36,6 +35,14 @@ export default function Quizs({params}) {
 
   const quizzesByStudentState = useSelector(
     (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
+  );
+  const infoCommonScoreByUserId = useSelector(
+    (state) => state.quiz.infoCommonScoreByUserId
+  );
+
+  console.log(
+    infoCommonScoreByUserId,
+    'infoCommonScoreByUserIdinfoCommonScoreByUserId'
   );
 
   // lấy tên khóa học
@@ -130,36 +137,6 @@ export default function Quizs({params}) {
             messageApi.error(quizResult.message);
           }
         }
-
-        const scoreResult = await dispatch(getScore()).then(unwrapResult);
-        if (scoreResult.status) {
-          const completedQuiz = scoreResult?.metadata?.find(
-            (quiz) => quiz.quiz?._id === params?.id
-          );
-          if (completedQuiz) {
-            if (completedQuiz.isComplete) {
-              onChangePredictAmount(
-                completedQuiz.predictAmount
-                  ? completedQuiz.predictAmount.toString()
-                  : '0'
-              );
-              onChangePredictAmountMaxScore(
-                completedQuiz.predictAmountMaxScore
-                  ? completedQuiz.predictAmountMaxScore.toString()
-                  : '0'
-              );
-            }
-            setStartTime(completedQuiz.startTime);
-            setIsComplete(completedQuiz.isComplete);
-            const answersObject = completedQuiz.answers.reduce((obj, item) => {
-              const [key, value] = Object.entries(item)[0];
-              obj[key] = value;
-              return obj;
-            }, {});
-            setStudentAnswers(answersObject);
-          }
-          setLoading(false);
-        }
       } catch (error) {
         console.error(error);
       } finally {
@@ -168,7 +145,26 @@ export default function Quizs({params}) {
     };
 
     fetchQuizInfo();
-  }, [params?.id, dispatch]);
+  }, [params?.id, dispatch, quizzesByStudentState, messageApi]);
+
+  useEffect(() => {
+    if (infoCommonScoreByUserId) {
+      if (infoCommonScoreByUserId.isComplete) {
+        onChangePredictAmount(
+          infoCommonScoreByUserId.predictAmount
+            ? infoCommonScoreByUserId.predictAmount.toString()
+            : '0'
+        );
+        onChangePredictAmountMaxScore(
+          infoCommonScoreByUserId.predictAmountMaxScore
+            ? infoCommonScoreByUserId.predictAmountMaxScore.toString()
+            : '0'
+        );
+      }
+      setStartTime(infoCommonScoreByUserId.startTime);
+      setIsComplete(infoCommonScoreByUserId.isComplete);
+    }
+  }, [infoCommonScoreByUserId]);
 
   useEffect(() => {
     const savedAnswers = localStorage.getItem('quizAnswers');
@@ -207,6 +203,13 @@ export default function Quizs({params}) {
 
     setSubmitting(true);
     try {
+      await messageApi.open({
+        type: 'Thành công',
+        content: 'Đang nộp bài...',
+        style: {fontSize: '25px'},
+        key: "submit"
+      });
+
       const res = await dispatch(
         submitQuiz({
           quizId: idQuiz,
@@ -215,19 +218,16 @@ export default function Quizs({params}) {
           predictAmountMaxScore,
         })
       ).then(unwrapResult);
+
       if (res.status) {
-        await messageApi.open({
-          type: 'Thành công',
-          content: 'Đang nộp bài...',
-          style: {fontSize: '25px'},
-        });
-        setQuizSubmission(res.metadata);
-        setSubmitted(true);
-        setShowCountdown(false);
+        // setQuizSubmission(res.metadata);
+        // setSubmitted(true);
+        // setShowCountdown(false);
         localStorage.removeItem('quizAnswers');
         localStorage.removeItem('quizStartTime');
         router.push('/');
       } else {
+        messageApi.destroy('submit')
         messageApi.error(res.message);
       }
     } catch (error) {
@@ -288,7 +288,6 @@ export default function Quizs({params}) {
                   index={index}
                   quiz={quiz}
                   quizItem={item}
-                  studentAnswers={studentAnswers}
                   submitted={submitted}
                   submitting={submitting}
                   selectedAnswers={selectedAnswers}

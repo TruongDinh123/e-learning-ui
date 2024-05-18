@@ -287,6 +287,15 @@ const getSubmissionTimeLatestQuizByCourseId = async (data) => {
   return res.data;
 };
 
+const getInfoCommonScoreByUserId = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/score/quizzeLatesInfoCommon`,
+    method: "GET",
+    data: data,
+  });
+  return res.data;
+};
+
 const getAllUserFinishedCourse = async (data) => {
     const res = await axiosInstance({
         url: `/e-learning/userFinishedCourses/${data._id}`,
@@ -337,6 +346,7 @@ export const QuizService = {
   DeletedraftQuiz,
   deleteQuestionImage,
   getSubmissionTimeLatestQuizByCourseId,
+  getInfoCommonScoreByUserId,
   getAllUserFinishedCourse,
   getTestCount
 };

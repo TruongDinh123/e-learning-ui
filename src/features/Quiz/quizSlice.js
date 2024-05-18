@@ -362,10 +362,22 @@ export const deleteScorebyQuiz = createAsyncThunk(
 );
 
 export const getSubmissionTimeLatestQuizByCourseId = createAsyncThunk(
-  "/e-learning/delete-score-by-quiz",
+  "/e-learning/sumbmiss-tiontime-latest-quiz",
   async (data, { rejectWithValue }) => {
     try {
       const response = await QuizService.getSubmissionTimeLatestQuizByCourseId(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const getInfoCommonScoreByUserId = createAsyncThunk(
+  "/e-learning/is-complete-score",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await QuizService.getInfoCommonScoreByUserId(data);
       return response;
     } catch (err) {
       return rejectWithValue(err);
@@ -414,6 +426,7 @@ const initialState = {
   message: "",
   latestQuizByCourseId: null,
   allUserFinishedCourse: null,
+  infoCommonScoreByUserId: null,
 };
 
 export const resetStateQuiz = createAction("Reset_all_quiz");
@@ -752,6 +765,9 @@ const quizSlice = createSlice({
         state.isSuccess = false;
        
         state.message = "Something went wrong!";
+      })
+      .addCase(getInfoCommonScoreByUserId.fulfilled, (state, action) => {
+        state.infoCommonScoreByUserId = action.payload.metadata;
       });
   },
 });

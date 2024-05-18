@@ -2,13 +2,10 @@
 import React, {useState} from 'react';
 import 'react-quill/dist/quill.snow.css';
 import {CheckOutlined, CloseOutlined} from '@ant-design/icons';
-import HeaderExams from './headerExams';
-import QuizItemFooter from './quizItemFooter';
 import { QUESTION_PER_PAGE } from '../../../../constants';
 
 const QuizQuestionBlock = ({
   quiz,
-  studentAnswers,
   submitted,
   selectedAnswers,
   isComplete,
@@ -48,9 +45,8 @@ const QuizQuestionBlock = ({
 
   return currentQuestions.map((question, questionIndex) => {
     const actualQuestionIndex = indexOfFirstQuestion + questionIndex + 1;
-    const studentAnswer = isComplete
-      ? studentAnswers[question._id]
-      : selectedAnswers[question._id];
+    const studentAnswer = !isComplete && selectedAnswers[question._id];
+
     return (
       <div
         key={questionIndex}

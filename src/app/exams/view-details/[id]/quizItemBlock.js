@@ -11,7 +11,6 @@ const QuizItemBlock = ({
   index,
   quiz,
   quizItem,
-  studentAnswers,
   submitted,
   submitting,
   selectedAnswers,
@@ -66,7 +65,6 @@ const QuizItemBlock = ({
 
         <QuizQuestionBlock
           quiz={quiz}
-          studentAnswers={studentAnswers}
           submitted={submitted}
           selectedAnswers={selectedAnswers}
           isComplete={isComplete}
