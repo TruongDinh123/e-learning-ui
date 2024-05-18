@@ -14,7 +14,7 @@ const HeaderExams = ({
   predictAmount,
   predictAmountMaxScore,
   selectedAnswers,
-  handleSubmit
+  handleSubmit,
 }) => {
   const courseCurrent = useSelector((state) => state.course.courseInfo);
   console.log(courseCurrent, 'courseCurrentcourseCurrent');
@@ -48,22 +48,26 @@ const HeaderExams = ({
           alt='School Logo'
           className='h-20 w-20 mr-3'
         />
-        <h2 className='text-xl font-semibold text-gray-800 text-center'>
-          {courseCurrent?.name}
-        </h2>
+        <div>
+          <h2 className='text-xl font-semibold text-gray-800'>
+            {courseCurrent?.name}
+          </h2>
+
+          {!isComplete && (
+            <div className='mr-4 text-lg font-semibold text-gray-700'>
+              Số câu đã hoàn thành:
+              <span className='text-black' style={{marginLeft: '5px'}}>
+                {completedAmount()}
+              </span>
+              /
+              <span className='text-black'>
+                {quiz[0]?.questions?.length + 2}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
       <div className='flex items-center'>
-        {!isComplete && (
-          <div className='mr-4 text-lg font-semibold text-gray-700 text-center'>
-            Số câu đã hoàn thành:
-            <span className='text-black' style={{marginLeft: '5px'}}>
-              {completedAmount()}
-            </span>
-            /
-            <span className='text-black'>{quiz[0]?.questions?.length + 2}</span>
-          </div>
-        )}
-
         {!isTimeExceeded && !submitted && !isComplete && (
           <Button
             loading={submitting}
