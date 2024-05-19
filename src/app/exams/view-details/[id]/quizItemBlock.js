@@ -5,6 +5,7 @@ import HeaderExams from './headerExams';
 import QuizItemFooter from './quizItemFooter';
 import QuizQuestionBlock from './quizQuestionBlock';
 import {QUESTION_PER_PAGE} from '../../../../constants';
+import {Spin} from 'antd';
 
 const QuizItemBlock = ({
   quiz,
@@ -21,9 +22,13 @@ const QuizItemBlock = ({
   isComplete,
   setSelectedAnswers,
   handleSubmit,
+  loading,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const indexOfLastQuestion =  useMemo(() => currentPage * QUESTION_PER_PAGE, [currentPage]); 
+  const indexOfLastQuestion = useMemo(
+    () => currentPage * QUESTION_PER_PAGE,
+    [currentPage]
+  );
 
   const isTimeExceeded = useMemo(() => {
     const currentTime = new Date();
@@ -47,6 +52,7 @@ const QuizItemBlock = ({
         predictAmountMaxScore={predictAmountMaxScore}
         selectedAnswers={selectedAnswers}
         handleSubmit={handleSubmit}
+        loading={loading}
       />
       <div className='card bg-white shadow-lg rounded-lg p-6 mb-4'>
         {quiz && (
@@ -63,17 +69,21 @@ const QuizItemBlock = ({
             <p>Khi hết thời gian sẽ tự động nộp bài.</p>
           </div>
         )}
-
-        <QuizQuestionBlock
-          quiz={quiz}
-          submitted={submitted}
-          selectedAnswers={selectedAnswers}
-          isComplete={isComplete}
-          setSelectedAnswers={setSelectedAnswers}
-          indexOfLastQuestion={indexOfLastQuestion}
-          quizSubmission={quizSubmission}
-        />
-
+        {loading ? (
+          <div className='flex justify-center items-center'>
+            <Spin size='small' />
+          </div>
+        ) : (
+          <QuizQuestionBlock
+            quiz={quiz}
+            submitted={submitted}
+            selectedAnswers={selectedAnswers}
+            isComplete={isComplete}
+            setSelectedAnswers={setSelectedAnswers}
+            indexOfLastQuestion={indexOfLastQuestion}
+            quizSubmission={quizSubmission}
+          />
+        )}
         <QuizItemFooter
           quiz={quiz}
           currentPage={currentPage}

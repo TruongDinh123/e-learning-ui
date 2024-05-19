@@ -50,7 +50,7 @@ const QuizQuestionBlock = ({
     quizSubmission?.answers,
   ]);
 
-  return currentQuestions.map((question, questionIndex) => {
+  return currentQuestions?.map((question, questionIndex) => {
     const actualQuestionIndex = indexOfFirstQuestion + questionIndex + 1;
     const studentAnswer = !isComplete && selectedAnswers[question._id];
 

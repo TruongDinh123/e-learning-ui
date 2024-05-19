@@ -17,7 +17,7 @@ export default function Quizs({params}) {
   const [messageApi, contextHolder] = message.useMessage();
   const [submitted, setSubmitted] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [deadline, setDeadline] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [showCountdown, setShowCountdown] = useState(true);
@@ -273,30 +273,26 @@ export default function Quizs({params}) {
       <div className='pb-48 flex justify-center items-center bg-blue-200'>
         <div className='w-full md:w-2/3 lg:w-1/2'>
           {contextHolder}
-          {loading ? (
-            <div className='flex justify-center items-center h-screen'>
-              <Spin />
-            </div>
-          ) : (
-            <React.Fragment>
-              <QuizItemBlock
-                quiz={quiz}
-                submitted={submitted}
-                submitting={submitting}
-                selectedAnswers={selectedAnswers}
-                deadline={deadline}
-                showCountdown={showCountdown}
-                predictAmount={predictAmount}
-                onChangePredictAmount={onChangePredictAmount}
-                predictAmountMaxScore={predictAmountMaxScore}
-                onChangePredictAmountMaxScore={onChangePredictAmountMaxScore}
-                quizSubmission={quizSubmission}
-                isComplete={isComplete}
-                setSelectedAnswers={setSelectedAnswers}
-                handleSubmit={handleSubmit}
-              />
-            </React.Fragment>
-          )}
+
+          <React.Fragment>
+            <QuizItemBlock
+              quiz={quiz}
+              submitted={submitted}
+              submitting={submitting}
+              selectedAnswers={selectedAnswers}
+              deadline={deadline}
+              showCountdown={showCountdown}
+              predictAmount={predictAmount}
+              onChangePredictAmount={onChangePredictAmount}
+              predictAmountMaxScore={predictAmountMaxScore}
+              onChangePredictAmountMaxScore={onChangePredictAmountMaxScore}
+              quizSubmission={quizSubmission}
+              isComplete={isComplete}
+              setSelectedAnswers={setSelectedAnswers}
+              handleSubmit={handleSubmit}
+              loading={loading}
+            />
+          </React.Fragment>
         </div>
       </div>
     </div>

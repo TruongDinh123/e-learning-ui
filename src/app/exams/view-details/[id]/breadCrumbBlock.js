@@ -1,5 +1,5 @@
 'use client';
-import React, { memo } from 'react';
+import React, {memo} from 'react';
 import {Statistic, Breadcrumb} from 'antd';
 import Link from 'next/link';
 import 'react-quill/dist/quill.snow.css';
@@ -17,7 +17,7 @@ const BreadCrumbBlock = ({
 
   return (
     <>
-      {!loading && showCountdown && !isComplete && deadline && (
+      {showCountdown && !isComplete && deadline && (
         <>
           <a className='fixedButton flex' href='javascript:void(0)'>
             <div className='roundedFixedBtn flex'>
@@ -34,15 +34,19 @@ const BreadCrumbBlock = ({
         <Breadcrumb.Item key='homepage'>
           <Link href='/'>Trang chủ</Link>
         </Breadcrumb.Item>
-        <Breadcrumb.Item>
-          <Link className='font-bold' href={'/'}>
-            {courseCurrent?.name}
-          </Link>
-        </Breadcrumb.Item>
-        {quiz && (
-          <Breadcrumb.Item>
-            <span className='font-bold'> {quiz.name}</span>
-          </Breadcrumb.Item>
+        {!loading && (
+          <>
+            <Breadcrumb.Item>
+              <Link className='font-bold' href={'/'}>
+                {courseCurrent?.name}
+              </Link>
+            </Breadcrumb.Item>
+            {quiz && (
+              <Breadcrumb.Item>
+                <span className='font-bold'> {quiz.name}</span>
+              </Breadcrumb.Item>
+            )}
+          </>
         )}
       </Breadcrumb>
     </>
