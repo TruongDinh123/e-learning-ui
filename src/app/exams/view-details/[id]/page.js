@@ -150,6 +150,8 @@ export default function Quizs({params}) {
         // setShowCountdown(false);
         localStorage.removeItem('quizAnswers');
         localStorage.removeItem('quizStartTime');
+        localStorage.removeItem('predictAmount');
+        localStorage.removeItem('predictAmountMaxScore');
         router.push('/');
       } else {
         messageApi.destroy('submit');
