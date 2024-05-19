@@ -17,7 +17,7 @@ const BreadCrumbBlock = ({
 
   return (
     <>
-      {showCountdown && !isComplete && deadline && (
+      {!loading && showCountdown && !isComplete && deadline && (
         <>
           <a className='fixedButton flex' href='javascript:void(0)'>
             <div className='roundedFixedBtn flex'>
