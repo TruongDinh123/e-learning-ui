@@ -1,7 +1,6 @@
 'use client';
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import 'react-quill/dist/quill.snow.css';
-import {CheckOutlined, CloseOutlined} from '@ant-design/icons';
 import HeaderExams from './headerExams';
 import QuizItemFooter from './quizItemFooter';
 import QuizQuestionBlock from './quizQuestionBlock';
@@ -24,15 +23,17 @@ const QuizItemBlock = ({
   handleSubmit,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const indexOfLastQuestion = currentPage * QUESTION_PER_PAGE;
-  const currentTime = new Date();
+  const indexOfLastQuestion =  useMemo(() => currentPage * QUESTION_PER_PAGE, [currentPage]); 
 
-  let submissionTime;
-  if (quiz && quiz.submissionTime) {
-    submissionTime = new Date(quiz.submissionTime);
-  }
+  const isTimeExceeded = useMemo(() => {
+    const currentTime = new Date();
+    let submissionTime;
+    if (quiz && quiz.submissionTime) {
+      submissionTime = new Date(quiz.submissionTime);
+    }
 
-  const isTimeExceeded = currentTime > submissionTime;
+    return currentTime > submissionTime;
+  }, [quiz]);
 
   return (
     <React.Fragment>

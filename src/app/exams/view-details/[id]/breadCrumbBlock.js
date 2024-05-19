@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { memo } from 'react';
 import {Statistic, Breadcrumb} from 'antd';
 import Link from 'next/link';
 import 'react-quill/dist/quill.snow.css';
@@ -49,4 +49,4 @@ const BreadCrumbBlock = ({
   );
 };
 
-export default BreadCrumbBlock;
+export default memo(BreadCrumbBlock);

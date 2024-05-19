@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, {memo, useCallback, useMemo} from 'react';
 import {Input, Tooltip} from 'antd';
 
 const QuizItemFooter = ({
@@ -22,11 +22,15 @@ const QuizItemFooter = ({
     setCurrentPage(currentPage - 1);
   };
 
-  const formatNumber = (value) => new Intl.NumberFormat().format(value);
+  const formatNumber = useCallback(
+    (value) => new Intl.NumberFormat().format(value),
+    []
+  );
   const handleChangeInputNumber = (e) => {
     const {value: inputValue} = e.target;
     const reg = /^-?\d*(\.\d*)?$/;
     if (reg.test(inputValue) || inputValue === '' || inputValue === '-') {
+      localStorage.setItem('predictAmount', inputValue);
       onChangePredictAmount(inputValue);
     }
   };
@@ -35,6 +39,7 @@ const QuizItemFooter = ({
     const {value: inputValue} = e.target;
     const reg = /^-?\d*(\.\d*)?$/;
     if (reg.test(inputValue) || inputValue === '' || inputValue === '-') {
+      localStorage.setItem('predictAmountMaxScore', inputValue);
       onChangePredictAmountMaxScore(inputValue);
     }
   };
@@ -62,25 +67,36 @@ const QuizItemFooter = ({
     onChangePredictAmountMaxScore(valueTemp.replace(/0*(\d+)/, '$1'));
   };
 
-  const titleInputNumber = predictAmount ? (
-    <span className='numeric-input-title'>
-      {predictAmount !== '-' ? formatNumber(Number(predictAmount)) : '-'}
-    </span>
-  ) : (
-    'Hãy nhập con số dự đoán'
+  const titleInputNumber = useMemo(
+    () =>
+      predictAmount ? (
+        <span className='numeric-input-title'>
+          {predictAmount !== '-' ? formatNumber(Number(predictAmount)) : '-'}
+        </span>
+      ) : (
+        'Hãy nhập con số dự đoán'
+      ),
+    [formatNumber, predictAmount]
   );
 
-  const titleInputNumberMaxScore = predictAmountMaxScore ? (
-    <span className='numeric-input-title'>
-      {predictAmountMaxScore !== '-'
-        ? formatNumber(Number(predictAmountMaxScore))
-        : '-'}
-    </span>
-  ) : (
-    'Hãy nhập con số dự đoán'
+  const titleInputNumberMaxScore = useMemo(
+    () =>
+      predictAmountMaxScore ? (
+        <span className='numeric-input-title'>
+          {predictAmountMaxScore !== '-'
+            ? formatNumber(Number(predictAmountMaxScore))
+            : '-'}
+        </span>
+      ) : (
+        'Hãy nhập con số dự đoán'
+      ),
+    [formatNumber, predictAmountMaxScore]
   );
 
-  const isLastPage = quiz?.questions?.length <= indexOfLastQuestion;
+  const isLastPage = useMemo(
+    () => quiz?.questions?.length <= indexOfLastQuestion,
+    [indexOfLastQuestion, quiz?.questions?.length]
+  );
 
   return (
     <>
@@ -166,4 +182,4 @@ const QuizItemFooter = ({
   );
 };
 
-export default QuizItemFooter;
+export default memo(QuizItemFooter);

@@ -1,8 +1,9 @@
 'use client';
-import React, {useState} from 'react';
+import React, {useMemo} from 'react';
 import 'react-quill/dist/quill.snow.css';
 import {CheckOutlined, CloseOutlined} from '@ant-design/icons';
-import { QUESTION_PER_PAGE } from '../../../../constants';
+import {QUESTION_PER_PAGE} from '../../../../constants';
+import Image from 'next/image';
 
 const QuizQuestionBlock = ({
   quiz,
@@ -11,9 +12,12 @@ const QuizQuestionBlock = ({
   isComplete,
   setSelectedAnswers,
   indexOfLastQuestion,
-  quizSubmission
+  quizSubmission,
 }) => {
-  const indexOfFirstQuestion = indexOfLastQuestion - QUESTION_PER_PAGE;
+  const indexOfFirstQuestion = useMemo(
+    () => indexOfLastQuestion - QUESTION_PER_PAGE,
+    [indexOfLastQuestion]
+  );
 
   const handleAnswer = (questionId, answer) => {
     setSelectedAnswers((prevAnswers) => {
@@ -22,10 +26,10 @@ const QuizQuestionBlock = ({
       return newAnswers;
     });
   };
-  
-  const currentQuestions = quiz?.questions?.slice(
-    indexOfFirstQuestion,
-    indexOfLastQuestion
+
+  const currentQuestions = useMemo(
+    () => quiz?.questions?.slice(indexOfFirstQuestion, indexOfLastQuestion),
+    [indexOfFirstQuestion, indexOfLastQuestion, quiz?.questions]
   );
 
   const calculateAnswersStatus = () => {
@@ -41,7 +45,10 @@ const QuizQuestionBlock = ({
   };
 
   // Khi hiển thị thông tin cho người dùng
-  const answersStatus = calculateAnswersStatus();
+  const answersStatus = useMemo(calculateAnswersStatus, [
+    quiz?.questions,
+    quizSubmission?.answers,
+  ]);
 
   return currentQuestions.map((question, questionIndex) => {
     const actualQuestionIndex = indexOfFirstQuestion + questionIndex + 1;
@@ -64,7 +71,7 @@ const QuizQuestionBlock = ({
         </div>
         {question.image_url && (
           <div className='mb-2'>
-            <img
+            <Image
               src={question.image_url}
               alt={`Câu hỏi ${actualQuestionIndex}`}
               className='max-w-full h-auto rounded-lg shadow'
