@@ -34,19 +34,15 @@ const BreadCrumbBlock = ({
         <Breadcrumb.Item key='homepage'>
           <Link href='/'>Trang chủ</Link>
         </Breadcrumb.Item>
-        {!loading && (
-          <>
-            <Breadcrumb.Item>
-              <Link className='font-bold' href={'/'}>
-                {courseCurrent?.name}
-              </Link>
-            </Breadcrumb.Item>
-            {quiz && (
-              <Breadcrumb.Item>
-                <span className='font-bold'> {quiz.name}</span>
-              </Breadcrumb.Item>
-            )}
-          </>
+        <Breadcrumb.Item>
+          <Link className='font-bold' href={'/'}>
+            {courseCurrent?.name}
+          </Link>
+        </Breadcrumb.Item>
+        {quiz && (
+          <Breadcrumb.Item>
+            <span className='font-bold'> {quiz.name}</span>
+          </Breadcrumb.Item>
         )}
       </Breadcrumb>
     </>
