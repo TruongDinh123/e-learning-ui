@@ -189,3 +189,7 @@ section {
 .signup-block {
   margin-left: 0 !important;
 }
+
+.ant-layout-sider.ant-layout-sider-dark {
+  z-index: 1000 !important;
+}

@@ -41,17 +41,13 @@ export default function EditCourses(props) {
   const [logoOrg, setLogoOrg] = useState(null);
   const [fileRule, setFileRule] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentCategory, setCurrentCategory] = useState(null);
   const categories = useSelector(
     (state) => state.category?.categories?.metadata
   );
 
   useEffect(() => {
     setData(course);
-    setCurrentCategory(
-      categories &&
-        categories.find((category) => category?._id === course?.category)
-    );
+  
   }, [course, categories]);
 
   const handleOrganizerUpload = {
@@ -312,7 +308,11 @@ export default function EditCourses(props) {
               Choose logo
             </Button>
           </Upload>
-          {data && !fileRule && <a href={data.rule_file_url} download>{data.rulesFileName}</a>}
+          {data && !fileRule && (
+            <a href={data.rule_file_url} download>
+              {data.rulesFileName}
+            </a>
+          )}
         </div>
       </Modal>
     </React.Fragment>

@@ -1,34 +1,24 @@
-"use client";
-import { deleteCourse, viewCourses } from "@/features/Courses/courseSlice";
-import { unwrapResult } from "@reduxjs/toolkit";
-import {
-  Menu,
-  Dropdown,
-  Spin,
-  Image,
-  Space,
-  Empty,
-  Select,
-  message,
-} from "antd";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Button, Popconfirm } from "antd";
-import EditCourses from "./edit-course/Page";
-import { useRouter } from "next/navigation";
-import { useMediaQuery } from "react-responsive";
-import { BookOutlined } from "@ant-design/icons";
-import AddCourse from "./add-course/page";
-import { Col } from "react-bootstrap";
-import "../courses/page.css";
-import { getAllCategoryAndSubCourses } from "@/features/categories/categorySlice";
-import { isAdmin } from "@/middleware";
-import useCoursesData from "@/hooks/useCoursesData";
-import "react-quill/dist/quill.snow.css";
-import { IMAGE_DEFAULT } from '../../../constants';
+'use client';
+import {deleteCourse, viewCourses} from '@/features/Courses/courseSlice';
+import {unwrapResult} from '@reduxjs/toolkit';
+import {Menu, Dropdown, Spin, Image, Space, Empty, message} from 'antd';
+import {useEffect, useState} from 'react';
+import {useDispatch} from 'react-redux';
+import {Button, Popconfirm} from 'antd';
+import EditCourses from './edit-course/Page';
+import {useRouter} from 'next/navigation';
+import {useMediaQuery} from 'react-responsive';
+import AddCourse from './add-course/page';
+import {Col} from 'react-bootstrap';
+import '../courses/page.css';
+import {isAdmin} from '@/middleware';
+import useCoursesData from '@/hooks/useCoursesData';
+import 'react-quill/dist/quill.snow.css';
+import {IMAGE_DEFAULT} from '../../../constants';
 
 export default function Courses() {
   const dispatch = useDispatch();
+  const courses = useCoursesData();
   const [course, setCourses] = useState([]);
   const [updateCourse, setUpdateCourse] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,11 +26,10 @@ export default function Courses() {
   const [loadingStates, setLoadingStates] = useState({});
   const [filteredCourses, setFilteredCourses] = useState([]);
   const router = useRouter();
-  const isMobile = useMediaQuery({ query: "(max-width: 1280px)" });
-
+  const isMobile = useMediaQuery({query: '(max-width: 1280px)'});
 
   useEffect(() => {
-    const currentTeacherId = localStorage.getItem("x-client-id");
+    const currentTeacherId = localStorage.getItem('x-client-id');
 
     let visibleCourses = course;
     if (!isAdmin() && currentTeacherId) {
@@ -52,33 +41,6 @@ export default function Courses() {
     setFilteredCourses(visibleCourses);
   }, [course]);
 
-  // Xử lý khi danh mục được chọn thay đổi
-  const handleCategoryChange = (value) => {
-    setSelectedCategory(value);
-  };
-
-  const courses = useCoursesData();
-
-  // viewCourses reload api
-  useEffect(() => {
-    dispatch(viewCourses())
-      .then(unwrapResult)
-      .then((res) => {
-        if (res.status) {
-          const currentTeacherId = localStorage.getItem("x-client-id");
-          let visibleCourses;
-          if (isAdmin()) {
-            visibleCourses = res.metadata;
-          } else {
-            visibleCourses = res.metadata.filter(
-              (course) => course.teacher === currentTeacherId
-            );
-          }
-          setCourses(visibleCourses);
-        }
-      });
-  }, []);
-
   // viewCourses api
   useEffect(() => {
     if (courses.length === 0 && !isLoading) {
@@ -87,7 +49,7 @@ export default function Courses() {
         .then(unwrapResult)
         .then((res) => {
           if (res.status) {
-            const currentTeacherId = localStorage.getItem("x-client-id");
+            const currentTeacherId = localStorage.getItem('x-client-id');
             let visibleCourses;
             if (isAdmin()) {
               visibleCourses = res.metadata;
@@ -106,26 +68,11 @@ export default function Courses() {
     } else {
       setCourses(courses?.metadata || courses);
     }
-  }, [course, updateCourse]);
-
-  //table data
-  let data = [];
-  course.forEach((i, index) => {
-    data.push({
-      key: index + 1,
-      title: i?.title,
-      _id: i?._id,
-      name: i?.name,
-      nameCenter: i?.nameCenter,
-      image_url: i?.image_url,
-      lessons: i?.lessons,
-      showCourse: i?.showCourse,
-    });
-  });
+  }, [courses, dispatch, isLoading]);
 
   // handleDeleteCourse
   const handleDeleteCourse = (id) => {
-    setLoadingStates((prev) => ({ ...prev, [id]: true }));
+    setLoadingStates((prev) => ({...prev, [id]: true}));
     dispatch(deleteCourse(id))
       .then(unwrapResult)
       .then((res) => {
@@ -135,23 +82,20 @@ export default function Courses() {
         setUpdateCourse(updateCourse + 1);
       })
       .catch((error) => {
-        message.error("Có lỗi xảy ra khi xóa khóa học. Vui lòng thử lại.");
+        message.error('Có lỗi xảy ra khi xóa khóa học. Vui lòng thử lại.');
       })
       .finally(() => {
-        setLoadingStates((prev) => ({ ...prev, [id]: false }));
+        setLoadingStates((prev) => ({...prev, [id]: false}));
       });
   };
 
   return (
     <>
-      <div className="max-w-screen-2xl mx-auto min-h-screen relative p-3">
-        <AddCourse
-          refresh={() => setUpdateCourse(updateCourse + 1)}
-        />
+      <div className='max-w-screen-2xl mx-auto min-h-screen relative p-3'>
+        <AddCourse refresh={() => setUpdateCourse(updateCourse + 1)} />
 
-        <div className="space-y-4">
-
-          <div className="grid scrollbar-thin sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 grid-container-courses">
+        <div className='space-y-4'>
+          <div className='grid scrollbar-thin sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 pt-3 grid-container-courses'>
             {filteredCourses.map((item, index) => {
               const menu = (
                 <Menu>
@@ -165,8 +109,8 @@ export default function Courses() {
                   </Menu.Item>
                   <Menu.Item>
                     <Button
-                      className="me-3"
-                      style={{ width: "100%" }}
+                      className='me-3'
+                      style={{width: '100%'}}
                       courseId={item?._id}
                       onClick={() =>
                         router.push(`/user/exem-online/${item?._id}`)
@@ -177,18 +121,18 @@ export default function Courses() {
                   </Menu.Item>
                   <Menu.Item>
                     <Popconfirm
-                      title="Xóa khóa học"
-                      description="Bạn muốn chắc xóa khóa học?"
-                      okText="Có"
-                      cancelText="Không"
+                      title='Xóa khóa học'
+                      description='Bạn muốn chắc xóa khóa học?'
+                      okText='Có'
+                      cancelText='Không'
                       okButtonProps={{
-                        style: { backgroundColor: "red" },
+                        style: {backgroundColor: 'red'},
                       }}
                       onConfirm={() => handleDeleteCourse(item?._id)}
                     >
                       <Button
                         danger
-                        style={{ width: "100%" }}
+                        style={{width: '100%'}}
                         loading={loadingStates[item?._id]}
                       >
                         Xóa
@@ -200,22 +144,22 @@ export default function Courses() {
               return (
                 <div
                   key={index}
-                  className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 min-h-[100px]"
+                  className='group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 min-h-[100px]'
                 >
-                  <div className="relative w-full aspect-video rounded-md overflow-hidden">
+                  <div className='relative w-full aspect-video rounded-md overflow-hidden'>
                     <Image
                       width={330}
                       height={186}
                       fill
-                      className="object-cover"
-                      alt="Hình ảnh khóa học"
-                      fallback= {IMAGE_DEFAULT}
+                      className='object-cover'
+                      alt='Hình ảnh khóa học'
+                      fallback={IMAGE_DEFAULT}
                       src={item?.image_url}
                     />
                   </div>
-                  <div className="flex flex-col pt-2">
+                  <div className='flex flex-col pt-2'>
                     <a
-                      className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2"
+                      className='text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2'
                       onClick={() =>
                         router.push(`/user/exem-online/${item?._id}`)
                       }
@@ -226,18 +170,18 @@ export default function Courses() {
                     {isMobile ? (
                       <Dropdown overlay={menu}>
                         <Button
-                          className="ant-dropdown-link text-center justify-self-center"
+                          className='ant-dropdown-link text-center justify-self-center'
                           onClick={(e) => e.preventDefault()}
                         >
                           Chức năng
                         </Button>
                       </Dropdown>
                     ) : (
-                      <Col lg="12" className="mt-5">
+                      <Col lg='12' className='mt-5'>
                         <Space
-                          size="large"
-                          direction="vertical"
-                          className="lg:flex lg:flex-row lg:space-x-4 flex-wrap justify-between"
+                          size='large'
+                          direction='vertical'
+                          className='lg:flex lg:flex-row lg:space-x-4 flex-wrap justify-between'
                         >
                           <Space wrap>
                             <EditCourses
@@ -247,19 +191,19 @@ export default function Courses() {
                               refresh={() => setUpdateCourse(updateCourse + 1)}
                             />
                             <Popconfirm
-                              title="Detele the Contest"
-                              description="Confirm to delete the contest"
-                              okText="Yes"
-                              cancelText="No"
+                              title='Detele the Contest'
+                              description='Confirm to delete the contest'
+                              okText='Yes'
+                              cancelText='No'
                               okButtonProps={{
-                                style: { backgroundColor: "red" },
+                                style: {backgroundColor: 'red'},
                               }}
                               onConfirm={() => handleDeleteCourse(item?._id)}
-                              style={{ margin: 0 }}
+                              style={{margin: 0}}
                             >
                               <Button
                                 danger
-                                style={{ margin: 0 }}
+                                style={{margin: 0}}
                                 loading={loadingStates[item?._id]}
                               >
                                 Delete
@@ -276,16 +220,16 @@ export default function Courses() {
           </div>
 
           {isLoading ? (
-            <div className="flex justify-center items-center h-screen">
+            <div className='flex justify-center items-center h-screen'>
               <Spin />
             </div>
           ) : (
-              filteredCourses?.length === 0 && (
+            filteredCourses?.length === 0 && (
               <Empty
-                className="text-center text-sm text-muted-foreground mt-10"
-                description="
+                className='text-center text-sm text-muted-foreground mt-10'
+                description='
                 Không có khóa học nào
-              "
+              '
               />
             )
           )}
