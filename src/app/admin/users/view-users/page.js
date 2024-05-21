@@ -94,13 +94,12 @@ export default function ViewUsers() {
           </Select>
         </div>
       </div>
-      {isLoading ? (
-        <div className='flex justify-center items-center h-screen'>
-          <Spin />
-        </div>
-      ) : (
-        <TableBlock filterRole={filterRole} searchTerm={searchTerm} />
-      )}
+
+      <TableBlock
+        filterRole={filterRole}
+        searchTerm={searchTerm}
+        isLoading={isLoading}
+      />
     </div>
   );
 }

@@ -7,7 +7,7 @@ import {deleteUser, updateAllUser} from '@/features/User/userSlice';
 import {columns, dataInit} from './setting';
 import {useMediaQuery} from 'react-responsive';
 
-const TableBlock = ({filterRole, searchTerm}) => {
+const TableBlock = ({filterRole, searchTerm, isLoading}) => {
   const dispatch = useDispatch();
   const isMobile = useMediaQuery({query: '(max-width: 767px)'});
   const allUsersStore = useSelector((state) => state?.user?.allUsers);
@@ -111,6 +111,7 @@ const TableBlock = ({filterRole, searchTerm}) => {
           position: ['bottomLeft'],
         }}
         className='grid-container'
+        loading={isLoading}
       />
     </React.Fragment>
   );
