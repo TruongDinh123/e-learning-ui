@@ -12,6 +12,7 @@ const nextConfig = {
   },
   experimental: { esmExternals: true },
   swcMinify: false,
+  reactStrictMode: false
 };
 
 module.exports = nextConfig;

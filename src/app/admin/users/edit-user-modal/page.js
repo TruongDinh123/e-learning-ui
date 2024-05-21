@@ -1,37 +1,39 @@
-"use client";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { Modal, Select, message } from "antd";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { Button } from "antd";
-import CustomInput from "@/components/comman/CustomInput";
-import { useFormik } from "formik";
-import * as yup from "yup";
+'use client';
+import {unwrapResult} from '@reduxjs/toolkit';
+import {Modal, Select, message} from 'antd';
+import {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {Button} from 'antd';
+import CustomInput from '@/components/comman/CustomInput';
+import {useFormik} from 'formik';
+import * as yup from 'yup';
 import {
   getAUser,
   getAllRole,
   updateUser,
   updateUserRoles,
-} from "@/features/User/userSlice";
-import React from "react";
+} from '@/features/User/userSlice';
+import React from 'react';
 
 const Userchema = yup.object({
   lastName: yup.string(),
 
   firstName: yup.string(),
 
-  email: yup.string().email().required("Yêu cầu nhập email"),
+  email: yup.string().email().required('Yêu cầu nhập email'),
 });
 
 export default function EditUser(props) {
-  const { id, refresh, optimisticUpdateUser } = props;
+  const {id, refresh} = props;
+
+  const allUsersStore = useSelector((state) => state?.user?.allUsers);
+  const allRolesStore = useSelector((state) => state?.user?.allRoles);
 
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState(null);
-  const [selectedRoleId, setSelectedRoleId] = useState("");
-  const [roles, setRoles] = useState([]);
+  const [selectedRoleId, setSelectedRoleId] = useState('');
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -49,29 +51,20 @@ export default function EditUser(props) {
     setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    Promise.all([
-      dispatch(getAUser(id)).then(unwrapResult),
-      dispatch(getAllRole()).then(unwrapResult),
-    ])
-      .then(([userRes, rolesRes]) => {
-        if (userRes.status && rolesRes.status) {
-          setData(userRes.metadata);
-          setRoles(rolesRes.metadata);
-          setSelectedRoleId(userRes.metadata.roles[0]?._id);
-        } else {
-          if (!userRes.status) messageApi.error(userRes.message);
-          if (!rolesRes.status) messageApi.error(rolesRes.message);
-        }
-      })
-      .catch((error) => {
-        messageApi.error("Có lỗi xảy ra khi tải thông tin.");
-      });
-  }, [dispatch, id, messageApi]);
-
   const handleRoleChange = (value) => {
     setSelectedRoleId(value);
   };
+
+  useEffect(() => {
+    if (allUsersStore && allUsersStore.length) {
+      const userCurrent = allUsersStore.find((user) => user._id === id);
+      
+      if (userCurrent) {
+        setData(userCurrent);
+        setSelectedRoleId(userCurrent.roles[0]._id);
+      }
+    }
+  }, [allUsersStore, id]);
 
   const formik = useFormik({
     validationSchema: Userchema,
@@ -83,40 +76,45 @@ export default function EditUser(props) {
       roles: data?.roles.map((role) => role.name),
     },
     onSubmit: (values) => {
-      dispatch(updateUser({ id: id, values }))
+      messageApi
+      .open({
+        type: 'info',
+        content: 'Đang thực hiện...',
+      })
+      
+      dispatch(updateUser({id: id, values}))
         .then(unwrapResult)
         .then((res) => {
           if (res.status) {
-            // Cập nhật vai trò người dùng
-            dispatch(updateUserRoles({ userId: id, roleId: selectedRoleId }))
-              .then(unwrapResult)
-              .then((roleRes) => {
-                if (roleRes.status) {
-                  messageApi.success(
-                    "Thông tin và vai trò người dùng đã được cập nhật."
-                  );
-                  setIsModalOpen(false);
-                  refresh();
-                } else {
-                  messageApi.error(roleRes.message);
-                }
-              });
+            messageApi.success(
+              'Thông tin người dùng đã được cập nhật.'
+            );
+
+            const checkRoleExist =
+              res.metadata.roles.includes(selectedRoleId);
+              
+            !checkRoleExist &&
+              dispatch(updateUserRoles({userId: id, roleId: selectedRoleId}))
+                .then(unwrapResult)
+                .then((roleRes) => {
+                  if (roleRes.status) {
+                    messageApi.success(
+                      'Vai trò người dùng đã được cập nhật.'
+                    );
+                    setIsModalOpen(false);
+                    refresh();
+                  } else {
+                    messageApi.error(roleRes.message);
+                  }
+                });
           } else {
             messageApi.error(res.message);
           }
 
-          messageApi
-            .open({
-              type: "Thành công",
-              content: "Đang thực hiện...",
-              duration: 2.5,
-            })
-            .then(() => {
-              refresh();
-            });
+         
         })
-        .catch((error) => {
-          messageApi.error("Có lỗi xảy ra khi cập nhật thông tin người dùng.");
+        .catch(() => {
+          messageApi.error('Có lỗi xảy ra khi cập nhật thông tin người dùng.');
         });
     },
   });
@@ -125,28 +123,28 @@ export default function EditUser(props) {
     <React.Fragment>
       {contextHolder}
       <Button
-        type="primary"
+        type='primary'
         onClick={showModal}
-        className="me-3 custom-button"
-        style={{ width: "100%" }}
+        className='me-3 custom-button'
+        style={{width: '100%'}}
       >
         Cập nhật
       </Button>
       <Modal
-        title="Cập nhật thông tin"
+        title='Cập nhật thông tin'
         open={isModalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
         footer={
           <React.Fragment>
-            <Button key="cancle" type="default" onClick={handleCancel}>
+            <Button key='cancle' type='default' onClick={handleCancel}>
               Hủy
             </Button>
             <Button
-              key="ok"
-              type="primary"
+              key='ok'
+              type='primary'
               onClick={handleOk}
-              className="custom-button"
+              className='custom-button'
             >
               Lưu
             </Button>
@@ -154,13 +152,13 @@ export default function EditUser(props) {
         }
       >
         <div>
-          <label htmlFor="role" className="fs-6 fw-bold">
+          <label htmlFor='role' className='fs-6 fw-bold'>
             Họ
           </label>
           <CustomInput
-            className="mb-3"
-            onChange={formik.handleChange("lastName")}
-            onBlur={formik.handleBlur("lastName")}
+            className='mb-3'
+            onChange={formik.handleChange('lastName')}
+            onBlur={formik.handleBlur('lastName')}
             value={formik.values.lastName}
             error={
               formik.submitCount > 0 &&
@@ -172,13 +170,13 @@ export default function EditUser(props) {
           />
         </div>
         <div>
-          <label htmlFor="role" className="fs-6 fw-bold">
+          <label htmlFor='role' className='fs-6 fw-bold'>
             Tên
           </label>
           <CustomInput
-            className="mb-3"
-            onChange={formik.handleChange("firstName")}
-            onBlur={formik.handleBlur("firstName")}
+            className='mb-3'
+            onChange={formik.handleChange('firstName')}
+            onBlur={formik.handleBlur('firstName')}
             value={formik.values.firstName}
             error={
               formik.submitCount > 0 &&
@@ -190,13 +188,13 @@ export default function EditUser(props) {
           />
         </div>
         <div>
-          <label htmlFor="role" className="fs-6 fw-bold">
+          <label htmlFor='role' className='fs-6 fw-bold'>
             Email
           </label>
           <CustomInput
-            className="mb-3"
-            onChange={formik.handleChange("email")}
-            onBlur={formik.handleBlur("email")}
+            className='mb-3'
+            onChange={formik.handleChange('email')}
+            onBlur={formik.handleBlur('email')}
             value={formik.values.email}
             error={
               formik.submitCount > 0 &&
@@ -209,16 +207,16 @@ export default function EditUser(props) {
         </div>
 
         <div>
-          <label htmlFor="role" className="fs-6 fw-bold">
+          <label htmlFor='role' className='fs-6 fw-bold'>
             Danh sách vai trò:
           </label>
           <Select
-            id="role"
+            id='role'
             value={selectedRoleId}
             onChange={handleRoleChange}
-            style={{ width: "100%" }} // Adjust width as needed
+            style={{width: '100%'}} // Adjust width as needed
           >
-            {roles.map((role) => (
+            {allRolesStore?.map((role) => (
               <Select.Option key={role._id} value={role._id}>
                 {role.name}
               </Select.Option>

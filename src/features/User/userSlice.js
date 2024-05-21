@@ -1,9 +1,9 @@
-import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { authService } from "./userService";
+import {createAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {authService} from './userService';
 
 export const login = createAsyncThunk(
-  "/e-learning/login",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/login',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await authService.loginAUser(data);
       return response;
@@ -14,8 +14,8 @@ export const login = createAsyncThunk(
 );
 
 export const registerUser = createAsyncThunk(
-  "/e-learning/signup",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/signup',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await authService.registerAUser(data);
       return response;
@@ -26,8 +26,8 @@ export const registerUser = createAsyncThunk(
 );
 
 export const getAllUser = createAsyncThunk(
-  "/e-learning/users",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/users',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await authService.getAllUser(data);
       return response;
@@ -38,8 +38,8 @@ export const getAllUser = createAsyncThunk(
 );
 
 export const deleteUser = createAsyncThunk(
-  "/e-learning/user/delete",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/user/delete',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await authService.deleteUser(data);
       return response;
@@ -50,19 +50,19 @@ export const deleteUser = createAsyncThunk(
 );
 
 export const updateUser = createAsyncThunk(
-  "/e-learning/update-user",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/update-user',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await authService.updateUser(data);
       if (response.status) {
         const userName =
           (response.data?.metadata.firstName
-            ? response.data?.metadata.firstName + " "
-            : "") +
+            ? response.data?.metadata.firstName + ' '
+            : '') +
           (response.data?.metadata.lastName
             ? response.data?.metadata.lastName
-            : "");
-        localStorage.setItem("userName", JSON.stringify(userName));
+            : '');
+        localStorage.setItem('userName', JSON.stringify(userName));
       }
       return response.data;
     } catch (err) {
@@ -72,8 +72,8 @@ export const updateUser = createAsyncThunk(
 );
 
 export const uploadImageUser = createAsyncThunk(
-  "/e-learning/user/upload-image",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/user/upload-image',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await authService.uploadImageUser(data);
       return response;
@@ -84,8 +84,8 @@ export const uploadImageUser = createAsyncThunk(
 );
 
 export const getAUser = createAsyncThunk(
-  "/e-learning/user",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/user',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await authService.getAUser(data);
       return response;
@@ -96,8 +96,8 @@ export const getAUser = createAsyncThunk(
 );
 
 export const refreshAUser = createAsyncThunk(
-  "/e-learning/user",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/user',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await authService.getAUser(data);
       return response;
@@ -108,8 +108,8 @@ export const refreshAUser = createAsyncThunk(
 );
 
 export const logOut = createAsyncThunk(
-  "/e-learning/log-out",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/log-out',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await authService.logOut(data);
       return response.data;
@@ -122,8 +122,8 @@ export const logOut = createAsyncThunk(
 //roles
 
 export const getAllRole = createAsyncThunk(
-  "/e-learning/role",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/role',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await authService.getAllRole(data);
       return response;
@@ -134,8 +134,8 @@ export const getAllRole = createAsyncThunk(
 );
 
 export const updateUserRoles = createAsyncThunk(
-  "/e-learning/user/update-user-role",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/user/update-user-role',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await authService.updateUserRoles(data);
       return response;
@@ -146,8 +146,8 @@ export const updateUserRoles = createAsyncThunk(
 );
 
 export const updateRole = createAsyncThunk(
-  "/e-learning/role/update",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/role/update',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await authService.updateRole(data);
       return response;
@@ -158,8 +158,8 @@ export const updateRole = createAsyncThunk(
 );
 
 export const deleteRole = createAsyncThunk(
-  "/e-learning/role/delete",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/role/delete',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await authService.deleteRole(data);
       return response;
@@ -170,8 +170,8 @@ export const deleteRole = createAsyncThunk(
 );
 
 export const createRole = createAsyncThunk(
-  "/e-learning/role/create",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/role/create',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await authService.createRole(data);
       return response;
@@ -182,8 +182,8 @@ export const createRole = createAsyncThunk(
 );
 
 export const changePassword = createAsyncThunk(
-  "/e-learning/change-password",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/change-password',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await authService.changePassword(data);
       return response;
@@ -194,8 +194,8 @@ export const changePassword = createAsyncThunk(
 );
 
 export const forgotPassword = createAsyncThunk(
-  "/e-learning/forgot-password",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/forgot-password',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await authService.forgotPassword(data);
       return response;
@@ -208,27 +208,27 @@ export const forgotPassword = createAsyncThunk(
 let userFromLocalStorage = null;
 let userNameFromLocalStogare = null;
 
-if (typeof window !== "undefined") {
-  userFromLocalStorage = JSON.parse(localStorage?.getItem("user"));
-  userNameFromLocalStogare = JSON.parse(localStorage?.getItem("userName"));
+if (typeof window !== 'undefined') {
+  userFromLocalStorage = JSON.parse(localStorage?.getItem('user'));
+  userNameFromLocalStogare = JSON.parse(localStorage?.getItem('userName'));
 }
 
 const initialState = {
   user: userFromLocalStorage,
   userName: userNameFromLocalStogare,
   profile: {},
-  allUsers: [],
-  allRoles: [],
+  allUsers: null,
+  allRoles: null,
   isError: false,
   isSuccess: false,
   isLoading: false,
-  message: "",
+  message: '',
 };
 
-export const resetState = createAction("Reset_all");
+export const resetState = createAction('Reset_all');
 
 const userSlice = createSlice({
-  name: "login",
+  name: 'login',
   initialState,
   reducers: {
     setUser: (state, action) => {
@@ -236,6 +236,12 @@ const userSlice = createSlice({
     },
     setUserName: (state, action) => {
       state.userName = action.payload;
+    },
+    updateAllUser: (state, action) => {
+      state.allUsers = action.payload;
+    },
+    updateAllRoles: (state, action) => {
+      state.allRoles = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -254,7 +260,7 @@ const userSlice = createSlice({
         state.isError = true;
         state.isSuccess = false;
         state.user = action.error;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(registerUser.pending, (state, action) => {
         state.isLoading = true;
@@ -277,7 +283,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.allUsers = action.payload;
+        state.allUsers = action.payload.metadata?.users;
       })
       .addCase(deleteUser.pending, (state, action) => {
         state.isLoading = true;
@@ -286,7 +292,9 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.allUsers = state.allUsersStore?.metadata?.users?.filter(user => user._id !== action.meta.arg);
+        state.allUsers = state.allUsers?.filter(
+          (user) => user._id !== action.meta.arg
+        );
       })
       .addCase(deleteUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -300,7 +308,8 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.allRoles = action.payload;
+      
+        state.allRoles = action.payload.metadata;
       })
       .addCase(getAllRole.rejected, (state, action) => {
         state.isLoading = false;
@@ -314,6 +323,18 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        const userRes = action.payload.data.metadata;
+        state.allUsers = state.allUsers?.map((user) => {
+          if(user._id === userRes._id) {
+            const role = state.allRoles.find(role => role._id === userRes.roles[0]);
+
+            return Object.assign(user, {
+              roles: [role]
+            })
+          }
+          return user;
+        }
+        );
       })
       .addCase(updateUserRoles.rejected, (state, action) => {
         state.isLoading = false;
@@ -353,28 +374,17 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        const { firstName, lastName, email, phoneNumber, dob, gender } =
-          action.payload.metadata;
-        if (firstName) state.user.firstName = firstName;
-        if (lastName) state.user.lastName = lastName;
-        if (email) state.user.email = email;
-        if (phoneNumber) state.user.phoneNumber = phoneNumber;
-        if (dob) state.user.dob = dob;
-        if (gender) state.user.gender = gender;
+        const userRes = action.payload.metadata;
 
-        // Lấy dữ liệu người dùng hiện tại từ localStorage
-        const currentUser = JSON.parse(localStorage.getItem("user"));
-
-        // Cập nhật dữ liệu người dùng với thông tin mới
-        const updatedUser = {
-          ...currentUser,
-          ...(firstName && { firstName }),
-          ...(lastName && { lastName }),
-          ...(email && { email }),
-        };
-
-        // Lưu dữ liệu người dùng đã cập nhật vào localStorage
-        localStorage.setItem("user", JSON.stringify(updatedUser));
+        state.allUsers = state.allUsers?.map((user) =>
+          user._id === userRes._id
+            ? Object.assign(user, {
+                lastName: userRes.lastName,
+                firstName: userRes.firstName,
+                email: userRes.email,
+              })
+            : user
+        );
       })
 
       .addCase(updateUser.rejected, (state, action) => {
@@ -390,18 +400,18 @@ const userSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
 
-        const { image_url } = action.payload.metadata;
+        const {image_url} = action.payload.metadata;
 
         if (image_url) state.user.image_url = image_url;
 
-        const currentUserImg = JSON.parse(localStorage.getItem("user"));
+        const currentUserImg = JSON.parse(localStorage.getItem('user'));
 
         const updatedUser = {
           ...currentUserImg,
-          ...(image_url && { image_url }),
+          ...(image_url && {image_url}),
         };
 
-        localStorage.setItem("user", JSON.stringify(updatedUser));
+        localStorage.setItem('user', JSON.stringify(updatedUser));
       })
       .addCase(uploadImageUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -427,6 +437,7 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, setUserName } = userSlice.actions;
+export const {setUser, setUserName, updateAllUser, updateAllRoles} =
+  userSlice.actions;
 
 export default userSlice.reducer;

@@ -199,7 +199,6 @@ export default function UpdateQuiz(props) {
   useEffect(() => {
     if (isModalOpen && quiz) {
       const quizToUpdate = quiz.find((quiz) => quiz._id === quizId);
-      console.log(quiz, '!quiz && !quiz && ', quizToUpdate);
       if (quizToUpdate) {
         form.setFieldsValue({
           name: quizToUpdate.name,
@@ -452,7 +451,7 @@ export default function UpdateQuiz(props) {
                 <Form.Item name='essayContent'>
                   <ReactQuill theme='snow' />
                 </Form.Item>
-                {quiz.essay?.attachment && (
+                {quiz?.essay?.attachment && (
                   <div>
                     <a href={quizToUpdate.essay.attachment} download>
                       Download Attachment

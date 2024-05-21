@@ -2,3 +2,5 @@ export const IMAGE_DEFAULT = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMIA
 export const NUMBER_QUIZ_LIMIT = 5;
 
 export const QUESTION_PER_PAGE = 10;
+
+export const SELECTED_COURSE_ID = '6634fc03bf25515f1e563504';

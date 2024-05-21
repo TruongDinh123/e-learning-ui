@@ -41,7 +41,6 @@ const CountdownFooter = ({testCount, timeSubmission}) => {
   }, [isCompleted, latestQuizByCourseId, router]);
 
   useEffect(() => {
-    console.log(userCurrent, 'glaksjdf');
     const isFullData = userCurrent && courseCurrent && courseCurrent._id;
 
     isFullData &&

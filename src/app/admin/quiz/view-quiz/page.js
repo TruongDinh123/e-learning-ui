@@ -45,10 +45,7 @@ const ViewQuiz = () => {
       setIsLoading(true);
       dispatch(viewInfoQuiz({courseIds: SELECTED_COURSE_ID}))
         .then(unwrapResult)
-        .then((res) => {
-          if (res.status) {
-          } else {
-          }
+        .then(() => {
           setIsLoading(false);
         })
         .catch((error) => {
