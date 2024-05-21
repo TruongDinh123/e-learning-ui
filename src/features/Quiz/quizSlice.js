@@ -1,9 +1,9 @@
-import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { QuizService } from "./quizService";
+import {createAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {QuizService} from './quizService';
 
 export const createQuiz = createAsyncThunk(
-  "/e-learning/create-quiz",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/create-quiz',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.createQuiz(data);
       return response;
@@ -14,8 +14,8 @@ export const createQuiz = createAsyncThunk(
 );
 
 export const draftQuiz = createAsyncThunk(
-  "/e-learning/draft-quiz",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/draft-quiz',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.draftQuiz(data);
       return response;
@@ -26,8 +26,8 @@ export const draftQuiz = createAsyncThunk(
 );
 
 export const DeldraftQuiz = createAsyncThunk(
-  "/e-learning/draft-quiz/delete",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/draft-quiz/delete',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.DeletedraftQuiz(data);
       return response;
@@ -38,8 +38,8 @@ export const DeldraftQuiz = createAsyncThunk(
 );
 
 export const startQuiz = createAsyncThunk(
-  "/e-learning/start-quiz",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/start-quiz',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.startQuiz(data);
       return response;
@@ -50,8 +50,8 @@ export const startQuiz = createAsyncThunk(
 );
 
 export const viewQuiz = createAsyncThunk(
-  "/e-learning/view-quiz",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/view-quiz',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.viewQuiz(data);
       return response;
@@ -62,8 +62,8 @@ export const viewQuiz = createAsyncThunk(
 );
 
 export const getDraftQuiz = createAsyncThunk(
-  "/e-learning/get-draft-quiz",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/get-draft-quiz',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.getDraftQuiz(data);
       return response;
@@ -74,8 +74,8 @@ export const getDraftQuiz = createAsyncThunk(
 );
 
 export const getAllScoresByCourseId = createAsyncThunk(
-  "/e-learning/get-all-score-by-course-id",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/get-all-score-by-course-id',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.getAllScoresByCourseId(data);
       return response;
@@ -86,8 +86,8 @@ export const getAllScoresByCourseId = createAsyncThunk(
 );
 
 export const viewInfoQuiz = createAsyncThunk(
-  "/e-learning/view-quiz-info",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/view-quiz-info',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.viewQuizInfo(data);
       return response;
@@ -98,8 +98,8 @@ export const viewInfoQuiz = createAsyncThunk(
 );
 
 export const viewQuizTemplates = createAsyncThunk(
-  "/e-learning/view-quiz-templates",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/view-quiz-templates',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.viewQuizTemplates(data);
       return response;
@@ -110,8 +110,8 @@ export const viewQuizTemplates = createAsyncThunk(
 );
 
 export const deleteTemplates = createAsyncThunk(
-  "/e-learning/deleteTemplates",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/deleteTemplates',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.deleteQuizTempplate(data);
       return response;
@@ -122,8 +122,8 @@ export const deleteTemplates = createAsyncThunk(
 );
 
 export const updateTemplates = createAsyncThunk(
-  "/e-learning/updateTemplates",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/updateTemplates',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.updateQuizTemplate(data);
       return response;
@@ -134,8 +134,8 @@ export const updateTemplates = createAsyncThunk(
 );
 
 export const getScoreByQuizId = createAsyncThunk(
-  "/e-learning/get-score-by-quizId",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/get-score-by-quizId',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.getScoreByQuizId(data);
       return response;
@@ -146,8 +146,8 @@ export const getScoreByQuizId = createAsyncThunk(
 );
 
 export const uploadFileQuiz = createAsyncThunk(
-  "/e-learning/upload-file-quiz",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/upload-file-quiz',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.uploadFileQuiz(data);
       return response;
@@ -158,8 +158,8 @@ export const uploadFileQuiz = createAsyncThunk(
 );
 
 export const uploadQuestionImage = createAsyncThunk(
-  "/e-learning/upload-image-question",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/upload-image-question',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.uploadQuestionImage(data);
       return response;
@@ -170,8 +170,8 @@ export const uploadQuestionImage = createAsyncThunk(
 );
 
 export const uploadFileUserSubmit = createAsyncThunk(
-  "/e-learning/upload-file-user-submit",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/upload-file-user-submit',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.uploadFileUserSubmit(data);
       return response;
@@ -182,8 +182,8 @@ export const uploadFileUserSubmit = createAsyncThunk(
 );
 
 export const getQuizzesByStudentAndCourse = createAsyncThunk(
-  "/e-learning/view-quiz-by-student-and-course",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/view-quiz-by-student-and-course',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.getQuizzesByStudentAndCourse(data);
       return response.data;
@@ -194,8 +194,8 @@ export const getQuizzesByStudentAndCourse = createAsyncThunk(
 );
 
 export const viewAQuiz = createAsyncThunk(
-  "/e-learning/view-a-quiz",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/view-a-quiz',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.viewAQuiz(data);
       return response;
@@ -206,8 +206,8 @@ export const viewAQuiz = createAsyncThunk(
 );
 
 export const viewAQuizForUserScreen = createAsyncThunk(
-  "/e-learning/view-a-quiz",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/view-a-quiz',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.viewAQuizForUserScreen(data);
       return response;
@@ -218,8 +218,8 @@ export const viewAQuizForUserScreen = createAsyncThunk(
 );
 
 export const viewAQuizTemplate = createAsyncThunk(
-  "/e-learning/view-a-quiz-template",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/view-a-quiz-template',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.viewAQuizTemplate(data);
       return response;
@@ -230,8 +230,8 @@ export const viewAQuizTemplate = createAsyncThunk(
 );
 
 export const updateQuiz = createAsyncThunk(
-  "/e-learning/update-quiz",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/update-quiz',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.updateQuiz(data);
       return response;
@@ -242,8 +242,8 @@ export const updateQuiz = createAsyncThunk(
 );
 
 export const deleteQuizQuestion = createAsyncThunk(
-  "/e-learning/delete-quiz",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/delete-quiz',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.deleteQuizQuestion(data);
       return response;
@@ -254,8 +254,8 @@ export const deleteQuizQuestion = createAsyncThunk(
 );
 
 export const deleteQuestionImage = createAsyncThunk(
-  "/e-learning/delete-question-img",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/delete-question-img',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.deleteQuestionImage(data);
       return response;
@@ -266,8 +266,8 @@ export const deleteQuestionImage = createAsyncThunk(
 );
 
 export const deleteQuiz = createAsyncThunk(
-  "/e-learning/delete-quiz",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/delete-quiz',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.deleteQuiz(data);
       return response;
@@ -278,8 +278,8 @@ export const deleteQuiz = createAsyncThunk(
 );
 
 export const getQuizsByCourse = createAsyncThunk(
-  "/e-learning/get-quizs-by-course",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/get-quizs-by-course',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.getQuizsByCourse(data);
       return response;
@@ -290,8 +290,8 @@ export const getQuizsByCourse = createAsyncThunk(
 );
 
 export const submitQuiz = createAsyncThunk(
-  "/e-learning/submit-quiz",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/submit-quiz',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.submitQuiz(data);
       return response;
@@ -302,8 +302,8 @@ export const submitQuiz = createAsyncThunk(
 );
 
 export const submitQuizEsay = createAsyncThunk(
-  "/e-learning/submit-quiz-essay",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/submit-quiz-essay',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.submitQuizEssay(data);
       return response;
@@ -314,8 +314,8 @@ export const submitQuizEsay = createAsyncThunk(
 );
 
 export const getScore = createAsyncThunk(
-  "/e-learning/get-score",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/get-score',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.getScore(data);
       return response;
@@ -326,8 +326,8 @@ export const getScore = createAsyncThunk(
 );
 
 export const getScoreByInfo = createAsyncThunk(
-  "/e-learning/get-info-score",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/get-info-score',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.getScoreByInfo(data);
       return response;
@@ -338,8 +338,8 @@ export const getScoreByInfo = createAsyncThunk(
 );
 
 export const getScoreByUserId = createAsyncThunk(
-  "/e-learning/get-score-userId",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/get-score-userId',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.getScoreByUserId(data);
       return response;
@@ -350,8 +350,8 @@ export const getScoreByUserId = createAsyncThunk(
 );
 
 export const updateScore = createAsyncThunk(
-  "/e-learning/update-score",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/update-score',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.updateScore(data);
       return response;
@@ -362,8 +362,8 @@ export const updateScore = createAsyncThunk(
 );
 
 export const deleteScorebyQuiz = createAsyncThunk(
-  "/e-learning/delete-score-by-quiz",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/delete-score-by-quiz',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.deleteScorebyQuiz(data);
       return response;
@@ -374,10 +374,12 @@ export const deleteScorebyQuiz = createAsyncThunk(
 );
 
 export const getSubmissionTimeLatestQuizByCourseId = createAsyncThunk(
-  "/e-learning/sumbmiss-tiontime-latest-quiz",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/sumbmiss-tiontime-latest-quiz',
+  async (data, {rejectWithValue}) => {
     try {
-      const response = await QuizService.getSubmissionTimeLatestQuizByCourseId(data);
+      const response = await QuizService.getSubmissionTimeLatestQuizByCourseId(
+        data
+      );
       return response;
     } catch (err) {
       return rejectWithValue(err);
@@ -386,8 +388,8 @@ export const getSubmissionTimeLatestQuizByCourseId = createAsyncThunk(
 );
 
 export const getInfoCommonScoreByUserId = createAsyncThunk(
-  "/e-learning/is-complete-score",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/is-complete-score',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.getInfoCommonScoreByUserId(data);
       return response;
@@ -398,34 +400,31 @@ export const getInfoCommonScoreByUserId = createAsyncThunk(
 );
 
 export const getAllUserFinishedCourse = createAsyncThunk(
-    "/e-learning/userFinishedCourses",
-    async (data, { rejectWithValue }) => {
-
+  '/e-learning/userFinishedCourses',
+  async (data, {rejectWithValue}) => {
     try {
-        const response = await QuizService.getAllUserFinishedCourse(data);
-        return response;
+      const response = await QuizService.getAllUserFinishedCourse(data);
+      return response;
     } catch (err) {
-        return rejectWithValue(err);
+      return rejectWithValue(err);
     }
-    });
+  }
+);
 
 export const getTestCount = createAsyncThunk(
-  "/e-learning/quiz/getTestCount/:userId",
-  async (data, { rejectWithValue }) => {
-
-  try {
+  '/e-learning/quiz/getTestCount/:userId',
+  async (data, {rejectWithValue}) => {
+    try {
       const response = await QuizService.getTestCount(data.userId);
       return response;
-  } catch (err) {
+    } catch (err) {
       return rejectWithValue(err);
+    }
   }
-  });
-
-    
-
+);
 
 const initialState = {
-  quiz: "",
+  quiz: '',
   getQuizzesByStudentAndCourse: [],
   getScoreState: [],
   getQuizTemplates: [],
@@ -435,16 +434,18 @@ const initialState = {
   isLoading: false,
   newQuizCreated: false,
   isLoadingQuiz: false,
-  message: "",
+  message: '',
   latestQuizByCourseId: null,
   allUserFinishedCourse: null,
   infoCommonScoreByUserId: null,
+  oneQuizInfo: null,
+  scoreByQuizIdInfo: null,
 };
 
-export const resetStateQuiz = createAction("Reset_all_quiz");
+export const resetStateQuiz = createAction('Reset_all_quiz');
 
 const quizSlice = createSlice({
-  name: "quiz",
+  name: 'quiz',
   initialState,
   reducers: {
     resetNewQuizCreatedFlag: (state) => {
@@ -452,6 +453,15 @@ const quizSlice = createSlice({
     },
     setSubmissionTimeLatestQuizByCourseId: (state) => {
       state.latestQuizByCourseId = state.payload;
+    },
+    updateStateQuiz: (state) => {
+      state.quiz = state.payload;
+    },
+    updateOneQuizInfo: (state) => {
+      state.oneQuizInfo = state.payload;
+    },
+    updateScoreByQuizIdInfo: (state) => {
+      state.scoreByQuizIdInfo = state.payload;
     },
   },
   extraReducers: (builder) => {
@@ -472,7 +482,7 @@ const quizSlice = createSlice({
         state.isLoadingQuiz = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(viewQuiz.pending, (state, action) => {
         state.isLoading = true;
@@ -486,7 +496,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(updateQuiz.pending, (state, action) => {
         state.isLoading = true;
@@ -500,7 +510,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(getQuizsByCourse.pending, (state, action) => {
         state.isLoading = true;
@@ -514,7 +524,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(submitQuiz.pending, (state, action) => {
         state.isLoading = true;
@@ -528,7 +538,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(getScoreByUserId.pending, (state, action) => {
         state.isLoading = true;
@@ -542,7 +552,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(getScore.pending, (state, action) => {
         state.isLoading = true;
@@ -556,7 +566,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(getScoreByInfo.pending, (state, action) => {
         state.isLoading = true;
@@ -571,7 +581,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(getQuizzesByStudentAndCourse.pending, (state, action) => {
         state.isLoading = true;
@@ -586,7 +596,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(viewQuizTemplates.pending, (state, action) => {
         state.isLoading = true;
@@ -601,7 +611,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(draftQuiz.pending, (state, action) => {
         state.isLoading = true;
@@ -632,7 +642,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(uploadQuestionImage.pending, (state, action) => {
         state.isLoading = true;
@@ -673,7 +683,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(deleteQuestionImage.pending, (state, action) => {
         state.isLoading = true;
@@ -682,7 +692,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        const { quizId, questionId } = action.meta.arg;
+        const {quizId, questionId} = action.meta.arg;
 
         const quizIndex = state.getdraftQuiz.findIndex(
           (quiz) => quiz._id === quizId
@@ -695,7 +705,7 @@ const quizSlice = createSlice({
 
           if (questionIndex !== -1) {
             state.getdraftQuiz[quizIndex].questions[questionIndex].image_url =
-              "";
+              '';
           }
         }
       })
@@ -703,7 +713,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(getDraftQuiz.pending, (state, action) => {
         state.isLoading = true;
@@ -718,7 +728,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(DeldraftQuiz.pending, (state, action) => {
         state.isLoading = true;
@@ -738,29 +748,38 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(resetNewQuizCreatedFlag, (state) => {
         state.newQuizCreated = false;
       })
       .addCase(resetStateQuiz, () => initialState)
-      .addCase(getSubmissionTimeLatestQuizByCourseId.pending, (state, action) => {
-        state.isLoading = true;
-      })
-      .addCase(getSubmissionTimeLatestQuizByCourseId.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isError = false;
-        state.isSuccess = true;
+      .addCase(
+        getSubmissionTimeLatestQuizByCourseId.pending,
+        (state, action) => {
+          state.isLoading = true;
+        }
+      )
+      .addCase(
+        getSubmissionTimeLatestQuizByCourseId.fulfilled,
+        (state, action) => {
+          state.isLoading = false;
+          state.isError = false;
+          state.isSuccess = true;
 
-        state.latestQuizByCourseId = action.payload.metadata[0];
-      })
-      .addCase(getSubmissionTimeLatestQuizByCourseId.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.isSuccess = false;
-       
-        state.message = "Something went wrong!";
-      })
+          state.latestQuizByCourseId = action.payload.metadata[0];
+        }
+      )
+      .addCase(
+        getSubmissionTimeLatestQuizByCourseId.rejected,
+        (state, action) => {
+          state.isLoading = false;
+          state.isError = true;
+          state.isSuccess = false;
+
+          state.message = 'Something went wrong!';
+        }
+      )
       .addCase(getAllUserFinishedCourse.pending, (state, action) => {
         state.isLoading = true;
       })
@@ -775,15 +794,30 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-       
-        state.message = "Something went wrong!";
+
+        state.message = 'Something went wrong!';
       })
       .addCase(getInfoCommonScoreByUserId.fulfilled, (state, action) => {
         state.infoCommonScoreByUserId = action.payload.metadata;
+      })
+      .addCase(viewInfoQuiz.fulfilled, (state, action) => {
+        state.quiz = action.payload.metadata;
+      })
+      .addCase(getScoreByQuizId.fulfilled, (state, action) => {
+        state.scoreByQuizIdInfo = action.payload.metadata;
+      })
+      .addCase(viewAQuiz.fulfilled, (state, action) => {
+        state.oneQuizInfo = action.payload.metadata;
       });
   },
 });
 
-export const { resetNewQuizCreatedFlag, setSubmissionTimeLatestQuizByCourseId } = quizSlice.actions;
+export const {
+  resetNewQuizCreatedFlag,
+  setSubmissionTimeLatestQuizByCourseId,
+  updateStateQuiz,
+  updateOneQuizInfo,
+  updateScoreByQuizIdInfo,
+} = quizSlice.actions;
 
 export default quizSlice.reducer;
