@@ -18,7 +18,7 @@ import {IMAGE_DEFAULT} from '../../../constants';
 
 export default function Courses() {
   const dispatch = useDispatch();
-  const courses = useCoursesData();
+  const coursesStore = useCoursesData();
   const [course, setCourses] = useState([]);
   const [updateCourse, setUpdateCourse] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +43,7 @@ export default function Courses() {
 
   // viewCourses api
   useEffect(() => {
-    if (courses.length === 0 && !isLoading) {
+    if (coursesStore.length === 0 && !isLoading) {
       setIsLoading(true);
       dispatch(viewCourses())
         .then(unwrapResult)
@@ -66,9 +66,9 @@ export default function Courses() {
           setIsLoading(false);
         });
     } else {
-      setCourses(courses?.metadata || courses);
+      setCourses(coursesStore?.metadata || coursesStore);
     }
-  }, [courses, dispatch, isLoading]);
+  }, [coursesStore, dispatch, isLoading]);
 
   // handleDeleteCourse
   const handleDeleteCourse = (id) => {
