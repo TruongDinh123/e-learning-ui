@@ -12,12 +12,10 @@ import BreadCrumbBlock from './breadCrumbBlock';
 
 export default function Quizs({params}) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
-  const [quiz, setquiz] = useState(null);
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [submitted, setSubmitted] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [deadline, setDeadline] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [showCountdown, setShowCountdown] = useState(true);
@@ -43,6 +41,8 @@ export default function Quizs({params}) {
   const infoCommonScoreByUserId = useSelector(
     (state) => state.quiz.infoCommonScoreByUserId
   );
+  const quiz = useSelector((state) => state.quiz.quizsExisted[params.id]);
+  const loading = useSelector((state) => state.quiz.isLoading);
 
   useEffect(() => {
     setInitialSize({
@@ -53,26 +53,18 @@ export default function Quizs({params}) {
 
   //fetch API
   useEffect(() => {
-    const fetchQuizInfo = async () => {
-      setLoading(true);
-      try {
-        const quizResult = await dispatch(
-          viewAQuizForUserScreen({quizId: params?.id})
-        ).then(unwrapResult);
-        if (quizResult.status) {
-          setquiz(quizResult.metadata);
-        } else {
-          messageApi.error(quizResult.message);
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const fetchQuizInfo = () => {
+      dispatch(viewAQuizForUserScreen({quizId: params?.id}))
+        .then(unwrapResult)
+        .then((res) => {
+          if (!res.status) {
+            messageApi.error(res.message);
+          }
+        });
 
-    fetchQuizInfo();
-  }, [params?.id, dispatch, quizzesByStudentState, messageApi]);
+    };
+    !quiz && params?.id && fetchQuizInfo();
+  }, [params.id, dispatch, quizzesByStudentState, messageApi, quiz]);
 
   useEffect(() => {
     if (infoCommonScoreByUserId) {

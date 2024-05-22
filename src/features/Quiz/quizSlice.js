@@ -206,7 +206,7 @@ export const viewAQuiz = createAsyncThunk(
 );
 
 export const viewAQuizForUserScreen = createAsyncThunk(
-  '/e-learning/view-a-quiz',
+  '/e-learning/quiz-for-user-screen',
   async (data, {rejectWithValue}) => {
     try {
       const response = await QuizService.viewAQuizForUserScreen(data);
@@ -440,6 +440,7 @@ const initialState = {
   infoCommonScoreByUserId: null,
   oneQuizInfo: null,
   scoreByQuizIdInfo: null,
+  quizsExisted: {},
 };
 
 export const resetStateQuiz = createAction('Reset_all_quiz');
@@ -808,6 +809,25 @@ const quizSlice = createSlice({
       })
       .addCase(viewAQuiz.fulfilled, (state, action) => {
         state.oneQuizInfo = action.payload.metadata;
+      })
+      .addCase(viewAQuizForUserScreen.pending, (state, action) => {
+        console.log("epdningggg");
+        state.isLoading = true;
+      })
+      .addCase(viewAQuizForUserScreen.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.quizsExisted = Object.assign(state.quizsExisted, {
+          [action.payload.metadata._id]: action.payload.metadata,
+        });
+      })
+      .addCase(viewAQuizForUserScreen.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+
+        state.message = 'viewAQuizForUserScreen: Something went wrong!';
       });
   },
 });
