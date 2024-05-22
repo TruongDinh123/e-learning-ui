@@ -811,7 +811,6 @@ const quizSlice = createSlice({
         state.oneQuizInfo = action.payload.metadata;
       })
       .addCase(viewAQuizForUserScreen.pending, (state, action) => {
-        console.log("epdningggg");
         state.isLoading = true;
       })
       .addCase(viewAQuizForUserScreen.fulfilled, (state, action) => {

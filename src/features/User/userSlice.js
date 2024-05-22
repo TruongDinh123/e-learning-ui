@@ -308,7 +308,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-      
+
         state.allRoles = action.payload.metadata;
       })
       .addCase(getAllRole.rejected, (state, action) => {
@@ -325,16 +325,17 @@ const userSlice = createSlice({
         state.isSuccess = true;
         const userRes = action.payload.data.metadata;
         state.allUsers = state.allUsers?.map((user) => {
-          if(user._id === userRes._id) {
-            const role = state.allRoles.find(role => role._id === userRes.roles[0]);
+          if (user._id === userRes._id) {
+            const role = state.allRoles.find(
+              (role) => role._id === userRes.roles[0]
+            );
 
             return Object.assign(user, {
-              roles: [role]
-            })
+              roles: [role],
+            });
           }
           return user;
-        }
-        );
+        });
       })
       .addCase(updateUserRoles.rejected, (state, action) => {
         state.isLoading = false;
@@ -348,6 +349,9 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        state.allRoles = state.allRoles.map((role) =>
+          role._id === action.payload.data._id ? action.payload.data : role
+        );
       })
       .addCase(updateRole.rejected, (state, action) => {
         state.isLoading = false;

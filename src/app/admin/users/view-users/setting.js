@@ -84,9 +84,7 @@ export  const columns = [
     title: 'Họ',
     dataIndex: 'lastName',
     onFilter: (value, record) => record.lastName.indexOf(value) === 0,
-    sorter: (a, b) => {
-      console.log(a.lastName, b, 'fasdf');
-      return a.lastName?.localeCompare(b.lastName)},
+    sorter: (a, b) => a.lastName?.localeCompare(b.lastName),
     sortDirections: ['descend'],
   },
   {
