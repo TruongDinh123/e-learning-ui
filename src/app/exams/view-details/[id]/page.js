@@ -9,7 +9,7 @@ import debounce from 'lodash.debounce';
 import {useRouter} from 'next/navigation';
 import QuizItemBlock from './quizItemBlock';
 import BreadCrumbBlock from './breadCrumbBlock';
-import {decryptQuiz} from '../../../../utils';
+import { decrypt } from '../../../../utils';
 
 export default function Quizs({params}) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -51,12 +51,11 @@ export default function Quizs({params}) {
       height: window.innerHeight,
     });
   }, []);
-
   //fetch API
   useEffect(() => {
     if (!quiz && params?.id && quizStoreByID) {
       const encryptoQuiz = async (text) => {
-        const quizEn = await decryptQuiz(text);
+        const quizEn = await decrypt(text);
         return quizEn;
       };
 

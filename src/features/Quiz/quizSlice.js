@@ -1,6 +1,5 @@
 import {createAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {QuizService} from './quizService';
-import { encryptQuiz } from '../../utils';
 
 export const createQuiz = createAsyncThunk(
   '/e-learning/create-quiz',
@@ -818,10 +817,9 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        const quizData = JSON.stringify(action.payload.metadata);
         
         state.quizsExisted = Object.assign(state.quizsExisted, {
-          [action.payload.metadata._id]: encryptQuiz(`${quizData}`),
+          [action.payload.metadata._id]: action.payload.metadata.data,
         });
       })
       .addCase(viewAQuizForUserScreen.rejected, (state, action) => {
