@@ -74,7 +74,7 @@ export default function Login() {
               roleNames.includes('Super-Admin') ||
               roleNames.includes('Mentor')
             ) {
-              router.push('/admin/courses');
+              router.push('/admin');
             } else {
               router.push('/');
             }

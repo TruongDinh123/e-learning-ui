@@ -1,12 +1,7 @@
 'use client';
-import {
-  buttonPriavteourse,
-  buttonPublicCourse,
-  editCourse,
-  uploadImageCourse,
-} from '@/features/Courses/courseSlice';
+import {editCourse, uploadImageCourse} from '@/features/Courses/courseSlice';
 import {unwrapResult} from '@reduxjs/toolkit';
-import {Image, Modal, Radio, Upload, message} from 'antd';
+import {Modal, Upload, message} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Button} from 'antd';
@@ -14,11 +9,9 @@ import CustomInput from '@/components/comman/CustomInput';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
 import {UploadOutlined} from '@ant-design/icons';
-import {useRouter} from 'next/navigation';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import {dataFileInit} from '../common';
-import {IMAGE_DEFAULT} from '../../../../constants';
 import ImageBlock from './imageBlock';
 
 const ReactQuill = dynamic(
@@ -32,7 +25,7 @@ const CourseSchema = yup.object({
 });
 
 export default function EditCourses(props) {
-  const {id, refresh, course, categoryId, fetchCategories} = props;
+  const {id, course} = props;
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,7 +40,6 @@ export default function EditCourses(props) {
 
   useEffect(() => {
     setData(course);
-  
   }, [course, categories]);
 
   const handleOrganizerUpload = {
@@ -110,12 +102,14 @@ export default function EditCourses(props) {
       rules: data?.rules,
       nameCenter: data?.nameCenter,
       isPublic: data?.showCourse,
+      rulesFileName: data?.rulesFileName,
     },
     onSubmit: (values) => {
       setIsLoading(true);
       dispatch(editCourse({id: props?.id, values}))
         .then(unwrapResult)
         .then((res) => {
+          messageApi.success('Thông tin khoá học đã được cập nhật.');
           const dataInit = dataFileInit({
             bannerFile: file,
             logoFile: logoOrg,
@@ -132,16 +126,14 @@ export default function EditCourses(props) {
                   setFile(null);
                   setLogoOrg(null);
                   setFileRule(null);
-                  refresh();
                   setIsLoading(false);
+                  messageApi.success('Hình ảnh khoá học đã được cập nhật.');
                 }
-                refresh();
                 setIsLoading(false);
                 window.location.reload();
                 return res;
               });
           }
-          refresh();
           setIsLoading(false);
           return res;
         })

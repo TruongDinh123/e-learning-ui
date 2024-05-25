@@ -9,6 +9,7 @@ const RankingContent = () => {
     (state) => state.quiz
   );
   const [rankingCalculatorState, setRankingCalculatorState] = useState([]);
+  
 
   useEffect(() => {
     const getDataForRanking = async () => {
@@ -21,8 +22,8 @@ const RankingContent = () => {
       }
     };
 
-    latestQuizByCourseId && getDataForRanking();
-  }, [dispatch, latestQuizByCourseId]);
+    !allUserFinishedCourse && latestQuizByCourseId && getDataForRanking();
+  }, [dispatch, latestQuizByCourseId, allUserFinishedCourse]);
 
   useEffect(() => {
     if (allUserFinishedCourse && allUserFinishedCourse.length) {

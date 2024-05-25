@@ -5,7 +5,7 @@ import RankingImage from './rankingImage';
 import RankingContent from './rankingContent';
 import Rules from './rules';
 
-export default function ContentExemplOnline({userFinishedCourse}) {
+export default function ContentExemplOnline({}) {
   return (
     <main
       style={{

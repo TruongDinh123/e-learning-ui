@@ -1,13 +1,10 @@
 'use client';
-import {unwrapResult} from '@reduxjs/toolkit';
-import {useDispatch, useSelector} from 'react-redux';
-import {Input, Select, Spin, message} from 'antd';
+import {useSelector} from 'react-redux';
+import {Input, Select, message} from 'antd';
 import React, {useEffect, useState} from 'react';
-import {getAllRole, getAllUser} from '@/features/User/userSlice';
 import TableBlock from './TableBlock';
 
 export default function ViewUsers() {
-  const dispatch = useDispatch();
   //viewUsers api
   const allUsersStore = useSelector((state) => state?.user?.allUsers);
   const allRolesStore = useSelector((state) => state?.user?.allRoles);
@@ -19,37 +16,12 @@ export default function ViewUsers() {
   const [filterRole, setFilterRole] = useState('');
 
   useEffect(() => {
-    if (!allUsersStore) {
-      setIsLoading(true);
-      dispatch(getAllUser())
-        .then(unwrapResult)
-        .then((res) => {
-          if (!res.status) {
-            messageApi.error(res.message);
-          }
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          setIsLoading(false);
-        });
-    }
-  }, [allUsersStore, dispatch, messageApi]);
+    !allUsersStore ? setIsLoading(true) : setIsLoading(false);
+  }, [allUsersStore]);
 
   useEffect(() => {
-    if (!allRolesStore) {
-      dispatch(getAllRole())
-        .then(unwrapResult)
-        .then((res) => {
-          if (!res.status) {
-            messageApi.error(res.message);
-          }
-        })
-        .catch((error) => {
-          messageApi.error('An error occurred while fetching roles.');
-        });
-    } else {
-    }
-  }, [allRolesStore, dispatch, messageApi]);
+    !allRolesStore ? setIsLoading(true) : setIsLoading(false);
+  }, [allRolesStore]);
 
   return (
     <div className='p-3'>

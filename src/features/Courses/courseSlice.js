@@ -386,7 +386,7 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.courses = action.payload;
+        state.courses = action.payload.metadata;
       })
       .addCase(viewCourses.rejected, (state, action) => {
         state.isLoading = false;

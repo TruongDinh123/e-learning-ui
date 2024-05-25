@@ -109,7 +109,7 @@ export default function HeaderUser() {
         <Link href="/user/change-password">Đổi mật khẩu</Link>
       </Menu.Item>
       <Menu.Item>
-        {isAdmin && <Link href="/admin/courses">Quản trị viên</Link>}
+        {isAdmin && <Link href="/admin">Quản trị viên</Link>}
       </Menu.Item>
       <Menu.Item onClick={logout}>
         {userState !== null && (
@@ -303,7 +303,7 @@ export default function HeaderUser() {
                             <Disclosure.Button className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                               <span className="font-bold">{userName}</span>
                               {isAdmin && (
-                                <Link href="/admin/courses">( Admin )</Link>
+                                <Link href="/admin">( Admin )</Link>
                               )}
                               <ChevronDownIcon
                                 className={classNames(

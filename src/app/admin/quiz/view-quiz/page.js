@@ -11,18 +11,14 @@ import {
 } from 'antd';
 import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useEffect, useState} from 'react';
-import {
-  deleteQuiz,
-  updateStateQuiz,
-  viewInfoQuiz,
-} from '@/features/Quiz/quizSlice';
+import {deleteQuiz, updateStateQuiz} from '@/features/Quiz/quizSlice';
 import {unwrapResult} from '@reduxjs/toolkit';
 import React from 'react';
 import {useRouter} from 'next/navigation';
 import UpdateQuiz from '../update-quiz/page';
 import '../view-quiz/page.css';
 import {useMediaQuery} from 'react-responsive';
-import {SELECTED_COURSE_ID} from '../../../../constants';
+import {columns} from './setting';
 
 const ViewQuiz = () => {
   const dispatch = useDispatch();
@@ -32,7 +28,6 @@ const ViewQuiz = () => {
   // const [courses, setCourses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
-  const [columns, setColumns] = useState([]);
 
   const selectedCourse = localStorage?.getItem('selectedCourseId') || null;
 
@@ -41,19 +36,7 @@ const ViewQuiz = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const handleViewQuiz = () => {
-      setIsLoading(true);
-      dispatch(viewInfoQuiz({courseIds: SELECTED_COURSE_ID}))
-        .then(unwrapResult)
-        .then(() => {
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          setIsLoading(false);
-        });
-    };
-
-    !quiz && handleViewQuiz();
+    !quiz ? setIsLoading(true) : setIsLoading(false);
   }, [dispatch, quiz]);
 
   const handleDeleteQuiz = useCallback(
@@ -78,50 +61,9 @@ const ViewQuiz = () => {
   );
 
   useEffect(() => {
-    const columns = [
-      {
-        title: 'SNo.',
-        dataIndex: 'key',
-      },
-      {
-        title: 'Tên đề thi',
-        dataIndex: 'name',
-        onFilter: (value, record) => record.name.indexOf(value) === 0,
-        sorter: (a, b) => a.name.length - b.name.length,
-        sortDirections: ['descend'],
-      },
-      {
-        title: 'Loại hình thức',
-        dataIndex: 'type',
-        render: (text) =>
-          text === 'multiple_choice'
-            ? 'Trắc Nghiệm'
-            : text === 'essay'
-            ? 'Tự luận'
-            : text,
-        onFilter: (value, record) => record.type.indexOf(value) === 0,
-        sorter: (a, b) => a.type.localeCompare(b.type),
-        sortDirections: ['descend'],
-      },
-      {
-        title: 'Chi tiết câu hỏi',
-        dataIndex: 'questions',
-        onFilter: (value, record) => record.questions.indexOf(value) === 0,
-        sorter: (a, b) => a.questions.length - b.questions.length,
-        sortDirections: ['descend'],
-      },
-      {
-        title: 'Chức năng',
-        dataIndex: 'action',
-      },
-    ];
-    setColumns(columns);
-  }, []);
-
-  useEffect(() => {
     let data = [];
     quiz &&
-      quiz?.forEach((i, index) => {
+      quiz.forEach((i, index) => {
         const menu = (
           <Menu>
             <Menu.Item>
@@ -223,16 +165,14 @@ const ViewQuiz = () => {
       <h1 className='text-2xl font-bold text-[#002c6a] mb-3'>
         Danh sách đề thi
       </h1>
-      {columns.length > 0 && (
-        <Table
-          columns={columns}
-          dataSource={data}
-          pagination={{pageSize: 5}}
-          loading={isLoading}
-        />
-      )}
+      <Table
+        columns={columns}
+        dataSource={data}
+        pagination={{pageSize: 5}}
+        loading={isLoading}
+      />
     </div>
   );
-}
+};
 
 export default ViewQuiz;

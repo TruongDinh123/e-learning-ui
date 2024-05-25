@@ -1,7 +1,7 @@
 'use client';
 import React, {useEffect, useState, useRef, useCallback} from 'react';
-import {message, Spin} from 'antd';
-import {submitQuiz, viewAQuizForUserScreen} from '@/features/Quiz/quizSlice';
+import {message} from 'antd';
+import {submitQuiz} from '@/features/Quiz/quizSlice';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {useDispatch, useSelector} from 'react-redux';
 import 'react-quill/dist/quill.snow.css';
@@ -9,6 +9,7 @@ import debounce from 'lodash.debounce';
 import {useRouter} from 'next/navigation';
 import QuizItemBlock from './quizItemBlock';
 import BreadCrumbBlock from './breadCrumbBlock';
+import {decryptQuiz} from '../../../../utils';
 
 export default function Quizs({params}) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -21,6 +22,7 @@ export default function Quizs({params}) {
   const [showCountdown, setShowCountdown] = useState(true);
   const [quizSubmission, setQuizSubmission] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [quiz, setQuiz] = useState(null);
   const [predictAmount, onChangePredictAmount] = useState(
     localStorage.getItem('predictAmount') || ''
   );
@@ -35,13 +37,12 @@ export default function Quizs({params}) {
   const resizeTimeoutRef = useRef(null);
   const router = useRouter();
 
-  const quizzesByStudentState = useSelector(
-    (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
-  );
   const infoCommonScoreByUserId = useSelector(
     (state) => state.quiz.infoCommonScoreByUserId
   );
-  const quiz = useSelector((state) => state.quiz.quizsExisted[params.id]);
+  const quizStoreByID = useSelector(
+    (state) => state.quiz.quizsExisted[params.id]
+  );
   const loading = useSelector((state) => state.quiz.isLoading);
 
   useEffect(() => {
@@ -53,18 +54,16 @@ export default function Quizs({params}) {
 
   //fetch API
   useEffect(() => {
-    const fetchQuizInfo = () => {
-      dispatch(viewAQuizForUserScreen({quizId: params?.id}))
-        .then(unwrapResult)
-        .then((res) => {
-          if (!res.status) {
-            messageApi.error(res.message);
-          }
-        });
+    if (!quiz && params?.id && quizStoreByID) {
+      const encryptoQuiz = async (text) => {
+        const quizEn = await decryptQuiz(text);
+        return quizEn;
+      };
 
-    };
-    !quiz && params?.id && fetchQuizInfo();
-  }, [params.id, dispatch, quizzesByStudentState, messageApi, quiz]);
+      encryptoQuiz(quizStoreByID).then(res => setQuiz(JSON.parse(res)));
+    }
+
+  }, [params?.id, quiz, quizStoreByID]);
 
   useEffect(() => {
     if (infoCommonScoreByUserId) {

@@ -106,7 +106,7 @@ export default function AddCourse(props) {
       name: '',
       nameCenter: '',
       isPublic: true,
-      rules: ''
+      rules: '',
     },
     onSubmit: (values) => {
       values.name = values.name.trim();
@@ -116,6 +116,7 @@ export default function AddCourse(props) {
       dispatch(createCourse(values))
         .then(unwrapResult)
         .then((res) => {
+          messageApi.success('Thêm khoá học thành công.');
           const courseId = res.metadata?._id;
           const dataInit = dataFileInit({
             bannerFile: file,
@@ -136,10 +137,12 @@ export default function AddCourse(props) {
                   setFile(null);
                   setIsLoading(false);
                   setIsModalOpen(false);
+                  messageApi.success('Hình ảnh khoá học đã được cập nhật.');
                   formik.resetForm();
                 }
               })
               .catch((error) => {
+                console.log(error);
                 setIsLoading(false);
               });
           }

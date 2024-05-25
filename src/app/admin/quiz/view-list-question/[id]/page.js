@@ -1,16 +1,10 @@
 'use client';
-import {Spin, Breadcrumb, Tabs} from 'antd';
+import {Spin, Tabs} from 'antd';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
-import {
-  getScoreByQuizId,
-  updateOneQuizInfo,
-  updateScoreByQuizIdInfo,
-  viewAQuiz,
-} from '@/features/Quiz/quizSlice';
+import {getScoreByQuizId, viewAQuiz} from '@/features/Quiz/quizSlice';
 import {unwrapResult} from '@reduxjs/toolkit';
 import React from 'react';
-import Link from 'next/link';
 import TabPane from 'antd/es/tabs/TabPane';
 import ViewListScore from '../score-trainee/page';
 import '../[id]/page.css';

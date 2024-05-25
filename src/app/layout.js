@@ -44,7 +44,7 @@ export default function RootLayout({ children }) {
     const token = Cookies.get("Bearer");
 
     // Ngay lập tức chuyển hướng nếu không phải Admin hoặc Mentor và cố gắng truy cập vào /admin/courses
-    if (pathname === "/admin/courses" && !(isAdmin() || isMentor())) {
+    if (pathname === "/admin" && !(isAdmin() || isMentor())) {
       router.push("/unauthorized");
       return; // Ngăn không chạy các đoạn mã phía dưới
     }
