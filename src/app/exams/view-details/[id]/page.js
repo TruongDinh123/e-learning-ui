@@ -9,7 +9,7 @@ import debounce from 'lodash.debounce';
 import {useRouter} from 'next/navigation';
 import QuizItemBlock from './quizItemBlock';
 import BreadCrumbBlock from './breadCrumbBlock';
-import { decrypt } from '../../../../utils';
+import {decryptQuiz} from '../../../../utils';
 
 export default function Quizs({params}) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -55,11 +55,13 @@ export default function Quizs({params}) {
   useEffect(() => {
     if (!quiz && params?.id && quizStoreByID) {
       const encryptoQuiz = async (text) => {
-        const quizEn = await decrypt(text);
+        const quizEn = await decryptQuiz(text);
         return quizEn;
       };
 
-      encryptoQuiz(quizStoreByID).then((res) => setQuiz(JSON.parse(res)));
+      encryptoQuiz(quizStoreByID)
+        .then((res) => setQuiz(JSON.parse(res)))
+        .catch((error) => console.log(error.message));
     }
   }, [params?.id, quiz, quizStoreByID]);
 
@@ -132,7 +134,6 @@ export default function Quizs({params}) {
         .then(unwrapResult)
         .then((res) => {
           if (res.status) {
-           
             // setQuizSubmission(res.metadata);
             // setSubmitted(true);
             // setShowCountdown(false);
