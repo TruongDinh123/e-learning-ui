@@ -60,9 +60,8 @@ export default function Quizs({params}) {
         return quizEn;
       };
 
-      encryptoQuiz(quizStoreByID).then(res => setQuiz(JSON.parse(res)));
+      encryptoQuiz(quizStoreByID).then((res) => setQuiz(JSON.parse(res)));
     }
-
   }, [params?.id, quiz, quizStoreByID]);
 
   useEffect(() => {
@@ -119,35 +118,34 @@ export default function Quizs({params}) {
 
     setSubmitting(true);
     try {
-      await messageApi.open({
-        type: 'Thành công',
+      messageApi.info({
         content: 'Đang nộp bài...',
-        style: {fontSize: '25px'},
-        key: 'submit',
       });
 
-      const res = await dispatch(
+      dispatch(
         submitQuiz({
           quizId: quiz._id,
           answer: formattedAnswers,
           predictAmount,
           predictAmountMaxScore,
         })
-      ).then(unwrapResult);
-
-      if (res.status) {
-        // setQuizSubmission(res.metadata);
-        // setSubmitted(true);
-        // setShowCountdown(false);
-        localStorage.removeItem('quizAnswers');
-        localStorage.removeItem('quizStartTime');
-        localStorage.removeItem('predictAmount');
-        localStorage.removeItem('predictAmountMaxScore');
-        router.push('/');
-      } else {
-        messageApi.destroy('submit');
-        messageApi.error(res.message);
-      }
+      )
+        .then(unwrapResult)
+        .then((res) => {
+          if (res.status) {
+           
+            // setQuizSubmission(res.metadata);
+            // setSubmitted(true);
+            // setShowCountdown(false);
+            localStorage.removeItem('quizAnswers');
+            localStorage.removeItem('quizStartTime');
+            localStorage.removeItem('predictAmount');
+            localStorage.removeItem('predictAmountMaxScore');
+            router.push('/');
+          } else {
+            messageApi.error(res.message);
+          }
+        });
     } catch (error) {
       console.error('Error submitting quiz:', error);
       messageApi.error('Lỗi khi nộp bài.');
@@ -159,7 +157,7 @@ export default function Quizs({params}) {
     messageApi,
     predictAmount,
     predictAmountMaxScore,
-    quiz,
+    quiz?._id,
     router,
     selectedAnswers,
   ]);

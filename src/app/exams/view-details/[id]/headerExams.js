@@ -15,7 +15,7 @@ const HeaderExams = ({
   predictAmountMaxScore,
   selectedAnswers,
   handleSubmit,
-  loading
+  loading,
 }) => {
   const courseCurrent = useSelector((state) => state.course.courseInfo);
 
@@ -67,24 +67,19 @@ const HeaderExams = ({
           )}
         </div>
       </div>
-      {loading ? (
-        <div className='flex justify-center items-center'>
-          <Spin size='small' />
-        </div>
-      ) : (
-        <div className='flex items-center'>
-          {!isTimeExceeded && !submitted && !isComplete && (
-            <Button
-              loading={submitting}
-              onClick={showConfirmSubmit}
-              size='large'
-              className='mr-3 px-4 text-center bg-purple-500 text-white font-bold rounded hover:bg-purple-600 transition duration-300'
-            >
-              Nộp bài
-            </Button>
-          )}
-        </div>
-      )}
+
+      <div className='flex items-center'>
+        {!isTimeExceeded && !submitted && !isComplete && (
+          <Button
+            loading={submitting || loading}
+            onClick={showConfirmSubmit}
+            size='large'
+            className='mr-3 px-4 text-center bg-purple-500 text-white font-bold rounded hover:bg-purple-600 transition duration-300'
+          >
+            Nộp bài
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

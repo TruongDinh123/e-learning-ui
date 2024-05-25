@@ -25,7 +25,6 @@ export default function AssignmentCreate() {
   // Hàm xử lý khi chọn khóa học
   const handleCourseChange = (value) => {
     setSelectedCourse(value);
-    const selectedCourse = courses.find((course) => course._id === value);
   };
 
   const handleAddQuestion = () => {

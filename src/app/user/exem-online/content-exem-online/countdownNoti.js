@@ -1,4 +1,4 @@
-import {memo, useEffect, useState} from 'react';
+import {memo, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTestCount} from '../../../../features/Quiz/quizSlice';
 import {unwrapResult} from '@reduxjs/toolkit';

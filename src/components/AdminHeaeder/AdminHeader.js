@@ -169,7 +169,7 @@ export default function AdminHeader(props) {
 
 
   return (
-    <header className="bg-[#02354B] sticky top-0 z-30" style={{ paddingLeft: collapsed ? "80px" : "280px" }}>
+    <header className="bg-[#02354B] sticky top-0 z-30" style={{ paddingLeft: collapsed ? "80px" : "200px" }}>
       <div className="max-w-[105rem] mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between h-[75px]">
           <div className="flex items-center justify-center">
@@ -184,11 +184,10 @@ export default function AdminHeader(props) {
                 color: "#fff",
                 backgroundColor: "#1890ff",
                 border: "none",
-                padding: "10px 20px",
+                padding: "6px 16px",
               }}
               className="text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 font-medium rounded-lg dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800"
             >
-              Menu
             </Button>
             <div className="flex-shrink-0 mx-5">
               <a href="/">

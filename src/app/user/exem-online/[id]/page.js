@@ -6,7 +6,7 @@ import useInitUserScreen from '../../../../hooks/useInitUserScreen';
 
 export default function ExempleOnline({params}) {
   useInitUserScreen({idCourse: params.id});
-  
+
   return (
     <>
       <HeaderExemplOnline />
