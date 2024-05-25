@@ -2,12 +2,12 @@ import {Button, Col, Dropdown, Image, Popconfirm, Space, message} from 'antd';
 import {IMAGE_DEFAULT} from '../../../../constants';
 import {useMediaQuery} from 'react-responsive';
 import EditCourses from '../edit-course/Page';
-import ActionsMenuItemCourse from './ActionsMenuItemCourse';
 import {useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {deleteCourse} from '@/features/Courses/courseSlice';
 import {unwrapResult} from '@reduxjs/toolkit';
 import { useRouter } from 'next/navigation';
+import ActionsMenuItemCourse from './actionsMenuItemCourse';
 
 const CourseItem = ({course}) => {
   const dispatch = useDispatch();
