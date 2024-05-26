@@ -193,3 +193,7 @@ section {
 .ant-layout-sider.ant-layout-sider-dark {
   z-index: 1000 !important;
 }
+
+.ant-modal {
+  top: 30px;
+}

@@ -8,6 +8,7 @@ import { Layout, Menu } from "antd";
 import { usePathname, useRouter } from "next/navigation";
 import { isMentor } from "@/middleware";
 import { useEffect, useState } from "react";
+import useInitAdmin from '../../hooks/useInitAdmin';
 const logo3 = "/images/logo-new.png";
 const newlogo = "/images/new.png";
 
@@ -28,6 +29,7 @@ const { Sider } = Layout;
 // };
 
 export default function AdminSidebar(props) {
+  useInitAdmin();
   const { collapsed } = props;
   const router = useRouter();
   const pathname = usePathname()
@@ -50,6 +52,8 @@ export default function AdminSidebar(props) {
       return 'users/view-role';
     } else if (pathname.includes('/admin/category')) {
       return 'category';
+    } else if (pathname.includes('/admin/scores')) {
+      return 'scores';
     }
     return '1';
   };
@@ -80,6 +84,11 @@ export default function AdminSidebar(props) {
 
   if (!isMentor()) {
     menuItems.push(
+      {
+        key: "scores",
+        icon: <UserOutlined />,
+        label: "Quản lý điểm thi",
+      },
       {
         key: "users/view-users",
         icon: <UserOutlined />,

@@ -63,8 +63,9 @@ export default function RootLayout({ children }) {
         router.push("/");
       }
     }
+
     setLoading(false);
-  }, [pathname, loading]);
+  }, [pathname, loading, router]);
 
   return (
     <html>

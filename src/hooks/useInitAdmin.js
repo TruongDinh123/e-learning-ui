@@ -6,8 +6,10 @@ import {unwrapResult} from '@reduxjs/toolkit';
 import {viewInfoQuiz} from '../features/Quiz/quizSlice';
 import {SELECTED_COURSE_ID} from '../constants';
 import {getAllRole, getAllUser} from '../features/User/userSlice';
+import { isAdmin } from "@/middleware";
 
 const useInitAdmin = () => {
+  const isAdminCheck = isAdmin();
   const dispatch = useDispatch();
   const coursesStore = useCoursesData();
   const quiz = useSelector((state) => state.quiz.quiz);
@@ -15,20 +17,20 @@ const useInitAdmin = () => {
   const roles = useSelector((state) => state?.user?.allRoles);
 
   useEffect(() => {
-    coursesStore.length === 0 && dispatch(viewCourses()).then(unwrapResult);
-  }, [coursesStore, dispatch]);
+    isAdminCheck && coursesStore.length === 0 && dispatch(viewCourses()).then(unwrapResult);
+  }, [coursesStore, isAdminCheck, dispatch]);
 
   useEffect(() => {
-    !quiz && dispatch(viewInfoQuiz({courseIds: SELECTED_COURSE_ID}));
-  }, [dispatch, quiz]);
+    isAdminCheck && !quiz && dispatch(viewInfoQuiz({courseIds: SELECTED_COURSE_ID}));
+  }, [dispatch, isAdminCheck, quiz]);
 
   useEffect(() => {
-    !users && dispatch(getAllUser()).then(unwrapResult);
-  }, [dispatch, users]);
+    isAdminCheck && !users && dispatch(getAllUser()).then(unwrapResult);
+  }, [dispatch, isAdminCheck, users]);
 
   useEffect(() => {
-    !roles && dispatch(getAllRole()).then(unwrapResult);
-  }, [dispatch, roles]);
+    isAdminCheck && !roles && dispatch(getAllRole()).then(unwrapResult);
+  }, [dispatch, isAdminCheck, roles]);
   useEffect(() => {}, []);
   useEffect(() => {}, []);
 

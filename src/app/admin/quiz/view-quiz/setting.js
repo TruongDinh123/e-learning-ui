@@ -1,6 +1,7 @@
 import {Button, Col, Dropdown, Popconfirm, Space} from 'antd';
 import MenuBlock from './menuBlock';
 import UpdateQuiz from '../update-quiz/page';
+import ListQuestion from '../list-question/page';
 
 export const columns = [
   {
@@ -47,15 +48,18 @@ export const initData = ({quiz, isMobile, router, handleDeleteQuiz}) => {
     name: quizItem?.name,
     type: quizItem?.type,
     questions: (
-      <Button
-        className='me-3'
-        style={{width: '100%'}}
-        onClick={() =>
-          router.push(`/admin/quiz/view-list-question/${quizItem?._id}`)
-        }
-      >
-        Xem chi tiết
-      </Button>
+      <ListQuestion
+        
+      />
+      // <Button
+      //   className='me-3'
+      //   style={{width: '100%'}}
+      //   onClick={() =>
+      //     router.push(`/admin/quiz/view-list-question/${quizItem?._id}`)
+      //   }
+      // >
+      //   Xem chi tiết
+      // </Button>
     ),
     action: isMobile ? (
       <Dropdown
