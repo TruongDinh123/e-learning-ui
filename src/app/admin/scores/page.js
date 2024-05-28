@@ -44,11 +44,13 @@ const Scores = () => {
         setQuizCurrent={setQuizCurrent}
       />
 
-      <TitleList />
       <List
+        header={<TitleList />}
+        bordered
         pagination={{
           position: 'bottom',
           align: 'start',
+          pageSize: 10,
         }}
         loading={!!!usersTested}
         dataSource={usersTested || []}
