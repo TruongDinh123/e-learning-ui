@@ -33,41 +33,27 @@ const Scores = () => {
     quizCurrent && dispatch(getScoreByQuizId({quizId: quizCurrent}));
   }, [dispatch, quizCurrent]);
 
-
   return (
     <div className='p-3'>
       <h1 className='text-2xl font-bold text-[#002c6a] mb-3'>
         Quản lý điểm thi
       </h1>
 
-      <>
-        <Space
-          direction='vertical'
-          style={{
-            marginBottom: '20px',
-          }}
-          size='middle'
-        >
-          Chọn bài thi
-          <SelectQuizBlock
-            quizCurrent={quizCurrent}
-            setQuizCurrent={setQuizCurrent}
-          />
-        </Space>
+      <SelectQuizBlock
+        quizCurrent={quizCurrent}
+        setQuizCurrent={setQuizCurrent}
+      />
 
-        <TitleList />
-        <List
-          pagination={{
-            position: 'bottom',
-            align: 'start',
-          }}
-          loading={!!!usersTested}
-          dataSource={usersTested ||[]}
-          renderItem={(item, index) => (
-            <ListItem key={index} userTested={item} />
-          )}
-        />
-      </>
+      <TitleList />
+      <List
+        pagination={{
+          position: 'bottom',
+          align: 'start',
+        }}
+        loading={!!!usersTested}
+        dataSource={usersTested || []}
+        renderItem={(item, index) => <ListItem key={index} userTested={item} />}
+      />
     </div>
   );
 };

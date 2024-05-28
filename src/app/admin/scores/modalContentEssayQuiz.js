@@ -1,4 +1,5 @@
 import { Typography } from 'antd';
+import { memo } from 'react';
 
 const { Title } = Typography;
 
@@ -24,4 +25,4 @@ const ModalContentEssayQuiz = ({scoreCurrent}) => {
   )
 }
 
-export default ModalContentEssayQuiz;
+export default memo(ModalContentEssayQuiz);
