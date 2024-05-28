@@ -7,7 +7,6 @@ import moment from 'moment';
 const ListItem = ({userTested}) => {
   const scores = useSelector((state) => state.quiz.scoreByQuizIdInfo);
   const [selectTestNumData, setSelectTestNumData] = useState([]);
-  const [scoreCurrent, setScoreCurrent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scoreCurrentInfo, setScoreCurrentInfo] = useState(null);
 
@@ -24,25 +23,17 @@ const ListItem = ({userTested}) => {
         value: item._id,
       }));
       setSelectTestNumData(dataSelectInit);
-      setScoreCurrent(dataSelectInit[0].value);
-    }
-  }, [scores, userTested._id]);
-
-  useEffect(() => {
-    if (scoreCurrent && scores) {
-      const scoreInfo = scores.find((item) => item._id === scoreCurrent);
+      const scoreCurrentId = scoreCurrentInfo?._id || dataSelectInit[0].value;
+      const scoreInfo = scores.find((item) => item._id === scoreCurrentId);
       setScoreCurrentInfo(scoreInfo);
     }
-  }, [scoreCurrentInfo, scoreCurrent, scores]);
+  }, [scoreCurrentInfo?._id, scores, userTested._id]);
 
-  console.log(
-    userTested,
-    'userTesteduserTested',
-    selectTestNumData,
-    scoreCurrent,
-    scores,
-    scoreCurrentInfo
-  );
+  const handleChange = (value) => {
+    const scoreInfo = scores.find((item) => item._id === value);
+    setScoreCurrentInfo(scoreInfo);
+  };
+
   return (
     <List.Item>
       <Row style={{width: '100%'}}>
@@ -58,8 +49,8 @@ const ListItem = ({userTested}) => {
               width: 140,
             }}
             loading={!!!scores}
-            value={scoreCurrent}
-            onChange={(value) => setScoreCurrent(value)}
+            value={scoreCurrentInfo?._id}
+            onChange={handleChange}
             placeholder='Search to Select'
             optionFilterProp='children'
             filterOption={(input, option) =>
@@ -81,14 +72,13 @@ const ListItem = ({userTested}) => {
           </Button>
         </Col>
         <Col span={2}>{scoreCurrentInfo?.score}</Col>
-        <Col span={8}>{moment(scoreCurrentInfo?.submitTime).format("DD/MM/YYYY HH:mm:ss")}</Col>
-
-        
+        <Col span={8}>
+          {moment(scoreCurrentInfo?.submitTime).format('DD/MM/YYYY HH:mm:ss')}
+        </Col>
       </Row>
       {isModalOpen && scoreCurrentInfo && (
         <ModalDetailQuiz
           isModalOpen={isModalOpen}
-          scoreCurrent={scoreCurrent}
           handleCancel={handleCancel}
           scoreCurrentInfo={scoreCurrentInfo}
         />

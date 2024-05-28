@@ -1,3 +1,5 @@
+"use client"
+
 import {Button} from 'antd';
 import {useState} from 'react';
 import ModalBlock from './modalBlock';
