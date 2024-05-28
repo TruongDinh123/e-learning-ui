@@ -321,6 +321,14 @@ const getTestCount = async (userId) => {
   return res.data;
 }
 
+const getUserTested = async (quizId) => {
+  const res = await axiosInstance({
+      url: `/e-learning/quiz/${quizId}/user-tested`,
+      method: "GET",
+  });
+  return res.data;
+}
+
 
 export const QuizService = {
   createQuiz,
@@ -357,5 +365,6 @@ export const QuizService = {
   getSubmissionTimeLatestQuizByCourseId,
   getInfoCommonScoreByUserId,
   getAllUserFinishedCourse,
-  getTestCount
+  getTestCount,
+  getUserTested
 };

@@ -1,6 +1,6 @@
 'use client';
 import {unwrapResult} from '@reduxjs/toolkit';
-import {Modal, Select, message} from 'antd';
+import {Form, InputNumber, Modal, Select, message} from 'antd';
 import {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Button} from 'antd';
@@ -21,6 +21,8 @@ const Userchema = yup.object({
   firstName: yup.string(),
 
   email: yup.string().email().required('Yêu cầu nhập email'),
+  
+  testNum: yup.number().min(0, 'Số lượng phải lớn hơn 0')
 });
 
 export default function EditUser(props) {
@@ -58,7 +60,7 @@ export default function EditUser(props) {
   useEffect(() => {
     if (allUsersStore && allUsersStore.length) {
       const userCurrent = allUsersStore.find((user) => user._id === id);
-      
+
       if (userCurrent) {
         setData(userCurrent);
         setSelectedRoleId(userCurrent.roles[0]._id);
@@ -73,34 +75,28 @@ export default function EditUser(props) {
       lastName: data?.lastName,
       firstName: data?.firstName,
       email: data?.email,
-      roles: data?.roles.map((role) => role.name),
+      roles: data?.roles.map((role) => role.name)
     },
     onSubmit: (values) => {
-      messageApi
-      .open({
+      messageApi.open({
         type: 'info',
         content: 'Đang thực hiện...',
-      })
-      
+      });
+
       dispatch(updateUser({id: id, values}))
         .then(unwrapResult)
         .then((res) => {
           if (res.status) {
-            messageApi.success(
-              'Thông tin người dùng đã được cập nhật.'
-            );
+            messageApi.success('Thông tin người dùng đã được cập nhật.');
 
-            const checkRoleExist =
-              res.metadata.roles.includes(selectedRoleId);
-              
+            const checkRoleExist = res.metadata.roles.includes(selectedRoleId);
+
             !checkRoleExist &&
               dispatch(updateUserRoles({userId: id, roleId: selectedRoleId}))
                 .then(unwrapResult)
                 .then((roleRes) => {
                   if (roleRes.status) {
-                    messageApi.success(
-                      'Vai trò người dùng đã được cập nhật.'
-                    );
+                    messageApi.success('Vai trò người dùng đã được cập nhật.');
                     setIsModalOpen(false);
                     refresh();
                   } else {
@@ -110,8 +106,6 @@ export default function EditUser(props) {
           } else {
             messageApi.error(res.message);
           }
-
-         
         })
         .catch(() => {
           messageApi.error('Có lỗi xảy ra khi cập nhật thông tin người dùng.');

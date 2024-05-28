@@ -423,6 +423,19 @@ export const getTestCount = createAsyncThunk(
   }
 );
 
+export const getUserTested = createAsyncThunk(
+  '/e-learning/quiz/:quizId/user-tested',
+  async (data, {rejectWithValue}) => {
+    try {
+      const response = await QuizService.getUserTested(data.quizId);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+
 const initialState = {
   quiz: '',
   getQuizzesByStudentAndCourse: [],
@@ -441,6 +454,7 @@ const initialState = {
   oneQuizInfo: null,
   scoreByQuizIdInfo: null,
   quizsExisted: {},
+  usersTested: null,
 };
 
 export const resetStateQuiz = createAction('Reset_all_quiz');
@@ -828,7 +842,27 @@ const quizSlice = createSlice({
         state.isSuccess = false;
 
         state.message = 'viewAQuizForUserScreen: Something went wrong!';
+      })
+      .addCase(getUserTested.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getUserTested.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        
+        state.usersTested = action.payload.metadata.usersTested;
+      })
+      .addCase(getUserTested.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+
+        state.message = 'getUserTested: Something went wrong!';
       });
+
+
+      
   },
 });
 
