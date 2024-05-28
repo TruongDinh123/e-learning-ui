@@ -1,6 +1,7 @@
 import React, {memo, useEffect, useState} from 'react';
-import {Select, Space} from 'antd';
+import {Select, Space, Typography} from 'antd';
 import {useSelector} from 'react-redux';
+const {Title} = Typography;
 
 const SelectQuizBlock = ({quizCurrent, setQuizCurrent}) => {
   const quiz = useSelector((state) => state.quiz.quiz);
@@ -29,7 +30,7 @@ const SelectQuizBlock = ({quizCurrent, setQuizCurrent}) => {
       }}
       size='middle'
     >
-      Chọn bài thi
+      <Title level={4}>Chọn bài thi</Title>
       <Select
         showSearch
         style={{
