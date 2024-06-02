@@ -215,7 +215,9 @@ export default function Login() {
                     title={'Tạo tài khoản mới'}
                     type='primary'
                     disabled={isLoading}
-                    onClick={() => router.push('/signup')}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      router.push('/signup')}}
                     className='py-1 px-8 text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-4
                     focus:ring-blue-300 font-medium rounded-lg text-lg text-center me-2 mb-2 dark:bg-blue-600
                     dark:hover:bg-blue-900 dark:focus:ring-blue-800'

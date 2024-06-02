@@ -1,5 +1,6 @@
-import axios from "axios";
-import Cookies from "js-cookie";
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import {MESSAGE_FORGET_PASSWORD} from '../constants';
 
 const axiosInstance = axios.create({
   baseURL: process.env.API_URL || process.env.API_URL_PRODUCTION,
@@ -7,9 +8,9 @@ const axiosInstance = axios.create({
   //baseURL: "https://www.247learn.vn/v1/api",
   // baseURL: "https://www.navibot.vn/v1/api",
   headers: {
-    "Content-Type": "application/json",
-    "x-api-key":
-      "8ccaf2db9e10264dc29abdcc653f1c59673144131bd08c870751ce80490d926c407ad256fcf7c409df42c6af17f779b94c2695b769f3d1eb76f726e97a12773b",
+    'Content-Type': 'application/json',
+    'x-api-key':
+      '8ccaf2db9e10264dc29abdcc653f1c59673144131bd08c870751ce80490d926c407ad256fcf7c409df42c6af17f779b94c2695b769f3d1eb76f726e97a12773b',
   },
   withCredentials: true,
 });
@@ -23,9 +24,10 @@ async function handleLogout() {
       method: 'post',
       url: 'https://www.navibot.vn/v1/api/e-learning/logout',
       headers: {
-        'x-api-key': '8ccaf2db9e10264dc29abdcc653f1c59673144131bd08c870751ce80490d926c407ad256fcf7c409df42c6af17f779b94c2695b769f3d1eb76f726e97a12773b',
+        'x-api-key':
+          '8ccaf2db9e10264dc29abdcc653f1c59673144131bd08c870751ce80490d926c407ad256fcf7c409df42c6af17f779b94c2695b769f3d1eb76f726e97a12773b',
         'x-client-id': clientId,
-        'Authorization': token,
+        Authorization: token,
       },
     });
   } catch (error) {
@@ -45,14 +47,19 @@ async function refreshToken() {
       method: 'post',
       url: 'https://www.navibot.vn/v1/api/e-learning/handleRefreshToken',
       headers: {
-        'x-api-key': '8ccaf2db9e10264dc29abdcc653f1c59673144131bd08c870751ce80490d926c407ad256fcf7c409df42c6af17f779b94c2695b769f3d1eb76f726e97a12773b',
+        'x-api-key':
+          '8ccaf2db9e10264dc29abdcc653f1c59673144131bd08c870751ce80490d926c407ad256fcf7c409df42c6af17f779b94c2695b769f3d1eb76f726e97a12773b',
         'x-client-id': localStorage.getItem('x-client-id'),
         'refresh-token': refreshTokenValue,
       },
     });
-    const { accessToken, refreshToken: newRefreshToken } = response.data.metadata.tokens;
-    Cookies.set('Bearer', accessToken, { sameSite: 'None', secure: true });
-    Cookies.set('refreshToken', newRefreshToken, { sameSite: 'None', secure: true });
+    const {accessToken, refreshToken: newRefreshToken} =
+      response.data.metadata.tokens;
+    Cookies.set('Bearer', accessToken, {sameSite: 'None', secure: true});
+    Cookies.set('refreshToken', newRefreshToken, {
+      sameSite: 'None',
+      secure: true,
+    });
     return `Bearer ${accessToken}`;
   } catch (error) {
     handleLogout();
@@ -60,28 +67,37 @@ async function refreshToken() {
   }
 }
 
-
 function handleError(error) {
-  const { status, data } = error.response || {};
+  const {status, data} = error.response || {};
+  console.log(status, data, 'asdfsd');
 
   if (status === 401) {
-    return refreshToken().then((accessToken) => {
-      const originalRequest = error.config;
-      originalRequest.headers['Authorization'] = accessToken;
-      return axiosInstance(originalRequest);
-    }).catch((refreshError) => {
-      handleLogout();
-      return Promise.reject(refreshError);
-    });
-  } else if (status === 500 && (data.message === "invalid signature" || data.message === "jwt expired")) {
-    return refreshToken().then((accessToken) => {
-      const originalRequest = error.config;
-      originalRequest.headers['Authorization'] = accessToken;
-      return axiosInstance(originalRequest);
-    }).catch((refreshError) => {
-      handleLogout();
-      return Promise.reject(refreshError);
-    });
+    return refreshToken()
+      .then((accessToken) => {
+        const originalRequest = error.config;
+        originalRequest.headers['Authorization'] = accessToken;
+        return axiosInstance(originalRequest);
+      })
+      .catch((refreshError) => {
+        handleLogout();
+        return Promise.reject(refreshError);
+      });
+  } else if (
+    status === 500 &&
+    (data.message === 'invalid signature' || data.message === 'jwt expired')
+  ) {
+    return refreshToken()
+      .then((accessToken) => {
+        const originalRequest = error.config;
+        originalRequest.headers['Authorization'] = accessToken;
+        return axiosInstance(originalRequest);
+      })
+      .catch((refreshError) => {
+        handleLogout();
+        return Promise.reject(refreshError);
+      });
+  } else if (status === 404 && data.message === MESSAGE_FORGET_PASSWORD) {
+    return Promise.reject(error);
   } else if (status === 404) {
     handleLogout();
     return Promise.reject(error);
@@ -92,13 +108,13 @@ function handleError(error) {
 // Cài đặt interceptors
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = Cookies.get("Bearer");
-    const clientId = localStorage?.getItem("x-client-id");
+    const token = Cookies.get('Bearer');
+    const clientId = localStorage?.getItem('x-client-id');
     if (token) {
-      config.headers["authorization"] = token;
+      config.headers['authorization'] = token;
     }
     if (clientId) {
-      config.headers["x-client-id"] = clientId;
+      config.headers['x-client-id'] = clientId;
     }
     return config;
   },

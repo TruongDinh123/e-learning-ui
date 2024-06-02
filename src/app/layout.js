@@ -44,7 +44,7 @@ export default function RootLayout({ children }) {
     const token = Cookies.get("Bearer");
 
     // Ngay lập tức chuyển hướng nếu không phải Admin hoặc Mentor và cố gắng truy cập vào /admin/courses
-    if (pathname === "/admin" && !(isAdmin() || isMentor())) {
+    if (pathname.includes("/admin") && !(isAdmin() || isMentor())) {
       router.push("/unauthorized");
       return; // Ngăn không chạy các đoạn mã phía dưới
     }
@@ -57,8 +57,6 @@ export default function RootLayout({ children }) {
     if (!loading && !isLessonPage && !isCourseDetailnPage) {
       if (!token && pathname !== "/login" && pathname !== "/" && pathname !== "/signup" && !pathname.startsWith("/user/exem-online")) {
         router.push("/login");
-      } else if (pathname.includes("/admin") && !(isAdmin() || isMentor())) {
-        router.push("/unauthorized");
       } else if (token && pathname === "/login") {
         router.push("/");
       }

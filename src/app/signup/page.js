@@ -18,11 +18,11 @@ import * as yup from 'yup';
 import {message} from 'antd';
 import {useRouter} from 'next/navigation';
 import {BsEye, BsEyeSlash} from 'react-icons/bs';
-import {useEffect, useState} from 'react';
-import {options} from './utils';
+import {useState} from 'react';
 import backgroundImage from '/public/images/backgroundInit.jpg';
 import Image from 'next/image';
 import './signup.css';
+import UnitBlock from './unitBlock';
 
 const registerSchema = yup.object({
   email: yup
@@ -39,9 +39,7 @@ const registerSchema = yup.object({
     .min(6, 'Số điện thoại phải có ít nhất 6 kí tự')
     .required('Yêu cầu nhập SĐT'),
 
-  cmnd: yup
-    .string()
-    .min(6, 'CMND phải có ít nhất 6 kí tự'),
+  cmnd: yup.string().min(6, 'CMND phải có ít nhất 6 kí tự'),
 
   address: yup
     .string()
@@ -58,30 +56,7 @@ export default function SignUp() {
 
   const [selectedCap, setSelectedCap] = useState('');
   const [selectedDonVi, setSelectedDonVi] = useState('');
-  const [donViOptions, setDonViOptions] = useState([]);
-  const [subUnits, setSubUnits] = useState([]);
   const [donViCon, setDonViCon] = useState('');
-
-  useEffect(() => {
-    if (selectedCap === 'Cấp tỉnh') {
-      setDonViOptions(options['Cấp tỉnh']);
-      formik.handleChange('cap');
-    } else if (selectedCap === 'Cấp huyện') {
-      setDonViOptions(Object.keys(options['Cấp huyện']));
-    } else {
-      setDonViOptions(options['Cấp xã']);
-    }
-    setSelectedDonVi('');
-    setSubUnits([]);
-  }, [selectedCap]);
-
-  useEffect(() => {
-    if (selectedCap === 'Cấp huyện') {
-      setSubUnits(options['Cấp huyện'][selectedDonVi] || []);
-    } else {
-      setSubUnits([]);
-    }
-  }, [selectedDonVi, selectedCap]);
 
   const formik = useFormik({
     validationSchema: registerSchema,
@@ -261,52 +236,14 @@ export default function SignUp() {
                 />
               </label>
 
-              <span className='text-sm font-medium'>Đơn vị công tác</span>
-
-              <label className='flex flex-col' htmlFor='cap'>
-                <select
-                  value={selectedCap}
-                  onChange={(e) => setSelectedCap(e.target.value)}
-                >
-                  <option value=''>Chọn Cấp</option>
-                  <option value='Cấp tỉnh'>Cấp tỉnh</option>cd
-                  <option value='Cấp huyện'>Cấp huyện</option>
-                  <option value='Cấp xã'>Cấp xã</option>
-                </select>
-              </label>
-              <label className='flex flex-col' htmlFor='donvi'>
-                {selectedCap && (
-                  <select
-                    className='mt-2'
-                    value={selectedDonVi}
-                    onChange={(e) => setSelectedDonVi(e.target.value)}
-                    disabled={!selectedCap}
-                  >
-                    <option value=''>Chọn đơn vị</option>
-                    {donViOptions.map((unit) => (
-                      <option key={unit} value={unit}>
-                        {unit.replace(/^-+/, '')}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </label>
-              <label className='flex flex-col' htmlFor='donvicon'>
-                {selectedDonVi && subUnits.length !== 0 && (
-                  <select
-                    className='mt-2'
-                    disabled={!selectedDonVi || subUnits.length === 0}
-                    onChange={(e) => setDonViCon(e.target.value)}
-                  >
-                    <option value=''>Chọn đơn vị con</option>
-                    {subUnits.map((subUnit) => (
-                      <option key={subUnit} value={subUnit}>
-                        {subUnit.replace(/^-+/, '')}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </label>
+              <UnitBlock
+                formik={formik}
+                selectedCap={selectedCap}
+                selectedDonVi={selectedDonVi}
+                setSelectedCap={setSelectedCap}
+                setSelectedDonVi={setSelectedDonVi}
+                setDonViCon={setDonViCon}
+              />
             </div>
 
             <CustomButton
