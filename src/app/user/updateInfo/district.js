@@ -20,7 +20,7 @@ const District = ({
     } else {
         setDonViOptions(options['Cấp xã']);
     }
-    setSelectedDonVi('');
+    setSelectedDonVi(selectedDonVi || '');
     setSubUnits([]);
   }, [selectedCap, setSelectedDonVi]);
 
