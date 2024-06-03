@@ -1,13 +1,6 @@
 'use client';
 import {unwrapResult} from '@reduxjs/toolkit';
-import {
-  Form,
-  Modal,
-  message,
-  Button,
-  DatePicker,
-  Spin,
-} from 'antd';
+import {Form, Modal, message, Button, DatePicker, Spin} from 'antd';
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -20,7 +13,6 @@ import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.snow.css';
 import ModalEmptyContent from './modalEmptyContent';
 import ModalContent from './modalContent';
-
 
 const ModalBlock = ({
   form,
@@ -130,20 +122,7 @@ const ModalBlock = ({
       title='Cập nhật bài tập'
       open={isModalOpen}
       onCancel={handleCancel}
-      footer={<>
-       <div className='pt-4 text-end'>
-            <Button type='default' className='mr-4' onClick={handleCancel}>
-              Hủy
-            </Button>
-            <Button
-              type='primary'
-              htmlType='submit'
-              className='custom-button'
-              loading={isLoading}
-            >
-              Lưu
-            </Button>
-          </div></>}
+      footer={<></>}
       width={1000}
     >
       {isLoading ? (
@@ -185,7 +164,20 @@ const ModalBlock = ({
               setFile={setFile}
             />
           )}
-         
+
+          <div className='pt-4 text-end'>
+            <Button type='default' className='mr-4' onClick={handleCancel}>
+              Hủy
+            </Button>
+            <Button
+              type='primary'
+              htmlType='submit'
+              className='custom-button'
+              loading={isLoading}
+            >
+              Lưu
+            </Button>
+          </div>
         </Form>
       )}
     </Modal>
