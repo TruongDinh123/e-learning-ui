@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useEffect, useState} from 'react';
-import {Button, Col, List, Row, Space} from 'antd';
+import {Button, Col, List, Row, Space, message} from 'antd';
 import ListItem from './listItem';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -27,18 +27,19 @@ const Scores = () => {
         dispatch(
           getUserTested({
             quizId: quizCurrent,
-          })
-        );
-
-      quizCurrent && dispatch(getScoreByQuizId({quizId: quizCurrent}));
-      setRefresh(false);
+          }),
+          dispatch(getScoreByQuizId({quizId: quizCurrent}))
+        ).then(() => {
+          message.success("Đã làm mới dữ liệu!", 1.5);
+          setRefresh(false);
+        });
     }
   }, [dispatch, quizCurrent, refresh]);
 
   return (
     <div className='p-3'>
       <Row gutter={2}>
-        <Col className='gutter-row' span={9}>
+        <Col className='gutter-row' span={6}>
           <h1 className='text-2xl font-bold text-[#002c6a] mb-3'>
             Quản lý điểm thi
           </h1>{' '}
