@@ -51,18 +51,20 @@ export const deleteUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
   '/e-learning/update-user',
-  async (data, {rejectWithValue}) => {
+  async (data, {rejectWithValue, getState}) => {
     try {
       const response = await authService.updateUser(data);
       if (response.status) {
-        const userName =
-          (response.data?.metadata.firstName
-            ? response.data?.metadata.firstName + ' '
-            : '') +
-          (response.data?.metadata.lastName
-            ? response.data?.metadata.lastName
-            : '');
-        localStorage.setItem('userName', JSON.stringify(userName));
+        const {user} = getState();
+        const userUpdated = response.data?.metadata;
+
+        if (user.user._id === userUpdated._id) {
+          const userNameNew =
+            (userUpdated.firstName ? userUpdated.firstName + ' ' : '') +
+            (userUpdated.lastName ? userUpdated.lastName : '');
+
+          localStorage.setItem('userName', JSON.stringify(userNameNew));
+        }
       }
       return response.data;
     } catch (err) {
@@ -380,15 +382,20 @@ const userSlice = createSlice({
         state.isSuccess = true;
         const userRes = action.payload.metadata;
 
-        state.allUsers = state.allUsers?.map((user) =>
-          user._id === userRes._id
-            ? Object.assign(user, {
-                lastName: userRes.lastName,
-                firstName: userRes.firstName,
-                email: userRes.email,
-              })
-            : user
-        );
+        state.allUsers = state.allUsers?.map((user) => {
+          if (state.user._id === userRes._id) {
+            state.userName = userRes.lastName + ' ' + userRes.firstName;
+          }
+
+          if (user._id === userRes._id) {
+            return Object.assign(user, {
+              lastName: userRes.lastName,
+              firstName: userRes.firstName,
+              email: userRes.email,
+            });
+          }
+          return user;
+        });
       })
 
       .addCase(updateUser.rejected, (state, action) => {
