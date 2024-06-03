@@ -34,7 +34,8 @@ export default function UpdateQuiz(props) {
   useEffect(() => {
     if (isModalOpen && quiz) {
       const quizToUpdateInit = quiz.find((quiz) => quiz._id === quizId);
-      form.setFieldsValue({
+
+      quizToUpdateInit && form.setFieldsValue({
         name: quizToUpdateInit.name,
         type: quizToUpdateInit.type,
         courseIds: quizToUpdateInit.courseIds,

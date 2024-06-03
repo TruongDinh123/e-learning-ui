@@ -2,7 +2,7 @@
 import {Table, message} from 'antd';
 import {useDispatch, useSelector} from 'react-redux';
 import {useCallback, useEffect, useState} from 'react';
-import {deleteQuiz, updateStateQuiz} from '@/features/Quiz/quizSlice';
+import {deleteQuiz} from '@/features/Quiz/quizSlice';
 import {unwrapResult} from '@reduxjs/toolkit';
 import React from 'react';
 import {useRouter} from 'next/navigation';
@@ -15,36 +15,30 @@ const ViewQuiz = () => {
 
   const quiz = useSelector((state) => state.quiz.quiz);
   // const [courses, setCourses] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const isLoading = useSelector((state) => state.quiz.isLoadingQuiz);
   const [data, setData] = useState([]);
 
   const isMobile = useMediaQuery({query: '(max-width: 1280px)'});
 
   const router = useRouter();
 
-  useEffect(() => {
-    !quiz ? setIsLoading(true) : setIsLoading(false);
-  }, [dispatch, quiz]);
-
   const handleDeleteQuiz = useCallback(
     ({quizId}) => {
-      const updatedQuizzes = quiz.filter((q) => q._id !== quizId);
-      dispatch(updateStateQuiz(updatedQuizzes));
-
       dispatch(deleteQuiz({quizId}))
         .then(unwrapResult)
         .then((res) => {
           if (!res.status) {
-            dispatch(updateStateQuiz(quiz));
             message.error('Có lỗi xảy ra khi xóa quiz. Vui lòng thử lại.');
+          } else {
+            message.success('Đã xoá thành công!', 1.5);
           }
         })
         .catch((error) => {
-          dispatch(updateStateQuiz(quiz));
+          console.log(error);
           message.error('Có lỗi xảy ra khi xóa quiz. Vui lòng thử lại.');
         });
     },
-    [dispatch, quiz]
+    [dispatch]
   );
 
   useEffect(() => {

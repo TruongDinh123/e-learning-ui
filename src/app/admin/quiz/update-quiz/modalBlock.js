@@ -13,6 +13,7 @@ import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.snow.css';
 import ModalEmptyContent from './modalEmptyContent';
 import ModalContent from './modalContent';
+import TimeSubmit from './timeSubmit';
 
 const ModalBlock = ({
   form,
@@ -138,17 +139,8 @@ const ModalBlock = ({
           }}
           onFinish={handleUpdateQuiz}
         >
-          <Form.Item label='Thời hạn nộp' name='submissionTime'>
-            <DatePicker
-              showTime
-              disabledDate={(current) => {
-                // Không cho phép chọn ngày trước ngày hiện tại
-                let currentDate = new Date();
-                currentDate.setHours(0, 0, 0, 0); // Đặt thời gian về 00:00:00
-                return current && current.toDate() < currentDate;
-              }}
-            />
-          </Form.Item>
+          <TimeSubmit quizId={quizId} form={form} />
+
           {form.getFieldValue('type') === 'multiple_choice' ? (
             <ModalContent
               form={form}

@@ -241,6 +241,18 @@ export const updateQuiz = createAsyncThunk(
   }
 );
 
+export const updateTimeSubmitQuiz = createAsyncThunk(
+  '/e-learning/time-submit/quiz/:quizId',
+  async (data, {rejectWithValue}) => {
+    try {
+      const response = await QuizService.updateTimeSubmitQuiz(data);
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
 export const deleteQuizQuestion = createAsyncThunk(
   '/e-learning/delete-quiz',
   async (data, {rejectWithValue}) => {
@@ -455,6 +467,7 @@ const initialState = {
   scoreByQuizIdInfo: null,
   quizsExisted: {},
   usersTested: null,
+  isTimeSubmitLoading: false,
 };
 
 export const resetStateQuiz = createAction('Reset_all_quiz');
@@ -482,14 +495,15 @@ const quizSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(createQuiz.pending, (state, action) => {
-        state.isLoading = true;
         state.isLoadingQuiz = true;
       })
       .addCase(createQuiz.fulfilled, (state, action) => {
-        state.isLoading = false;
         state.isLoadingQuiz = false;
         state.isError = false;
         state.isSuccess = true;
+        if(action.payload.status === 200) {
+          state.quiz = [...state.quiz, action.payload.metadata];
+        }
         state.newQuizCreated = true;
       })
       .addCase(createQuiz.rejected, (state, action) => {
@@ -822,6 +836,7 @@ const quizSlice = createSlice({
         state.scoreByQuizIdInfo = action.payload.metadata;
       })
       .addCase(viewAQuiz.fulfilled, (state, action) => {
+
         state.oneQuizInfo = action.payload.metadata;
       })
       .addCase(viewAQuizForUserScreen.pending, (state, action) => {
@@ -859,10 +874,28 @@ const quizSlice = createSlice({
         state.isSuccess = false;
 
         state.message = 'getUserTested: Something went wrong!';
+      })
+      .addCase(deleteQuiz.fulfilled, (state, action) => {
+        if(action.payload.status === 200) {
+          state.quiz = state.quiz.filter((q) => q._id !== action.payload.metadata._id);
+        }
+      })
+      .addCase(updateTimeSubmitQuiz.pending, (state, action) => {
+        state.isTimeSubmitLoading = true;
+      })
+      .addCase(updateTimeSubmitQuiz.fulfilled, (state, action) => {
+        state.isTimeSubmitLoading = false;
+        if(action.payload.status === 200){
+        const quizUpdated = action.payload.metadata;
+          state.quiz = state.quiz.map(item => item._id === quizUpdated._id ? quizUpdated: item);
+        }
+      })
+      .addCase(updateTimeSubmitQuiz.rejected, (state, action) => {
+        state.isTimeSubmitLoading = false;
+        state.isError = true;
+
+        state.message = 'updateTimeSubmitQuiz: Something went wrong!';
       });
-
-
-      
   },
 });
 

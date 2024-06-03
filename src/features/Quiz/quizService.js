@@ -174,6 +174,15 @@ const updateQuiz = async (data) => {
   return res.data;
 };
 
+const updateTimeSubmitQuiz = async (data) => {
+  const res = await axiosInstance({
+    url: `/e-learning/time-submit/quiz/${data.quizId}`,
+    method: "PUT",
+    data: data,
+  });
+  return res.data;
+};
+
 const deleteQuizQuestion = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}/question/${data.questionId}`,
@@ -366,5 +375,6 @@ export const QuizService = {
   getInfoCommonScoreByUserId,
   getAllUserFinishedCourse,
   getTestCount,
-  getUserTested
+  getUserTested,
+  updateTimeSubmitQuiz
 };

@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useEffect, useState} from 'react';
-import {Col, List, Row, Space} from 'antd';
+import {Button, Col, List, Row, Space} from 'antd';
 import ListItem from './listItem';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -15,29 +15,46 @@ const Scores = () => {
   const dispatch = useDispatch();
   const usersTested = useSelector((state) => state.quiz.usersTested);
   const quiz = useSelector((state) => state.quiz.quiz);
+  const [refresh, setRefresh] = useState(true);
 
   const [quizCurrent, setQuizCurrent] = useState(
     quiz?.[0]?._id || '663a4d0430875358d4318fdc'
   );
 
   useEffect(() => {
-    quizCurrent &&
-      dispatch(
-        getUserTested({
-          quizId: quizCurrent,
-        })
-      );
-  }, [dispatch, quizCurrent]);
+    if (refresh) {
+      quizCurrent &&
+        dispatch(
+          getUserTested({
+            quizId: quizCurrent,
+          })
+        );
 
-  useEffect(() => {
-    quizCurrent && dispatch(getScoreByQuizId({quizId: quizCurrent}));
-  }, [dispatch, quizCurrent]);
+      quizCurrent && dispatch(getScoreByQuizId({quizId: quizCurrent}));
+      setRefresh(false);
+    }
+  }, [dispatch, quizCurrent, refresh]);
 
   return (
     <div className='p-3'>
-      <h1 className='text-2xl font-bold text-[#002c6a] mb-3'>
-        Quản lý điểm thi
-      </h1>
+      <Row gutter={2}>
+        <Col className='gutter-row' span={9}>
+          <h1 className='text-2xl font-bold text-[#002c6a] mb-3'>
+            Quản lý điểm thi
+          </h1>{' '}
+        </Col>
+        <Col className='gutter-row' span={6}>
+          <Button
+            type='primary'
+            htmlType='submit'
+            className='custom-button'
+            loading={refresh}
+            onClick={() => setRefresh(true)}
+          >
+            Làm mới dữ liệu
+          </Button>
+        </Col>
+      </Row>
 
       <SelectQuizBlock
         quizCurrent={quizCurrent}

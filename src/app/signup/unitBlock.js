@@ -33,7 +33,6 @@ const UnitBlock = ({
     setSubUnits([]);
   }, [selectedCap]);
 
-  console.log(selectedCap, selectedDonVi, 'lkjasdf');
   return (
     <div>
       <span className='text-sm font-medium'>Đơn vị công tác</span>

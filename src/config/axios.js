@@ -69,7 +69,6 @@ async function refreshToken() {
 
 function handleError(error) {
   const {status, data} = error.response || {};
-  console.log(status, data, 'asdfsd');
 
   if (status === 401) {
     return refreshToken()
