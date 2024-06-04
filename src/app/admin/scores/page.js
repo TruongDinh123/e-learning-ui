@@ -60,6 +60,7 @@ const Scores = () => {
       <SelectQuizBlock
         quizCurrent={quizCurrent}
         setQuizCurrent={setQuizCurrent}
+        setRefresh={setRefresh}
       />
 
       <List

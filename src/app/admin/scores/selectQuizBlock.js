@@ -3,12 +3,13 @@ import {Select, Space, Typography} from 'antd';
 import {useSelector} from 'react-redux';
 const {Title} = Typography;
 
-const SelectQuizBlock = ({quizCurrent, setQuizCurrent}) => {
+const SelectQuizBlock = ({quizCurrent, setQuizCurrent, setRefresh}) => {
   const quiz = useSelector((state) => state.quiz.quiz);
   const [selectData, setSelectData] = useState(null);
 
   const handleChange = (value) => {
     setQuizCurrent(value);
+    setRefresh(true)
   };
 
   useEffect(() => {
