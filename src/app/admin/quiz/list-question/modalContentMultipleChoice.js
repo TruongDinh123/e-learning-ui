@@ -1,29 +1,9 @@
-import {memo, useCallback, useEffect, useState} from 'react';
-import {decrypt} from '../../../../utils';
+import {memo} from 'react';
 import {Image} from 'antd';
 import {useMediaQuery} from 'react-responsive';
 
-const ModalContentMultipleChoice = ({quiz, quizItem}) => {
-  const [quizAnswerDecrypt, setQuizAnswerDecrypt] = useState(null);
+const ModalContentMultipleChoice = ({quizItem}) => {
   const isDesktop = useMediaQuery({minWidth: 992});
-
-  const getElements = useCallback(async () => {
-    let answerDeCrypt = [];
-
-    for (var i = 0; i < quiz[0].questions.length; i++) {
-      const quizAnswer = await decrypt(quiz[0].questions[i].answer);
-
-      answerDeCrypt.push(quizAnswer);
-    }
-
-    return answerDeCrypt;
-  }, [quiz]);
-
-  useEffect(() => {
-    if (quiz) {
-      getElements().then((res) => setQuizAnswerDecrypt(res));
-    }
-  }, [getElements, quiz]);
 
   return (
     <div className=''>
@@ -67,9 +47,8 @@ const ModalContentMultipleChoice = ({quiz, quizItem}) => {
                       </span>
                     </label>
                   ))}
-                  <span className='text-sm text-green-700 font-bold text-center mb-5'>
-                    Đáp án:{' '}
-                    {quizAnswerDecrypt && quizAnswerDecrypt[questionIndex]}
+                  <span className='text-sm text-green-700 font-bold text-center mb-5 mt-2'>
+                    Đáp án: {question.answer}
                   </span>
                 </li>
               </ul>

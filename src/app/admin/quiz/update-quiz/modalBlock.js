@@ -1,14 +1,13 @@
 'use client';
 import {unwrapResult} from '@reduxjs/toolkit';
-import {Form, Modal, message, Button, DatePicker, Spin} from 'antd';
+import {Form, Modal, message, Button} from 'antd';
 import React, {useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {
   updateQuiz,
   uploadFileQuiz,
   uploadQuestionImage,
 } from '@/features/Quiz/quizSlice';
-import {useRouter} from 'next/navigation';
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.snow.css';
 import ModalEmptyContent from './modalEmptyContent';
@@ -25,12 +24,9 @@ const ModalBlock = ({
   setIsLoading,
 }) => {
   const dispatch = useDispatch();
-  const [messageApi] = message.useMessage();
-  const router = useRouter();
   const [file, setFile] = useState(null);
   const [fileQuestion, setFileQuestion] = useState(null);
   const [questionImages, setQuestionImages] = useState([]);
-  const quiz = useSelector((state) => state.quiz.oneQuizInfo);
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -39,8 +35,6 @@ const ModalBlock = ({
   const handleUpdateQuiz = (values) => {
     setIsLoading(true);
     let formattedValues;
-
-    const quizToUpdate = quiz.find((quiz) => quiz._id === quizId);
 
     if (quizToUpdate.type === 'multiple_choice') {
       formattedValues = {
@@ -64,6 +58,7 @@ const ModalBlock = ({
         },
       };
     }
+    message.info('Đang thực hiện...');
 
     dispatch(updateQuiz({quizId: quizId, formattedValues}))
       .then(unwrapResult)
@@ -99,17 +94,10 @@ const ModalBlock = ({
             }
           });
         }
-        messageApi
-          .open({
-            type: 'Thành công',
-            content: 'Đang thực hiện...',
-            duration: 2.5,
-          })
-          .then(() => {
-            setIsModalOpen(false);
-            message.success(res.message, 1.5);
-            router.push(`/admin/quiz/view-list-question/${quizId}`);
-          });
+
+        message.success(res.message, 1.5);
+
+        setIsModalOpen(false);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -125,53 +113,49 @@ const ModalBlock = ({
       onCancel={handleCancel}
       footer={<></>}
       width={1000}
+      loading={isLoading}
     >
-      {isLoading ? (
-        <div className='flex justify-center items-center h-screen'>
-          <Spin />
+      <Form
+        form={form}
+        name='quiz_form'
+        initialValues={{
+          questions: [{}],
+        }}
+        onFinish={handleUpdateQuiz}
+        
+      >
+        <TimeSubmit quizId={quizId} form={form} />
+
+        {form.getFieldValue('type') === 'multiple_choice' ? (
+          <ModalContent
+            form={form}
+            fileQuestion={fileQuestion}
+            setFileQuestion={setFileQuestion}
+            setQuestionImages={setQuestionImages}
+          />
+        ) : (
+          <ModalEmptyContent
+            file={file}
+            quiz={quizToUpdate}
+            quizToUpdate={quizToUpdate}
+            setFile={setFile}
+          />
+        )}
+
+        <div className='pt-4 text-end'>
+          <Button type='default' className='mr-4' onClick={handleCancel}>
+            Hủy
+          </Button>
+          <Button
+            type='primary'
+            htmlType='submit'
+            className='custom-button'
+            loading={isLoading}
+          >
+            Lưu
+          </Button>
         </div>
-      ) : (
-        <Form
-          form={form}
-          name='quiz_form'
-          initialValues={{
-            questions: [{}],
-          }}
-          onFinish={handleUpdateQuiz}
-        >
-          <TimeSubmit quizId={quizId} form={form} />
-
-          {form.getFieldValue('type') === 'multiple_choice' ? (
-            <ModalContent
-              form={form}
-              fileQuestion={fileQuestion}
-              setFileQuestion={setFileQuestion}
-              setQuestionImages={setQuestionImages}
-            />
-          ) : (
-            <ModalEmptyContent
-              file={file}
-              quiz={quiz}
-              quizToUpdate={quizToUpdate}
-              setFile={setFile}
-            />
-          )}
-
-          <div className='pt-4 text-end'>
-            <Button type='default' className='mr-4' onClick={handleCancel}>
-              Hủy
-            </Button>
-            <Button
-              type='primary'
-              htmlType='submit'
-              className='custom-button'
-              loading={isLoading}
-            >
-              Lưu
-            </Button>
-          </div>
-        </Form>
-      )}
+      </Form>
     </Modal>
   );
 };

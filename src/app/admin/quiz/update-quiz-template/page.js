@@ -19,7 +19,7 @@ import {
   updateQuiz,
   updateTemplates,
   uploadFileQuiz,
-  viewAQuiz,
+  getOneQuizInfo,
   viewAQuizTemplate,
   viewQuiz,
 } from "@/features/Quiz/quizSlice";

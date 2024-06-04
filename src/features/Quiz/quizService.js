@@ -141,7 +141,7 @@ const uploadFileUserSubmit = async (data) => {
   return res.data;
 };
 
-const viewAQuiz = async (data) => {
+const getOneQuizInfo = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}`,
     method: "GET",
@@ -351,7 +351,7 @@ export const QuizService = {
   getScore,
   getScoreByUserId,
   getScoreByInfo,
-  viewAQuiz,
+  getOneQuizInfo,
   viewAQuizForUserScreen,
   getQuizzesByStudentAndCourse,
   uploadFileQuiz,

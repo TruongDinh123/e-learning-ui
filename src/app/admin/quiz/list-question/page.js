@@ -4,7 +4,7 @@ import {Button} from 'antd';
 import {useState} from 'react';
 import ModalBlock from './modalBlock';
 
-const ListQuestion = ({}) => {
+const ListQuestion = ({quizId}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -18,7 +18,7 @@ const ListQuestion = ({}) => {
       </Button>
 
       {isModalOpen && (
-        <ModalBlock isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+        <ModalBlock quizId={quizId} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
       )}
     </>
   );

@@ -17,7 +17,7 @@ import {
   getScore,
   submitQuizEsay,
   uploadFileUserSubmit,
-  viewAQuiz,
+  getOneQuizInfo,
 } from "@/features/Quiz/quizSlice";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
@@ -106,7 +106,7 @@ export default function HandleSubmitEssay({ params }) {
 
   useEffect(() => {
     setIsLoading(true);
-    dispatch(viewAQuiz({ quizId: params?.id }))
+    dispatch(getOneQuizInfo({ quizId: params?.id }))
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {

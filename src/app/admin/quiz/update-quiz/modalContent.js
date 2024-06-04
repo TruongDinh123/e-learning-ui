@@ -73,6 +73,7 @@ const ModalContent = ({
               <Card
                 key={field.key}
                 title={`Question ${index + 1}`}
+                className=' mt-2'
                 extra={
                   <Button onClick={() => handleRemoveQuestion(index)}>
                     Xóa
@@ -179,6 +180,7 @@ const ModalContent = ({
                 <Form.Item
                   label='Đáp án'
                   name={[field.name, 'answer']}
+                  className='mt-2'
                   rules={[
                     {
                       required: true,
@@ -190,7 +192,12 @@ const ModalContent = ({
                 </Form.Item>
               </Card>
             ))}
-            <Button type='dashed' onClick={() => handleAddQuestion()} block>
+            <Button
+              className='bg-orange-200 mt-2'
+              type='dashed'
+              onClick={() => handleAddQuestion()}
+              block
+            >
               + Thêm câu hỏi
             </Button>
           </div>

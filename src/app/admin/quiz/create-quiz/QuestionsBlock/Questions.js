@@ -225,6 +225,7 @@ const Questions = ({
                       <Form.Item
                         label='Đáp án'
                         name={[field.name, 'answer']}
+                        className="mt-2"
                         rules={[
                           {
                             required: true,

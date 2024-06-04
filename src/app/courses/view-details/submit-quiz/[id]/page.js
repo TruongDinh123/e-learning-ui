@@ -9,7 +9,7 @@ import {
   Modal,
   Input, Tooltip
 } from "antd";
-import { getScore, submitQuiz, viewAQuiz } from "@/features/Quiz/quizSlice";
+import { getScore, submitQuiz, getOneQuizInfo } from "@/features/Quiz/quizSlice";
 import {
   getCourseSummary,
 } from "@/features/Courses/courseSlice";
@@ -151,7 +151,7 @@ export default function Quizs({ params }) {
         } else {
           // Nếu không có trong store, fetch từ API
           const quizResult = await dispatch(
-            viewAQuiz({ quizId: params?.id })
+            getOneQuizInfo({ quizId: params?.id })
           ).then(unwrapResult);
           if (quizResult.status) {
             setquiz(quizResult.metadata);

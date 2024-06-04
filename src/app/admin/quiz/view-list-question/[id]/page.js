@@ -2,7 +2,7 @@
 import {Spin, Tabs} from 'antd';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
-import {getScoreByQuizId, viewAQuiz} from '@/features/Quiz/quizSlice';
+import {getScoreByQuizId, getOneQuizInfo} from '@/features/Quiz/quizSlice';
 import {unwrapResult} from '@reduxjs/toolkit';
 import React from 'react';
 import TabPane from 'antd/es/tabs/TabPane';
@@ -19,9 +19,9 @@ import {useCallback} from 'react';
 
 export default function ViewListQuestion({params}) {
   const dispatch = useDispatch();
-  const quiz = useSelector((state) => state.quiz.oneQuizInfo);
   const score = useSelector((state) => state.quiz.scoreByQuizIdInfo);
   const [quizAnswerDecrypt, setQuizAnswerDecrypt] = useState(null);
+  const quiz = useSelector((state) => state.quiz.quizsInfo[params?.id]);
 
   const isDesktop = useMediaQuery({minWidth: 992});
 
@@ -31,7 +31,7 @@ export default function ViewListQuestion({params}) {
       if (checkExist !== -1) return;
     }
 
-    !quiz && dispatch(viewAQuiz({quizId: params?.id})).then(unwrapResult);
+    !quiz && dispatch(getOneQuizInfo({quizId: params?.id})).then(unwrapResult);
   }, [dispatch, params, quiz]);
 
   useEffect(() => {

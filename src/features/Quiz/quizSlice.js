@@ -193,11 +193,11 @@ export const getQuizzesByStudentAndCourse = createAsyncThunk(
   }
 );
 
-export const viewAQuiz = createAsyncThunk(
+export const getOneQuizInfo = createAsyncThunk(
   '/e-learning/view-a-quiz',
   async (data, {rejectWithValue}) => {
     try {
-      const response = await QuizService.viewAQuiz(data);
+      const response = await QuizService.getOneQuizInfo(data);
       return response;
     } catch (err) {
       return rejectWithValue(err);
@@ -447,9 +447,8 @@ export const getUserTested = createAsyncThunk(
   }
 );
 
-
 const initialState = {
-  quiz: '',
+  quiz: null,
   getQuizzesByStudentAndCourse: [],
   getScoreState: [],
   getQuizTemplates: [],
@@ -463,7 +462,7 @@ const initialState = {
   latestQuizByCourseId: null,
   allUserFinishedCourse: null,
   infoCommonScoreByUserId: null,
-  oneQuizInfo: null,
+  quizsInfo: {},
   scoreByQuizIdInfo: null,
   quizsExisted: {},
   usersTested: null,
@@ -485,8 +484,8 @@ const quizSlice = createSlice({
     updateStateQuiz: (state) => {
       state.quiz = state.payload;
     },
-    updateOneQuizInfo: (state) => {
-      state.oneQuizInfo = state.payload;
+    updateQuizsInfo: (state) => {
+      state.quizsInfo = state.payload;
     },
     updateScoreByQuizIdInfo: (state) => {
       state.scoreByQuizIdInfo = state.payload;
@@ -501,7 +500,7 @@ const quizSlice = createSlice({
         state.isLoadingQuiz = false;
         state.isError = false;
         state.isSuccess = true;
-        if(action.payload.status === 200) {
+        if (action.payload.status === 200) {
           state.quiz = [...state.quiz, action.payload.metadata];
         }
         state.newQuizCreated = true;
@@ -534,6 +533,11 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        state.quiz = state.quiz.map((item) =>
+          item._id === action.payload.metadata._id
+            ? Object.assign(item, action.payload.metadata)
+            : item
+        );
       })
       .addCase(updateQuiz.rejected, (state, action) => {
         state.isLoading = false;
@@ -835,9 +839,12 @@ const quizSlice = createSlice({
       .addCase(getScoreByQuizId.fulfilled, (state, action) => {
         state.scoreByQuizIdInfo = action.payload.metadata;
       })
-      .addCase(viewAQuiz.fulfilled, (state, action) => {
-
-        state.oneQuizInfo = action.payload.metadata;
+      .addCase(getOneQuizInfo.fulfilled, (state, action) => {
+        if (action.payload.status === 200) {
+          state.quizsInfo = Object.assign(state.quizsInfo, {
+            [action.payload.metadata._id]: action.payload.metadata,
+          });
+        }
       })
       .addCase(viewAQuizForUserScreen.pending, (state, action) => {
         state.isLoading = true;
@@ -846,7 +853,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        
+
         state.quizsExisted = Object.assign(state.quizsExisted, {
           [action.payload.metadata._id]: action.payload.metadata.data,
         });
@@ -865,7 +872,7 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        
+
         state.usersTested = action.payload.metadata.usersTested;
       })
       .addCase(getUserTested.rejected, (state, action) => {
@@ -876,8 +883,10 @@ const quizSlice = createSlice({
         state.message = 'getUserTested: Something went wrong!';
       })
       .addCase(deleteQuiz.fulfilled, (state, action) => {
-        if(action.payload.status === 200) {
-          state.quiz = state.quiz.filter((q) => q._id !== action.payload.metadata._id);
+        if (action.payload.status === 200) {
+          state.quiz = state.quiz.filter(
+            (q) => q._id !== action.payload.metadata._id
+          );
         }
       })
       .addCase(updateTimeSubmitQuiz.pending, (state, action) => {
@@ -885,9 +894,11 @@ const quizSlice = createSlice({
       })
       .addCase(updateTimeSubmitQuiz.fulfilled, (state, action) => {
         state.isTimeSubmitLoading = false;
-        if(action.payload.status === 200){
-        const quizUpdated = action.payload.metadata;
-          state.quiz = state.quiz.map(item => item._id === quizUpdated._id ? quizUpdated: item);
+        if (action.payload.status === 200) {
+          const quizUpdated = action.payload.metadata;
+          state.quiz = state.quiz.map((item) =>
+            item._id === quizUpdated._id ? quizUpdated : item
+          );
         }
       })
       .addCase(updateTimeSubmitQuiz.rejected, (state, action) => {
@@ -903,7 +914,7 @@ export const {
   resetNewQuizCreatedFlag,
   setSubmissionTimeLatestQuizByCourseId,
   updateStateQuiz,
-  updateOneQuizInfo,
+  updateQuizsInfo,
   updateScoreByQuizIdInfo,
 } = quizSlice.actions;
 
