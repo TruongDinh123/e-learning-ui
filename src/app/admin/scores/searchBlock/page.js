@@ -22,41 +22,49 @@ const SearchBlock = ({dataFiltered, setDataFiltered}) => {
       let dataFiltered = JSON.parse(JSON.stringify(allUsersTested));
 
       if (textSearch) {
-        dataFiltered = allUsersTested.filter((userTested) => 
-          userTested.firstName
-            .toLowerCase()
-            .includes(textSearch.toLowerCase()) ||
-            userTested.lastName
+        dataFiltered = allUsersTested.filter(
+          (userTested) =>
+            userTested.firstName
               .toLowerCase()
-              .includes(textSearch.toLowerCase())
+              .includes(textSearch.toLowerCase()) ||
+            userTested.lastName.toLowerCase().includes(textSearch.toLowerCase())
         );
       }
       console.log(dataFiltered, 'dataFiltereddataFiltered', quizsFilter);
       if (quizsFilter.length) {
-        const closeQuizsFilter = JSON.parse(JSON.stringify(dataFiltered));
+        const cloneQuizsFilter = JSON.parse(JSON.stringify(dataFiltered));
+        let usersInQuizsFilter = [];
         quizsFilter.forEach((quizId) => {
-          closeQuizsFilter.forEach((dataFilteredItem) => {
-            const resultIndex = usersTested[quizId].usersTested.findIndex(
-              (item) => item._id === dataFilteredItem._id
+          if (usersTested[quizId]) {
+            usersInQuizsFilter = usersInQuizsFilter.concat(
+              usersTested[quizId].usersTested
             );
-            if (resultIndex === -1) {
-              dataFiltered.splice(resultIndex, 1);
-            }
-          });
+          }
         });
-      }
+        console.log(usersInQuizsFilter, 'usersInQuizsFilterusersInQuizsFilter');
 
+        cloneQuizsFilter.forEach((dataFilteredItem, index) => {
+          const resultIndex = usersInQuizsFilter.findIndex(
+            (item) => item._id === dataFilteredItem._id
+          );
+          if (resultIndex === -1) {
+            dataFiltered.splice(index, 1, null);
+          }
+        });
+        console.log(dataFiltered, 'dataFiltereddataFiltered');
+        dataFiltered = dataFiltered.filter((item) => item);
+      }
       setDataFiltered(dataFiltered);
     } else {
-      setDataFiltered(null)
-    };
+      setDataFiltered(null);
+    }
   }, [allUsersTested, quizsFilter, setDataFiltered, textSearch, usersTested]);
 
   return (
     <Row>
       <Col span={4}>
         <Search
-          placeholder='Nhập tên đề thi'
+          placeholder='Nhập họ và tên'
           onChange={onChange}
           style={{
             width: 200,

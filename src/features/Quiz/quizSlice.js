@@ -937,7 +937,7 @@ const quizSlice = createSlice({
         state.message = 'updateTimeSubmitQuiz: Something went wrong!';
       })
       .addCase(activeQuizPresent.fulfilled, (state, action) => {
-        console.log(action.payload, 'dfasdf');
+        console.log(action.payload, 'd3fasdf');
         state.quizPresent = action.payload.metadata;
       })
       .addCase(getActiveQuizPresent.fulfilled, (state, action) => {

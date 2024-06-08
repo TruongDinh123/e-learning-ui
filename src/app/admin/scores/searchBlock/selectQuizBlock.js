@@ -42,7 +42,7 @@ const SelectQuizBlock = ({quizsFilter, setQuizsFilter}) => {
         }}
         defaultValue={quizsFilter}
         onChange={handleChange}
-        placeholder='Chọn bài thi'
+        placeholder='Chọn đề thi'
         optionFilterProp='children'
         filterOption={(input, option) => (option?.label ?? '').includes(input)}
         filterSort={(optionA, optionB) =>
