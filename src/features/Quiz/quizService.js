@@ -148,9 +148,9 @@ const getOneQuizInfo = async (data) => {
   return res.data;
 };
 
-const viewAQuizForUserScreen = async (data) => {
+const getQuizForUserScreen = async (data) => {
   const res = await axiosInstance({
-    url: `/e-learning/quizForUserScreen/${data.quizId}`,
+    url: `/e-learning/quizForUserScreen`,
     method: 'GET',
   });
   return res.data;
@@ -294,9 +294,9 @@ const updateScore = async (data) => {
   return res.data;
 };
 
-const getSubmissionTimeLatestQuizByCourseId = async (data) => {
+const getSubmissionTimeActiveQuizByCourseId = async (data) => {
   const res = await axiosInstance({
-    url: `/e-learning/course/${data.courseId}/quizzeLatesSubmissionTime`,
+    url: `/e-learning/course/${data.courseId}/quizzeActiveSubmissionTime`,
     method: 'GET',
     data: data,
   });
@@ -330,7 +330,6 @@ const getTestCount = async (userId) => {
 };
 
 const activeQuizPresent = async (data) => {
-  console.log(data, 'datadata');
   const res = await axiosInstance({
     url: '/e-learning/quiz-active-present/active-quiz-present',
     method: 'PUT',
@@ -356,6 +355,14 @@ const getScoreByQuizIds = async (data) => {
   return res.data;
 };
 
+const getAllQuizNotDraft = async () => {
+  const res = await axiosInstance({
+    url: '/e-learning/get-all-quiz-not-draft',
+    method: 'GET',
+  });
+  return res.data;
+};
+
 export const QuizService = {
   createQuiz,
   draftQuiz,
@@ -369,7 +376,7 @@ export const QuizService = {
   getScoreByUserId,
   getScoreByInfo,
   getOneQuizInfo,
-  viewAQuizForUserScreen,
+  getQuizForUserScreen,
   getQuizzesByStudentAndCourse,
   uploadFileQuiz,
   submitQuizEssay,
@@ -388,12 +395,13 @@ export const QuizService = {
   getDraftQuiz,
   DeletedraftQuiz,
   deleteQuestionImage,
-  getSubmissionTimeLatestQuizByCourseId,
+  getSubmissionTimeActiveQuizByCourseId,
   getInfoCommonScoreByUserId,
   getAllUserFinishedCourse,
   getTestCount,
   updateTimeSubmitQuiz,
   activeQuizPresent,
   getActiveQuizPresent,
-  getScoreByQuizIds
+  getScoreByQuizIds,
+  getAllQuizNotDraft
 };

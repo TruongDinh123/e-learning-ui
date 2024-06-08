@@ -10,8 +10,8 @@ const CountdownFooter = ({testCount, timeSubmission}) => {
   const dispatch = useDispatch();
   const userCurrent = useSelector((state) => state.user.user);
   const quizCurrent = useSelector((state) => state.course.courseInfo);
-  const latestQuizByCourseId = useSelector(
-    (state) => state.quiz.latestQuizByCourseId
+  const activeQuizByCourseId = useSelector(
+    (state) => state.quiz.activeQuizByCourseId
   );
   const router = useRouter();
   const [isCompleted, setIsCompleted] = useState(false);
@@ -25,7 +25,7 @@ const CountdownFooter = ({testCount, timeSubmission}) => {
         okText: 'Xác nhận',
         cancelText: 'Huỷ',
         onOk() {
-          router.push(`/exams/view-details/${latestQuizByCourseId._id}`);
+          router.push(`/exams/view-details/${activeQuizByCourseId._id}`);
         },
         okButtonProps: {className: 'custom-button'},
       });
@@ -38,7 +38,7 @@ const CountdownFooter = ({testCount, timeSubmission}) => {
         okButtonProps: {className: 'custom-button'},
       });
     }
-  }, [isCompleted, latestQuizByCourseId, router]);
+  }, [isCompleted, activeQuizByCourseId, router]);
 
   useEffect(() => {
     const isFullData = userCurrent && quizCurrent && quizCurrent._id;

@@ -27,7 +27,6 @@ const Scores = () => {
     }
   }, [dispatch, quiz, refresh]);
 
-  console.log(allUsersTested, 'usersTestedusersTested', dataFiltered);
   return (
     <div className='p-3'>
       <Row gutter={2}>

@@ -48,7 +48,7 @@ const HeaderExams = ({
           alt='School Logo'
           className='h-20 w-20 mr-3'
           style={{
-            maxWidth: '300px'
+            maxWidth: '180px'
           }}
         />
         <div>

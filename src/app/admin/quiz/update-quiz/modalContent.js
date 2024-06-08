@@ -15,7 +15,6 @@ const ModalContent = ({
   const [containEl, setContainEl] = useState(null);
 
   const handleAddQuestion = (e) => {
-    console.log(containEl, 'containBlockcontainBlocks');
     e.stopPropagation();
 
     const questions = form.getFieldValue('questions') || [];

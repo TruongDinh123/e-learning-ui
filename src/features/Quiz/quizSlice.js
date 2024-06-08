@@ -205,11 +205,11 @@ export const getOneQuizInfo = createAsyncThunk(
   }
 );
 
-export const viewAQuizForUserScreen = createAsyncThunk(
+export const getQuizForUserScreen = createAsyncThunk(
   '/e-learning/quiz-for-user-screen',
   async (data, {rejectWithValue}) => {
     try {
-      const response = await QuizService.viewAQuizForUserScreen(data);
+      const response = await QuizService.getQuizForUserScreen();
       return response;
     } catch (err) {
       return rejectWithValue(err);
@@ -385,11 +385,11 @@ export const deleteScorebyQuiz = createAsyncThunk(
   }
 );
 
-export const getSubmissionTimeLatestQuizByCourseId = createAsyncThunk(
-  '/e-learning/sumbmiss-tiontime-latest-quiz',
+export const getSubmissionTimeActiveQuizByCourseId = createAsyncThunk(
+  '/e-learning/sumbmisstiontime-active-quiz',
   async (data, {rejectWithValue}) => {
     try {
-      const response = await QuizService.getSubmissionTimeLatestQuizByCourseId(
+      const response = await QuizService.getSubmissionTimeActiveQuizByCourseId(
         data
       );
       return response;
@@ -463,8 +463,19 @@ export const getScoreByQuizIds = createAsyncThunk(
   '/e-learning/score-all-quiz',
   async (data, {rejectWithValue}) => {
     try {
-      console.log(data, 'dadattatda');
       const response = await QuizService.getScoreByQuizIds(data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getAllQuizNotDraft = createAsyncThunk(
+  '/e-learning/get-all-quiz-not-draft',
+  async (data, {rejectWithValue}) => {
+    try {
+      const response = await QuizService.getAllQuizNotDraft();
       return response;
     } catch (error) {
       return rejectWithValue(error);
@@ -484,7 +495,7 @@ const initialState = {
   newQuizCreated: false,
   isLoadingQuiz: false,
   message: '',
-  latestQuizByCourseId: null,
+  activeQuizByCourseId: null,
   allUserFinishedCourse: null,
   infoCommonScoreByUserId: null,
   quizsInfo: {},
@@ -510,7 +521,7 @@ const quizSlice = createSlice({
       state.newQuizCreated = false;
     },
     setSubmissionTimeLatestQuizByCourseId: (state) => {
-      state.latestQuizByCourseId = state.payload;
+      state.activeQuizByCourseId = state.payload;
     },
     updateStateQuiz: (state) => {
       state.quiz = state.payload;
@@ -519,7 +530,7 @@ const quizSlice = createSlice({
       state.quizsInfo = state.payload;
     },
     addQuizStore: (state, action) => {
-      state.quiz = [...state.quiz, action.payload];
+      state.quiz = [action.payload, ...state.quiz];
     },
     updateQuizStore: (state, action) => {
       state.quiz = state.quiz.map((item) =>
@@ -835,23 +846,23 @@ const quizSlice = createSlice({
       })
       .addCase(resetStateQuiz, () => initialState)
       .addCase(
-        getSubmissionTimeLatestQuizByCourseId.pending,
+        getSubmissionTimeActiveQuizByCourseId.pending,
         (state, action) => {
           state.isLoading = true;
         }
       )
       .addCase(
-        getSubmissionTimeLatestQuizByCourseId.fulfilled,
+        getSubmissionTimeActiveQuizByCourseId.fulfilled,
         (state, action) => {
           state.isLoading = false;
           state.isError = false;
           state.isSuccess = true;
 
-          state.latestQuizByCourseId = action.payload.metadata[0];
+          state.activeQuizByCourseId = action.payload.metadata[0];
         }
       )
       .addCase(
-        getSubmissionTimeLatestQuizByCourseId.rejected,
+        getSubmissionTimeActiveQuizByCourseId.rejected,
         (state, action) => {
           state.isLoading = false;
           state.isError = true;
@@ -883,6 +894,9 @@ const quizSlice = createSlice({
       .addCase(viewInfoQuiz.fulfilled, (state, action) => {
         state.quiz = action.payload.metadata;
       })
+      .addCase(getAllQuizNotDraft.fulfilled, (state, action) => {
+        state.quiz = action.payload.metadata;
+      })
       .addCase(getOneQuizInfo.fulfilled, (state, action) => {
         if (action.payload.status === 200) {
           state.quizsInfo = Object.assign(state.quizsInfo, {
@@ -890,24 +904,22 @@ const quizSlice = createSlice({
           });
         }
       })
-      .addCase(viewAQuizForUserScreen.pending, (state, action) => {
+      .addCase(getQuizForUserScreen.pending, (state, action) => {
         state.isLoading = true;
       })
-      .addCase(viewAQuizForUserScreen.fulfilled, (state, action) => {
+      .addCase(getQuizForUserScreen.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
 
-        state.quizsExisted = Object.assign(state.quizsExisted, {
-          [action.payload.metadata._id]: action.payload.metadata.data,
-        });
+        state.quizsExisted = action.payload.metadata.data;
       })
-      .addCase(viewAQuizForUserScreen.rejected, (state, action) => {
+      .addCase(getQuizForUserScreen.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
 
-        state.message = 'viewAQuizForUserScreen: Something went wrong!';
+        state.message = 'getQuizForUserScreen: Something went wrong!';
       })
       .addCase(deleteQuiz.fulfilled, (state, action) => {
         if (action.payload.status === 200) {
@@ -937,11 +949,9 @@ const quizSlice = createSlice({
         state.message = 'updateTimeSubmitQuiz: Something went wrong!';
       })
       .addCase(activeQuizPresent.fulfilled, (state, action) => {
-        console.log(action.payload, 'd3fasdf');
         state.quizPresent = action.payload.metadata;
       })
       .addCase(getActiveQuizPresent.fulfilled, (state, action) => {
-        console.log(action.payload, 'asdfasfs');
         state.quizPresent = action.payload.metadata;
       })
       .addCase(getScoreByQuizIds.pending, (state, action) => {
@@ -954,27 +964,20 @@ const quizSlice = createSlice({
 
         const usersTestedData = action.payload.metadata.usersTested;
         const scoreAllQuizData = action.payload.metadata.scores;
-        state.usersTested = usersTestedData
+        state.usersTested = usersTestedData;
         state.scoreAllQuiz = scoreAllQuizData;
 
         let dataInit = [];
-        Object.values(usersTestedData).forEach(userTested => {
+        Object.values(usersTestedData).forEach((userTested) => {
           dataInit = dataInit.concat(userTested.usersTested);
         });
         state.allUsersTested = dataInit;
-        
+
         dataInit = [];
-        Object.values(scoreAllQuizData).forEach(scoreAllQuizItem => {
+        Object.values(scoreAllQuizData).forEach((scoreAllQuizItem) => {
           dataInit = dataInit.concat(scoreAllQuizItem);
         });
         state.allscoreQuiz = dataInit;
-
-        console.log(action.payload.metadata, 'wga32ddswessdfs', action.payload.metadata.scores,
-        action.payload.metadata.usersTested,
-        scoreAllQuizData,
-        dataInit
-        
-        );
       })
       .addCase(getScoreByQuizIds.rejected, (state, action) => {
         state.isScoresUsertestedLoading = false;

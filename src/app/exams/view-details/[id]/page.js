@@ -41,7 +41,7 @@ export default function Quizs({params}) {
     (state) => state.quiz.infoCommonScoreByUserId
   );
   const quizStoreByID = useSelector(
-    (state) => state.quiz.quizsExisted[params.id]
+    (state) => state.quiz.quizsExisted
   );
   const loading = useSelector((state) => state.quiz.isLoading);
 

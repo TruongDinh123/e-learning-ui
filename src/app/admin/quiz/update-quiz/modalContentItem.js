@@ -54,7 +54,7 @@ const ModalContentItem = ({
       setContainEl(containBlock)
     }
   }, [fields, index, setContainEl])
-  console.log(containBlock, 'containBlockcontainBlock', index, fields);
+  
   return (
     <Card
       key={field.key}

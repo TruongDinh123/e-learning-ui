@@ -8,6 +8,7 @@ import {
 import {unwrapResult} from '@reduxjs/toolkit';
 import {
   getActiveQuizPresent,
+  getAllQuizNotDraft,
   getScoreByQuizIds,
   viewInfoQuiz,
 } from '../features/Quiz/quizSlice';
@@ -20,6 +21,7 @@ const useInitAdmin = () => {
   const dispatch = useDispatch();
   const coursesStore = useCoursesData();
   const quiz = useSelector((state) => state.quiz.quiz);
+  const allscoreQuiz = useSelector((state) => state.quiz.allscoreQuiz);
   const users = useSelector((state) => state?.user?.allUsers);
   const roles = useSelector((state) => state?.user?.allRoles);
 
@@ -30,16 +32,16 @@ const useInitAdmin = () => {
   }, [coursesStore, isAdminCheck, dispatch]);
 
   useEffect(() => {
-    isAdminCheck &&
-      !quiz &&
-      dispatch(viewInfoQuiz({courseIds: SELECTED_COURSE_ID})).then((res) => {
-        if (res.payload.status === 200) {
-          const quizIds = res.payload.metadata.map((item) => item._id);
-          console.log(quizIds, 'quizIdsquizIdsquizIds');
-          dispatch(getScoreByQuizIds({quizIds}));
-        }
-      });
+    isAdminCheck && !quiz && dispatch(getAllQuizNotDraft());
   }, [dispatch, isAdminCheck, quiz]);
+
+  useEffect(() => {
+    if (isAdminCheck && quiz && quiz.length && !allscoreQuiz) {
+      const quizIds = quiz.map((item) => item._id);
+
+      dispatch(getScoreByQuizIds({quizIds}));
+    }
+  }, [allscoreQuiz, dispatch, isAdminCheck, quiz]);
 
   useEffect(() => {
     isAdminCheck && !users && dispatch(getAllUser()).then(unwrapResult);

@@ -7,7 +7,8 @@ import '../view-quiz/page.css';
 import {columns, initData} from './setting';
 import {updateNewCourseIdsQuizCreated} from '../../../../features/Quiz/quizSlice';
 import SearchBlock from './searchBlock/page';
-import SelectQuizBlock from './selectQuizBlock';
+import SelectQuizBlock from './updateQuizScoursePresent/selectQuizBlock';
+import UpdateQuizScoursePresent from './updateQuizScoursePresent/page';
 
 const ViewQuiz = () => {
   const dispatch = useDispatch();
@@ -32,7 +33,6 @@ const ViewQuiz = () => {
     return () => dispatch(updateNewCourseIdsQuizCreated());
   }, [dispatch, quiz]);
 
-  console.log(dataFilterd, 'dataFilterddataFilterd');
 
   return (
     <div className='p-3'>
@@ -41,7 +41,7 @@ const ViewQuiz = () => {
       </h1>
       <SearchBlock quiz={quiz} setDataFiltered={setDataFiltered} />
 
-      <SelectQuizBlock />
+      <UpdateQuizScoursePresent />
 
       <Table
         columns={columns}

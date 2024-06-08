@@ -5,7 +5,7 @@ import {unwrapResult} from '@reduxjs/toolkit';
 
 const RankingContent = () => {
   const dispatch = useDispatch();
-  const {latestQuizByCourseId, allUserFinishedCourse} = useSelector(
+  const {activeQuizByCourseId, allUserFinishedCourse} = useSelector(
     (state) => state.quiz
   );
   const [rankingCalculatorState, setRankingCalculatorState] = useState([]);
@@ -14,7 +14,7 @@ const RankingContent = () => {
   useEffect(() => {
     const getDataForRanking = async () => {
       try {
-        dispatch(getAllUserFinishedCourse(latestQuizByCourseId)).then(
+        dispatch(getAllUserFinishedCourse(activeQuizByCourseId)).then(
           unwrapResult
         );
       } catch (error) {
@@ -22,8 +22,8 @@ const RankingContent = () => {
       }
     };
 
-    !allUserFinishedCourse && latestQuizByCourseId && getDataForRanking();
-  }, [dispatch, latestQuizByCourseId, allUserFinishedCourse]);
+    !allUserFinishedCourse && activeQuizByCourseId && getDataForRanking();
+  }, [dispatch, activeQuizByCourseId, allUserFinishedCourse]);
 
   useEffect(() => {
     if (allUserFinishedCourse && allUserFinishedCourse.length) {

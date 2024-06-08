@@ -538,11 +538,9 @@ const courseSlice = createSlice({
       })
       .addCase(resetStateCourse, () => initialState)
       .addCase(activeCoursePresent.fulfilled, (state, action) => {
-        console.log(action.payload, 'dfasdf');
         state.coursePresent = action.payload.metadata;
       })
       .addCase(getActiveCoursePresent.fulfilled, (state, action) => {
-        console.log(action.payload, 'asdfasfs');
         state.coursePresent = action.payload.metadata;
       });
   },

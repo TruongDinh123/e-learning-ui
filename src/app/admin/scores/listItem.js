@@ -10,7 +10,6 @@ const ListItem = ({userTested}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scoreCurrentInfo, setScoreCurrentInfo] = useState(null);
 
-  console.log(allscoreQuiz, 'scoresscoresscorListItemes');
   const handleCancel = () => {
     setIsModalOpen(false);
   };
@@ -25,7 +24,9 @@ const ListItem = ({userTested}) => {
       }));
       setSelectTestNumData(dataSelectInit);
       const scoreCurrentId = scoreCurrentInfo?._id || dataSelectInit[0].value;
-      const scoreInfo = allscoreQuiz.find((item) => item._id === scoreCurrentId);
+      const scoreInfo = allscoreQuiz.find(
+        (item) => item._id === scoreCurrentId
+      );
       setScoreCurrentInfo(scoreInfo);
     }
   }, [scoreCurrentInfo?._id, allscoreQuiz, userTested._id]);

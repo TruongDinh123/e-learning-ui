@@ -5,7 +5,6 @@ import {useMediaQuery} from 'react-responsive';
 const ModalContentMultipleChoice = ({quizItem}) => {
   const isDesktop = useMediaQuery({minWidth: 992});
 
-  console.log(quizItem, 'questionquestion');
   return (
     <div className=''>
       <div className='flex flex-col items-center justify-center '>

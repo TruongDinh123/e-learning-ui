@@ -15,22 +15,22 @@ const Countdown = () => {
     timeRefund: null,
     checkTime: null,
   });
-  const latestQuizByCourseId = useSelector(
-    (state) => state.quiz.latestQuizByCourseId
+  const activeQuizByCourseId = useSelector(
+    (state) => state.quiz.activeQuizByCourseId
   );
 
   useEffect(() => {
     let timeRun = null;
 
-    if (latestQuizByCourseId && latestQuizByCourseId.submissionTime) {
-      const timeMoment = moment(latestQuizByCourseId.submissionTime);
+    if (activeQuizByCourseId && activeQuizByCourseId.submissionTime) {
+      const timeMoment = moment(activeQuizByCourseId.submissionTime);
       const now = moment();
       const momentDiff = timeMoment.diff(now);
 
       if (momentDiff > 0) {
         timeRun = setInterval(() => {
           const timeInit = getTimePeriod({
-            submissionTime: latestQuizByCourseId.submissionTime,
+            submissionTime: activeQuizByCourseId.submissionTime,
           });
           if (
             !timeInit.days &&
@@ -60,7 +60,7 @@ const Countdown = () => {
     return () => {
       timeRun && clearInterval(timeRun);
     };
-  }, [latestQuizByCourseId]);
+  }, [activeQuizByCourseId]);
 
   return (
     <section>

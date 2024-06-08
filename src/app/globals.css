@@ -211,3 +211,13 @@ section {
   padding-right: 12px;
   padding-top: 12px
 }
+
+table#choice-present-block td {
+  vertical-align: bottom;
+  padding-right: 12px;
+  padding-top: 12px;
+}
+
+table#choice-present-block {
+  margin-bottom: 24px;
+}

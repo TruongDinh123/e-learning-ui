@@ -1,37 +1,30 @@
 import {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {
-  getCourseById,
+  getActiveCoursePresent,
   updateCourseCurrent,
 } from '../features/Courses/courseSlice';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {
-  getSubmissionTimeLatestQuizByCourseId,
-  viewAQuizForUserScreen,
+  getSubmissionTimeActiveQuizByCourseId,
+  getQuizForUserScreen,
 } from '../features/Quiz/quizSlice';
 import {message} from 'antd';
 
 const useInitUserScreen = ({idCourse}) => {
   const dispatch = useDispatch();
   const [messageApi] = message.useMessage();
-  const latestQuizByCourseId = useSelector(
-    (state) => state.quiz.latestQuizByCourseId
-  );
-
-  const quiz = useSelector(
-    (state) => state.quiz.quizsExisted[latestQuizByCourseId?._id]
-  );
   const user = useSelector((state) => state.user.user);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await dispatch(getCourseById(idCourse)).then(unwrapResult);
+        const res = await dispatch(getActiveCoursePresent()).then(unwrapResult);
         if (res.status === 200) {
           const desiredCourse = res.metadata;
 
           dispatch(
-            getSubmissionTimeLatestQuizByCourseId({courseId: desiredCourse._id})
+            getSubmissionTimeActiveQuizByCourseId({courseId: desiredCourse._id})
           );
           dispatch(updateCourseCurrent({quizCurrent: desiredCourse}));
         }
@@ -45,7 +38,7 @@ const useInitUserScreen = ({idCourse}) => {
 
   useEffect(() => {
     const fetchQuizInfo = () => {
-      dispatch(viewAQuizForUserScreen({quizId: latestQuizByCourseId._id}))
+      dispatch(getQuizForUserScreen())
         .then(unwrapResult)
         .then((res) => {
           if (!res.status) {
@@ -53,8 +46,8 @@ const useInitUserScreen = ({idCourse}) => {
           }
         });
     };
-    !quiz && latestQuizByCourseId?._id && user && fetchQuizInfo();
-  }, [dispatch, latestQuizByCourseId, messageApi, quiz, user]);
+    user && fetchQuizInfo();
+  }, [dispatch, messageApi, user]);
 };
 
 export default useInitUserScreen;

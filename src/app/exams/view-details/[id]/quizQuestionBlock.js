@@ -3,7 +3,6 @@ import React, {useMemo} from 'react';
 import 'react-quill/dist/quill.snow.css';
 import {CheckOutlined, CloseOutlined} from '@ant-design/icons';
 import {QUESTION_PER_PAGE} from '../../../../constants';
-import Image from 'next/image';
 
 const QuizQuestionBlock = ({
   quiz,
@@ -71,7 +70,7 @@ const QuizQuestionBlock = ({
         </div>
         {question.image_url && (
           <div className='mb-2'>
-            <Image
+            <img
               src={question.image_url}
               alt={`Câu hỏi ${actualQuestionIndex}`}
               className='max-w-full h-auto rounded-lg shadow'

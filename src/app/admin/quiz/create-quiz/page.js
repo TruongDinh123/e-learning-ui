@@ -47,7 +47,6 @@ export default function QuizCreator() {
   const [questionImages, setQuestionImages] = useState([]);
   const coursePresent = useSelector((state) => state.course.coursePresent);
 
-  console.log(coursesStore, 'coursesStorecoursesStore');
   const questionsAreEqual = (q1, q2) => {
     // So sánh nội dung câu hỏi và câu trả lời
     if (q1.question.trim() !== q2.question.trim() || q1.answer !== q2.answer) {

@@ -12,7 +12,6 @@ const ModalBlock = ({ quizId, isModalOpen, setIsModalOpen }) => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  console.log(quizItem, 'quizItemquizItem');
 
   return (
     <Fragment>

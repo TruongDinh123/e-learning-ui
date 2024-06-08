@@ -12,10 +12,8 @@ const SearchBlock = ({dataFiltered, setDataFiltered}) => {
   const [textSearch, setTextSearch] = useState('');
   const [quizsFilter, setQuizsFilter] = useState([]);
   const onChange = (event) => {
-    console.log(event.target.value, 'gasdfs');
     setTextSearch(event.target.value);
   };
-  console.log(allUsersTested, 'datadata', quizsFilter, usersTested);
 
   useEffect(() => {
     if (allUsersTested && (textSearch || quizsFilter.length)) {
@@ -30,7 +28,7 @@ const SearchBlock = ({dataFiltered, setDataFiltered}) => {
             userTested.lastName.toLowerCase().includes(textSearch.toLowerCase())
         );
       }
-      console.log(dataFiltered, 'dataFiltereddataFiltered', quizsFilter);
+
       if (quizsFilter.length) {
         const cloneQuizsFilter = JSON.parse(JSON.stringify(dataFiltered));
         let usersInQuizsFilter = [];
@@ -41,7 +39,6 @@ const SearchBlock = ({dataFiltered, setDataFiltered}) => {
             );
           }
         });
-        console.log(usersInQuizsFilter, 'usersInQuizsFilterusersInQuizsFilter');
 
         cloneQuizsFilter.forEach((dataFilteredItem, index) => {
           const resultIndex = usersInQuizsFilter.findIndex(
@@ -51,7 +48,7 @@ const SearchBlock = ({dataFiltered, setDataFiltered}) => {
             dataFiltered.splice(index, 1, null);
           }
         });
-        console.log(dataFiltered, 'dataFiltereddataFiltered');
+        
         dataFiltered = dataFiltered.filter((item) => item);
       }
       setDataFiltered(dataFiltered);

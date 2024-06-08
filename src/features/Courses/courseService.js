@@ -202,7 +202,6 @@ const getStudentScoresByCourse = async (data) => {
 };
 
 const activeCoursePresent = async (data)=> {
-  console.log(data, 'datadata');
   const res = await axiosInstance({
     url: "/e-learning/course/active-course-present",
     method: "PUT",

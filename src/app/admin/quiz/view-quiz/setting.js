@@ -50,15 +50,12 @@ export const initData = ({quiz}) => {
   });
 
   quiz.forEach((quizItem, index) => {
-      console.log(quizItem, 'quizItemquizItem');
-      data.push(
-        dataItem({
-          index,
-          quizItem,
-        })
-      );
-    
-     
+    data.push(
+      dataItem({
+        index,
+        quizItem,
+      })
+    );
   });
 
   return data;
