@@ -7,16 +7,11 @@ import '../view-quiz/page.css';
 import {columns, initData} from './setting';
 import {updateNewCourseIdsQuizCreated} from '../../../../features/Quiz/quizSlice';
 import SearchBlock from './searchBlock/page';
-import SelectQuizBlock from './updateQuizScoursePresent/selectQuizBlock';
 import UpdateQuizScoursePresent from './updateQuizScoursePresent/page';
 
 const ViewQuiz = () => {
   const dispatch = useDispatch();
   const quiz = useSelector((state) => state.quiz.quiz);
-  const newCourseIdsQuizCreated = useSelector(
-    (state) => state.quiz.newCourseIdsQuizCreated
-  );
-  const coursePresent = useSelector((state) => state.course.coursePresent);
   const isLoadingQuiz = useSelector((state) => state.quiz.isLoadingQuiz);
 
   const [data, setData] = useState([]);

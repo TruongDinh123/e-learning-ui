@@ -1,16 +1,13 @@
 import React, {memo, useEffect, useState} from 'react';
-import {Button, Select, Space, Typography, message} from 'antd';
-import {useDispatch, useSelector} from 'react-redux';
+import {Select, Typography} from 'antd';
+import {useSelector} from 'react-redux';
 import useCoursesData from '../../../../../hooks/useCoursesData';
-import {activeCoursePresent} from '../../../../../features/Courses/courseSlice';
 const {Title} = Typography;
 
 const SelectCourseBlock = ({courseCurrent, setCourseCurrent}) => {
   const coursePresent = useSelector((state) => state.course.coursePresent);
-  const dispatch = useDispatch();
   const [selectData, setSelectData] = useState(null);
   const coursesStore = useCoursesData();
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (value) => {
     setCourseCurrent(value);

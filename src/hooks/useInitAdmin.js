@@ -9,10 +9,8 @@ import {unwrapResult} from '@reduxjs/toolkit';
 import {
   getActiveQuizPresent,
   getAllQuizNotDraft,
-  getScoreByQuizIds,
-  viewInfoQuiz,
+  getScoreHasUsersTested,
 } from '../features/Quiz/quizSlice';
-import {SELECTED_COURSE_ID} from '../constants';
 import {getAllRole, getAllUser} from '../features/User/userSlice';
 import {isAdmin} from '@/middleware';
 
@@ -36,12 +34,10 @@ const useInitAdmin = () => {
   }, [dispatch, isAdminCheck, quiz]);
 
   useEffect(() => {
-    if (isAdminCheck && quiz && quiz.length && !allscoreQuiz) {
-      const quizIds = quiz.map((item) => item._id);
-
-      dispatch(getScoreByQuizIds({quizIds}));
+    if (isAdminCheck && !allscoreQuiz) {
+      dispatch(getScoreHasUsersTested());
     }
-  }, [allscoreQuiz, dispatch, isAdminCheck, quiz]);
+  }, [allscoreQuiz, dispatch, isAdminCheck]);
 
   useEffect(() => {
     isAdminCheck && !users && dispatch(getAllUser()).then(unwrapResult);

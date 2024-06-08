@@ -346,11 +346,10 @@ const getActiveQuizPresent = async () => {
   return res.data;
 };
 
-const getScoreByQuizIds = async (data) => {
+const getScoreHasUsersTested = async () => {
   const res = await axiosInstance({
-    url: '/e-learning/score-all-quiz',
-    method: 'POST',
-    data: data,
+    url: '/e-learning/scores-has-users-tested',
+    method: 'GET',
   });
   return res.data;
 };
@@ -402,6 +401,6 @@ export const QuizService = {
   updateTimeSubmitQuiz,
   activeQuizPresent,
   getActiveQuizPresent,
-  getScoreByQuizIds,
+  getScoreHasUsersTested,
   getAllQuizNotDraft
 };

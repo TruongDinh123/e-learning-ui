@@ -1,3 +1,5 @@
+"use client"
+
 import {Col, Input, Row} from 'antd';
 import {memo, useEffect, useState} from 'react';
 // import { initData } from '../setting';
@@ -48,7 +50,7 @@ const SearchBlock = ({dataFiltered, setDataFiltered}) => {
             dataFiltered.splice(index, 1, null);
           }
         });
-        
+
         dataFiltered = dataFiltered.filter((item) => item);
       }
       setDataFiltered(dataFiltered);

@@ -4,7 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, Col, List, Row, message} from 'antd';
 import ListItem from './listItem';
 import {useDispatch, useSelector} from 'react-redux';
-import {getScoreByQuizIds} from '../../../features/Quiz/quizSlice';
+import {getScoreHasUsersTested} from '../../../features/Quiz/quizSlice';
 import TitleList from './titleList';
 import SearchBlock from './searchBlock/page';
 
@@ -21,7 +21,7 @@ const Scores = () => {
   useEffect(() => {
     if (refresh && quiz && quiz.length) {
       const quizIds = quiz.map((item) => item._id);
-      dispatch(getScoreByQuizIds({quizIds})).then((res) => {
+      dispatch(getScoreHasUsersTested({quizIds})).then((res) => {
         message.success('Đã làm mới dữ liệu!', 1.5);
       });
     }

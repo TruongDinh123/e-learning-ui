@@ -459,11 +459,11 @@ export const getActiveQuizPresent = createAsyncThunk(
   }
 );
 
-export const getScoreByQuizIds = createAsyncThunk(
-  '/e-learning/score-all-quiz',
+export const getScoreHasUsersTested = createAsyncThunk(
+  '/e-learning/scores-has-users-tested',
   async (data, {rejectWithValue}) => {
     try {
-      const response = await QuizService.getScoreByQuizIds(data);
+      const response = await QuizService.getScoreHasUsersTested(data);
       return response;
     } catch (error) {
       return rejectWithValue(error);
@@ -894,8 +894,19 @@ const quizSlice = createSlice({
       .addCase(viewInfoQuiz.fulfilled, (state, action) => {
         state.quiz = action.payload.metadata;
       })
+      .addCase(getAllQuizNotDraft.pending, (state, action) => {
+        state.isLoadingQuiz = true;
+      })
       .addCase(getAllQuizNotDraft.fulfilled, (state, action) => {
+        state.isLoadingQuiz = false;
         state.quiz = action.payload.metadata;
+      })
+      .addCase(getAllQuizNotDraft.rejected, (state, action) => {
+        state.isLoadingQuiz = false;
+        state.isError = true;
+        state.isSuccess = false;
+
+        state.message = 'getAllQuizNotDraft: Something went wrong!';
       })
       .addCase(getOneQuizInfo.fulfilled, (state, action) => {
         if (action.payload.status === 200) {
@@ -954,10 +965,10 @@ const quizSlice = createSlice({
       .addCase(getActiveQuizPresent.fulfilled, (state, action) => {
         state.quizPresent = action.payload.metadata;
       })
-      .addCase(getScoreByQuizIds.pending, (state, action) => {
+      .addCase(getScoreHasUsersTested.pending, (state, action) => {
         state.isScoresUsertestedLoading = true;
       })
-      .addCase(getScoreByQuizIds.fulfilled, (state, action) => {
+      .addCase(getScoreHasUsersTested.fulfilled, (state, action) => {
         state.isScoresUsertestedLoading = false;
         state.isError = false;
         state.isSuccess = true;
@@ -979,12 +990,12 @@ const quizSlice = createSlice({
         });
         state.allscoreQuiz = dataInit;
       })
-      .addCase(getScoreByQuizIds.rejected, (state, action) => {
+      .addCase(getScoreHasUsersTested.rejected, (state, action) => {
         state.isScoresUsertestedLoading = false;
         state.isError = true;
         state.isSuccess = false;
 
-        state.message = 'getScoreByQuizIds: Something went wrong!';
+        state.message = 'getScoreHasUsersTested: Something went wrong!';
       });
   },
 });

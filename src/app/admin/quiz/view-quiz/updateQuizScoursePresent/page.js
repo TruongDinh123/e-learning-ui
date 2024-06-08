@@ -1,3 +1,5 @@
+"use client"
+
 import {useSelector} from 'react-redux';
 import SelectCourseBlock from './selectCourseBlock';
 import SelectQuizBlock from './selectQuizBlock';

@@ -1,3 +1,5 @@
+"use client"
+
 import {Form, Select} from 'antd';
 import {useEffect, useState} from 'react';
 import {isAdmin} from '../../../../../middleware';

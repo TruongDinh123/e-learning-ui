@@ -1,3 +1,4 @@
+"use client"
 import {Col, Input, Row} from 'antd';
 import SelectCourseBlock from './selectCourseBlock';
 import {memo, useEffect, useState} from 'react';
