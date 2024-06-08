@@ -435,14 +435,39 @@ export const getTestCount = createAsyncThunk(
   }
 );
 
-export const getUserTested = createAsyncThunk(
-  '/e-learning/quiz/:quizId/user-tested',
+export const activeQuizPresent = createAsyncThunk(
+  '/e-learning/quiz-active-present/active-quiz-present/',
   async (data, {rejectWithValue}) => {
     try {
-      const response = await QuizService.getUserTested(data.quizId);
+      const response = await QuizService.activeQuizPresent(data);
       return response;
-    } catch (err) {
-      return rejectWithValue(err);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getActiveQuizPresent = createAsyncThunk(
+  '/e-learning/get-active-quiz-present',
+  async (data, {rejectWithValue}) => {
+    try {
+      const response = await QuizService.getActiveQuizPresent();
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getScoreByQuizIds = createAsyncThunk(
+  '/e-learning/score-all-quiz',
+  async (data, {rejectWithValue}) => {
+    try {
+      console.log(data, 'dadattatda');
+      const response = await QuizService.getScoreByQuizIds(data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
     }
   }
 );
@@ -463,10 +488,16 @@ const initialState = {
   allUserFinishedCourse: null,
   infoCommonScoreByUserId: null,
   quizsInfo: {},
-  scoreByQuizIdInfo: null,
   quizsExisted: {},
-  usersTested: null,
   isTimeSubmitLoading: false,
+  newCourseIdsQuizCreated: null,
+  quizPresent: null,
+  isScoresUsertestedLoading: false,
+  usersTested: null,
+  allUsersTested: null,
+  scoreAllQuiz: null,
+  allscoreQuiz: null,
+  // scoreByQuizIdInfo: null,
 };
 
 export const resetStateQuiz = createAction('Reset_all_quiz');
@@ -487,9 +518,23 @@ const quizSlice = createSlice({
     updateQuizsInfo: (state) => {
       state.quizsInfo = state.payload;
     },
-    updateScoreByQuizIdInfo: (state) => {
-      state.scoreByQuizIdInfo = state.payload;
+    addQuizStore: (state, action) => {
+      state.quiz = [...state.quiz, action.payload];
     },
+    updateQuizStore: (state, action) => {
+      state.quiz = state.quiz.map((item) =>
+        item._id === state.payload._id ? action.payload : item
+      );
+    },
+    updateNewCourseIdsQuizCreated: (state, action) => {
+      state.newCourseIdsQuizCreated = null;
+    },
+    updateScoreAllQuiz: (state, action) => {
+      state.scoreAllQuiz = action.payload.metadata;
+    },
+    // updateScoreByQuizIdInfo: (state,action) => {
+    //   state.scoreByQuizIdInfo = action.payload.metadata;
+    // }
   },
   extraReducers: (builder) => {
     builder
@@ -500,10 +545,7 @@ const quizSlice = createSlice({
         state.isLoadingQuiz = false;
         state.isError = false;
         state.isSuccess = true;
-        if (action.payload.status === 200) {
-          state.quiz = [...state.quiz, action.payload.metadata];
-        }
-        state.newQuizCreated = true;
+        state.newCourseIdsQuizCreated = action.payload.metadata.courseIds;
       })
       .addCase(createQuiz.rejected, (state, action) => {
         state.isLoading = false;
@@ -684,8 +726,9 @@ const quizSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        const updatedQuizInfo = action.payload.metadata.quiz;
+
         if (action.payload.metadata.quiz.isDraft) {
-          const updatedQuizInfo = action.payload.metadata.quiz;
           const updatedQuestionId = action.meta.arg.questionId;
 
           const quizIndex = state.getdraftQuiz.findIndex(
@@ -710,6 +753,10 @@ const quizSlice = createSlice({
               }
             }
           }
+        } else {
+          state.quiz = state.quiz.map((quizItem) =>
+            quizItem._id === updatedQuizInfo._id ? updatedQuizInfo : quizItem
+          );
         }
       })
       .addCase(uploadQuestionImage.rejected, (state, action) => {
@@ -836,9 +883,6 @@ const quizSlice = createSlice({
       .addCase(viewInfoQuiz.fulfilled, (state, action) => {
         state.quiz = action.payload.metadata;
       })
-      .addCase(getScoreByQuizId.fulfilled, (state, action) => {
-        state.scoreByQuizIdInfo = action.payload.metadata;
-      })
       .addCase(getOneQuizInfo.fulfilled, (state, action) => {
         if (action.payload.status === 200) {
           state.quizsInfo = Object.assign(state.quizsInfo, {
@@ -865,23 +909,6 @@ const quizSlice = createSlice({
 
         state.message = 'viewAQuizForUserScreen: Something went wrong!';
       })
-      .addCase(getUserTested.pending, (state, action) => {
-        state.isLoading = true;
-      })
-      .addCase(getUserTested.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isError = false;
-        state.isSuccess = true;
-
-        state.usersTested = action.payload.metadata.usersTested;
-      })
-      .addCase(getUserTested.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.isSuccess = false;
-
-        state.message = 'getUserTested: Something went wrong!';
-      })
       .addCase(deleteQuiz.fulfilled, (state, action) => {
         if (action.payload.status === 200) {
           state.quiz = state.quiz.filter(
@@ -894,18 +921,67 @@ const quizSlice = createSlice({
       })
       .addCase(updateTimeSubmitQuiz.fulfilled, (state, action) => {
         state.isTimeSubmitLoading = false;
-        if (action.payload.status === 200) {
-          const quizUpdated = action.payload.metadata;
-          state.quiz = state.quiz.map((item) =>
-            item._id === quizUpdated._id ? quizUpdated : item
-          );
-        }
+        const quizUpdated = action.payload.metadata;
+        state.quiz = state.quiz.map((quizItem) =>
+          quizItem._id === quizUpdated._id
+            ? Object.assign(quizItem, {
+                submissionTime: quizUpdated.submissionTime,
+              })
+            : quizItem
+        );
       })
       .addCase(updateTimeSubmitQuiz.rejected, (state, action) => {
         state.isTimeSubmitLoading = false;
         state.isError = true;
 
         state.message = 'updateTimeSubmitQuiz: Something went wrong!';
+      })
+      .addCase(activeQuizPresent.fulfilled, (state, action) => {
+        console.log(action.payload, 'dfasdf');
+        state.quizPresent = action.payload.metadata;
+      })
+      .addCase(getActiveQuizPresent.fulfilled, (state, action) => {
+        console.log(action.payload, 'asdfasfs');
+        state.quizPresent = action.payload.metadata;
+      })
+      .addCase(getScoreByQuizIds.pending, (state, action) => {
+        state.isScoresUsertestedLoading = true;
+      })
+      .addCase(getScoreByQuizIds.fulfilled, (state, action) => {
+        state.isScoresUsertestedLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+
+        const usersTestedData = action.payload.metadata.usersTested;
+        const scoreAllQuizData = action.payload.metadata.scores;
+        state.usersTested = usersTestedData
+        state.scoreAllQuiz = scoreAllQuizData;
+
+        let dataInit = [];
+        Object.values(usersTestedData).forEach(userTested => {
+          dataInit = dataInit.concat(userTested.usersTested);
+        });
+        state.allUsersTested = dataInit;
+        
+        dataInit = [];
+        Object.values(scoreAllQuizData).forEach(scoreAllQuizItem => {
+          dataInit = dataInit.concat(scoreAllQuizItem);
+        });
+        state.allscoreQuiz = dataInit;
+
+        console.log(action.payload.metadata, 'wga32ddswessdfs', action.payload.metadata.scores,
+        action.payload.metadata.usersTested,
+        scoreAllQuizData,
+        dataInit
+        
+        );
+      })
+      .addCase(getScoreByQuizIds.rejected, (state, action) => {
+        state.isScoresUsertestedLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+
+        state.message = 'getScoreByQuizIds: Something went wrong!';
       });
   },
 });
@@ -915,7 +991,9 @@ export const {
   setSubmissionTimeLatestQuizByCourseId,
   updateStateQuiz,
   updateQuizsInfo,
-  updateScoreByQuizIdInfo,
+  addQuizStore,
+  updateQuizStore,
+  updateNewCourseIdsQuizCreated,
 } = quizSlice.actions;
 
 export default quizSlice.reducer;

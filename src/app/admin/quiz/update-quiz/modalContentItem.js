@@ -102,7 +102,10 @@ const ModalContentItem = ({
             src={form.getFieldValue(['questions', index, 'image'])}
             alt={`Question ${index + 1}`}
             className='max-w-auto h-40'
-          />
+            style={{
+              maxWidth: '50%'
+            }}
+            />
         )}
       </Form.Item>
       <Form.List name={[field.name, 'options']}>

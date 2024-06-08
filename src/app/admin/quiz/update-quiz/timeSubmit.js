@@ -1,3 +1,4 @@
+'use client';
 import {Button, Col, DatePicker, Form, Row, message} from 'antd';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateTimeSubmitQuiz} from '../../../../features/Quiz/quizSlice';
@@ -14,11 +15,11 @@ const TimeSubmit = ({quizId, form}) => {
         quizId,
         submissionTime: form.getFieldValue('submissionTime'),
       })
-    ).then(
-      (res) =>
-        res.payload.status === 200 &&
-        message.success('Cập nhật thời gian nộp bài thành công!')
-    );
+    ).then((res) => {
+      if (res.payload.status === 200) {
+        message.success('Cập nhật thời gian nộp bài thành công!');
+      }
+    });
   };
 
   return (

@@ -9,7 +9,7 @@ import {getInfoCommonScoreByUserId} from '../../../../features/Quiz/quizSlice';
 const CountdownFooter = ({testCount, timeSubmission}) => {
   const dispatch = useDispatch();
   const userCurrent = useSelector((state) => state.user.user);
-  const courseCurrent = useSelector((state) => state.course.courseInfo);
+  const quizCurrent = useSelector((state) => state.course.courseInfo);
   const latestQuizByCourseId = useSelector(
     (state) => state.quiz.latestQuizByCourseId
   );
@@ -41,7 +41,7 @@ const CountdownFooter = ({testCount, timeSubmission}) => {
   }, [isCompleted, latestQuizByCourseId, router]);
 
   useEffect(() => {
-    const isFullData = userCurrent && courseCurrent && courseCurrent._id;
+    const isFullData = userCurrent && quizCurrent && quizCurrent._id;
 
     isFullData &&
       dispatch(getInfoCommonScoreByUserId())
@@ -54,7 +54,7 @@ const CountdownFooter = ({testCount, timeSubmission}) => {
             }
           }
         });
-  }, [courseCurrent, dispatch, userCurrent]);
+  }, [quizCurrent, dispatch, userCurrent]);
 
   return (
     testCount < NUMBER_QUIZ_LIMIT && (

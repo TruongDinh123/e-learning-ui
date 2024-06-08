@@ -5,6 +5,7 @@ import {useMediaQuery} from 'react-responsive';
 const ModalContentMultipleChoice = ({quizItem}) => {
   const isDesktop = useMediaQuery({minWidth: 992});
 
+  console.log(quizItem, 'questionquestion');
   return (
     <div className=''>
       <div className='flex flex-col items-center justify-center '>
@@ -37,7 +38,10 @@ const ModalContentMultipleChoice = ({quizItem}) => {
                         src={question.image_url}
                         alt={`Câu hỏi ${questionIndex + 1}`}
                         className='max-w-auto'
-                      />
+                        style={{
+                          maxWidth: '50%'
+                        }}
+                        />
                     </div>
                   )}
                   {question.options.map((option, optionIndex) => (

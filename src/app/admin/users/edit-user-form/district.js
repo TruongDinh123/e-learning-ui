@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import { options } from '../../../signup/utils';
+import {options} from '../../../signup/utils';
 
 const District = ({
   selectedCap,
@@ -18,9 +18,9 @@ const District = ({
     } else if (selectedCap === 'Cấp huyện') {
       setDonViOptions(Object.keys(options['Cấp huyện']));
     } else {
-      setDonViOptions([]);
+      setDonViOptions(options['Cấp xã']);
     }
-    setSelectedDonVi('');
+    setSelectedDonVi(selectedDonVi || '');
     setSubUnits([]);
   }, [selectedCap, setSelectedDonVi]);
 

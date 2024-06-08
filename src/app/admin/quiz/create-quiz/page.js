@@ -1,13 +1,14 @@
 'use client';
 import {Form, message, Spin, Result} from 'antd';
-import {useDispatch} from 'react-redux';
-import {useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {useEffect, useState} from 'react';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {
   DeldraftQuiz,
   createQuiz,
   deleteQuestionImage,
   draftQuiz,
+  addQuizStore,
   uploadFileQuiz,
   uploadQuestionImage,
 } from '@/features/Quiz/quizSlice';
@@ -17,16 +18,18 @@ import {refreshAUser} from '@/features/User/userSlice';
 import 'react-quill/dist/quill.snow.css';
 import Questions from './QuestionsBlock/Questions';
 import QuestionHead from './QuestionsBlock/QuestionHead';
-import DraftChoose from './DraftChoose';
 import EssayBlock from './EssayBlock';
+import HeaderBlock from './headerBlock/page';
+import useCoursesData from '../../../../hooks/useCoursesData';
 
 export default function QuizCreator() {
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const router = useRouter();
 
+  const coursesStore = useCoursesData();
   const [messageApi, contextHolder] = message.useMessage();
-  // const [selectedCourse, setSelectedCourse] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState([]);
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [studentsByCourse, setStudentsByCourse] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
@@ -39,10 +42,12 @@ export default function QuizCreator() {
   const [initialQuestions, setInitialQuestions] = useState([]);
   const [deletedQuestionIds, setDeletedQuestionIds] = useState([]);
   const quizType = 'multiple_choice';
-  const selectedCourse = '6634fc03bf25515f1e563504';
+  // const selectedCourse = '6634fc03bf25515f1e563504';
   const [file, setFile] = useState(null);
   const [questionImages, setQuestionImages] = useState([]);
+  const coursePresent = useSelector((state) => state.course.coursePresent);
 
+  console.log(coursesStore, 'coursesStorecoursesStore');
   const questionsAreEqual = (q1, q2) => {
     // So sánh nội dung câu hỏi và câu trả lời
     if (q1.question.trim() !== q2.question.trim() || q1.answer !== q2.answer) {
@@ -73,8 +78,17 @@ export default function QuizCreator() {
   //hàm xử lý save quiz
   const handleSaveQuiz = (values, action) => {
     if (!values?.submissionTime?.toISOString()) {
-      message.error('Thời hạn nạp bài là bắt buộc', 3.5);
+      message.error('Thời hạn nộp bài là bắt buộc', 3.5);
+      return;
+    }
 
+    if (!selectedCourse.length) {
+      message.error('Khoá học là bắt buộc', 3.5);
+      return;
+    }
+
+    if (!values?.name) {
+      message.error('Tên bài tập là bắt buộc', 3.5);
       return;
     }
 
@@ -119,7 +133,7 @@ export default function QuizCreator() {
     let formattedValues = {
       ...values,
       type: quizType,
-      courseIds: [selectedCourse],
+      courseIds: selectedCourse,
       studentIds: action === 'assign' ? selectedStudents : [],
       questions: questionsToSave,
       isDraft: action === 'save_draft',
@@ -147,7 +161,7 @@ export default function QuizCreator() {
       formattedValues = {
         type: quizType,
         name: values.name,
-        courseIds: [selectedCourse],
+        courseIds: selectedCourse,
         studentIds: studentIds,
         questions: questions.map((question) => ({
           ...question,
@@ -163,7 +177,7 @@ export default function QuizCreator() {
           ...formattedValues,
           type: quizType,
           submissionTime: values?.submissionTime?.toISOString(),
-          courseIds: [selectedCourse],
+          courseIds: selectedCourse,
           studentIds: studentIds,
           timeLimit: values?.timeLimit,
           questions: questions.map((question) => ({
@@ -176,7 +190,7 @@ export default function QuizCreator() {
         formattedValues = {
           type: quizType,
           name: values.essayTitle,
-          courseIds: [selectedCourse],
+          courseIds: selectedCourse,
           studentIds: studentIds,
           submissionTime: values?.submissionTime?.toISOString(),
           essay: {
@@ -203,7 +217,7 @@ export default function QuizCreator() {
     } else {
       formattedValues = {
         ...formattedValues,
-        courseIds: [selectedCourse],
+        courseIds: selectedCourse,
         // ...(selectedQuizId ? { quizIdDraft: selectedQuizId } : {}),
       };
     }
@@ -215,6 +229,18 @@ export default function QuizCreator() {
     )
       .then(unwrapResult)
       .then(async (res) => {
+        let courseIdsInfo = [];
+        coursesStore.forEach(course => {
+          if(selectedCourse.includes(course._id)) {
+            courseIdsInfo.push({
+              _id: course._id,
+              name: course.name
+            })
+          }
+        })
+        res.metadata.courseIds = courseIdsInfo;
+        dispatch(addQuizStore(res.metadata));
+
         setIsLoadingApi(true);
         const quizId = res.metadata?._id;
         const questionIds = res.metadata?.questions?.map((q) => q._id);
@@ -319,6 +345,8 @@ export default function QuizCreator() {
     }
   };
 
+ 
+
   return (
     <div className='p-3'>
       {contextHolder}
@@ -336,19 +364,20 @@ export default function QuizCreator() {
             name='quiz_form'
             initialValues={{
               questions: [{}],
+              courseIds: coursePresent ? [coursePresent._id] : []
             }}
             onFinish={handleSaveQuiz}
             onFinishFailed={handleFinishFailed}
           >
-            {!isTemplateMode && (
-              <DraftChoose
-                form={form}
-                setInitialQuestions={setInitialQuestions}
-                setQuestionImages={setQuestionImages}
-                setSelectedQuizTemplate={setSelectedQuizTemplate}
-                setSelectedQuizId={setSelectedQuizId}
-              />
-            )}
+            <HeaderBlock
+              form={form}
+              setInitialQuestions={setInitialQuestions}
+              setQuestionImages={setQuestionImages}
+              setSelectedQuizTemplate={setSelectedQuizTemplate}
+              setSelectedQuizId={setSelectedQuizId}
+              selectedCourse={selectedCourse}
+              setSelectedCourse={setSelectedCourse}
+            />
 
             {quizType === 'multiple_choice' ? (
               <>

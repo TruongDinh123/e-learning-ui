@@ -197,3 +197,17 @@ section {
 .ant-modal {
   top: 30px;
 }
+
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+
+.table-course-quick-choice {
+  margin-bottom: 20px;
+}
+
+.table-course-quick-choice td {
+  vertical-align: bottom;
+  padding-right: 12px;
+  padding-top: 12px
+}

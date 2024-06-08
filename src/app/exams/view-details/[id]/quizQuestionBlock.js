@@ -75,6 +75,9 @@ const QuizQuestionBlock = ({
               src={question.image_url}
               alt={`Câu hỏi ${actualQuestionIndex}`}
               className='max-w-full h-auto rounded-lg shadow'
+              style={{
+                maxWidth: '50%',
+              }}
             />
           </div>
         )}

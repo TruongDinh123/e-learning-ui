@@ -13,7 +13,7 @@ const BreadCrumbBlock = ({
   showCountdown,
   deadline,
 }) => {
-  const courseCurrent = useSelector((state) => state.course.courseInfo);
+  const quizCurrent = useSelector((state) => state.course.courseInfo);
 
   return (
     <>
@@ -36,7 +36,7 @@ const BreadCrumbBlock = ({
         </Breadcrumb.Item>
         <Breadcrumb.Item>
           <Link className='font-bold' href={'/'}>
-            {courseCurrent?.name}
+            {quizCurrent?.name}
           </Link>
         </Breadcrumb.Item>
         {quiz && (

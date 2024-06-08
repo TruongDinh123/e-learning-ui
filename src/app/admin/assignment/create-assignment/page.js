@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { viewCourses } from "@/features/Courses/courseSlice";
-import { createQuiz } from "@/features/Quiz/quizSlice";
 import { CloseOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { createAssignment } from "@/features/Assignment/assignmentSlice";

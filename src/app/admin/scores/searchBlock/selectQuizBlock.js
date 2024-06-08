@@ -1,15 +1,14 @@
 import React, {memo, useEffect, useState} from 'react';
-import {Select, Space, Typography} from 'antd';
+import {Select, Space} from 'antd';
 import {useSelector} from 'react-redux';
-const {Title} = Typography;
 
-const SelectQuizBlock = ({quizCurrent, setQuizCurrent, setRefresh}) => {
+
+const SelectQuizBlock = ({quizsFilter, setQuizsFilter}) => {
   const quiz = useSelector((state) => state.quiz.quiz);
   const [selectData, setSelectData] = useState(null);
 
   const handleChange = (value) => {
-    setQuizCurrent(value);
-    setRefresh(true)
+    setQuizsFilter(value);
   };
 
   useEffect(() => {
@@ -21,25 +20,29 @@ const SelectQuizBlock = ({quizCurrent, setQuizCurrent, setRefresh}) => {
 
       setSelectData(initData);
     }
-  }, [quiz, quizCurrent]);
+  }, [quiz, quizsFilter]);
+
 
   return (
     <Space
       direction='vertical'
       style={{
         marginBottom: '20px',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'end',
       }}
       size='middle'
     >
-      <Title level={4}>Chọn bài thi</Title>
       <Select
+        mode={'multiple'}
         showSearch
         style={{
-          width: 200,
+          width: 300,
         }}
-        defaultValue={quizCurrent}
+        defaultValue={quizsFilter}
         onChange={handleChange}
-        placeholder='Search to Select'
+        placeholder='Chọn bài thi'
         optionFilterProp='children'
         filterOption={(input, option) => (option?.label ?? '').includes(input)}
         filterSort={(optionA, optionB) =>

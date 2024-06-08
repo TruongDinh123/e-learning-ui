@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Collapse, Drawer, List, Select, Spin, Table } from "antd";
+import { Button, Collapse, Drawer, Image, List, Select, Spin, Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { getScore } from "@/features/Quiz/quizSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -193,7 +193,7 @@ const ScoreManagement = () => {
                             ))}
                             {question?.image_url && (
                               <div className="mb-2">
-                                <img
+                                <Image
                                   src={question.image_url}
                                   alt={`Câu hỏi ${idxQuestion + 1}`}
                                   className="max-w-auto"

@@ -1,9 +1,9 @@
-import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { courseService } from "./courseService";
+import {createAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {courseService} from './courseService';
 
 export const createCourse = createAsyncThunk(
-  "/e-learning/course",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/course',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.createCourse(data);
       return response;
@@ -14,8 +14,8 @@ export const createCourse = createAsyncThunk(
 );
 
 export const uploadImageCourse = createAsyncThunk(
-  "/e-learning/upload-image-course",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/upload-image-course',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.uploadImageCourse(data);
       return response;
@@ -26,8 +26,8 @@ export const uploadImageCourse = createAsyncThunk(
 );
 
 export const viewCourses = createAsyncThunk(
-  "/e-learning/get-courses",
-  async (data, { getState, rejectWithValue }) => {
+  '/e-learning/get-courses',
+  async (data, {getState, rejectWithValue}) => {
     const coursesFromStore = getState().course.courses;
 
     if (coursesFromStore.length > 0) {
@@ -44,8 +44,8 @@ export const viewCourses = createAsyncThunk(
 );
 
 export const selectCourse = createAsyncThunk(
-  "/e-learning/select-course",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/select-course',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.selectCourse(data);
       return response.data;
@@ -56,8 +56,8 @@ export const selectCourse = createAsyncThunk(
 );
 
 export const deleteCourse = createAsyncThunk(
-  "/e-learning/course/",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/course/',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.deleteCourse(data);
       return response;
@@ -68,8 +68,8 @@ export const deleteCourse = createAsyncThunk(
 );
 
 export const editCourse = createAsyncThunk(
-  "/e-learning/update-course/",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/update-course/',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.editCourse(data);
       return response;
@@ -80,8 +80,8 @@ export const editCourse = createAsyncThunk(
 );
 
 export const getACourse = createAsyncThunk(
-  "/e-learning/single/course/",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/single/course/',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.getACourse(data);
       return response;
@@ -92,8 +92,8 @@ export const getACourse = createAsyncThunk(
 );
 
 export const getACourseByInfo = createAsyncThunk(
-  "/e-learning/single/get-info-course/",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/single/get-info-course/',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.getACourseByInfo(data);
       return response;
@@ -104,8 +104,8 @@ export const getACourseByInfo = createAsyncThunk(
 );
 
 export const addStudentToCourse = createAsyncThunk(
-  "/e-learning/invite-user-course/",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/invite-user-course/',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.addStudentToCourse(data);
       return response;
@@ -116,8 +116,8 @@ export const addStudentToCourse = createAsyncThunk(
 );
 
 export const addTeacherToCourse = createAsyncThunk(
-  "/e-learning/invite-teacher-course/",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/invite-teacher-course/',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.addTeacherToCourse(data);
       return response;
@@ -128,8 +128,8 @@ export const addTeacherToCourse = createAsyncThunk(
 );
 
 export const updateCourseTeacher = createAsyncThunk(
-  "/e-learning/update-teacher-course/",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/update-teacher-course/',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.updateCourseTeacher(data);
       return response;
@@ -140,8 +140,8 @@ export const updateCourseTeacher = createAsyncThunk(
 );
 
 export const removeStudentFromCourse = createAsyncThunk(
-  "/e-learning/delete-user-course/",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/delete-user-course/',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.removeStudentFromCourse(data);
       return response;
@@ -152,8 +152,8 @@ export const removeStudentFromCourse = createAsyncThunk(
 );
 
 export const getStudentCourses = createAsyncThunk(
-  "/e-learning/get-student-course/",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/get-student-course/',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.getStudentCourses();
       return response;
@@ -164,8 +164,8 @@ export const getStudentCourses = createAsyncThunk(
 );
 
 export const getCourseSummary = createAsyncThunk(
-  "/e-learning/users/courses/summary",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/users/courses/summary',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.getCourseSummary();
       return response;
@@ -176,21 +176,20 @@ export const getCourseSummary = createAsyncThunk(
 );
 
 export const getCourseById = createAsyncThunk(
-    "/e-learning/get-info-course/:{$courseID}",
-    async (courseID, { rejectWithValue }) => {
-        try {
-            const response = await courseService.getCourseById(courseID);
-            return response;
-        } catch (error) {
-            return rejectWithValue(error);
-        }
+  '/e-learning/get-info-course/:{$courseID}',
+  async (courseID, {rejectWithValue}) => {
+    try {
+      const response = await courseService.getCourseById(courseID);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
     }
+  }
 );
 
-
 export const getCourseCompletion = createAsyncThunk(
-  "/e-learning/get-complete-course/",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/get-complete-course/',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.getCourseCompletion(data);
       return response;
@@ -201,8 +200,8 @@ export const getCourseCompletion = createAsyncThunk(
 );
 
 export const getCoursePublic = createAsyncThunk(
-  "/e-learning/get-public-course/",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/get-public-course/',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.getPublicCourse(data);
       return response;
@@ -213,8 +212,8 @@ export const getCoursePublic = createAsyncThunk(
 );
 
 export const buttonPublicCourse = createAsyncThunk(
-  "/e-learning/get-public-course/",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/get-public-course/',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.buttonPublicCourse(data);
       return response;
@@ -225,8 +224,8 @@ export const buttonPublicCourse = createAsyncThunk(
 );
 
 export const buttonPriavteourse = createAsyncThunk(
-  "/e-learning/get-priavte-course/",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/get-priavte-course/',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.buttonPriavteCourse(data);
       return response;
@@ -237,8 +236,8 @@ export const buttonPriavteourse = createAsyncThunk(
 );
 
 export const createNotification = createAsyncThunk(
-  "/e-learning/course/notifications",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/course/notifications',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.createNotification(data);
       return response;
@@ -250,8 +249,8 @@ export const createNotification = createAsyncThunk(
 
 //sub-course
 export const getAllSubCourses = createAsyncThunk(
-  "/e-learning/get-all-subcourses/",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/get-all-subcourses/',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.getAllSubCourses(data);
       return response;
@@ -262,8 +261,8 @@ export const getAllSubCourses = createAsyncThunk(
 );
 
 export const getAllSubCoursesById = createAsyncThunk(
-  "/e-learning/get-all-subcourses-by-id/",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/get-all-subcourses-by-id/',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.getAllSubCoursesById(data);
       return response;
@@ -274,8 +273,8 @@ export const getAllSubCoursesById = createAsyncThunk(
 );
 
 export const getStudentScoresByCourse = createAsyncThunk(
-  "/e-learning/get-all-score-by-id/",
-  async (data, { rejectWithValue }) => {
+  '/e-learning/get-all-score-by-id/',
+  async (data, {rejectWithValue}) => {
     try {
       const response = await courseService.getStudentScoresByCourse(data);
       return response;
@@ -285,8 +284,32 @@ export const getStudentScoresByCourse = createAsyncThunk(
   }
 );
 
+export const activeCoursePresent = createAsyncThunk(
+  '/e-learning/course/active-course-present/',
+  async (data, {rejectWithValue}) => {
+    try {
+      const response = await courseService.activeCoursePresent(data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getActiveCoursePresent = createAsyncThunk(
+  '/e-learning/get-active-course-present',
+  async (data, {rejectWithValue}) => {
+    try {
+      const response = await courseService.getActiveCoursePresent();
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 const initialState = {
-  course: "",
+  course: '',
   subCourses: [],
   courses: [],
   courseInfo: {},
@@ -294,31 +317,32 @@ const initialState = {
   isError: false,
   isSuccess: false,
   isLoading: false,
-  message: "",
+  message: '',
+  coursePresent: null,
 };
 
-export const resetStateCourse = createAction("Reset_all_course");
+export const resetStateCourse = createAction('Reset_all_course');
 
 const courseSlice = createSlice({
-  name: "course",
+  name: 'course',
   initialState,
   reducers: {
-    updateCourseCurrent: (state,action) => {
-      const { courseCurrent } = action.payload;
-      state.courseInfo = courseCurrent;
+    updateCourseCurrent: (state, action) => {
+      const {quizCurrent} = action.payload;
+      state.courseInfo = quizCurrent;
     },
     updateCourseImage: (state, action) => {
-      const { courseId, imageUrl } = action.payload;
-      const courseIndex = state.courses.metadata.findIndex(
+      const {courseId, imageUrl} = action.payload;
+      const courseIndex = state.courses.findIndex(
         (course) => course._id === courseId
       );
       if (courseIndex !== -1) {
-        state.courses.metadata[courseIndex].image_url = imageUrl;
+        state.courses[courseIndex].image_url = imageUrl;
       }
     },
     addStudentToCourseSuccess: (state, action) => {
-      const { courseId, studentInfo } = action.payload;
-      const courseIndex = state.courses.metadata.findIndex(
+      const {courseId, studentInfo} = action.payload;
+      const courseIndex = state.courses.findIndex(
         (course) => course._id === courseId
       );
       if (courseIndex !== -1) {
@@ -327,25 +351,25 @@ const courseSlice = createSlice({
           firstName: studentInfo.firstName,
           lastName: studentInfo.lastName,
         };
-        const existingStudentIndex = state.courses.metadata[
+        const existingStudentIndex = state.courses[
           courseIndex
         ].students.findIndex((student) => student._id === studentInfo._id);
         if (existingStudentIndex === -1) {
           // Nếu học viên chưa tồn tại, thêm vào mảng students
-          if (!state.courses.metadata[courseIndex].students) {
-            state.courses.metadata[courseIndex].students = [];
+          if (!state.courses[courseIndex].students) {
+            state.courses[courseIndex].students = [];
           }
-          state.courses.metadata[courseIndex].students.push(student);
+          state.courses[courseIndex].students.push(student);
         }
       }
     },
     removeStudentFromCourseSuccess: (state, action) => {
-      const { courseId, studentId } = action.payload;
-      const courseIndex = state.courses.metadata.findIndex(
+      const {courseId, studentId} = action.payload;
+      const courseIndex = state.courses.findIndex(
         (course) => course._id === courseId
       );
       if (courseIndex !== -1) {
-        state.courses.metadata[courseIndex].students = state.courses.metadata[
+        state.courses[courseIndex].students = state.courses[
           courseIndex
         ].students.filter((student) => student._id !== studentId);
       }
@@ -371,13 +395,13 @@ const courseSlice = createSlice({
           showCourse: action.payload.metadata.showCourse,
           image_url: action.payload.metadata.image_url,
         };
-        state.courses.metadata.push(newCourse) || state.courses.push(newCourse);
+        state.courses.push(newCourse);
       })
       .addCase(createCourse.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(viewCourses.pending, (state, action) => {
         state.isLoading = true;
@@ -392,7 +416,7 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(deleteCourse.pending, (state, action) => {
         state.isLoading = true;
@@ -401,7 +425,7 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.courses.metadata = state.courses.metadata.filter(
+        state.courses = state.courses.filter(
           (course) => course._id !== action.meta.arg
         );
       })
@@ -409,7 +433,7 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(editCourse.pending, (state, action) => {
         state.isLoading = true;
@@ -418,18 +442,18 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        const index = state.courses.metadata.findIndex(
+        const index = state.courses.findIndex(
           (course) => course._id === action.payload._id
         );
         if (index !== -1) {
-          state.courses.metadata[index] = action.payload;
+          state.courses[index] = action.payload;
         }
       })
       .addCase(editCourse.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(uploadImageCourse.pending, (state, action) => {
         state.isLoading = true;
@@ -438,19 +462,19 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        const { courseId, imageUrl } = action.payload.metadata.findCourse;
-        const courseIndex = state.courses.metadata.findIndex(
+        const {courseId, imageUrl} = action.payload.metadata.findCourse;
+        const courseIndex = state.courses.findIndex(
           (course) => course._id === courseId
         );
         if (courseIndex !== -1) {
-          state.courses.metadata[courseIndex].image_url = imageUrl;
+          state.courses[courseIndex].image_url = imageUrl;
         }
       })
       .addCase(uploadImageCourse.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(getAllSubCourses.pending, (state, action) => {
         state.isLoading = true;
@@ -465,7 +489,7 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(getACourse.pending, (state, action) => {
         state.isLoading = true;
@@ -480,7 +504,7 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(getACourseByInfo.pending, (state, action) => {
         state.isLoading = true;
@@ -495,7 +519,7 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
       .addCase(selectCourse.pending, (state, action) => {
         state.isLoading = true;
@@ -510,9 +534,17 @@ const courseSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
-        state.message = "Something went wrong!";
+        state.message = 'Something went wrong!';
       })
-      .addCase(resetStateCourse, () => initialState);
+      .addCase(resetStateCourse, () => initialState)
+      .addCase(activeCoursePresent.fulfilled, (state, action) => {
+        console.log(action.payload, 'dfasdf');
+        state.coursePresent = action.payload.metadata;
+      })
+      .addCase(getActiveCoursePresent.fulfilled, (state, action) => {
+        console.log(action.payload, 'asdfasfs');
+        state.coursePresent = action.payload.metadata;
+      });
   },
 });
 

@@ -29,10 +29,11 @@ const Userchema = yup.object({
   donvicon: yup.string(),
 });
 export default function EditUserForm() {
+  const id = localStorage.getItem('x-client-id');
   const [messageApi, contextHolder] = message.useMessage();
-  const dispatch = useDispatch();
   const [data, setData] = useState(null);
   const [file, setFile] = useState(null);
+  const dispatch = useDispatch();
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedCap, setSelectedCap] = useState('');
@@ -52,7 +53,6 @@ export default function EditUserForm() {
     fileList: file ? [file] : [],
   };
 
-  const id = localStorage.getItem('x-client-id');
 
   const handleOk = () => {
     setLoading(true);

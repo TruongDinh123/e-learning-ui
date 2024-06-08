@@ -33,7 +33,7 @@ const useInitUserScreen = ({idCourse}) => {
           dispatch(
             getSubmissionTimeLatestQuizByCourseId({courseId: desiredCourse._id})
           );
-          dispatch(updateCourseCurrent({courseCurrent: desiredCourse}));
+          dispatch(updateCourseCurrent({quizCurrent: desiredCourse}));
         }
       } catch (error) {
         console.error(error);

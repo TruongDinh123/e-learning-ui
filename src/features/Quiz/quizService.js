@@ -1,9 +1,9 @@
-const { default: axiosInstance } = require("@/config/axios");
+const {default: axiosInstance} = require('@/config/axios');
 
 const createQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz`,
-    method: "POST",
+    method: 'POST',
     data: data.formattedValues,
   });
   return res.data;
@@ -11,8 +11,8 @@ const createQuiz = async (data) => {
 
 const draftQuiz = async (data) => {
   const res = await axiosInstance({
-    url: "/e-learning/quiz/draft",
-    method: "POST",
+    url: '/e-learning/quiz/draft',
+    method: 'POST',
     data: data.formattedValues,
   });
   return res.data;
@@ -21,17 +21,16 @@ const draftQuiz = async (data) => {
 const DeletedraftQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/draft/${data.quizIdDraft}`,
-    method: "DELETE",
+    method: 'DELETE',
     data: data,
   });
   return res.data;
 };
 
-
 const viewQuizTemplates = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/templates`,
-    method: "GET",
+    method: 'GET',
     data: data,
   });
   return res.data;
@@ -40,7 +39,7 @@ const viewQuizTemplates = async (data) => {
 const deleteQuizTempplate = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/templates/${data.quizTemplateId}`,
-    method: "DELETE",
+    method: 'DELETE',
     data: data,
   });
   return res.data;
@@ -49,7 +48,7 @@ const deleteQuizTempplate = async (data) => {
 const updateQuizTemplate = (data) => {
   return axiosInstance({
     url: `/e-learning/quiz/templates/${data.quizTemplateId}`,
-    method: "PUT",
+    method: 'PUT',
     data: data.formattedValues,
   });
 };
@@ -57,7 +56,7 @@ const updateQuizTemplate = (data) => {
 const viewQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/course/${data.courseIds}/quizzes`,
-    method: "GET",
+    method: 'GET',
   });
   return res.data;
 };
@@ -65,7 +64,7 @@ const viewQuiz = async (data) => {
 const getDraftQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/draft-quiz`,
-    method: "GET",
+    method: 'GET',
   });
   return res.data;
 };
@@ -73,7 +72,7 @@ const getDraftQuiz = async (data) => {
 const viewQuizInfo = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/course/${data.courseIds}/info-quizz`,
-    method: "GET",
+    method: 'GET',
   });
   return res.data;
 };
@@ -81,7 +80,7 @@ const viewQuizInfo = async (data) => {
 const startQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}/start`,
-    method: "POST",
+    method: 'POST',
   });
   return res.data;
 };
@@ -90,7 +89,7 @@ const getQuizzesByStudentAndCourse = async (data) => {
   try {
     const res = await axiosInstance({
       url: `/e-learning/course/${data.courseId}/list-quizzes`,
-      method: "GET",
+      method: 'GET',
     });
     return res;
   } catch (error) {
@@ -101,13 +100,13 @@ const getQuizzesByStudentAndCourse = async (data) => {
 
 const uploadFileQuiz = async (data) => {
   const formData = new FormData();
-  formData.append("filename", data.filename);
+  formData.append('filename', data.filename);
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}/upload-file`,
-    method: "POST",
+    method: 'POST',
     data: formData,
     headers: {
-      "Content-Type": "multipart/form-data",
+      'Content-Type': 'multipart/form-data',
     },
   });
   return res.data;
@@ -115,13 +114,13 @@ const uploadFileQuiz = async (data) => {
 
 const uploadQuestionImage = async (data) => {
   const formData = new FormData();
-  formData.append("filename", data.filename);
+  formData.append('filename', data.filename);
   const res = await axiosInstance({
     url: `/e-learning/quiz/upload-image-question`,
-    method: "POST",
+    method: 'POST',
     data: data,
     headers: {
-      "Content-Type": "multipart/form-data",
+      'Content-Type': 'multipart/form-data',
     },
   });
   return res.data;
@@ -129,13 +128,13 @@ const uploadQuestionImage = async (data) => {
 
 const uploadFileUserSubmit = async (data) => {
   const formData = new FormData();
-  formData.append("filename", data.filename);
+  formData.append('filename', data.filename);
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}/upload-file-user`,
-    method: "POST",
+    method: 'POST',
     data: formData,
     headers: {
-      "Content-Type": "multipart/form-data",
+      'Content-Type': 'multipart/form-data',
     },
   });
   return res.data;
@@ -144,7 +143,7 @@ const uploadFileUserSubmit = async (data) => {
 const getOneQuizInfo = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}`,
-    method: "GET",
+    method: 'GET',
   });
   return res.data;
 };
@@ -152,7 +151,7 @@ const getOneQuizInfo = async (data) => {
 const viewAQuizForUserScreen = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quizForUserScreen/${data.quizId}`,
-    method: "GET",
+    method: 'GET',
   });
   return res.data;
 };
@@ -160,7 +159,7 @@ const viewAQuizForUserScreen = async (data) => {
 const viewAQuizTemplate = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz-template/${data.quizTemplateId}`,
-    method: "GET",
+    method: 'GET',
   });
   return res.data;
 };
@@ -168,7 +167,7 @@ const viewAQuizTemplate = async (data) => {
 const updateQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}`,
-    method: "PUT",
+    method: 'PUT',
     data: data.formattedValues,
   });
   return res.data;
@@ -177,7 +176,7 @@ const updateQuiz = async (data) => {
 const updateTimeSubmitQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/time-submit/quiz/${data.quizId}`,
-    method: "PUT",
+    method: 'PUT',
     data: data,
   });
   return res.data;
@@ -186,7 +185,7 @@ const updateTimeSubmitQuiz = async (data) => {
 const deleteQuizQuestion = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}/question/${data.questionId}`,
-    method: "DELETE",
+    method: 'DELETE',
   });
   return res.data;
 };
@@ -194,7 +193,7 @@ const deleteQuizQuestion = async (data) => {
 const deleteQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}`,
-    method: "DELETE",
+    method: 'DELETE',
   });
   return res.data;
 };
@@ -202,16 +201,16 @@ const deleteQuiz = async (data) => {
 const deleteQuestionImage = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/delete-image-question`,
-    method: "DELETE",
+    method: 'DELETE',
     data: data,
   });
   return res.data;
-}
+};
 
 const deleteScorebyQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/score/${data.scoreId}/delete-score`,
-    method: "DELETE",
+    method: 'DELETE',
   });
   return res.data;
 };
@@ -219,7 +218,7 @@ const deleteScorebyQuiz = async (data) => {
 const getQuizsByCourse = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/course/${data.courseId}/quizzes`,
-    method: "GET",
+    method: 'GET',
   });
   return res.data;
 };
@@ -227,7 +226,7 @@ const getQuizsByCourse = async (data) => {
 const getScoreByQuizId = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}/all-score`,
-    method: "GET",
+    method: 'GET',
   });
   return res.data;
 };
@@ -235,7 +234,7 @@ const getScoreByQuizId = async (data) => {
 const submitQuiz = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}/submit`,
-    method: "POST",
+    method: 'POST',
     data: data,
   });
   return res.data;
@@ -244,7 +243,7 @@ const submitQuiz = async (data) => {
 const submitQuizEssay = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/quiz/${data.quizId}/submit-essay`,
-    method: "POST",
+    method: 'POST',
     data: data,
   });
   return res.data;
@@ -253,7 +252,7 @@ const submitQuizEssay = async (data) => {
 const getScore = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/score`,
-    method: "GET",
+    method: 'GET',
     data: data,
   });
   return res.data;
@@ -262,7 +261,7 @@ const getScore = async (data) => {
 const getScoreByInfo = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/info-score`,
-    method: "GET",
+    method: 'GET',
     data: data,
   });
   return res.data;
@@ -271,7 +270,7 @@ const getScoreByInfo = async (data) => {
 const getScoreByUserId = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/${data.quizId}/${data.userId}/score`,
-    method: "GET",
+    method: 'GET',
     data: data,
   });
   return res.data;
@@ -280,7 +279,7 @@ const getScoreByUserId = async (data) => {
 const getAllScoresByCourseId = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/get-all-score/${data.courseId}`,
-    method: "GET",
+    method: 'GET',
     data: data,
   });
   return res.data;
@@ -289,7 +288,7 @@ const getAllScoresByCourseId = async (data) => {
 const updateScore = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/score/update`,
-    method: "PUT",
+    method: 'PUT',
     data: data,
   });
   return res.data;
@@ -298,7 +297,7 @@ const updateScore = async (data) => {
 const getSubmissionTimeLatestQuizByCourseId = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/course/${data.courseId}/quizzeLatesSubmissionTime`,
-    method: "GET",
+    method: 'GET',
     data: data,
   });
   return res.data;
@@ -307,37 +306,55 @@ const getSubmissionTimeLatestQuizByCourseId = async (data) => {
 const getInfoCommonScoreByUserId = async (data) => {
   const res = await axiosInstance({
     url: `/e-learning/score/quizzeLatesInfoCommon`,
-    method: "GET",
+    method: 'GET',
     data: data,
   });
   return res.data;
 };
 
 const getAllUserFinishedCourse = async (data) => {
-    const res = await axiosInstance({
-        url: `/e-learning/userFinishedCourses/${data._id}`,
-        method: "GET",
-        data: data,
-    });
-    return res.data;
-}
+  const res = await axiosInstance({
+    url: `/e-learning/userFinishedCourses/${data._id}`,
+    method: 'GET',
+    data: data,
+  });
+  return res.data;
+};
 
 const getTestCount = async (userId) => {
   const res = await axiosInstance({
-      url: `/e-learning/quiz/getTestCount/${userId}`,
-      method: "GET",
+    url: `/e-learning/quiz/getTestCount/${userId}`,
+    method: 'GET',
   });
   return res.data;
-}
+};
 
-const getUserTested = async (quizId) => {
+const activeQuizPresent = async (data) => {
+  console.log(data, 'datadata');
   const res = await axiosInstance({
-      url: `/e-learning/quiz/${quizId}/user-tested`,
-      method: "GET",
+    url: '/e-learning/quiz-active-present/active-quiz-present',
+    method: 'PUT',
+    data: data,
   });
   return res.data;
-}
+};
 
+const getActiveQuizPresent = async () => {
+  const res = await axiosInstance({
+    url: '/e-learning/get-active-quiz-present',
+    method: 'GET',
+  });
+  return res.data;
+};
+
+const getScoreByQuizIds = async (data) => {
+  const res = await axiosInstance({
+    url: '/e-learning/score-all-quiz',
+    method: 'POST',
+    data: data,
+  });
+  return res.data;
+};
 
 export const QuizService = {
   createQuiz,
@@ -375,6 +392,8 @@ export const QuizService = {
   getInfoCommonScoreByUserId,
   getAllUserFinishedCourse,
   getTestCount,
-  getUserTested,
-  updateTimeSubmitQuiz
+  updateTimeSubmitQuiz,
+  activeQuizPresent,
+  getActiveQuizPresent,
+  getScoreByQuizIds
 };

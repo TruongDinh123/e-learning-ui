@@ -1,15 +1,7 @@
 'use client';
-import {
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  Row,
-  Grid,
-  InputNumber,
-} from 'antd';
+import {Col, DatePicker, Form, Input, Row, Grid, InputNumber} from 'antd';
 import 'react-quill/dist/quill.snow.css';
-import { memo } from 'react';
+import {memo} from 'react';
 
 const QuestionHead = ({isTemplateMode}) => {
   const {useBreakpoint} = Grid;
@@ -19,7 +11,7 @@ const QuestionHead = ({isTemplateMode}) => {
   return (
     <Row utter={{xs: 8, sm: 16, md: 24, lg: 32}}>
       <Col xs={24} sm={12} md={8} lg={6}>
-        <Form.Item label='Tên bài tập' name='name' className='w-full'>
+        <Form.Item label='Tên bài tập' name='name' className='w-full' required>
           <Input placeholder='Nhập tên bài tập' className='w-full' />
         </Form.Item>
       </Col>

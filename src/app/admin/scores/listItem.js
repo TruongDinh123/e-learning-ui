@@ -5,17 +5,18 @@ import ModalDetailQuiz from './modalDetailQuiz';
 import moment from 'moment';
 
 const ListItem = ({userTested}) => {
-  const scores = useSelector((state) => state.quiz.scoreByQuizIdInfo);
+  const allscoreQuiz = useSelector((state) => state.quiz.allscoreQuiz);
   const [selectTestNumData, setSelectTestNumData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scoreCurrentInfo, setScoreCurrentInfo] = useState(null);
 
+  console.log(allscoreQuiz, 'scoresscoresscorListItemes');
   const handleCancel = () => {
     setIsModalOpen(false);
   };
   useEffect(() => {
-    if (scores) {
-      const scoresUser = scores
+    if (allscoreQuiz && allscoreQuiz.length) {
+      const scoresUser = allscoreQuiz
         .filter((score) => score.user._id === userTested._id)
         .sort((item1, item2) => item1.orderNum - item2.orderNum);
       const dataSelectInit = scoresUser.map((item) => ({
@@ -24,13 +25,13 @@ const ListItem = ({userTested}) => {
       }));
       setSelectTestNumData(dataSelectInit);
       const scoreCurrentId = scoreCurrentInfo?._id || dataSelectInit[0].value;
-      const scoreInfo = scores.find((item) => item._id === scoreCurrentId);
+      const scoreInfo = allscoreQuiz.find((item) => item._id === scoreCurrentId);
       setScoreCurrentInfo(scoreInfo);
     }
-  }, [scoreCurrentInfo?._id, scores, userTested._id]);
+  }, [scoreCurrentInfo?._id, allscoreQuiz, userTested._id]);
 
   const handleChange = (value) => {
-    const scoreInfo = scores.find((item) => item._id === value);
+    const scoreInfo = allscoreQuiz.find((item) => item._id === value);
     setScoreCurrentInfo(scoreInfo);
   };
 
@@ -48,7 +49,7 @@ const ListItem = ({userTested}) => {
             style={{
               width: 140,
             }}
-            loading={!!!scores}
+            loading={!!!allscoreQuiz}
             value={scoreCurrentInfo?._id}
             onChange={handleChange}
             placeholder='Search to Select'

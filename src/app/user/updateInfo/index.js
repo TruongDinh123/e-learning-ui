@@ -237,13 +237,13 @@ const UpdateInfo = () => {
                 Ngày sinh
               </label>
               <DatePicker
-                size='large'
-                className='mb-3 w-full'
-                value={formik.values.dob}
+                size="large"
+                className="mb-3 w-full"
                 onChange={(date, dateString) =>
-                  formik.setFieldValue('dob', dateString)
+                  formik.setFieldValue("dob", dateString)
                 }
-                onBlur={formik.handleBlur('dob')}
+                onBlur={formik.handleBlur("dob")}
+                value={formik.values.dob ? moment(formik.values.dob) : null}
               />
               {formik.submitCount > 0 &&
               formik.touched.dob &&

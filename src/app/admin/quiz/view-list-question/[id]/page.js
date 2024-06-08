@@ -140,6 +140,9 @@ export default function ViewListQuestion({params}) {
                                           src={question.image_url}
                                           alt={`Câu hỏi ${questionIndex + 1}`}
                                           className='max-w-auto'
+                                          style={{
+                                            maxWidth: '50%'
+                                          }}
                                         />
                                       </div>
                                     )}

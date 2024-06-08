@@ -1,5 +1,5 @@
-"use client";
-import React, { useEffect, useState, useRef } from "react";
+'use client';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   Button,
   message,
@@ -7,22 +7,22 @@ import {
   Statistic,
   Breadcrumb,
   Modal,
-  Input, Tooltip
-} from "antd";
-import { getScore, submitQuiz, getOneQuizInfo } from "@/features/Quiz/quizSlice";
-import {
-  getCourseSummary,
-} from "@/features/Courses/courseSlice";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { useDispatch, useSelector } from "react-redux";
-import Link from "next/link";
-import "react-quill/dist/quill.snow.css";
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-const logo = "/images/logoimg.jpg";
+  Input,
+  Tooltip,
+  Image,
+} from 'antd';
+import {getScore, submitQuiz, getOneQuizInfo} from '@/features/Quiz/quizSlice';
+import {getCourseSummary} from '@/features/Courses/courseSlice';
+import {unwrapResult} from '@reduxjs/toolkit';
+import {useDispatch, useSelector} from 'react-redux';
+import Link from 'next/link';
+import 'react-quill/dist/quill.snow.css';
+import {CheckOutlined, CloseOutlined} from '@ant-design/icons';
+const logo = '/images/logoimg.jpg';
 import debounce from 'lodash.debounce';
-import { useRouter } from 'next/navigation';
+import {useRouter} from 'next/navigation';
 
-export default function Quizs({ params }) {
+export default function Quizs({params}) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [quiz, setquiz] = useState([]);
   const dispatch = useDispatch();
@@ -42,23 +42,24 @@ export default function Quizs({ params }) {
   const [predictAmountMaxScore, onChangePredictAmountMaxScore] = useState('');
   const [course, setCourse] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [initialSize, setInitialSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+  const [initialSize, setInitialSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
   const [hasWarned, setHasWarned] = useState(false);
   const resizeTimeoutRef = useRef(null);
   const router = useRouter();
 
-  const courseCurrent = useSelector(
-    (state) => state.course.courseInfo
-  )
+  const quizCurrent = useSelector((state) => state.course.courseInfo);
 
   const quizzesByStudentState = useSelector(
     (state) => state.quiz.getQuizzesByStudentAndCourse.metadata
   );
 
   // lấy id khóa học để call api lấy ảnh khóa học
-  const courseIds = quiz.map(quiz => quiz.courseIds[0]._id);
+  const courseIds = quiz.map((quiz) => quiz.courseIds[0]._id);
   // lấy tên khóa học
-  const courseName = quiz.map(quiz => quiz.courseIds[0].name);
+  const courseName = quiz.map((quiz) => quiz.courseIds[0].name);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -84,12 +85,12 @@ export default function Quizs({ params }) {
     }
   }, [dispatch, courseIds, isLoading]);
 
-  useEffect(()=>{
+  useEffect(() => {
     setInitialSize({
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
     });
-  },[])
+  }, []);
 
   useEffect(() => {
     const tolerance = 1;
@@ -99,44 +100,59 @@ export default function Quizs({ params }) {
     };
 
     const handleResize = debounce(() => {
-      const widthChangeWithinTolerance = sizeWithinTolerance(window.innerWidth, initialSize.width);
-      const heightChangeWithinTolerance = sizeWithinTolerance(window.innerHeight, initialSize.height);
+      const widthChangeWithinTolerance = sizeWithinTolerance(
+        window.innerWidth,
+        initialSize.width
+      );
+      const heightChangeWithinTolerance = sizeWithinTolerance(
+        window.innerHeight,
+        initialSize.height
+      );
 
-      const isSizeChanged = (widthChangeWithinTolerance || heightChangeWithinTolerance);
+      const isSizeChanged =
+        widthChangeWithinTolerance || heightChangeWithinTolerance;
 
-      if (isSizeChanged){
-        if (hasWarned){
+      if (isSizeChanged) {
+        if (hasWarned) {
           // do nothing
-
-        }
-        else {
-          setHasWarned(true); 
-          if (!resizeTimeoutRef.current){
-            messageApi.error("Bạn có dấu hiệu vi phạm. Vui lòng resize như cũ. Nếu 10s nữa bạn chưa thực hiện, bài thi sẽ kết thúc.");
+        } else {
+          setHasWarned(true);
+          if (!resizeTimeoutRef.current) {
+            messageApi.error(
+              'Bạn có dấu hiệu vi phạm. Vui lòng resize như cũ. Nếu 10s nữa bạn chưa thực hiện, bài thi sẽ kết thúc.'
+            );
             resizeTimeoutRef.current = setTimeout(() => {
-              const widthChangeWithinTolerance = sizeWithinTolerance(window.innerWidth, initialSize.width);
-              const heightChangeWithinTolerance = sizeWithinTolerance(window.innerHeight, initialSize.height);
-  
+              const widthChangeWithinTolerance = sizeWithinTolerance(
+                window.innerWidth,
+                initialSize.width
+              );
+              const heightChangeWithinTolerance = sizeWithinTolerance(
+                window.innerHeight,
+                initialSize.height
+              );
+
               if (widthChangeWithinTolerance || heightChangeWithinTolerance) {
-                messageApi.error("Bạn vẫn chưa trả màn hình như cũ. Hệ thống sẽ nộp bài trong 10s nữa.");
-                setTimeout(()=>{
+                messageApi.error(
+                  'Bạn vẫn chưa trả màn hình như cũ. Hệ thống sẽ nộp bài trong 10s nữa.'
+                );
+                setTimeout(() => {
                   handleSubmit();
-                },10000)
-              }
-              else {
-                messageApi.success("Bạn đã trả về màn hình như cũ. Tiếp tục thi.");
+                }, 10000);
+              } else {
+                messageApi.success(
+                  'Bạn đã trả về màn hình như cũ. Tiếp tục thi.'
+                );
               }
               resizeTimeoutRef.current = null;
               setHasWarned(false);
             }, 10000);
           }
         }
-      };
-      
-    },100);
+      }
+    }, 100);
 
     window.addEventListener('resize', handleResize);
-  },[]);
+  }, []);
 
   //fetch API
   useEffect(() => {
@@ -151,7 +167,7 @@ export default function Quizs({ params }) {
         } else {
           // Nếu không có trong store, fetch từ API
           const quizResult = await dispatch(
-            getOneQuizInfo({ quizId: params?.id })
+            getOneQuizInfo({quizId: params?.id})
           ).then(unwrapResult);
           if (quizResult.status) {
             setquiz(quizResult.metadata);
@@ -167,8 +183,16 @@ export default function Quizs({ params }) {
           );
           if (completedQuiz) {
             if (completedQuiz.isComplete) {
-              onChangePredictAmount(completedQuiz.predictAmount ? completedQuiz.predictAmount.toString() : "0")
-              onChangePredictAmountMaxScore(completedQuiz.predictAmountMaxScore ? completedQuiz.predictAmountMaxScore.toString() : "0")
+              onChangePredictAmount(
+                completedQuiz.predictAmount
+                  ? completedQuiz.predictAmount.toString()
+                  : '0'
+              );
+              onChangePredictAmountMaxScore(
+                completedQuiz.predictAmountMaxScore
+                  ? completedQuiz.predictAmountMaxScore.toString()
+                  : '0'
+              );
             }
             setStartTime(completedQuiz.startTime);
             setIsComplete(completedQuiz.isComplete);
@@ -207,7 +231,7 @@ export default function Quizs({ params }) {
   };
 
   useEffect(() => {
-    const savedAnswers = localStorage.getItem("quizAnswers");
+    const savedAnswers = localStorage.getItem('quizAnswers');
     if (savedAnswers) {
       setSelectedAnswers(JSON.parse(savedAnswers));
     }
@@ -215,19 +239,19 @@ export default function Quizs({ params }) {
 
   const handleAnswer = (questionId, answer) => {
     setSelectedAnswers((prevAnswers) => {
-      const newAnswers = { ...prevAnswers, [questionId]: answer };
-      localStorage.setItem("quizAnswers", JSON.stringify(newAnswers));
+      const newAnswers = {...prevAnswers, [questionId]: answer};
+      localStorage.setItem('quizAnswers', JSON.stringify(newAnswers));
       return newAnswers;
     });
   };
 
   useEffect(() => {
     if (isComplete) {
-      localStorage.removeItem("quizStartTime");
+      localStorage.removeItem('quizStartTime');
     } else {
       const startTime =
-        localStorage.getItem("quizStartTime") || new Date().toISOString();
-      localStorage.setItem("quizStartTime", startTime);
+        localStorage.getItem('quizStartTime') || new Date().toISOString();
+      localStorage.setItem('quizStartTime', startTime);
       setStartTime(startTime);
     }
   }, [isComplete]);
@@ -237,7 +261,7 @@ export default function Quizs({ params }) {
   const handleSubmit = async () => {
     let savedAnswers = selectedAnswers;
     if (Object.keys(savedAnswers).length === 0) {
-      const savedAnswersStr = localStorage.getItem("quizAnswers");
+      const savedAnswersStr = localStorage.getItem('quizAnswers');
       if (savedAnswersStr) {
         savedAnswers = JSON.parse(savedAnswersStr) || {};
       }
@@ -252,26 +276,31 @@ export default function Quizs({ params }) {
     setSubmitting(true);
     try {
       const res = await dispatch(
-        submitQuiz({ quizId: idQuiz, answer: formattedAnswers, predictAmount, predictAmountMaxScore })
+        submitQuiz({
+          quizId: idQuiz,
+          answer: formattedAnswers,
+          predictAmount,
+          predictAmountMaxScore,
+        })
       ).then(unwrapResult);
       if (res.status) {
         await messageApi.open({
-          type: "Thành công",
-          content: "Đang nộp bài...",
-          style: { fontSize: "25px" },
+          type: 'Thành công',
+          content: 'Đang nộp bài...',
+          style: {fontSize: '25px'},
         });
         setQuizSubmission(res.metadata);
         setSubmitted(true);
         setShowCountdown(false);
-        localStorage.removeItem("quizAnswers");
-        localStorage.removeItem("quizStartTime");
+        localStorage.removeItem('quizAnswers');
+        localStorage.removeItem('quizStartTime');
         router.push('/');
       } else {
         messageApi.error(res.message);
       }
     } catch (error) {
-      console.error("Error submitting quiz:", error);
-      messageApi.error("Lỗi khi nộp bài.");
+      console.error('Error submitting quiz:', error);
+      messageApi.error('Lỗi khi nộp bài.');
     } finally {
       setSubmitting(false);
     }
@@ -279,14 +308,14 @@ export default function Quizs({ params }) {
 
   const showConfirmSubmit = () => {
     Modal.confirm({
-      title: "Bạn có chắc chắn muốn nộp bài?",
-      content: "Một khi đã nộp, bạn không thể chỉnh sửa các câu trả lời.",
-      okText: "Nộp bài",
-      cancelText: "Hủy bỏ",
+      title: 'Bạn có chắc chắn muốn nộp bài?',
+      content: 'Một khi đã nộp, bạn không thể chỉnh sửa các câu trả lời.',
+      okText: 'Nộp bài',
+      cancelText: 'Hủy bỏ',
       onOk() {
         handleSubmit();
       },
-      okButtonProps: { className: "custom-button" },
+      okButtonProps: {className: 'custom-button'},
     });
   };
 
@@ -305,7 +334,7 @@ export default function Quizs({ params }) {
           setDeadline(null);
           setShowCountdown(false);
           messageApi.error(
-            "Thời gian làm bài đã hết. Bài quiz của bạn sẽ được tự động nộp."
+            'Thời gian làm bài đã hết. Bài quiz của bạn sẽ được tự động nộp.'
           );
           handleSubmit();
         }
@@ -358,25 +387,28 @@ export default function Quizs({ params }) {
   const isTimeExceeded = currentTime > submissionTime;
   const formatNumber = (value) => new Intl.NumberFormat().format(value);
   const handleChangeInputNumber = (e) => {
-    const { value: inputValue } = e.target;
+    const {value: inputValue} = e.target;
     const reg = /^-?\d*(\.\d*)?$/;
     if (reg.test(inputValue) || inputValue === '' || inputValue === '-') {
       onChangePredictAmount(inputValue);
     }
   };
 
-  const handleChangePredictAmountScore = e => {
-    const { value: inputValue } = e.target;
+  const handleChangePredictAmountScore = (e) => {
+    const {value: inputValue} = e.target;
     const reg = /^-?\d*(\.\d*)?$/;
     if (reg.test(inputValue) || inputValue === '' || inputValue === '-') {
       onChangePredictAmountMaxScore(inputValue);
     }
-  }
+  };
 
   // '.' at the end or only '-' in the input box.
   const handleBlurInputNumber = () => {
     let valueTemp = predictAmount;
-    if (predictAmount.charAt(predictAmount.length - 1) === '.' || predictAmount === '-') {
+    if (
+      predictAmount.charAt(predictAmount.length - 1) === '.' ||
+      predictAmount === '-'
+    ) {
       valueTemp = predictAmount.slice(0, -1);
     }
     onChangePredictAmount(valueTemp.replace(/0*(\d+)/, '$1'));
@@ -384,22 +416,31 @@ export default function Quizs({ params }) {
 
   const handleBlurPredictAmountScore = () => {
     let valueTemp = predictAmountMaxScore;
-    if (predictAmountMaxScore.charAt(predictAmountMaxScore.length - 1) === '.' || predictAmountMaxScore === '-') {
+    if (
+      predictAmountMaxScore.charAt(predictAmountMaxScore.length - 1) === '.' ||
+      predictAmountMaxScore === '-'
+    ) {
       valueTemp = predictAmountMaxScore.slice(0, -1);
     }
     onChangePredictAmountMaxScore(valueTemp.replace(/0*(\d+)/, '$1'));
   };
 
   const titleInputNumber = predictAmount ? (
-      <span className="numeric-input-title">{predictAmount !== '-' ? formatNumber(Number(predictAmount)) : '-'}</span>
+    <span className='numeric-input-title'>
+      {predictAmount !== '-' ? formatNumber(Number(predictAmount)) : '-'}
+    </span>
   ) : (
-      'Hãy nhập con số dự đoán'
+    'Hãy nhập con số dự đoán'
   );
 
   const titleInputNumberMaxScore = predictAmountMaxScore ? (
-      <span className="numeric-input-title">{predictAmountMaxScore !== '-' ? formatNumber(Number(predictAmountMaxScore)) : '-'}</span>
+    <span className='numeric-input-title'>
+      {predictAmountMaxScore !== '-'
+        ? formatNumber(Number(predictAmountMaxScore))
+        : '-'}
+    </span>
   ) : (
-      'Hãy nhập con số dự đoán'
+    'Hãy nhập con số dự đoán'
   );
 
   const isLastPage = quiz[0]?.questions?.length <= indexOfLastQuestion;
@@ -407,19 +448,21 @@ export default function Quizs({ params }) {
     const predictedFirst = predictAmount.length !== 0;
     const predictedSecond = predictAmountMaxScore.length !== 0;
 
-    return Object.keys(selectedAnswers).length + predictedFirst + predictedSecond
-  }
+    return (
+      Object.keys(selectedAnswers).length + predictedFirst + predictedSecond
+    );
+  };
 
   return (
-    <div className="bg-blue-200 p-4">
+    <div className='bg-blue-200 p-4'>
       {loading ? null : (
         <>
           {showCountdown && !isComplete && deadline && (
             <>
-              <a className="fixedButton flex" href="javascript:void(0)">
-                <div className="roundedFixedBtn flex">
+              <a className='fixedButton flex' href='javascript:void(0)'>
+                <div className='roundedFixedBtn flex'>
                   <Statistic.Countdown
-                    style={{ color: "white" }}
+                    style={{color: 'white'}}
                     value={deadline}
                     onFinish={handleSubmit}
                   />
@@ -429,15 +472,15 @@ export default function Quizs({ params }) {
           )}
         </>
       )}
-      <Breadcrumb className="pb-4 pt-24 ">
-        <Breadcrumb.Item key="homepage">
-          <Link href="/">Trang chủ</Link>
+      <Breadcrumb className='pb-4 pt-24 '>
+        <Breadcrumb.Item key='homepage'>
+          <Link href='/'>Trang chủ</Link>
         </Breadcrumb.Item>
         {quiz?.map((quiz, quizIndex) => (
           <>
             <Breadcrumb.Item key={quizIndex}>
               <Link
-                className="font-bold"
+                className='font-bold'
                 href={`/user/exem-online/${
                   quiz.courseIds[0]?._id || quiz.lessonId?.courseId?._id
                 }`}
@@ -446,67 +489,70 @@ export default function Quizs({ params }) {
               </Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              <span className="font-bold"> {quiz.name}</span>
+              <span className='font-bold'> {quiz.name}</span>
             </Breadcrumb.Item>
           </>
         ))}
       </Breadcrumb>
-      <div className="pb-48 flex justify-center items-center bg-blue-200">
-        <div className="w-full md:w-2/3 lg:w-1/2">
+      <div className='pb-48 flex justify-center items-center bg-blue-200'>
+        <div className='w-full md:w-2/3 lg:w-1/2'>
           {contextHolder}
           {loading ? (
-            <div className="flex justify-center items-center h-screen">
+            <div className='flex justify-center items-center h-screen'>
               <Spin />
             </div>
           ) : (
             <React.Fragment>
               {quiz.map((item, index) => (
                 <React.Fragment key={index}>
-                  <div className="sticky top-16 z-40 bg-white shadow-md p-2 mb-4 flex items-center justify-between">
-                    <div className="flex items-center">
+                  <div className='sticky top-16 z-40 bg-white shadow-md p-2 mb-4 flex items-center justify-between'>
+                    <div className='flex items-center'>
                       <img
-                        src={course?.image_url || courseCurrent?.image_url || logo}
-                        alt="School Logo"
-                        className="h-20 w-20 mr-3"
+                        src={
+                          course?.image_url || quizCurrent?.image_url || logo
+                        }
+                        alt='School Logo'
+                        className='h-20 w-20 mr-3'
                       />
-                      <h2 className="text-xl font-semibold text-gray-800 text-center">
+                      <h2 className='text-xl font-semibold text-gray-800 text-center'>
                         {courseName}
                       </h2>
                     </div>
-                    <div className="flex items-center">
-                      {
-                        !isComplete && (
-                              <div className="mr-4 text-lg font-semibold text-gray-700 text-center" >
-                                Số câu đã hoàn thành:
-                                <span className="text-black" style={{marginLeft: '5px'}}>
-                          {completedAmount()}
-                        </span>
-                                /
-                                <span className="text-black">
-                          {quiz[0]?.questions?.length + 2}
-                        </span>
-                              </div>
-                          )
-                      }
+                    <div className='flex items-center'>
+                      {!isComplete && (
+                        <div className='mr-4 text-lg font-semibold text-gray-700 text-center'>
+                          Số câu đã hoàn thành:
+                          <span
+                            className='text-black'
+                            style={{marginLeft: '5px'}}
+                          >
+                            {completedAmount()}
+                          </span>
+                          /
+                          <span className='text-black'>
+                            {quiz[0]?.questions?.length + 2}
+                          </span>
+                        </div>
+                      )}
 
                       {!isTimeExceeded && !submitted && !isComplete && (
                         <Button
                           loading={submitting}
                           onClick={showConfirmSubmit}
-                          size="large"
-                          className="mr-3 px-4 text-center bg-purple-500 text-white font-bold rounded hover:bg-purple-600 transition duration-300"
+                          size='large'
+                          className='mr-3 px-4 text-center bg-purple-500 text-white font-bold rounded hover:bg-purple-600 transition duration-300'
                         >
                           Nộp bài
                         </Button>
                       )}
                     </div>
                   </div>
-                  <div className="card bg-white shadow-lg rounded-lg p-6 mb-4">
-                    <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                  <div className='card bg-white shadow-lg rounded-lg p-6 mb-4'>
+                    <h2 className='text-xl font-semibold text-gray-800 mb-4'>
                       {item.name}
                     </h2>
                     {showCountdown && !isComplete && deadline && (
-                      <div className="text-red-500 mb-4">
+                      <div className='text-red-500 mb-4'>
                         <p>
                           Lưu ý: Đừng thoát ra khỏi trang khi thời gian làm bài
                           chưa kết thúc.
@@ -523,11 +569,11 @@ export default function Quizs({ params }) {
                       return (
                         <div
                           key={questionIndex}
-                          className="border-t border-gray-200 pt-4 mt-4 first:border-t-0 first:mt-0"
+                          className='border-t border-gray-200 pt-4 mt-4 first:border-t-0 first:mt-0'
                         >
-                          <div className="mb-2">
-                            <span className="font-medium text-black">
-                              Câu {actualQuestionIndex}:{" "}
+                          <div className='mb-2'>
+                            <span className='font-medium text-black'>
+                              Câu {actualQuestionIndex}:{' '}
                             </span>
                             <span
                               dangerouslySetInnerHTML={{
@@ -536,15 +582,18 @@ export default function Quizs({ params }) {
                             />
                           </div>
                           {question.image_url && (
-                            <div className="mb-2">
-                              <img
+                            <div className='mb-2'>
+                              <Image
                                 src={question.image_url}
                                 alt={`Câu hỏi ${actualQuestionIndex}`}
-                                className="max-w-full h-auto rounded-lg shadow"
+                                className='max-w-full h-auto rounded-lg shadow'
+                                style={{
+                                  maxWidth: '50%'
+                                }}
                               />
                             </div>
                           )}
-                          <div className="space-y-2 pb-2">
+                          <div className='space-y-2 pb-2'>
                             {question.options.map((option) => (
                               <label
                                 key={option}
@@ -552,16 +601,16 @@ export default function Quizs({ params }) {
                                   submitted || isComplete
                                     ? answersStatus[question._id] === true &&
                                       option === studentAnswer
-                                      ? "text-green-500"
+                                      ? 'text-green-500'
                                       : answersStatus[question._id] === false &&
                                         option === studentAnswer
-                                      ? "text-red-500"
-                                      : ""
-                                    : ""
+                                      ? 'text-red-500'
+                                      : ''
+                                    : ''
                                 }`}
                               >
                                 <input
-                                  type="radio"
+                                  type='radio'
                                   name={`question-${question._id}`}
                                   value={option}
                                   onChange={(e) =>
@@ -570,91 +619,104 @@ export default function Quizs({ params }) {
                                   checked={option === studentAnswer}
                                   disabled={submitted || isComplete}
                                 />
-                                <span className="ml-2 text-gray-700">
+                                <span className='ml-2 text-gray-700'>
                                   {option}
                                 </span>
                                 {submitted || isComplete ? (
-                                  <span className="form-radio-icon">
+                                  <span className='form-radio-icon'>
                                     {answersStatus[question._id] === true &&
                                     option === studentAnswer ? (
-                                      <CheckOutlined style={{ marginLeft: '8px' }} />
+                                      <CheckOutlined
+                                        style={{marginLeft: '8px'}}
+                                      />
                                     ) : (
                                       answersStatus[question._id] === false &&
                                       option === studentAnswer && (
-                                        <CloseOutlined style={{ marginLeft: '8px' }} />
+                                        <CloseOutlined
+                                          style={{marginLeft: '8px'}}
+                                        />
                                       )
                                     )}
                                   </span>
                                 ) : (
-                                  <span className="form-radio-placeholder"></span>
+                                  <span className='form-radio-placeholder'></span>
                                 )}
                               </label>
                             ))}
                           </div>
-                          <div className="text-blue-500">
-                            Câu trả lời của bạn:{" "}
-                            {studentAnswer || "Chưa trả lời"}
+                          <div className='text-blue-500'>
+                            Câu trả lời của bạn:{' '}
+                            {studentAnswer || 'Chưa trả lời'}
                           </div>
                         </div>
                       );
                     })}
 
-                    {
-                        isLastPage &&
-                        <>
-                          <div className="flex items-center justify-content-md-start  border-t border-gray-200 pt-4 mt-4 first:border-t-0 first:mt-0">
-                          <span className="font-medium text-black">
-                              Câu {quiz[0]?.questions?.length + 1}: {" "}
-                            </span>
-                            <div className="text-purple-950 font-bold mr-5 ml-1">
-                              Dự đoán số người tham dự:
-                            </div>
-
-                            <Tooltip trigger={['focus']} title={titleInputNumber} placement="topLeft" overlayClassName="numeric-input">
-                              <Input
-                                  onChange={handleChangeInputNumber}
-                                  onBlur={handleBlurInputNumber}
-                                  placeholder="Nhập chữ số"
-                                  maxLength={16}
-                                  disabled={submitted || isComplete}
-                                  value={predictAmount}
-                                  style={{
-                                    width: 200,
-                                  }}
-                              />
-                            </Tooltip>
+                    {isLastPage && (
+                      <>
+                        <div className='flex items-center justify-content-md-start  border-t border-gray-200 pt-4 mt-4 first:border-t-0 first:mt-0'>
+                          <span className='font-medium text-black'>
+                            Câu {quiz[0]?.questions?.length + 1}:{' '}
+                          </span>
+                          <div className='text-purple-950 font-bold mr-5 ml-1'>
+                            Dự đoán số người tham dự:
                           </div>
 
-                          <div className="flex items-center justify-content-md-start  border-t border-gray-200 pt-4 mt-4 first:border-t-0 first:mt-0">
-                          <span className="font-medium text-black">
-                              Câu {quiz[0]?.questions?.length + 2}:
-                            </span>
-                            <div className="text-purple-950 font-bold mr-5 ml-1">
-                              Dự đoán số người trả lời đúng 100%:
-                            </div>
+                          <Tooltip
+                            trigger={['focus']}
+                            title={titleInputNumber}
+                            placement='topLeft'
+                            overlayClassName='numeric-input'
+                          >
+                            <Input
+                              onChange={handleChangeInputNumber}
+                              onBlur={handleBlurInputNumber}
+                              placeholder='Nhập chữ số'
+                              maxLength={16}
+                              disabled={submitted || isComplete}
+                              value={predictAmount}
+                              style={{
+                                width: 200,
+                              }}
+                            />
+                          </Tooltip>
+                        </div>
 
-                            <Tooltip trigger={['focus']} title={titleInputNumberMaxScore} placement="topLeft" overlayClassName="numeric-input">
-                              <Input
-                                  onChange={handleChangePredictAmountScore}
-                                  onBlur={handleBlurPredictAmountScore}
-                                  placeholder="Nhập chữ số"
-                                  maxLength={16}
-                                  disabled={submitted || isComplete}
-                                  value={predictAmountMaxScore}
-                                  style={{
-                                    width: 200,
-                                  }}
-                              />
-                            </Tooltip>
+                        <div className='flex items-center justify-content-md-start  border-t border-gray-200 pt-4 mt-4 first:border-t-0 first:mt-0'>
+                          <span className='font-medium text-black'>
+                            Câu {quiz[0]?.questions?.length + 2}:
+                          </span>
+                          <div className='text-purple-950 font-bold mr-5 ml-1'>
+                            Dự đoán số người trả lời đúng 100%:
                           </div>
-                        </>
-                    }
 
-                    <div className="flex justify-between mt-4">
+                          <Tooltip
+                            trigger={['focus']}
+                            title={titleInputNumberMaxScore}
+                            placement='topLeft'
+                            overlayClassName='numeric-input'
+                          >
+                            <Input
+                              onChange={handleChangePredictAmountScore}
+                              onBlur={handleBlurPredictAmountScore}
+                              placeholder='Nhập chữ số'
+                              maxLength={16}
+                              disabled={submitted || isComplete}
+                              value={predictAmountMaxScore}
+                              style={{
+                                width: 200,
+                              }}
+                            />
+                          </Tooltip>
+                        </div>
+                      </>
+                    )}
+
+                    <div className='flex justify-between mt-4'>
                       {currentPage > 1 && (
                         <button
                           onClick={handlePreviousPage}
-                          className="px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition duration-300"
+                          className='px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition duration-300'
                         >
                           Trang trước
                         </button>
@@ -662,15 +724,14 @@ export default function Quizs({ params }) {
                       {quiz[0]?.questions?.length > indexOfLastQuestion && (
                         <button
                           onClick={handleNextPage}
-                          className="px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600 transition duration-300"
+                          className='px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600 transition duration-300'
                         >
                           Trang sau
                         </button>
                       )}
                     </div>
 
-
-                    <div className="mt-4">
+                    <div className='mt-4'>
                       {/*{isComplete && (*/}
                       {/*  <div className="text-center text-sm text-blue-500">*/}
                       {/*    <p className="py-4">Bạn đã hoàn thành bài kiểm tra</p>*/}
@@ -734,15 +795,12 @@ export default function Quizs({ params }) {
                       {/*  </div>*/}
                       {/*)}*/}
 
-
                       {isTimeExceeded && !isComplete && (
-                        <div className="font-bold text-sm text-red-500">
+                        <div className='font-bold text-sm text-red-500'>
                           Thời gian làm bài đã hết
                         </div>
                       )}
                     </div>
-
-
                   </div>
                 </React.Fragment>
               ))}

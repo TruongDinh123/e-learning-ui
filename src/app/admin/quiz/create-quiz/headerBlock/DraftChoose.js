@@ -6,7 +6,7 @@ import {createSelector, unwrapResult} from '@reduxjs/toolkit';
 import {getDraftQuiz} from '@/features/Quiz/quizSlice';
 import 'react-quill/dist/quill.snow.css';
 import moment from 'moment';
-import {SELECTED_COURSE_ID} from '../../../../constants';
+import {SELECTED_COURSE_ID} from '../../../../../constants';
 
 const DraftChoose = ({
   form,
@@ -133,31 +133,27 @@ const DraftChoose = ({
   };
 
   return (
-    <Row gutter={16} className=''>
-      <Col xs={24} sm={12} md={8} lg={6}>
-        <Form.Item
-          name='quizIdDraft'
-          label='Bài tập nháp'
-          labelCol={{span: 24}}
-          wrapperCol={{span: 24}}
+    <Form.Item
+      name='quizIdDraft'
+      label='Bài tập nháp'
+      labelCol={{span: 24}}
+      wrapperCol={{span: 24}}
+    >
+      <Badge count={draftQuizzes.length} offset={[10, 0]} showZero>
+        <Select
+          onChange={handleDraftQuizSelect}
+          placeholder='Chọn bài tập nháp'
+          loading={isLoadingDraft === status.loading}
         >
-          <Badge count={draftQuizzes.length} offset={[10, 0]} showZero>
-            <Select
-              onChange={handleDraftQuizSelect}
-              placeholder='Chọn bài tập nháp'
-              loading={isLoadingDraft === status.loading}
-            >
-              <Select.Option value=''>Không chọn</Select.Option>
-              {draftQuizzes.map((quiz) => (
-                <Select.Option key={quiz._id} value={quiz._id}>
-                  {quiz.name}
-                </Select.Option>
-              ))}
-            </Select>
-          </Badge>
-        </Form.Item>
-      </Col>
-    </Row>
+          <Select.Option value=''>Không chọn</Select.Option>
+          {draftQuizzes.map((quiz) => (
+            <Select.Option key={quiz._id} value={quiz._id}>
+              {quiz.name}
+            </Select.Option>
+          ))}
+        </Select>
+      </Badge>
+    </Form.Item>
   );
 };
 

@@ -201,6 +201,24 @@ const getStudentScoresByCourse = async (data) => {
   return res.data;
 };
 
+const activeCoursePresent = async (data)=> {
+  console.log(data, 'datadata');
+  const res = await axiosInstance({
+    url: "/e-learning/course/active-course-present",
+    method: "PUT",
+    data: data,
+  });
+  return res.data;
+};
+
+const getActiveCoursePresent = async ()=> {
+  const res = await axiosInstance({
+    url: "/e-learning/get-active-course-present",
+    method: "GET",
+  });
+  return res.data;
+};
+
 export const courseService = {
   createCourse,
   viewCourse,
@@ -225,4 +243,6 @@ export const courseService = {
   getCourseSummary,
   getStudentScoresByCourse,
   getCourseById,
+  activeCoursePresent,
+  getActiveCoursePresent
 };

@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import {Button, Modal, Spin} from 'antd';
+import {Button, Image, Modal, Spin} from 'antd';
 import {useSelector} from 'react-redux';
 import 'react-quill/dist/quill.snow.css';
 const logo = '/images/logoimg.jpg';
@@ -17,7 +17,7 @@ const HeaderExams = ({
   handleSubmit,
   loading,
 }) => {
-  const courseCurrent = useSelector((state) => state.course.courseInfo);
+  const quizCurrent = useSelector((state) => state.course.courseInfo);
 
   const completedAmount = () => {
     const predictedFirst = predictAmount.length !== 0;
@@ -42,15 +42,18 @@ const HeaderExams = ({
   };
   return (
     <div className='sticky top-16 z-40 bg-white shadow-md p-2 mb-4 flex items-center justify-between'>
-      <div className='flex items-center'>
-        <img
-          src={courseCurrent?.image_url || logo}
+      <div className='flex items-center' style={{gap: '6px'}}>
+        <Image
+          src={quizCurrent?.image_url || logo}
           alt='School Logo'
           className='h-20 w-20 mr-3'
+          style={{
+            maxWidth: '300px'
+          }}
         />
         <div>
           <h2 className='text-xl font-semibold text-gray-800'>
-            {courseCurrent?.name}
+            {quizCurrent?.name}
           </h2>
 
           {!isComplete && (

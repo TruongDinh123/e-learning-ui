@@ -198,6 +198,7 @@ export default function AdminHeader(props) {
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
                 {/* search */}
+                {/* <div className="relative">
                   <input
                     className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:placeholder-gray-500 focus:border-white focus:ring-white sm:text-sm"
                     id="search"
