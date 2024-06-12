@@ -39,7 +39,7 @@ const SelectQuizBlock = ({courseCurrent}) => {
       setSelectData(initData);
 
       !isExistQuizCurrent && setQuizCurrent('');
-      isExistQuizCurrent && setQuizCurrent(quizPresent?._id);
+      !quizCurrent && isExistQuizCurrent && setQuizCurrent(quizPresent?._id);
     }
   }, [courseCurrent, quiz, quizCurrent, quizPresent]);
 
