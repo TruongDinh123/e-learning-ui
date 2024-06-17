@@ -19,10 +19,18 @@ import {
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { logOut, resetState, setUser, setUserName } from "@/features/User/userSlice";
+import {
+  logOut,
+  resetState,
+  setUser,
+  setUserName,
+} from "@/features/User/userSlice";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { getAllCategoryAndSubCourses, resetStateCategory } from "@/features/categories/categorySlice";
+import {
+  getAllCategoryAndSubCourses,
+  resetStateCategory,
+} from "@/features/categories/categorySlice";
 import { resetStateCourse } from "@/features/Courses/courseSlice";
 import { resetStateLesson } from "@/features/Lesson/lessonSlice";
 import { resetStateQuiz } from "@/features/Quiz/quizSlice";
@@ -166,15 +174,15 @@ export default function HeaderUser() {
   );
 
   return (
-    <header className="bg-[#02354B] fixed w-full top-0 z-50">
+    <header className="bg-[#4d6d7b] fixed w-full top-0 z-50">
       <div className="max-w-[105rem] mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between h-[75px]">
           <div className="flex items-center">
-            <div className="flex-shrink-0">
+            {/* <div className="flex-shrink-0">
               <a href="/">
                 <img className="h-36 w-auto" src={logo3} alt="" />
               </a>
-            </div>
+            </div> */}
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
                 <Popover className="relative">
@@ -265,7 +273,7 @@ export default function HeaderUser() {
                 </Popover>
 
                 {/* search */}
-                <div className="relative">
+                {/* <div className="relative">
                   <input
                     className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:placeholder-gray-500 focus:border-white focus:ring-white sm:text-sm"
                     id="search"
@@ -275,7 +283,7 @@ export default function HeaderUser() {
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <SearchIcon className="h-5 w-5 text-gray-400" />
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -413,8 +421,8 @@ export default function HeaderUser() {
           >
             <div className="fixed inset-0" />
             <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-              <div className="flex items-center justify-between bg-[#02354B]">
-                <div className="flex-shrink-0">
+              <div className="flex items-center justify-between bg-[#4d6d7b]">
+                {/* <div className="flex-shrink-0">
                   <Link href="/">
                     <img
                       className="h-36 w-auto object-contain  absolute top-0 mt-[26px] transform -translate-y-1/2 "
@@ -423,7 +431,7 @@ export default function HeaderUser() {
                       alt=""
                     />
                   </Link>
-                </div>
+                </div> */}
                 <button
                   type="button"
                   className="rounded-md p-2.5 text-gray-700"

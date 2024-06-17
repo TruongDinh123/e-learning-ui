@@ -7,7 +7,7 @@ export const createLesson = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await lessonService.createLesson(data);
-      return response
+      return response;
     } catch (err) {
       return rejectWithValue(err);
     }
@@ -17,6 +17,7 @@ export const createLesson = createAsyncThunk(
 export const createVdLesson = createAsyncThunk(
   "/e-learning/create-vd-lesson",
   async (data, { rejectWithValue }) => {
+    console.log("🚀 ~ data:", data);
     try {
       const response = await lessonService.createVdLesson(data);
       return response;

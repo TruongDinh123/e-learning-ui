@@ -91,7 +91,7 @@ export default function SiderCustom(props) {
           theme="light"
           style={{
             height: "100%",
-            background: "#02354B",
+            background: "#4d6d7b",
             borderRadius: borderRadiusLG,
             color: "#ffffff",
           }}

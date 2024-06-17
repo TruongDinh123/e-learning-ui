@@ -1,4 +1,10 @@
-import { getAUser, logOut, resetState, setUser, setUserName } from "@/features/User/userSlice";
+import {
+  getAUser,
+  logOut,
+  resetState,
+  setUser,
+  setUserName,
+} from "@/features/User/userSlice";
 import {
   LockOutlined,
   LoginOutlined,
@@ -8,7 +14,15 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Button, Avatar, Menu, Dropdown, message, Progress, Tooltip } from "antd";
+import {
+  Button,
+  Avatar,
+  Menu,
+  Dropdown,
+  message,
+  Progress,
+  Tooltip,
+} from "antd";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -128,10 +142,10 @@ export default function AdminHeader(props) {
   const [showProgress, setShowProgress] = useState(false);
   const [progressPercent, setProgressPercent] = useState(0);
   const [initiated, setInitiated] = useState(false);
-  
+
   useEffect(() => {
     let intervalId;
-  
+
     if (isLoadingQuiz) {
       setShowProgress(true);
       setProgressPercent(0);
@@ -154,7 +168,10 @@ export default function AdminHeader(props) {
             clearInterval(intervalId);
             setTimeout(() => {
               setShowProgress(false);
-              message.success("Bài thi đã được tạo thành công. Email thông báo đang được gửi.", 2.5);
+              message.success(
+                "Bài thi đã được tạo thành công. Email thông báo đang được gửi.",
+                2.5
+              );
               setInitiated(false);
             }, 2000);
             return 100;
@@ -163,13 +180,15 @@ export default function AdminHeader(props) {
         });
       }, 20);
     }
-  
+
     return () => clearInterval(intervalId);
   }, [isLoadingQuiz, newQuizCreated, initiated]);
 
-
   return (
-    <header className="bg-[#02354B] sticky top-0 z-30" style={{ paddingLeft: collapsed ? "80px" : "280px" }}>
+    <header
+      className="bg-[#578091] sticky top-0 z-30"
+      style={{ paddingLeft: collapsed ? "80px" : "280px" }}
+    >
       <div className="max-w-[105rem] mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between h-[75px]">
           <div className="flex items-center justify-center">
@@ -190,16 +209,16 @@ export default function AdminHeader(props) {
             >
               Menu
             </Button>
-            <div className="flex-shrink-0 mx-5">
+            {/* <div className="flex-shrink-0 mx-5">
               <a href="/">
                 <img className="h-36 w-auto" src={logo3} alt="" />
               </a>
-            </div>
+            </div> */}
 
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
                 {/* search */}
-                <div className="relative">
+                {/* <div className="relative">
                   <input
                     className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:placeholder-gray-500 focus:border-white focus:ring-white sm:text-sm"
                     id="search"
@@ -209,7 +228,7 @@ export default function AdminHeader(props) {
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <SearchIcon className="h-5 w-5 text-gray-400" />
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -225,7 +244,7 @@ export default function AdminHeader(props) {
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
-              <div className="ml-3 relative"> 
+              <div className="ml-3 relative">
                 <div className="ml-10 flex items-center space-x-4">
                   {userState == null && (
                     <Link href="/login" icon={<LoginOutlined />}>
@@ -239,8 +258,18 @@ export default function AdminHeader(props) {
                     <Dropdown overlay={menu} placement="bottomLeft">
                       <div className="ml-3 relative flex items-center">
                         {showProgress && (
-                          <Tooltip title={isLoadingQuiz ? "Đang tạo bài thi" : "Bài thi đã được tạo thành công!"}>
-                            <Progress type="circle" percent={progressPercent} width={40} />
+                          <Tooltip
+                            title={
+                              isLoadingQuiz
+                                ? "Đang tạo bài thi"
+                                : "Bài thi đã được tạo thành công!"
+                            }
+                          >
+                            <Progress
+                              type="circle"
+                              percent={progressPercent}
+                              width={40}
+                            />
                           </Tooltip>
                         )}
                         <div className="flex items-center space-x-4">
@@ -281,7 +310,7 @@ export default function AdminHeader(props) {
           >
             <div className="fixed inset-0" />
             <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-              <div className="flex items-center justify-between bg-[#02354B]">
+              <div className="flex items-center justify-between bg-[#4d6d7b]">
                 <div className="flex-shrink-0">
                   <Link href="/">
                     <img

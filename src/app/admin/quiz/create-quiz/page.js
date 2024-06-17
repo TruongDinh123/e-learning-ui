@@ -1337,7 +1337,7 @@ export default function QuizCreator() {
                 ) : isCourseSelected ? (
                   <Result
                     status="warning"
-                    subTitle="Hãy liên hệ với admin qua email 247learn.vn@gmail.com để được nâng cấp tài khoản."
+                    subTitle="Hãy liên hệ với admin qua email kimochi2033@gmail.com để được nâng cấp tài khoản."
                     title="Bạn chỉ có thể tạo tối đa 3 bài tập."
                   />
                 ) : null}

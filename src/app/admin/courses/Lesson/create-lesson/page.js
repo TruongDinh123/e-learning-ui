@@ -179,7 +179,7 @@ export default function CreateLesson(props) {
             <div className="text-red-600">{formik.errors.content}</div>
           ) : null}
         </div>
-
+        {/* 
         <div>
           <label htmlFor="course" className="fs-6 font-medium mr-2">
             Video bài học:
@@ -189,7 +189,7 @@ export default function CreateLesson(props) {
               Chọn video
             </Button>
           </Upload>
-        </div>
+        </div> */}
       </Modal>
     </React.Fragment>
   );

@@ -117,7 +117,7 @@ export default function LessonDetails({ params }) {
         <h1 className="text-2xl text-black font-bold mb-2">Chi tiết bài học</h1>
 
         <main className="mt-10">
-          <React.Fragment>
+          {/* <React.Fragment>
             {isVideoEmpty && (
               <>
                 <Upload {...props}>
@@ -138,7 +138,7 @@ export default function LessonDetails({ params }) {
                 </Button>
               </>
             )}
-          </React.Fragment>
+          </React.Fragment> */}
           <div
             className={`mb-4 md:mb-0 lg:h-[24em] sm:h-0 w-full max-w-screen-md mx-auto relative ${
               isVideoEmpty ? "hidden" : ""

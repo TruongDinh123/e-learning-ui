@@ -41,13 +41,13 @@ export default function CustomFooter() {
             <h5 className="font-bold mb-4 text-[#C89F65]">ĐỊA CHỈ</h5>
             <ul className="space-y-2">
               <li>
-                <span>95EdTech From 95 Solutions Team</span>
+                <span>aca acac acaca </span>
               </li>
               <li>
-                <span>Địa chỉ: Hưng Nhượng, Giồng Trôm, Bến Tre</span>
+                <span>Địa chỉ: Hồ Chí Min</span>
               </li>
               <li>
-                <span>Email: 247learn.vn@gmail.com</span>
+                <span>Email: kimochi2033@gmail.com</span>
               </li>
             </ul>
           </div>
@@ -97,9 +97,7 @@ export default function CustomFooter() {
             <YoutubeIcon className="h-6 w-6" />
           </div> */}
         </div>
-        <p className="text-center mt-8">
-          © 2024 95EdTech From 95 Solutions Team (version 1.7){" "}
-        </p>
+        <p className="text-center mt-8">© 2024</p>
       </div>
     </footer>
   );

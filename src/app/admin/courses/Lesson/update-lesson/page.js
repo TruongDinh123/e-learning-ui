@@ -63,9 +63,7 @@ export default function EditLesson(props) {
           messageApi.error(res.message);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
 
   const showModal = () => {
@@ -116,7 +114,6 @@ export default function EditLesson(props) {
           refresh();
         })
         .catch((error) => {
-          
           setLoading(false);
           message.error(error.response?.data?.message, 3.5);
         });
@@ -131,7 +128,7 @@ export default function EditLesson(props) {
         onClick={showModal}
         className="me-3 custom-button"
         loading={loading}
-        style={{width: '100%'}}
+        style={{ width: "100%" }}
       >
         Cập nhật
       </Button>
@@ -188,11 +185,11 @@ export default function EditLesson(props) {
           />
         </div>
 
-        <Upload {...propsUdateImage}>
+        {/* <Upload {...propsUdateImage}>
           <Button className="mt-3" icon={<UploadOutlined />}>
             Chọn video
           </Button>
-        </Upload>
+        </Upload> */}
       </Modal>
     </React.Fragment>
   );

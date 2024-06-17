@@ -143,7 +143,7 @@ function AdminFooter() {
           justifyContent: "center",
         }}
       >
-          © 2024 95EdTech From 95 Solutions Team (version 1.7)
+          © 2024....
       </Footer>
     )
   );

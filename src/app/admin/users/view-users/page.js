@@ -77,7 +77,7 @@ export default function ViewUsers() {
   //viewUsers api
   const allUsersStore = useSelector((state) => state?.user?.allUsers);
   const allRolesStore = useSelector((state) => state?.user?.allRoles);
-
+  
   useEffect(() => {
     if (allUsersStore?.metadata?.users?.length > 0) {
       setUser(allUsersStore.metadata.users);
