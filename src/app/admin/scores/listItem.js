@@ -4,7 +4,7 @@ import {useSelector} from 'react-redux';
 import ModalDetailQuiz from './modalDetailQuiz';
 import moment from 'moment';
 
-const ListItem = ({userTested}) => {
+const ListItem = ({userTested, quizsFilter}) => {
   const allscoreQuiz = useSelector((state) => state.quiz.allscoreQuiz);
   const [selectTestNumData, setSelectTestNumData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -13,23 +13,44 @@ const ListItem = ({userTested}) => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
   useEffect(() => {
     if (allscoreQuiz && allscoreQuiz.length) {
       const scoresUser = allscoreQuiz
-        .filter((score) => score.user._id === userTested._id)
+        .filter((score) => {
+          const checkScoreCurrent =
+            score.user._id === userTested._id &&
+            userTested.quizId === score.quiz._id;
+          const checkquizCurrent = quizsFilter.includes(score.quiz._id);
+          const isValid =
+            quizsFilter && quizsFilter.length
+              ? checkScoreCurrent && checkquizCurrent
+              : checkScoreCurrent;
+
+          return isValid;
+        })
         .sort((item1, item2) => item1.orderNum - item2.orderNum);
+
       const dataSelectInit = scoresUser.map((item) => ({
         label: `Lần ${item.orderNum}`,
         value: item._id,
       }));
+      const scoreCurrentId = scoreCurrentInfo?._id || dataSelectInit[0]?.value;
       setSelectTestNumData(dataSelectInit);
-      const scoreCurrentId = scoreCurrentInfo?._id || dataSelectInit[0].value;
-      const scoreInfo = allscoreQuiz.find(
-        (item) => item._id === scoreCurrentId
-      );
+      const scoreInfo = allscoreQuiz.find((item) => {
+        const checkScoreCurrent = item._id === scoreCurrentId;
+        const checkquizCurrent = quizsFilter.includes(item.quiz._id);
+
+        const isValid =
+          quizsFilter && quizsFilter.length
+            ? checkScoreCurrent && checkquizCurrent
+            : checkScoreCurrent;
+        return isValid;
+      });
+      
       setScoreCurrentInfo(scoreInfo);
     }
-  }, [scoreCurrentInfo?._id, allscoreQuiz, userTested._id]);
+  }, [allscoreQuiz, quizsFilter, scoreCurrentInfo?._id, userTested._id, userTested.quizId]);
 
   const handleChange = (value) => {
     const scoreInfo = allscoreQuiz.find((item) => item._id === value);
@@ -40,6 +61,9 @@ const ListItem = ({userTested}) => {
     <List.Item>
       <Row style={{width: '100%'}}>
         <Col span={6}>
+          <Typography>{userTested.quizName}</Typography>
+        </Col>
+        <Col span={4}>
           <Typography>
             {userTested.firstName} {userTested.lastName}
           </Typography>
@@ -74,7 +98,7 @@ const ListItem = ({userTested}) => {
           </Button>
         </Col>
         <Col span={2}>{scoreCurrentInfo?.score}</Col>
-        <Col span={8}>
+        <Col span={4}>
           {moment(scoreCurrentInfo?.submitTime).format('DD/MM/YYYY HH:mm:ss')}
         </Col>
       </Row>

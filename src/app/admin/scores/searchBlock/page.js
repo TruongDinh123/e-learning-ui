@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import {Col, Input, Row} from 'antd';
 import {memo, useEffect, useState} from 'react';
@@ -8,21 +8,23 @@ import {useSelector} from 'react-redux';
 
 const {Search} = Input;
 
-const SearchBlock = ({dataFiltered, setDataFiltered}) => {
+const SearchBlock = ({setDataFiltered, quizsFilter, setQuizsFilter}) => {
   const usersTested = useSelector((state) => state.quiz.usersTested);
-  const allUsersTested = useSelector((state) => state.quiz.allUsersTested);
+  const quizAndUserTested = useSelector(
+    (state) => state.quiz.quizAndUserTested
+  );
   const [textSearch, setTextSearch] = useState('');
-  const [quizsFilter, setQuizsFilter] = useState([]);
   const onChange = (event) => {
     setTextSearch(event.target.value);
   };
 
   useEffect(() => {
-    if (allUsersTested && (textSearch || quizsFilter.length)) {
-      let dataFiltered = JSON.parse(JSON.stringify(allUsersTested));
+    if (quizAndUserTested && (textSearch || quizsFilter.length)) {
+      const result = [];
+      let dataFiltered = JSON.parse(JSON.stringify(quizAndUserTested));
 
       if (textSearch) {
-        dataFiltered = allUsersTested.filter(
+        dataFiltered = quizAndUserTested.filter(
           (userTested) =>
             userTested.firstName
               .toLowerCase()
@@ -32,7 +34,7 @@ const SearchBlock = ({dataFiltered, setDataFiltered}) => {
       }
 
       if (quizsFilter.length) {
-        const cloneQuizsFilter = JSON.parse(JSON.stringify(dataFiltered));
+        const cloneDataFilterd = JSON.parse(JSON.stringify(dataFiltered));
         let usersInQuizsFilter = [];
         quizsFilter.forEach((quizId) => {
           if (usersTested[quizId]) {
@@ -42,26 +44,34 @@ const SearchBlock = ({dataFiltered, setDataFiltered}) => {
           }
         });
 
-        cloneQuizsFilter.forEach((dataFilteredItem, index) => {
+        cloneDataFilterd.forEach((cloneDataFilterdItem, index) => {
           const resultIndex = usersInQuizsFilter.findIndex(
-            (item) => item._id === dataFilteredItem._id
+            (item) =>
+              item._id === cloneDataFilterdItem._id &&
+              cloneDataFilterdItem.quizId === item.quizId
           );
-          if (resultIndex === -1) {
-            dataFiltered.splice(index, 1, null);
+          if (resultIndex !== -1) {
+            result.push(cloneDataFilterdItem);
           }
         });
 
-        dataFiltered = dataFiltered.filter((item) => item);
+        dataFiltered = result;
       }
       setDataFiltered(dataFiltered);
     } else {
       setDataFiltered(null);
     }
-  }, [allUsersTested, quizsFilter, setDataFiltered, textSearch, usersTested]);
+  }, [
+    quizAndUserTested,
+    quizsFilter,
+    setDataFiltered,
+    textSearch,
+    usersTested,
+  ]);
 
   return (
-    <Row>
-      <Col span={4}>
+    <Row gutter={[230, 24]}>
+      <Col sx={{span: 20}} lg={{span: 4}}>
         <Search
           placeholder='Nhập họ và tên'
           onChange={onChange}
@@ -70,7 +80,7 @@ const SearchBlock = ({dataFiltered, setDataFiltered}) => {
           }}
         />
       </Col>
-      <Col span={16}>
+      <Col sx={{span: 20}} lg={{span: 16}}>
         <SelectQuizBlock
           quizsFilter={quizsFilter}
           setQuizsFilter={setQuizsFilter}

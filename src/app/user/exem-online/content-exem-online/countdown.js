@@ -19,6 +19,7 @@ const Countdown = () => {
     (state) => state.quiz.activeQuizByCourseId
   );
 
+
   useEffect(() => {
     let timeRun = null;
 

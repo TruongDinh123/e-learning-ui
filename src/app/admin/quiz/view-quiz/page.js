@@ -37,7 +37,7 @@ const ViewQuiz = () => {
       <SearchBlock quiz={quiz} setDataFiltered={setDataFiltered} />
 
       <UpdateQuizScoursePresent />
-
+      
       <Table
         columns={columns}
         dataSource={dataFilterd || data}

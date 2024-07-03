@@ -1,5 +1,6 @@
 import {createAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {QuizService} from './quizService';
+import {getUniqueItemInArray} from '../../utils';
 
 export const createQuiz = createAsyncThunk(
   '/e-learning/create-quiz',
@@ -505,7 +506,7 @@ const initialState = {
   quizPresent: null,
   isScoresUsertestedLoading: false,
   usersTested: null,
-  allUsersTested: null,
+  quizAndUserTested: null,
   scoreAllQuiz: null,
   allscoreQuiz: null,
   // scoreByQuizIdInfo: null,
@@ -975,14 +976,16 @@ const quizSlice = createSlice({
 
         const usersTestedData = action.payload.metadata.usersTested;
         const scoreAllQuizData = action.payload.metadata.scores;
+
         state.usersTested = usersTestedData;
         state.scoreAllQuiz = scoreAllQuizData;
 
         let dataInit = [];
-        Object.values(usersTestedData).forEach((userTested) => {
-          dataInit = dataInit.concat(userTested.usersTested);
+        Object.values(usersTestedData).forEach((usersTestedItem) => {
+          dataInit = dataInit.concat(usersTestedItem.usersTested);
         });
-        state.allUsersTested = dataInit;
+        const uniqueArr = getUniqueItemInArray(dataInit, ['quizId', '_id']);
+        state.quizAndUserTested = uniqueArr;
 
         dataInit = [];
         Object.values(scoreAllQuizData).forEach((scoreAllQuizItem) => {

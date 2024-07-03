@@ -10,13 +10,14 @@ import SearchBlock from './searchBlock/page';
 
 const Scores = () => {
   const dispatch = useDispatch();
-  const allUsersTested = useSelector((state) => state.quiz.allUsersTested);
+  const quizAndUserTested = useSelector((state) => state.quiz.quizAndUserTested);
   const isScoresUsertestedLoading = useSelector(
     (state) => state.quiz.isScoresUsertestedLoading
   );
   const quiz = useSelector((state) => state.quiz.quiz);
-  const [refresh, setRefresh] = useState(false);
+  const [refresh, setRefresh] = useState(0);
   const [dataFiltered, setDataFiltered] = useState(null);
+  const [quizsFilter, setQuizsFilter] = useState([]);
 
   useEffect(() => {
     if (refresh && quiz && quiz.length) {
@@ -29,19 +30,19 @@ const Scores = () => {
 
   return (
     <div className='p-3'>
-      <Row gutter={2}>
-        <Col className='gutter-row' span={6}>
+      <Row gutter={[24, 0]}>
+        <Col sx={{span: 12}} lg={{span: 6}}>
           <h1 className='text-2xl font-bold text-[#002c6a] mb-3'>
             Quản lý điểm thi
-          </h1>{' '}
+          </h1>
         </Col>
-        <Col className='gutter-row' span={6}>
+        <Col sx={{span: 12}} lg={{span: 12}}>
           <Button
             type='primary'
             htmlType='submit'
-            className='custom-button'
+            className='custom-button mb-20'
             loading={isScoresUsertestedLoading}
-            onClick={() => setRefresh(true)}
+            onClick={() => setRefresh(refresh + 1)}
           >
             Làm mới dữ liệu
           </Button>
@@ -51,6 +52,8 @@ const Scores = () => {
       <SearchBlock
         dataFiltered={dataFiltered}
         setDataFiltered={setDataFiltered}
+        quizsFilter={quizsFilter}
+        setQuizsFilter={setQuizsFilter}
       />
 
       <List
@@ -61,9 +64,11 @@ const Scores = () => {
           align: 'start',
           pageSize: 10,
         }}
-        loading={!!!allUsersTested}
-        dataSource={dataFiltered || allUsersTested || []}
-        renderItem={(item, index) => <ListItem key={index} userTested={item} />}
+        loading={!!!quizAndUserTested}
+        dataSource={dataFiltered || quizAndUserTested || []}
+        renderItem={(item, index) => (
+          <ListItem key={index} quizsFilter={quizsFilter} userTested={item} />
+        )}
       />
     </div>
   );
