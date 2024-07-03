@@ -43,8 +43,8 @@ const SearchBlock = ({quiz, setDataFiltered}) => {
   }, [coursesFilter, quiz, setDataFiltered, textSearch]);
 
   return (
-    <Row>
-      <Col span={4}>
+    <Row gutter={[230, 24]}>
+      <Col lg={{ span: 20 }}  xl={{ span: 4 }} >
         <Search
           placeholder='Nhập tên đề thi'
           onChange={onChange}
@@ -53,7 +53,7 @@ const SearchBlock = ({quiz, setDataFiltered}) => {
           }}
         />
       </Col>
-      <Col span={16}>
+      <Col lg={{ span: 20 }} xl={{ span: 16 }}>
         <SelectCourseBlock
           coursesFilter={coursesFilter}
           setCoursesFilter={setCoursesFilter}

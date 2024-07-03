@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import {useSelector} from 'react-redux';
 import SelectCourseBlock from './selectCourseBlock';
@@ -10,13 +10,17 @@ const UpdateQuizScoursePresent = () => {
   const [courseCurrent, setCourseCurrent] = useState(coursePresent?._id);
 
   return (
-    <table id='choice-present-block'>
-      <SelectCourseBlock
-        courseCurrent={courseCurrent}
-        setCourseCurrent={setCourseCurrent}
-      />
-      <SelectQuizBlock courseCurrent={courseCurrent} />
-    </table>
+    <div style={{overflow: 'auto', display: 'block'}}>
+      <table id='choice-present-block' style={{width: '820px'}}>
+        <tbody>
+          <SelectCourseBlock
+            courseCurrent={courseCurrent}
+            setCourseCurrent={setCourseCurrent}
+          />
+          <SelectQuizBlock courseCurrent={courseCurrent} />
+        </tbody>
+      </table>
+    </div>
   );
 };
 

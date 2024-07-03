@@ -30,7 +30,7 @@ body {
   display: flex;
   flex-direction: column;
   max-width: 100vw;
-  /* overflow-x: hidden; */
+  overflow-x: hidden;
 }
 
 .noCopy {
@@ -220,4 +220,8 @@ table#choice-present-block td {
 
 table#choice-present-block {
   margin-bottom: 24px;
+}
+
+.w-182 {
+  width: 182px;
 }
