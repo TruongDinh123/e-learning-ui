@@ -35,7 +35,8 @@ const ListItem = ({userTested, quizsFilter}) => {
         label: `Lần ${item.orderNum}`,
         value: item._id,
       }));
-      const scoreCurrentId = scoreCurrentInfo?._id || dataSelectInit[0]?.value;
+
+      const scoreCurrentId = scoreCurrentInfo?._id || dataSelectInit[scoresUser.length - 1]?.value;
       setSelectTestNumData(dataSelectInit);
       const scoreInfo = allscoreQuiz.find((item) => {
         const checkScoreCurrent = item._id === scoreCurrentId;
@@ -47,7 +48,7 @@ const ListItem = ({userTested, quizsFilter}) => {
             : checkScoreCurrent;
         return isValid;
       });
-      
+
       setScoreCurrentInfo(scoreInfo);
     }
   }, [allscoreQuiz, quizsFilter, scoreCurrentInfo?._id, userTested._id, userTested.quizId]);
@@ -97,7 +98,7 @@ const ListItem = ({userTested, quizsFilter}) => {
             Xem chi tiết
           </Button>
         </Col>
-        <Col span={2}>{scoreCurrentInfo?.score}</Col>
+        <Col span={2}>{scoreCurrentInfo?.scoreCustom || 0}</Col>
         <Col span={4}>
           {moment(scoreCurrentInfo?.submitTime).format('DD/MM/YYYY HH:mm:ss')}
         </Col>
