@@ -156,6 +156,14 @@ section {
   background: #fff;
 }
 
+.image-block {
+  position: absolute;
+  height: 100%;
+}
+
+.image-block_image {
+  height: 100%;
+}
 
 .image-block:after {
   content: '';
@@ -169,7 +177,8 @@ section {
 }
 
 .feature-block {
-  position: absolute;
+  position: relative;
+  margin: 80px auto 180px;
 }
 
 .feature-block a {

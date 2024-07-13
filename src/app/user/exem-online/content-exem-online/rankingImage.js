@@ -14,7 +14,9 @@ const RankingImage = () => {
           position: "relative"
         }}
       >
-        <Image src={ranking_bg} alt="ranking-bg" className='rounded-lg' />
+        <Image src={ranking_bg} alt="ranking-bg" className='rounded-lg' style={{
+          height: "100%"
+        }} />
         <div className='star-icon-block'>
         <Image src={star} alt="star" />
         </div>

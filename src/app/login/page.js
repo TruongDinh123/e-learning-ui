@@ -102,7 +102,7 @@ export default function Login() {
      
     >
        <div className='image-block'>
-        <Image src={backgroundImage} alt='background-image' />
+        <Image className="image-block_image" src={backgroundImage} alt='background-image' />
       </div>
       {contextHolder}
       <div className='feature-block flex flex-col md:flex-row items-center justify-center w-full max-w-5xl '>
