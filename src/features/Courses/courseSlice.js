@@ -540,7 +540,11 @@ const courseSlice = createSlice({
       .addCase(activeCoursePresent.fulfilled, (state, action) => {
         state.coursePresent = action.payload.metadata;
       })
+      .addCase(getActiveCoursePresent.pending, (state, action) => {
+        state.isLoading = true;
+      })
       .addCase(getActiveCoursePresent.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.coursePresent = action.payload.metadata;
       });
   },

@@ -3,12 +3,15 @@
 import HeaderUser from '@/components/Header/Header';
 import './page.css';
 import {useSelector} from 'react-redux';
-import { Image } from 'antd';
+import {Card, Image} from 'antd';
 
 const logo3 = '/images/logo.jpg';
 
 export default function HeaderExemplOnline() {
   const courseInfo = useSelector((state) => state.course.courseInfo);
+  const isLoading = useSelector((state) => state.course.isLoading);
+
+  console.log(isLoading, 'isLoadingisLoading');
 
   return (
     <div className='bg-[#002c6a]'>
@@ -39,25 +42,41 @@ export default function HeaderExemplOnline() {
       {/*</nav>*/}
 
       <HeaderUser />
+
       <div className='px-4 lg:px-6 header-exem-online-block'>
-        <div className='max-w-screen-xl mx-auto mt-4 lg:mt-8'>
-          <Image
-            src={
-              courseInfo?.banner_url ??
-              'https://myaloha.vn/upload/images/banner/banner_1011571_1684482408_ceafed9c-c81f-4aaa-9abb-3b4954db9d5f.png'
-            }
-            className='max-w-full h-auto mx-auto rounded-xl'
-            alt="img-banner"
-          />
+        <div
+          className='max-w-screen-xl mx-auto mt-4 lg:mt-8'
+          style={{
+            padding: 0,
+            paddingTop: isLoading ? '1.4rem' : 0,
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          {isLoading && <div class='loader'></div>}
+
+          {!isLoading && courseInfo?.banner_url ? (
+            <Image
+              src={courseInfo?.banner_url}
+              className='max-w-full h-auto mx-auto rounded-xl'
+              alt=''
+            />
+          ) : (
+            ''
+          )}
         </div>
       </div>
+
       <div
         dangerouslySetInnerHTML={{
           __html:
             courseInfo?.name ??
             'Cuộc thi trực tuyến “Tìm hiểu về công tác bảo vệ môi trường” năm 2023',
         }}
-        className='px-4 lg:px-6 py-2 uppercase text-lg lg:text-4xl text-center text-white bg-[#00436ad0] mt-4 lg:mt-12'
+        className=' px-4 lg:px-6 py-2 uppercase text-lg lg:text-4xl text-center text-white bg-[#00436ad0] lg:mt-12'
+        style={{
+          marginTop: courseInfo?.banner_url ? '1.5 rem !important' : 0,
+        }}
       ></div>
     </div>
   );
