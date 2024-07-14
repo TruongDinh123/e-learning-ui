@@ -47,10 +47,10 @@ export default function HeaderExemplOnline() {
         <div
           className='max-w-screen-xl mx-auto mt-4 lg:mt-8'
           style={{
-            padding: 0,
             paddingTop: isLoading ? '1.4rem' : 0,
             display: 'flex',
             justifyContent: 'center',
+            paddingBottom: courseInfo?.banner_url || isLoading ? '1.2rem' : 0,
           }}
         >
           {isLoading && <div class='loader'></div>}
@@ -75,7 +75,7 @@ export default function HeaderExemplOnline() {
         }}
         className=' px-4 lg:px-6 py-2 uppercase text-lg lg:text-4xl text-center text-white bg-[#00436ad0] lg:mt-12'
         style={{
-          marginTop: courseInfo?.banner_url ? '1.5 rem !important' : 0,
+          marginTop: 0
         }}
       ></div>
     </div>
