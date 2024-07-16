@@ -36,7 +36,7 @@ const Rules = () => {
                             <a
                               href={courseInfo.rule_file_url}
                               alt={courseInfo.rulesFileName}
-                              download
+                              download={courseInfo.rulesFileName}
                             >
                               File thông tin chi tiết: {courseInfo.rulesFileName}
                             </a>

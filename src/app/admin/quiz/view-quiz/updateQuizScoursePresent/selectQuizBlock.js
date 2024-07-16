@@ -1,5 +1,5 @@
 import React, {memo, useEffect, useState} from 'react';
-import {Button, Select, Space, Typography, message} from 'antd';
+import {Button, Select, Typography, message} from 'antd';
 import {useDispatch, useSelector} from 'react-redux';
 import {activeQuizPresent} from '../../../../../features/Quiz/quizSlice';
 import {activeCoursePresent} from '../../../../../features/Courses/courseSlice';
@@ -9,7 +9,7 @@ const SelectQuizBlock = ({courseCurrent}) => {
   const dispatch = useDispatch();
   const quizPresent = useSelector((state) => state.quiz.quizPresent);
   const coursePresent = useSelector((state) => state.course.coursePresent);
-  const [quizCurrent, setQuizCurrent] = useState(quizPresent?._id);
+  const [quizCurrent, setQuizCurrent] = useState('');
   const quiz = useSelector((state) => state.quiz.quiz);
   const [selectData, setSelectData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,26 +38,45 @@ const SelectQuizBlock = ({courseCurrent}) => {
 
       setSelectData(initData);
 
-      !isExistQuizCurrent && setQuizCurrent('');
-      !quizCurrent && isExistQuizCurrent && setQuizCurrent(quizPresent?._id);
+      if (!initData.length) {
+        setQuizCurrent('');
+        return;
+      }
+      const findIndexCurrent = initData.findIndex(
+        (item) => item.value === quizCurrent
+      );
+      if (!isExistQuizCurrent) {
+       
+        quizCurrent && findIndexCurrent !== -1
+          ? setQuizCurrent(quizCurrent)
+          : setQuizCurrent('');
+        return;
+      }
+
+      if (isExistQuizCurrent) {
+        (!quizCurrent || findIndexCurrent === -1) && setQuizCurrent(quizPresent?._id);
+      }
     }
   }, [courseCurrent, quiz, quizCurrent, quizPresent]);
 
   const activeQuizPresentHandle = () => {
-    if (quizCurrent || courseCurrent !== coursePresent._id) setIsLoading(true);
+    if (!quizCurrent) return;
+    if (quizCurrent && courseCurrent !== coursePresent._id) setIsLoading(true);
 
-    if (quizCurrent) {
-      quizCurrent &&
-        dispatch(
-          activeQuizPresent({
-            newQuizId: quizCurrent,
-            oldQuizId: quizPresent?._id || null,
-          })
-        ).then(() => {
-          message.success('Đã cập nhật bài thi đại diện!', 3);
-          setIsLoading(false);
-        });
+    if (quizCurrent === quizPresent?._id) {
+      message.success('Đã cập nhật bài thi đại diện!', 3);
+      setIsLoading(false);
+      return;
     }
+    dispatch(
+      activeQuizPresent({
+        newQuizId: quizCurrent,
+        oldQuizId: quizPresent?._id || null,
+      })
+    ).then(() => {
+      message.success('Đã cập nhật bài thi đại diện!', 3);
+      setIsLoading(false);
+    });
     if (courseCurrent !== coursePresent._id) {
       dispatch(
         activeCoursePresent({

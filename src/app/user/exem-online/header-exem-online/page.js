@@ -11,7 +11,6 @@ export default function HeaderExemplOnline() {
   const courseInfo = useSelector((state) => state.course.courseInfo);
   const isLoading = useSelector((state) => state.course.isLoading);
 
-  console.log(isLoading, 'isLoadingisLoading');
 
   return (
     <div className='bg-[#002c6a]'>
