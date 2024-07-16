@@ -70,7 +70,7 @@ export default function HeaderExemplOnline() {
         dangerouslySetInnerHTML={{
           __html:
             courseInfo?.name ??
-            'Cuộc thi trực tuyến “Tìm hiểu về công tác bảo vệ môi trường” năm 2023',
+            'NỀN TẢNG THI TRỰC TUYẾN EXAMONE',
         }}
         className=' px-4 lg:px-6 py-2 uppercase text-lg lg:text-4xl text-center text-white bg-[#00436ad0] lg:mt-12'
         style={{
