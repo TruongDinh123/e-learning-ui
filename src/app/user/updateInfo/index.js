@@ -2,19 +2,14 @@
 import React, {useEffect, useState} from 'react';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
-import {Avatar, Button, Card, DatePicker, Upload, message} from 'antd';
+import {Button, Card, message} from 'antd';
 import {getAUser, updateUser, uploadImageUser} from '@/features/User/userSlice';
 import {useDispatch} from 'react-redux';
 import {unwrapResult} from '@reduxjs/toolkit';
 import {Content} from 'antd/es/layout/layout';
-import {AntDesignOutlined, UploadOutlined} from '@ant-design/icons';
-import CustomInput from '@/components/comman/CustomInput';
 import moment from 'moment';
-import dayjs from 'dayjs';
-import {MdOutlinePermIdentity} from 'react-icons/md';
-import {RiHome4Line} from 'react-icons/ri';
-import District from './district';
 import './index.css';
+import FormBlock from './formBlock';
 
 const Userchema = yup.object().shape({
   lastName: yup.string(),
@@ -42,19 +37,6 @@ const UpdateInfo = () => {
   const [selectedDonVi, setSelectedDonVi] = useState('');
   const [donViCon, setDonViCon] = useState('');
 
-  const propsUdateImage = {
-    onRemove: () => {
-      setFile(null);
-      formik.setFieldValue('filename', ''); // reset filename when file is removed
-    },
-    beforeUpload: (file) => {
-      setFile(file);
-      formik.setFieldValue('filename', file.name); // set filename when a new file is uploaded
-      return false;
-    },
-    fileList: file ? [file] : [],
-  };
-
   const handleOk = () => {
     setLoading(true);
     formik.submitForm();
@@ -64,6 +46,7 @@ const UpdateInfo = () => {
     validationSchema: Userchema,
     enableReinitialize: true,
     initialValues: {
+      loginName: user?.loginName,
       lastName: user?.lastName,
       firstName: user?.firstName,
       email: user?.email,
@@ -149,187 +132,19 @@ const UpdateInfo = () => {
       </div>
       <Card className='space-y-4'>
         <Content>
-          <form>
-            <div className='col-span-2 my-2'>
-              <label className='text-base' htmlFor='name'>
-                Ảnh đại diện
-              </label>
-              <div className='flex items-center mb-2'>
-                <Avatar
-                  size={{
-                    xs: 80,
-                    sm: 32,
-                    md: 40,
-                    lg: 64,
-                    xl: 80,
-                    xxl: 100,
-                  }}
-                  icon={<AntDesignOutlined />}
-                  src={imageUrl || user?.image_url}
-                  className='mr-1'
-                />
-              </div>
-              <Upload {...propsUdateImage}>
-                <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
-              </Upload>
-            </div>
-            <div className='grid grid-cols-2 gap-4'>
-              <div className='space-y-2'>
-                <label className='text-base' htmlFor='name'>
-                  Họ của bạn
-                </label>
-                <CustomInput
-                  className='mb-3'
-                  onChange={formik.handleChange('lastName')}
-                  onBlur={formik.handleBlur('lastName')}
-                  placeholder='Nhập tên...'
-                  value={formik.values.lastName}
-                  error={
-                    formik.submitCount > 0 &&
-                    formik.touched.lastName &&
-                    formik.errors.lastName
-                      ? formik.errors.lastName
-                      : null
-                  }
-                />
-              </div>
-              <div className='space-y-2'>
-                <label className='text-base' htmlFor='name'>
-                  Tên của bạn
-                </label>
-                <CustomInput
-                  className='mb-3'
-                  onChange={formik.handleChange('firstName')}
-                  onBlur={formik.handleBlur('firstName')}
-                  placeholder='Nhập tên...'
-                  value={formik.values.firstName}
-                  error={
-                    formik.submitCount > 0 &&
-                    formik.touched.firstName &&
-                    formik.errors.firstName
-                      ? formik.errors.firstName
-                      : null
-                  }
-                />
-              </div>
-            </div>
-            <div className='space-y-2'>
-              <label className='text-base' htmlFor='email'>
-                Email
-              </label>
-              <CustomInput
-                className='mb-3'
-                onChange={formik.handleChange('email')}
-                onBlur={formik.handleBlur('email')}
-                value={formik.values.email}
-                disabled
-                error={
-                  formik.submitCount > 0 &&
-                  formik.touched.email &&
-                  formik.errors.email
-                    ? formik.errors.email
-                    : null
-                }
-              />
-            </div>
-            <div className='space-y-2'>
-              <label className='text-base' htmlFor='dob'>
-                Ngày sinh
-              </label>
-              <DatePicker
-                size="large"
-                className="mb-3 w-full"
-                onChange={(date, dateString) =>
-                  formik.setFieldValue("dob", dateString)
-                }
-                onBlur={formik.handleBlur("dob")}
-                value={formik.values.dob ? moment(formik.values.dob) : null}
-              />
-              {formik.submitCount > 0 &&
-              formik.touched.dob &&
-              formik.errors.dob ? (
-                <div>{formik.errors.dob}</div>
-              ) : null}
-            </div>
-            <div className='space-y-2'>
-              <label className='text-base' htmlFor='phoneNumber'>
-                Số điện thoại
-              </label>
-              <CustomInput
-                className='mb-3'
-                onChange={formik.handleChange('phoneNumber')}
-                onBlur={formik.handleBlur('phoneNumber')}
-                value={formik.values.phoneNumber}
-                error={
-                  formik.submitCount > 0 &&
-                  formik.touched.phoneNumber &&
-                  formik.errors.phoneNumber
-                    ? formik.errors.phoneNumber
-                    : null
-                }
-              />
-            </div>
-            <div className='space-y-2'>
-              <label className='text-base' htmlFor='gender'>
-                Giới tính:
-              </label>
-              <select
-                className='mb-3'
-                onChange={formik.handleChange('gender')}
-                onBlur={formik.handleBlur('gender')}
-                value={formik.values.gender}
-              >
-                <option value='Nam'>Nam</option>
-                <option value='Nữ'>Nữ</option>
-                <option value='Khác'>Khác</option>
-              </select>
-              {formik.submitCount > 0 &&
-              formik.touched.gender &&
-              formik.errors.gender ? (
-                <div>{formik.errors.gender}</div>
-              ) : null}
-            </div>
-
-            <div className='space-y-2'>
-              <label className='text-base' htmlFor='cmnd'>
-                CMND/CCCD
-              </label>
-              <CustomInput
-                prefix={<MdOutlinePermIdentity />}
-                placeholder='Nhập số CMND/CCCD'
-                onChange={formik.handleChange('cmnd')}
-                onBlur={formik.handleBlur('cmnd')}
-                value={formik.values.cmnd}
-                error={formik.touched.cmnd && formik.errors.cmnd}
-                className='mb-3'
-              />
-            </div>
-
-            <div className='space-y-2'>
-              <label className='text-base' htmlFor='address'>
-                Địa chỉ
-              </label>
-              <CustomInput
-                prefix={<RiHome4Line />}
-                placeholder='Địa chỉ cụ thể'
-                onChange={formik.handleChange('address')}
-                onBlur={formik.handleBlur('address')}
-                value={formik.values.address}
-                error={formik.touched.address && formik.errors.address}
-                className='mb-3'
-                required
-              />
-            </div>
-
-            <District
-              selectedCap={selectedCap}
-              selectedDonVi={selectedDonVi}
-              donViCon={donViCon}
-              setSelectedCap={setSelectedCap}
-              setSelectedDonVi={setSelectedDonVi}
-              setDonViCon={setDonViCon}
-            />
-          </form>
+          <FormBlock
+            user={user}
+            formik={formik}
+            imageUrl={imageUrl}
+            file={file}
+            setFile={setFile}
+            donViCon={donViCon}
+            selectedCap={selectedCap}
+            selectedDonVi={selectedDonVi}
+            setSelectedCap={setSelectedCap}
+            setSelectedDonVi={setSelectedDonVi}
+            setDonViCon={setDonViCon}
+          />
         </Content>
         <Button
           onClick={handleOk}

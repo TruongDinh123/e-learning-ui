@@ -16,14 +16,14 @@ import {useState} from 'react';
 import ForgotPassword from '../user/forgot-password/page';
 import Link from 'next/link';
 import './login.css';
-import backgroundImage from '/public/images/backgroundInit.jpg'
+import backgroundImage from '/public/images/backgroundInit.jpg';
 import Image from 'next/image';
 
 const loginSchema = yup.object({
-  email: yup
+  loginName: yup
     .string()
-    .email('Email không hợp lệ')
-    .required('Yêu cầu nhập email'),
+    .min(4, 'Tên đăng nhập phải có ít nhất 4 kí tự')
+    .required('Yêu cầu nhập tên đăng nhập'),
   password: yup
     .string()
     .min(6, 'Password phải có ít nhất 6 kí tự')
@@ -42,7 +42,7 @@ export default function Login() {
   const formik = useFormik({
     validationSchema: loginSchema,
     initialValues: {
-      email: '',
+      loginName: '',
       password: '',
     },
     onSubmit: (values) => {
@@ -99,10 +99,13 @@ export default function Login() {
     <div
       className='relative bg-no-repeat bg-cover bg-center
       flex items-center justify-center'
-     
     >
-       <div className='image-block'>
-        <Image className="image-block_image" src={backgroundImage} alt='background-image' />
+      <div className='image-block'>
+        <Image
+          className='image-block_image'
+          src={backgroundImage}
+          alt='background-image'
+        />
       </div>
       {contextHolder}
       <div className='feature-block flex flex-col md:flex-row items-center justify-center w-full max-w-5xl '>
@@ -121,8 +124,8 @@ export default function Login() {
               <ForgotPassword onResetForm={handleResetForm} />
               <div className='flex items-center justify-between mt-4'>
                 <a
-                  href="#"
-                  className="text-xs text-blue-600 hover:underline hover:text-blue-800"
+                  href='#'
+                  className='text-xs text-blue-600 hover:underline hover:text-blue-800'
                   onClick={() => setIsForgotPass(false)}
                 >
                   Đăng nhập
@@ -137,19 +140,19 @@ export default function Login() {
               </p>
               <form action='' onSubmit={formik.handleSubmit}>
                 <div className='flex flex-col space-y-4 mb-6'>
-                  <label className='flex flex-col' htmlFor='email'>
-                    <span className='text-sm font-medium'>Email</span>
+                  <label className='flex flex-col' htmlFor='loginName'>
+                    <span className='text-sm font-medium'>Tên đăng nhập</span>
                     <CustomInput
                       prefix={<AiOutlineMail />}
-                      placeholder='Địa chỉ email'
-                      onChange={formik.handleChange('email')}
-                      onBlur={formik.handleBlur('email')}
-                      value={formik.values.email}
+                      placeholder='Tên đăng nhập'
+                      onChange={formik.handleChange('loginName')}
+                      onBlur={formik.handleBlur('loginName')}
+                      value={formik.values.loginName}
                       error={
                         formik.submitCount > 0 &&
-                        formik.touched.email &&
-                        formik.errors.email
-                          ? formik.errors.email
+                        formik.touched.loginName &&
+                        formik.errors.loginName
+                          ? formik.errors.loginName
                           : null
                       }
                     />
@@ -217,7 +220,8 @@ export default function Login() {
                     disabled={isLoading}
                     onClick={(e) => {
                       e.preventDefault();
-                      router.push('/signup')}}
+                      router.push('/signup');
+                    }}
                     className='py-1 px-8 text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-4
                     focus:ring-blue-300 font-medium rounded-lg text-lg text-center me-2 mb-2 dark:bg-blue-600
                     dark:hover:bg-blue-900 dark:focus:ring-blue-800'

@@ -239,3 +239,7 @@ table#choice-present-block {
 .mb-20 { 
   margin-bottom: 20px;
 }
+
+.gap-12 {
+  gap: 12px;
+}

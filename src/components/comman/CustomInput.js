@@ -31,7 +31,7 @@ export default function CustomInput(props) {
         type={type}
         disabled={disabled}
       />
-      {error && <p className="ms-2 mb-0 mt-1 text-danger">{error}</p>}
+      {error && <span className="ms-2 mb-0 mt-1 text-danger">{error}</span>}
     </React.Fragment>
   );
 }

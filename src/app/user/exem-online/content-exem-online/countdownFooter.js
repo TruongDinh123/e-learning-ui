@@ -57,7 +57,7 @@ const CountdownFooter = ({testCount, timeSubmission}) => {
   }, [quizCurrent, dispatch, userCurrent]);
 
   return (
-    testCount < NUMBER_QUIZ_LIMIT && (
+    testCount && testCount < NUMBER_QUIZ_LIMIT && (
       <div className='mt-4 lg:mt-8 flex items-center justify-center gap-4 lg:gap-8'>
         <button
           type='button'

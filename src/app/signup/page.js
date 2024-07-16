@@ -1,14 +1,5 @@
 'use client';
-import CustomButton from '@/components/comman/CustomBtn';
-import CustomInput from '@/components/comman/CustomInput';
 import Link from 'next/link';
-import {AiOutlineMail} from 'react-icons/ai';
-import {RiLockPasswordLine} from 'react-icons/ri';
-import {MdOutlinePhone} from 'react-icons/md';
-import {RiHome4Line} from 'react-icons/ri';
-import {MdOutlinePermIdentity} from 'react-icons/md';
-import {TbUserSearch} from 'react-icons/tb';
-import {TbUserShield} from 'react-icons/tb';
 
 import {useDispatch} from 'react-redux';
 import {useFormik} from 'formik';
@@ -17,22 +8,25 @@ import {unwrapResult} from '@reduxjs/toolkit';
 import * as yup from 'yup';
 import {message} from 'antd';
 import {useRouter} from 'next/navigation';
-import {BsEye, BsEyeSlash} from 'react-icons/bs';
 import {useState} from 'react';
 import backgroundImage from '/public/images/backgroundInit.jpg';
 import Image from 'next/image';
 import './signup.css';
-import UnitBlock from './unitBlock';
+import FormBlock from './formBlock';
 
 const registerSchema = yup.object({
-  email: yup
-    .string()
-    .email('Email không hợp lệ')
-    .required('Yêu cầu nhập email'),
+  email: yup.string().email('Email không hợp lệ'),
+
   password: yup
     .string()
     .min(6, 'Password phải có ít nhất 6 kí tự')
     .required('Yêu cầu nhập mật khẩu'),
+  lastName: yup.string().required('Yêu cầu nhập tên'),
+  firstName: yup.string().required('Yêu cầu nhập họ'),
+  loginName: yup
+    .string()
+    .min(4, 'Tên đăng nhập phải có ít nhất 4 kí tự')
+    .required('Yêu cầu nhập tên đăng nhập'),
 
   phone: yup
     .string()
@@ -51,8 +45,6 @@ export default function SignUp() {
   const [messageApi, contextHolder] = message.useMessage();
   const router = useRouter();
   const dispatch = useDispatch();
-  const [showPassword, setShowPassword] = useState(false);
-  const [passwordValue, setPasswordValue] = useState('');
 
   const [selectedCap, setSelectedCap] = useState('');
   const [selectedDonVi, setSelectedDonVi] = useState('');
@@ -61,6 +53,7 @@ export default function SignUp() {
   const formik = useFormik({
     validationSchema: registerSchema,
     initialValues: {
+      loginName: '',
       email: '',
       password: '',
       address: '',
@@ -77,7 +70,7 @@ export default function SignUp() {
       values.donvi = selectedDonVi;
       values.donvicon = donViCon;
 
-      if (values.password && values.email) {
+      if (values.password && values.loginName) {
         dispatch(registerUser(values))
           .then(unwrapResult)
           .then((res) => {
@@ -110,7 +103,11 @@ export default function SignUp() {
       flex items-center justify-center'
     >
       <div className='image-block'>
-        <Image className="image-block_image" src={backgroundImage} alt='background-image' />
+        <Image
+          className='image-block_image'
+          src={backgroundImage}
+          alt='background-image'
+        />
       </div>
       {contextHolder}
       <div className='feature-block flex flex-col md:flex-row items-center justify-center w-full max-w-5xl rounded-lg'>
@@ -126,142 +123,14 @@ export default function SignUp() {
 
         <div className='bg-white p-8 rounded-lg shadow-md w-full max-w-sm md:max-w-md'>
           <h1 className='text-3xl font-bold p-2'>Đăng ký tài khoản</h1>
-          <form
-            action='signup'
-            onSubmit={formik.handleSubmit}
-            className='p-4  rounded'
-          >
-            <div className='flex flex-col space-y-4 mb-6'>
-              <label className='flex flex-col' htmlFor='email'>
-                <span className='text-sm font-medium'>Email</span>
-                <CustomInput
-                  prefix={<AiOutlineMail />}
-                  placeholder='Địa chỉ email'
-                  onChange={formik.handleChange('email')}
-                  onBlur={formik.handleBlur('email')}
-                  value={formik.values.email}
-                  error={formik.touched.email && formik.errors.email}
-                />
-              </label>
-
-              <label className='flex flex-col' htmlFor='password'>
-                <span className='text-sm font-medium'>Mật khẩu</span>
-                <CustomInput
-                  prefix={<RiLockPasswordLine />}
-                  suffix={
-                    showPassword ? (
-                      <BsEyeSlash
-                        onClick={() => setShowPassword(false)}
-                        style={{cursor: 'pointer'}}
-                      />
-                    ) : (
-                      <BsEye
-                        onClick={() => setShowPassword(true)}
-                        style={{cursor: 'pointer'}}
-                      />
-                    )
-                  }
-                  placeholder='Mật khẩu'
-                  onBlur={formik.handleBlur('password')}
-                  onChange={(e) => {
-                    formik.handleChange('password')(e);
-                    setPasswordValue(e.target.value);
-                  }}
-                  value={passwordValue}
-                  error={formik.touched.password && formik.errors.password}
-                  type={showPassword ? 'text' : 'password'}
-                />
-              </label>
-
-              <label className='flex flex-col' htmlFor='fistName'>
-                <span className='text-sm font-medium'>Họ và tên</span>
-                <div className='flex justify-content-around'>
-                  <CustomInput
-                    prefix={<TbUserSearch />}
-                    placeholder='Nhập họ'
-                    onChange={formik.handleChange('lastName')}
-                    onBlur={formik.handleBlur('lastName')}
-                    value={formik.values.lastName}
-                    error={formik.touched.lastName && formik.errors.lastName}
-                    required
-                    className='mr-1'
-                  />
-                  <CustomInput
-                    prefix={<TbUserShield />}
-                    placeholder='Nhập tên'
-                    onChange={formik.handleChange('firstName')}
-                    onBlur={formik.handleBlur('firstName')}
-                    value={formik.values.firstName}
-                    error={formik.touched.firstName && formik.errors.firstName}
-                    required
-                  />
-                </div>
-              </label>
-
-              <label className='flex flex-col' htmlFor='phone'>
-                <span className='text-sm font-medium'>Số Điện Thoại</span>
-                <CustomInput
-                  prefix={<MdOutlinePhone />}
-                  placeholder='Nhập số điện thoại'
-                  onChange={formik.handleChange('phone')}
-                  onBlur={formik.handleBlur('phone')}
-                  value={formik.values.phone}
-                  error={formik.touched.phone && formik.errors.phone}
-                  required
-                />
-              </label>
-
-              <label className='flex flex-col' htmlFor='cmnd'>
-                <span className='text-sm font-medium'>CMND/CCCD</span>
-                <CustomInput
-                  prefix={<MdOutlinePermIdentity />}
-                  placeholder='Nhập số CMND/CCCD'
-                  onChange={formik.handleChange('cmnd')}
-                  onBlur={formik.handleBlur('cmnd')}
-                  value={formik.values.cmnd}
-                  error={formik.touched.cmnd && formik.errors.cmnd}
-                />
-              </label>
-
-              <label className='flex flex-col' htmlFor='adress'>
-                <span className='text-sm font-medium'>Địa chỉ</span>
-                <CustomInput
-                  prefix={<RiHome4Line />}
-                  placeholder='Địa chỉ cụ thể'
-                  onChange={formik.handleChange('address')}
-                  onBlur={formik.handleBlur('address')}
-                  value={formik.values.address}
-                  error={formik.touched.address && formik.errors.address}
-                  required
-                />
-              </label>
-
-              <UnitBlock
-                formik={formik}
-                selectedCap={selectedCap}
-                selectedDonVi={selectedDonVi}
-                setSelectedCap={setSelectedCap}
-                setSelectedDonVi={setSelectedDonVi}
-                setDonViCon={setDonViCon}
-              />
-            </div>
-
-            <CustomButton
-              title='Đăng ký'
-              type='primary'
-              className='py-1 px-8 bg-blue-900 hover:bg-blue-400 mt-5
-                text-white text-center inline-block text-lg
-                my-1 mx-1 rounded-lg cursor-pointer border-none w-full signup-block'
-            />
-
-            <div className='mt-2 mb-2'>
-              <Link href='/login'>
-                <span className='text-xs text-blue-800  hover:text-blue-800'>
-                  Bạn đã có tài khoản? <b>Đăng nhập</b>
-                </span>
-              </Link>
-            </div>
-          </form>
+          <FormBlock
+            formik={formik}
+            selectedCap={selectedCap}
+            selectedDonVi={selectedDonVi}
+            setSelectedCap={setSelectedCap}
+            setSelectedDonVi={setSelectedDonVi}
+            setDonViCon={setDonViCon}
+          />
         </div>
       </div>
     </div>
