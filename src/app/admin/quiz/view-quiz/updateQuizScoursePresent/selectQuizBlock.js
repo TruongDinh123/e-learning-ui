@@ -1,18 +1,12 @@
 import React, {memo, useEffect, useState} from 'react';
-import {Button, Select, Typography, message} from 'antd';
-import {useDispatch, useSelector} from 'react-redux';
-import {activeQuizPresent} from '../../../../../features/Quiz/quizSlice';
-import {activeCoursePresent} from '../../../../../features/Courses/courseSlice';
+import {Select, Typography} from 'antd';
+import {useSelector} from 'react-redux';
 const {Title} = Typography;
 
-const SelectQuizBlock = ({courseCurrent}) => {
-  const dispatch = useDispatch();
+const SelectQuizBlock = ({quizCurrent, courseCurrent, setQuizCurrent}) => {
   const quizPresent = useSelector((state) => state.quiz.quizPresent);
-  const coursePresent = useSelector((state) => state.course.coursePresent);
-  const [quizCurrent, setQuizCurrent] = useState('');
   const quiz = useSelector((state) => state.quiz.quiz);
   const [selectData, setSelectData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (value) => {
     setQuizCurrent(value);
@@ -46,7 +40,6 @@ const SelectQuizBlock = ({courseCurrent}) => {
         (item) => item.value === quizCurrent
       );
       if (!isExistQuizCurrent) {
-       
         quizCurrent && findIndexCurrent !== -1
           ? setQuizCurrent(quizCurrent)
           : setQuizCurrent('');
@@ -54,83 +47,36 @@ const SelectQuizBlock = ({courseCurrent}) => {
       }
 
       if (isExistQuizCurrent) {
-        (!quizCurrent || findIndexCurrent === -1) && setQuizCurrent(quizPresent?._id);
+        (!quizCurrent || findIndexCurrent === -1) &&
+          setQuizCurrent(quizPresent?._id);
       }
     }
-  }, [courseCurrent, quiz, quizCurrent, quizPresent]);
-
-  const activeQuizPresentHandle = () => {
-    if (!quizCurrent) return;
-    if (quizCurrent && courseCurrent !== coursePresent._id) setIsLoading(true);
-
-    if (quizCurrent === quizPresent?._id) {
-      message.success('Đã cập nhật bài thi đại diện!', 3);
-      setIsLoading(false);
-      return;
-    }
-    dispatch(
-      activeQuizPresent({
-        newQuizId: quizCurrent,
-        oldQuizId: quizPresent?._id || null,
-      })
-    ).then(() => {
-      message.success('Đã cập nhật bài thi đại diện!', 3);
-      setIsLoading(false);
-    });
-    if (courseCurrent !== coursePresent._id) {
-      dispatch(
-        activeCoursePresent({
-          newCourseId: courseCurrent,
-          oldCourseId: coursePresent?._id || null,
-        })
-      ).then(() => {
-        message.success('Đã cập nhật cuộc thi đại diện!', 3);
-        setIsLoading(false);
-      });
-    }
-  };
+  }, [courseCurrent, quiz, quizCurrent, quizPresent?._id, setQuizCurrent]);
 
   return (
-    <tr>
-      <td>
-        <Title level={5} className='mb-0'>
-          Chọn bài thi đại diện
-        </Title>
-      </td>
-      <td>
-        <Select
-          showSearch
-          style={{
-            width: 300,
-          }}
-          defaultValue={quizCurrent}
-          value={quizCurrent}
-          onChange={handleChange}
-          placeholder='Search to Select'
-          optionFilterProp='children'
-          filterOption={(input, option) =>
-            (option?.label ?? '').includes(input)
-          }
-          filterSort={(optionA, optionB) =>
-            (optionA?.label ?? '')
-              .toLowerCase()
-              .localeCompare((optionB?.label ?? '').toLowerCase())
-          }
-          options={selectData}
-        />
-      </td>
-      <td>
-        <Button
-          type='primary'
-          onClick={activeQuizPresentHandle}
-          className='me-3 custom-button'
-          style={{width: '100%'}}
-          loading={isLoading}
-        >
-          Cập nhật
-        </Button>
-      </td>
-    </tr>
+    <div>
+      <Title level={5} className='mb-2'>
+        Chọn bài thi đại diện
+      </Title>
+      <Select
+        showSearch
+        style={{
+          width: 300,
+        }}
+        defaultValue={quizCurrent}
+        value={quizCurrent}
+        onChange={handleChange}
+        placeholder='Search to Select'
+        optionFilterProp='children'
+        filterOption={(input, option) => (option?.label ?? '').includes(input)}
+        filterSort={(optionA, optionB) =>
+          (optionA?.label ?? '')
+            .toLowerCase()
+            .localeCompare((optionB?.label ?? '').toLowerCase())
+        }
+        options={selectData}
+      />
+    </div>
   );
 };
 export default memo(SelectQuizBlock);

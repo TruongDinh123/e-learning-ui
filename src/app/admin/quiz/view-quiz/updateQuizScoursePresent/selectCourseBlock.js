@@ -29,35 +29,29 @@ const SelectCourseBlock = ({courseCurrent, setCourseCurrent}) => {
   }, [coursePresent, setCourseCurrent]);
 
   return (
-    <tr>
-      <td>
-        <Title level={5} className='mb-0'>
-          Chọn cuộc thi đại diện
-        </Title>
-      </td>
-      <td>
-        <Select
-          showSearch
-          style={{
-            width: 500,
-          }}
-          defaultValue={courseCurrent}
-          value={courseCurrent}
-          onChange={handleChange}
-          placeholder='Search to Select'
-          optionFilterProp='children'
-          filterOption={(input, option) =>
-            (option?.label ?? '').includes(input)
-          }
-          filterSort={(optionA, optionB) =>
-            (optionA?.label ?? '')
-              .toLowerCase()
-              .localeCompare((optionB?.label ?? '').toLowerCase())
-          }
-          options={selectData}
-        />
-      </td>
-    </tr>
+    <div className='mb-4'>
+      <Title level={5} className='mb-2'>
+        Chọn cuộc thi đại diện
+      </Title>
+      <Select
+        showSearch
+        style={{
+          width: 500,
+        }}
+        defaultValue={courseCurrent}
+        value={courseCurrent}
+        onChange={handleChange}
+        placeholder='Search to Select'
+        optionFilterProp='children'
+        filterOption={(input, option) => (option?.label ?? '').includes(input)}
+        filterSort={(optionA, optionB) =>
+          (optionA?.label ?? '')
+            .toLowerCase()
+            .localeCompare((optionB?.label ?? '').toLowerCase())
+        }
+        options={selectData}
+      />
+    </div>
   );
 };
 export default memo(SelectCourseBlock);

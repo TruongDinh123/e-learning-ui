@@ -1,25 +1,34 @@
 'use client';
 
-import {useSelector} from 'react-redux';
-import SelectCourseBlock from './selectCourseBlock';
-import SelectQuizBlock from './selectQuizBlock';
 import {useState} from 'react';
+import {Button} from 'antd';
+import ModalBlock from './modalBlock';
 
 const UpdateQuizScoursePresent = () => {
-  const coursePresent = useSelector((state) => state.course.coursePresent);
-  const [courseCurrent, setCourseCurrent] = useState(coursePresent?._id);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleCancel = () => {
+    setIsOpen(false);
+  };
 
   return (
-    <div style={{overflow: 'auto', display: 'block'}}>
-      <table id='choice-present-block' style={{width: '820px'}}>
-        <tbody>
-          <SelectCourseBlock
-            courseCurrent={courseCurrent}
-            setCourseCurrent={setCourseCurrent}
-          />
-          <SelectQuizBlock courseCurrent={courseCurrent} />
-        </tbody>
-      </table>
+    <div className='mb-4'>
+      <Button
+        type='primary'
+        className='custom-button'
+        onClick={() => setIsOpen(true)}
+      >
+        Chọn bài thi đại diện
+      </Button>
+      {isOpen && (
+        <ModalBlock
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          isOpen={isOpen}
+          handleCancel={handleCancel}
+        />
+      )}
     </div>
   );
 };
