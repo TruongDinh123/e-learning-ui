@@ -3,9 +3,7 @@
 import HeaderUser from '@/components/Header/Header';
 import './page.css';
 import {useSelector} from 'react-redux';
-import {Card, Image} from 'antd';
-
-const logo3 = '/images/logo.jpg';
+import {Image} from 'antd';
 
 export default function HeaderExemplOnline() {
   const courseInfo = useSelector((state) => state.course.courseInfo);

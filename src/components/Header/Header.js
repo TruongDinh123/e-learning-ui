@@ -1,31 +1,29 @@
-"use client";
-import { Fragment, useCallback, useState } from "react";
-import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
-import {
-  Bars3Icon,
-  ChartPieIcon,
-  CursorArrowRaysIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
-import React from "@heroicons/react";
-import Link from "next/link";
-import { Avatar, Dropdown, Menu } from "antd";
+'use client';
+import {Fragment, useCallback, useState} from 'react';
+import {Dialog, Disclosure} from '@headlessui/react';
+import {Bars3Icon, XMarkIcon} from '@heroicons/react/24/outline';
+import React from '@heroicons/react';
+import Link from 'next/link';
+import {Avatar, Dropdown, Menu} from 'antd';
 import {
   LockOutlined,
   LoginOutlined,
   LogoutOutlined,
   UserOutlined,
-} from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { logOut, resetState, setUser, setUserName } from "@/features/User/userSlice";
-import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
-import { resetStateCourse } from "@/features/Courses/courseSlice";
-import { resetStateLesson } from "@/features/Lesson/lessonSlice";
-import { resetStateQuiz } from "@/features/Quiz/quizSlice";
+} from '@ant-design/icons';
+import {useDispatch, useSelector} from 'react-redux';
+import {unwrapResult} from '@reduxjs/toolkit';
+import {
+  logOut,
+  resetState,
+  setUser,
+  setUserName,
+} from '@/features/User/userSlice';
+import Cookies from 'js-cookie';
+import {resetStateLesson} from '@/features/Lesson/lessonSlice';
+import {resetStateQuiz} from '@/features/Quiz/quizSlice';
 
-const logo3 = "/images/logo-new.png";
+const logo3 = '/images/logo-new.png';
 
 // const products = [
 //   {
@@ -51,7 +49,7 @@ const logo3 = "/images/logo-new.png";
 //   );
 // };
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 export default function HeaderUser() {
@@ -59,24 +57,23 @@ export default function HeaderUser() {
   const isAdmin =
     userState?.roles?.some(
       (role) =>
-        role.name === "Admin" ||
-        role.name === "Super-Admin" ||
-        role.name === "Mentor"
+        role.name === 'Admin' ||
+        role.name === 'Super-Admin' ||
+        role.name === 'Mentor'
     ) ||
     userState?.metadata?.account?.roles?.some(
       (role) =>
-        role.name === "Admin" ||
-        role.name === "Super-Admin" ||
-        role.name === "Mentor"
+        role.name === 'Admin' ||
+        role.name === 'Super-Admin' ||
+        role.name === 'Mentor'
     );
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const userName =
     useSelector((state) => state.user.userName) ||
-    JSON.parse(localStorage.getItem("userName"));
+    JSON.parse(localStorage.getItem('userName'));
 
-  const router = useRouter();
   const dispatch = useDispatch();
 
   const logout = useCallback(() => {
@@ -84,38 +81,35 @@ export default function HeaderUser() {
       .then(unwrapResult)
       .then(() => {
         localStorage.clear();
-        Cookies.remove("Bearer");
-        Cookies.remove("refreshToken");
+        Cookies.remove('Bearer');
+        Cookies.remove('refreshToken');
         dispatch(resetState());
         dispatch(setUserName(null));
         dispatch(setUser(null));
-        dispatch(resetStateCourse());
-        // dispatch(resetStateCategory());
         dispatch(resetStateLesson());
         dispatch(resetStateQuiz());
-        router.push("/");
       })
       .catch((error) => {
-        console.error("Logout failed:", error);
+        console.error('Logout failed:', error);
       });
-  }, [dispatch, router]);
+  }, [dispatch]);
 
   const menu = (
     <Menu>
       <Menu.Item>
-        <Link href="/user">Cập nhật thông tin</Link>
+        <Link href='/user'>Cập nhật thông tin</Link>
       </Menu.Item>
       <Menu.Item>
-        <Link href="/user/change-password">Đổi mật khẩu</Link>
+        <Link href='/user/change-password'>Đổi mật khẩu</Link>
       </Menu.Item>
       <Menu.Item>
-        {isAdmin && <Link href="/admin">Quản trị viên</Link>}
+        {isAdmin && <Link href='/admin'>Quản trị viên</Link>}
       </Menu.Item>
       <Menu.Item onClick={logout}>
         {userState !== null && (
           <span
-            title="Logout"
-            className="text-red-500"
+            title='Logout'
+            className='text-red-500'
             icon={<LogoutOutlined />}
           >
             Đăng xuất
@@ -126,38 +120,38 @@ export default function HeaderUser() {
   );
 
   return (
-    <header className="bg-[#02354B] fixed w-full top-0 z-50">
-      <div className="max-w-[105rem] mx-auto px-4 sm:px-6 lg:px-8">
-        <nav className="flex items-center justify-between h-[75px]">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <a href="/">
-                <img className="h-36 w-auto" src={logo3} alt="" />
+    <header className='bg-[#02354B] fixed w-full top-0 z-50'>
+      <div className='max-w-[105rem] mx-auto px-4 sm:px-6 lg:px-8'>
+        <nav className='flex items-center justify-between h-[75px]'>
+          <div className='flex items-center'>
+            <div className='flex-shrink-0'>
+              <a href='/'>
+                <img className='h-36 w-auto' src={logo3} alt='' />
               </a>
             </div>
           </div>
-          <div className="flex lg:hidden">
+          <div className='flex lg:hidden'>
             {!userState ? (
-              <Link href="/login">
-                <span className="cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-white">
+              <Link href='/login'>
+                <span className='cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-white'>
                   Đăng nhập
                 </span>
               </Link>
             ) : (
               <button
-                type="button"
-                className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-white"
+                type='button'
+                className='-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-white'
                 onClick={() => setMobileMenuOpen(true)}
               >
-                <span className="sr-only">Open main menu</span>
-                <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+                <span className='sr-only'>Open main menu</span>
+                <Bars3Icon className='h-6 w-6' aria-hidden='true' />
               </button>
             )}
           </div>
-          <div className="hidden md:block">
-            <div className="ml-4 flex items-center md:ml-6">
-              <div className="ml-3 relative">
-                <div className="ml-10 flex items-center space-x-4">
+          <div className='hidden md:block'>
+            <div className='ml-4 flex items-center md:ml-6'>
+              <div className='ml-3 relative'>
+                <div className='ml-10 flex items-center space-x-4'>
                   {/*{userState !== null && (*/}
                   {/*  <Popover className="relative">*/}
                   {/*    <Popover.Button className="">*/}
@@ -218,34 +212,34 @@ export default function HeaderUser() {
                   {/*)}*/}
 
                   {userState == null && (
-                    <Link href="/login" icon={<LoginOutlined />}>
-                      <span className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                    <Link href='/login' icon={<LoginOutlined />}>
+                      <span className='text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium'>
                         Đăng nhập
                       </span>
                     </Link>
                   )}
 
                   {userState !== null && (
-                    <Dropdown overlay={menu} placement="bottomLeft">
-                      <div className="ml-3 relative">
-                        <div className="flex items-center space-x-4">
+                    <Dropdown overlay={menu} placement='bottomLeft'>
+                      <div className='ml-3 relative'>
+                        <div className='flex items-center space-x-4'>
                           <a
-                            aria-current="page"
-                            className="flex items-center justify-between text-white px-3 py-2 rounded-md text-sm font-medium"
-                            href="#"
+                            aria-current='page'
+                            className='flex items-center justify-between text-white px-3 py-2 rounded-md text-sm font-medium'
+                            href='#'
                           >
                             <Avatar
                               size={40}
-                              className="bg-white items-center justify-between"
+                              className='bg-white items-center justify-between'
                               icon={<UserOutlined />}
                               src={
                                 userState?.image_url ||
                                 userState?.metadata?.account?.image_url
                               }
                             />
-                            <span className="ml-2 text-white">
+                            <span className='ml-2 text-white'>
                               {userState?.firstName ||
-                                userState?.metadata?.account?.firstName}{" "}
+                                userState?.metadata?.account?.firstName}{' '}
                               {userState?.lastName ||
                                 userState?.metadata?.account?.lastName}
                             </span>
@@ -261,73 +255,71 @@ export default function HeaderUser() {
         </nav>
 
         {/* collapse */}
-        <div className="-mr-2 flex md:hidden">
+        <div className='-mr-2 flex md:hidden'>
           <Dialog
-            as="div"
-            className="lg:hidden"
+            as='div'
+            className='lg:hidden'
             open={mobileMenuOpen}
             onClose={setMobileMenuOpen}
           >
-            <div className="fixed inset-0" />
-            <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-              <div className="flex items-center justify-between bg-[#02354B]">
-                <div className="flex-shrink-0">
-                  <Link href="/">
+            <div className='fixed inset-0' />
+            <Dialog.Panel className='fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white sm:max-w-sm sm:ring-1 sm:ring-gray-900/10'>
+              <div className='flex items-center justify-between bg-[#02354B]'>
+                <div className='flex-shrink-0'>
+                  <Link href='/'>
                     <img
-                      className="h-36 w-auto object-contain  absolute top-0 mt-[26px] transform -translate-y-1/2 "
-                      style={{ left: "1rem" }}
+                      className='h-36 w-auto object-contain  absolute top-0 mt-[26px] transform -translate-y-1/2 '
+                      style={{left: '1rem'}}
                       src={logo3}
-                      alt=""
+                      alt=''
                     />
                   </Link>
                 </div>
                 <button
-                  type="button"
-                  className="rounded-md p-2.5 text-gray-700"
+                  type='button'
+                  className='rounded-md p-2.5 text-gray-700'
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <span className="sr-only">Close menu</span>
+                  <span className='sr-only'>Close menu</span>
                   <XMarkIcon
-                    className="h-8 w-8 text-white"
-                    aria-hidden="true"
+                    className='h-8 w-8 text-white'
+                    aria-hidden='true'
                   />
                 </button>
               </div>
-              <div className="flow-root px-6 py-6">
-                <div className="-my-6 divide-y divide-black">
-                  <div className="space-y-2 py-6">
+              <div className='flow-root px-6 py-6'>
+                <div className='-my-6 divide-y divide-black'>
+                  <div className='space-y-2 py-6'>
                     {userState !== null && (
-                      <Disclosure as="div" className="-mx-3">
-                        {({ open }) => (
+                      <Disclosure as='div' className='-mx-3'>
+                        {({open}) => (
                           <>
-                            <Disclosure.Button className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                              <span className="font-bold">{userName}</span>
-                              {isAdmin && (
-                                <Link href="/admin">( Admin )</Link>
-                              )}
+                            <Disclosure.Button className='flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'>
+                              <span className='font-bold'>{userName}</span>
+                              {isAdmin && <Link href='/admin'>( Admin )</Link>}
                               <ChevronDownIcon
                                 className={classNames(
-                                  open ? "rotate-180" : "",
-                                  "h-5 w-5 flex-none"
+                                  open ? 'rotate-180' : '',
+                                  'h-5 w-5 flex-none'
                                 )}
-                                aria-hidden="true"
+                                aria-hidden='true'
                               />
                             </Disclosure.Button>
-                            <Disclosure.Panel className="mt-2 space-y-2">
+                            <Disclosure.Panel className='mt-2 space-y-2'>
                               <Disclosure.Button
-                                as="a"
-                                href="/user"
-                                className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                                as='a'
+                                href='/user'
+                                className='block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50'
                               >
-                                <UserOutlined className="h-5 w-5 text-gray-600 mr-2" />
+                                <UserOutlined className='h-5 w-5 text-gray-600 mr-2' />
                                 Cập nhật thông tin
                               </Disclosure.Button>
                               <Disclosure.Button
-                                as="a"
-                                href="/user/change-password"
-                                className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                                as='a'
+                                href='/user/change-password'
+                                className='block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50'
                               >
-                                <LockOutlined className="h-5 w-5 text-gray-600 mr-2" />
+                                <LockOutlined className='h-5 w-5 text-gray-600 mr-2' />
                                 Đổi mật khẩu
                               </Disclosure.Button>
                             </Disclosure.Panel>
@@ -339,16 +331,16 @@ export default function HeaderUser() {
                     {/*  {userState && <UserLinks />}*/}
                     {/*</div>*/}
                   </div>
-                  <div className="space-y-2 py-6">
+                  <div className='space-y-2 py-6'>
                     <span
-                      title="Logout"
+                      title='Logout'
                       icon={<LogoutOutlined />}
                       onClick={logout}
-                      className="cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                      className='cursor-pointer -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'
                     >
-                      <div className="flex items-center">
-                        <LogOutIcon className="h-5 w-5 text-gray-600 mr-2" />
-                        <a href="/login">Đăng xuất</a>
+                      <div className='flex items-center'>
+                        <LogOutIcon className='h-5 w-5 text-gray-600 mr-2' />
+                        <a href='/login'>Đăng xuất</a>
                       </div>
                     </span>
                   </div>
@@ -366,19 +358,19 @@ function BarChartIcon(props) {
   return (
     <svg
       {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      xmlns='http://www.w3.org/2000/svg'
+      width='24'
+      height='24'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
     >
-      <line x1="12" x2="12" y1="20" y2="10" />
-      <line x1="18" x2="18" y1="20" y2="4" />
-      <line x1="6" x2="6" y1="20" y2="16" />
+      <line x1='12' x2='12' y1='20' y2='10' />
+      <line x1='18' x2='18' y1='20' y2='4' />
+      <line x1='6' x2='6' y1='20' y2='16' />
     </svg>
   );
 }
@@ -387,18 +379,18 @@ function BookOpenIcon(props) {
   return (
     <svg
       {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      xmlns='http://www.w3.org/2000/svg'
+      width='24'
+      height='24'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
     >
-      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+      <path d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z' />
+      <path d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z' />
     </svg>
   );
 }
@@ -407,17 +399,17 @@ function ChevronDownIcon(props) {
   return (
     <svg
       {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      xmlns='http://www.w3.org/2000/svg'
+      width='24'
+      height='24'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
     >
-      <path d="m6 9 6 6 6-6" />
+      <path d='m6 9 6 6 6-6' />
     </svg>
   );
 }
@@ -426,19 +418,19 @@ function LogOutIcon(props) {
   return (
     <svg
       {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      xmlns='http://www.w3.org/2000/svg'
+      width='24'
+      height='24'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
     >
-      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-      <polyline points="16 17 21 12 16 7" />
-      <line x1="21" x2="9" y1="12" y2="12" />
+      <path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4' />
+      <polyline points='16 17 21 12 16 7' />
+      <line x1='21' x2='9' y1='12' y2='12' />
     </svg>
   );
 }
@@ -447,18 +439,18 @@ function SearchIcon(props) {
   return (
     <svg
       {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      xmlns='http://www.w3.org/2000/svg'
+      width='24'
+      height='24'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
     >
-      <circle cx="11" cy="11" r="8" />
-      <path d="m21 21-4.3-4.3" />
+      <circle cx='11' cy='11' r='8' />
+      <path d='m21 21-4.3-4.3' />
     </svg>
   );
 }
