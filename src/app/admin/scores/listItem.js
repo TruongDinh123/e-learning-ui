@@ -19,7 +19,7 @@ const ListItem = ({userTested, quizsFilter}) => {
       const scoresUser = allscoreQuiz
         .filter((score) => {
           const checkScoreCurrent =
-            score.user._id === userTested._id &&
+            score.user?._id === userTested._id &&
             userTested.quizId === score.quiz._id;
           const checkquizCurrent = quizsFilter.includes(score.quiz._id);
           const isValid =

@@ -188,7 +188,7 @@ const FormBlock = ({
           required
         />
       </div>
-      
+
       <div className='space-y-2'>
         <label className='text-base' htmlFor='gender'>
           Giới tính:
