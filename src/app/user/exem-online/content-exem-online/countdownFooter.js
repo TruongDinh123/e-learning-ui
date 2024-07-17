@@ -66,7 +66,7 @@ const CountdownFooter = ({testCount, timeSubmission}) => {
             if (userCurrent && timeSubmission.checkTime) confirmStartQuiz();
             if (!userCurrent) router.push('/login');
           }}
-          disabled={true}
+          disabled={!timeSubmission.checkTime && true}
         >
           Tham gia
         </button>
