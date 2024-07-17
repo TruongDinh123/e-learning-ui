@@ -96,28 +96,7 @@ const ModalDetailQuiz = ({isModalOpen, handleCancel, scoreCurrentInfo}) => {
             </div>
           </div>
 
-          <div className='p-4 border rounded-lg shadow-sm'>
-            <div className='mb-2'>
-              <span className='font-bold text-lg text-green-600'>
-                Câu {scoreCurrentInfo.quiz.questions.length + 2}:
-              </span>
-              <span
-                className={`block overflow-hidden ${
-                  isDesktop ? 'ql-editor' : ''
-                } text-gray-700`}
-              >
-                Dự đoán số người trả lời đúng 100%:
-              </span>
-            </div>
-            <div className='mt-2'>
-              <strong className='text-lg text-gray-800'>
-                Câu trả lời:
-                <span className='font-medium text-blue-500'>
-                  {scoreCurrentInfo?.predictAmountMaxScore ?? '0'}
-                </span>
-              </strong>
-            </div>
-          </div>
+     
         </div>
       )}
     </Modal>

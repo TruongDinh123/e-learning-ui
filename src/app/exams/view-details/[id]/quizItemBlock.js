@@ -16,8 +16,6 @@ const QuizItemBlock = ({
   showCountdown,
   predictAmount,
   onChangePredictAmount,
-  predictAmountMaxScore,
-  onChangePredictAmountMaxScore,
   quizSubmission,
   isComplete,
   setSelectedAnswers,
@@ -49,7 +47,6 @@ const QuizItemBlock = ({
         submitted={submitted}
         submitting={submitting}
         predictAmount={predictAmount}
-        predictAmountMaxScore={predictAmountMaxScore}
         selectedAnswers={selectedAnswers}
         handleSubmit={handleSubmit}
         loading={loading}
@@ -89,9 +86,7 @@ const QuizItemBlock = ({
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           onChangePredictAmount={onChangePredictAmount}
-          onChangePredictAmountMaxScore={onChangePredictAmountMaxScore}
           predictAmount={predictAmount}
-          predictAmountMaxScore={predictAmountMaxScore}
           submitted={submitted}
           isComplete={isComplete}
           indexOfLastQuestion={indexOfLastQuestion}

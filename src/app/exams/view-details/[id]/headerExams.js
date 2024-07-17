@@ -12,7 +12,6 @@ const HeaderExams = ({
   submitted,
   submitting,
   predictAmount,
-  predictAmountMaxScore,
   selectedAnswers,
   handleSubmit,
   loading,
@@ -21,10 +20,9 @@ const HeaderExams = ({
 
   const completedAmount = () => {
     const predictedFirst = predictAmount.length !== 0;
-    const predictedSecond = predictAmountMaxScore.length !== 0;
 
     return (
-      Object.keys(selectedAnswers).length + predictedFirst + predictedSecond
+      Object.keys(selectedAnswers).length + predictedFirst
     );
   };
 

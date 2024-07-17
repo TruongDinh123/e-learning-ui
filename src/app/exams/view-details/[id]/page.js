@@ -26,9 +26,6 @@ export default function Quizs({params}) {
   const [predictAmount, onChangePredictAmount] = useState(
     localStorage.getItem('predictAmount') || ''
   );
-  const [predictAmountMaxScore, onChangePredictAmountMaxScore] = useState(
-    localStorage.getItem('predictAmountMaxScore') || ''
-  );
   const [initialSize, setInitialSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -73,11 +70,7 @@ export default function Quizs({params}) {
             ? infoCommonScoreByUserId.predictAmount.toString()
             : '0'
         );
-        onChangePredictAmountMaxScore(
-          infoCommonScoreByUserId.predictAmountMaxScore
-            ? infoCommonScoreByUserId.predictAmountMaxScore.toString()
-            : '0'
-        );
+      
       }
       setStartTime(infoCommonScoreByUserId.startTime);
       setIsComplete(infoCommonScoreByUserId.isComplete);
@@ -128,7 +121,6 @@ export default function Quizs({params}) {
           quizId: quiz._id,
           answer: formattedAnswers,
           predictAmount,
-          predictAmountMaxScore,
         })
       )
         .then(unwrapResult)
@@ -140,7 +132,6 @@ export default function Quizs({params}) {
             localStorage.removeItem('quizAnswers');
             localStorage.removeItem('quizStartTime');
             localStorage.removeItem('predictAmount');
-            localStorage.removeItem('predictAmountMaxScore');
             router.push('/');
           } else {
             messageApi.error(res.message);
@@ -156,7 +147,6 @@ export default function Quizs({params}) {
     dispatch,
     messageApi,
     predictAmount,
-    predictAmountMaxScore,
     quiz?._id,
     router,
     selectedAnswers,
@@ -275,8 +265,6 @@ export default function Quizs({params}) {
               showCountdown={showCountdown}
               predictAmount={predictAmount}
               onChangePredictAmount={onChangePredictAmount}
-              predictAmountMaxScore={predictAmountMaxScore}
-              onChangePredictAmountMaxScore={onChangePredictAmountMaxScore}
               quizSubmission={quizSubmission}
               isComplete={isComplete}
               setSelectedAnswers={setSelectedAnswers}

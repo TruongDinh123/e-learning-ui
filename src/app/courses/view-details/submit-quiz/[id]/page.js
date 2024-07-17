@@ -39,7 +39,6 @@ export default function Quizs({params}) {
   const [currentPage, setCurrentPage] = useState(1);
   const [questionsPerPage] = useState(10);
   const [predictAmount, onChangePredictAmount] = useState('');
-  const [predictAmountMaxScore, onChangePredictAmountMaxScore] = useState('');
   const [course, setCourse] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [initialSize, setInitialSize] = useState({
@@ -188,11 +187,6 @@ export default function Quizs({params}) {
                   ? completedQuiz.predictAmount.toString()
                   : '0'
               );
-              onChangePredictAmountMaxScore(
-                completedQuiz.predictAmountMaxScore
-                  ? completedQuiz.predictAmountMaxScore.toString()
-                  : '0'
-              );
             }
             setStartTime(completedQuiz.startTime);
             setIsComplete(completedQuiz.isComplete);
@@ -280,7 +274,6 @@ export default function Quizs({params}) {
           quizId: idQuiz,
           answer: formattedAnswers,
           predictAmount,
-          predictAmountMaxScore,
         })
       ).then(unwrapResult);
       if (res.status) {
@@ -394,14 +387,6 @@ export default function Quizs({params}) {
     }
   };
 
-  const handleChangePredictAmountScore = (e) => {
-    const {value: inputValue} = e.target;
-    const reg = /^-?\d*(\.\d*)?$/;
-    if (reg.test(inputValue) || inputValue === '' || inputValue === '-') {
-      onChangePredictAmountMaxScore(inputValue);
-    }
-  };
-
   // '.' at the end or only '-' in the input box.
   const handleBlurInputNumber = () => {
     let valueTemp = predictAmount;
@@ -414,17 +399,6 @@ export default function Quizs({params}) {
     onChangePredictAmount(valueTemp.replace(/0*(\d+)/, '$1'));
   };
 
-  const handleBlurPredictAmountScore = () => {
-    let valueTemp = predictAmountMaxScore;
-    if (
-      predictAmountMaxScore.charAt(predictAmountMaxScore.length - 1) === '.' ||
-      predictAmountMaxScore === '-'
-    ) {
-      valueTemp = predictAmountMaxScore.slice(0, -1);
-    }
-    onChangePredictAmountMaxScore(valueTemp.replace(/0*(\d+)/, '$1'));
-  };
-
   const titleInputNumber = predictAmount ? (
     <span className='numeric-input-title'>
       {predictAmount !== '-' ? formatNumber(Number(predictAmount)) : '-'}
@@ -433,23 +407,13 @@ export default function Quizs({params}) {
     'Hãy nhập con số dự đoán'
   );
 
-  const titleInputNumberMaxScore = predictAmountMaxScore ? (
-    <span className='numeric-input-title'>
-      {predictAmountMaxScore !== '-'
-        ? formatNumber(Number(predictAmountMaxScore))
-        : '-'}
-    </span>
-  ) : (
-    'Hãy nhập con số dự đoán'
-  );
 
   const isLastPage = quiz[0]?.questions?.length <= indexOfLastQuestion;
   const completedAmount = () => {
     const predictedFirst = predictAmount.length !== 0;
-    const predictedSecond = predictAmountMaxScore.length !== 0;
 
     return (
-      Object.keys(selectedAnswers).length + predictedFirst + predictedSecond
+      Object.keys(selectedAnswers).length + predictedFirst
     );
   };
 
@@ -675,34 +639,6 @@ export default function Quizs({params}) {
                               maxLength={16}
                               disabled={submitted || isComplete}
                               value={predictAmount}
-                              style={{
-                                width: 200,
-                              }}
-                            />
-                          </Tooltip>
-                        </div>
-
-                        <div className='flex items-center justify-content-md-start  border-t border-gray-200 pt-4 mt-4 first:border-t-0 first:mt-0'>
-                          <span className='font-medium text-black'>
-                            Câu {quiz[0]?.questions?.length + 2}:
-                          </span>
-                          <div className='text-purple-950 font-bold mr-5 ml-1'>
-                            Dự đoán số người trả lời đúng 100%:
-                          </div>
-
-                          <Tooltip
-                            trigger={['focus']}
-                            title={titleInputNumberMaxScore}
-                            placement='topLeft'
-                            overlayClassName='numeric-input'
-                          >
-                            <Input
-                              onChange={handleChangePredictAmountScore}
-                              onBlur={handleBlurPredictAmountScore}
-                              placeholder='Nhập chữ số'
-                              maxLength={16}
-                              disabled={submitted || isComplete}
-                              value={predictAmountMaxScore}
                               style={{
                                 width: 200,
                               }}

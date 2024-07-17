@@ -7,9 +7,7 @@ const QuizItemFooter = ({
   currentPage,
   setCurrentPage,
   onChangePredictAmount,
-  onChangePredictAmountMaxScore,
   predictAmount,
-  predictAmountMaxScore,
   submitted,
   isComplete,
   indexOfLastQuestion,
@@ -35,15 +33,6 @@ const QuizItemFooter = ({
     }
   };
 
-  const handleChangePredictAmountScore = (e) => {
-    const {value: inputValue} = e.target;
-    const reg = /^-?\d*(\.\d*)?$/;
-    if (reg.test(inputValue) || inputValue === '' || inputValue === '-') {
-      localStorage.setItem('predictAmountMaxScore', inputValue);
-      onChangePredictAmountMaxScore(inputValue);
-    }
-  };
-
   // '.' at the end or only '-' in the input box.
   const handleBlurInputNumber = () => {
     let valueTemp = predictAmount;
@@ -56,17 +45,6 @@ const QuizItemFooter = ({
     onChangePredictAmount(valueTemp.replace(/0*(\d+)/, '$1'));
   };
 
-  const handleBlurPredictAmountScore = () => {
-    let valueTemp = predictAmountMaxScore;
-    if (
-      predictAmountMaxScore.charAt(predictAmountMaxScore.length - 1) === '.' ||
-      predictAmountMaxScore === '-'
-    ) {
-      valueTemp = predictAmountMaxScore.slice(0, -1);
-    }
-    onChangePredictAmountMaxScore(valueTemp.replace(/0*(\d+)/, '$1'));
-  };
-
   const titleInputNumber = useMemo(
     () =>
       predictAmount ? (
@@ -77,20 +55,6 @@ const QuizItemFooter = ({
         'Hãy nhập con số dự đoán'
       ),
     [formatNumber, predictAmount]
-  );
-
-  const titleInputNumberMaxScore = useMemo(
-    () =>
-      predictAmountMaxScore ? (
-        <span className='numeric-input-title'>
-          {predictAmountMaxScore !== '-'
-            ? formatNumber(Number(predictAmountMaxScore))
-            : '-'}
-        </span>
-      ) : (
-        'Hãy nhập con số dự đoán'
-      ),
-    [formatNumber, predictAmountMaxScore]
   );
 
   const isLastPage = useMemo(
@@ -130,33 +94,6 @@ const QuizItemFooter = ({
             </Tooltip>
           </div>
 
-          <div className='flex items-center justify-content-md-start  border-t border-gray-200 pt-4 mt-4 first:border-t-0 first:mt-0'>
-            <span className='font-medium text-black'>
-              Câu {quiz?.questions?.length + 2}:
-            </span>
-            <div className='text-purple-950 font-bold mr-5 ml-1'>
-              Dự đoán số người trả lời đúng 100%:
-            </div>
-
-            <Tooltip
-              trigger={['focus']}
-              title={titleInputNumberMaxScore}
-              placement='topLeft'
-              overlayClassName='numeric-input'
-            >
-              <Input
-                onChange={handleChangePredictAmountScore}
-                onBlur={handleBlurPredictAmountScore}
-                placeholder='Nhập chữ số'
-                maxLength={16}
-                disabled={submitted || isComplete}
-                value={predictAmountMaxScore}
-                style={{
-                  width: 200,
-                }}
-              />
-            </Tooltip>
-          </div>
         </>
       )}
 
