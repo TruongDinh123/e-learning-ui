@@ -15,10 +15,16 @@ const Userchema = yup.object({
   firstName: yup.string(),
   email: yup.string().email(),
   dob: yup.date(),
-  phoneNumber: yup.string(),
+  phoneNumber: yup
+    .string()
+    .min(6, 'Số điện thoại phải có ít nhất 6 kí tự')
+    .required('Yêu cầu nhập SĐT'),
   gender: yup.string(),
-  cmnd: yup.string(),
-  address: yup.string(),
+  cmnd: yup.string().min(6, 'CMND phải có ít nhất 6 kí tự'),
+  address: yup
+    .string()
+    .min(6, 'Địa chỉ phải có ít nhất 6 kí tự')
+    .required('Yêu cầu nhập địa chỉ'),
   cap: yup.string(),
 });
 export default function EditUserForm() {
@@ -31,8 +37,6 @@ export default function EditUserForm() {
   const [loading, setLoading] = useState(false);
 
   const handleOk = (e) => {
-    e.preventDefault();
-    setLoading(true);
     formik.submitForm();
   };
 
@@ -59,7 +63,6 @@ export default function EditUserForm() {
     initialValues: {
       lastName: data?.lastName,
       firstName: data?.firstName,
-      loginName: data?.loginName,
       email: data?.email,
       phoneNumber: data?.phoneNumber,
       dob: data?.dob,
@@ -69,6 +72,7 @@ export default function EditUserForm() {
       cap: data?.cap || '',
     },
     onSubmit: (values) => {
+      setLoading(true);
       dispatch(updateUser({id: id, values}))
         .then(unwrapResult)
         .then((res) => {
@@ -108,7 +112,7 @@ export default function EditUserForm() {
   });
 
   return (
-    <div className='mx-auto max-w-md space-y-6 overflow-x-hidden grid-container pt-3'>
+    <div className='mx-auto max-w-md space-y-6 overflow-x-hidden grid-container pt-3 mb-5'>
       {contextHolder}
       <div className='space-y-2 text-center'>
         <h1 className='text-3xl font-bold'>Thông tin của bạn</h1>

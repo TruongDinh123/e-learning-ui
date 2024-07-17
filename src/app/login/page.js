@@ -20,10 +20,10 @@ import backgroundImage from '/public/images/backgroundInit.jpg';
 import Image from 'next/image';
 
 const loginSchema = yup.object({
-  loginName: yup
+  email: yup
     .string()
-    .min(4, 'Tên đăng nhập phải có ít nhất 4 kí tự')
-    .required('Yêu cầu nhập tên đăng nhập'),
+    .email('Email không hợp lệ')
+    .required('Yêu cầu nhập email'),
   password: yup
     .string()
     .min(6, 'Password phải có ít nhất 6 kí tự')
@@ -42,7 +42,7 @@ export default function Login() {
   const formik = useFormik({
     validationSchema: loginSchema,
     initialValues: {
-      loginName: '',
+      email: '',
       password: '',
     },
     onSubmit: (values) => {
@@ -140,19 +140,19 @@ export default function Login() {
               </p>
               <form action='' onSubmit={formik.handleSubmit}>
                 <div className='flex flex-col space-y-4 mb-6'>
-                  <label className='flex flex-col' htmlFor='loginName'>
-                    <span className='text-sm font-medium'>Tên đăng nhập</span>
+                  <label className='flex flex-col' htmlFor='email'>
+                    <span className='text-sm font-medium'>Email</span>
                     <CustomInput
                       prefix={<AiOutlineMail />}
-                      placeholder='Tên đăng nhập'
-                      onChange={formik.handleChange('loginName')}
-                      onBlur={formik.handleBlur('loginName')}
-                      value={formik.values.loginName}
+                      placeholder='Địa chỉ email'
+                      onChange={formik.handleChange('email')}
+                      onBlur={formik.handleBlur('email')}
+                      value={formik.values.email}
                       error={
                         formik.submitCount > 0 &&
-                        formik.touched.loginName &&
-                        formik.errors.loginName
-                          ? formik.errors.loginName
+                        formik.touched.email &&
+                        formik.errors.email
+                          ? formik.errors.email
                           : null
                       }
                     />

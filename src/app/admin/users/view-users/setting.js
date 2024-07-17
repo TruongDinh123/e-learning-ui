@@ -18,7 +18,6 @@ export const dataInit = ({
   const data = filteredUsers.map((filteredUser, index) => {
     return {
       key: index + 1,
-      loginName: filteredUser?.filteredUser,
       lastName: filteredUser?.lastName,
       firstName: filteredUser?.firstName,
       email: filteredUser?.email,
@@ -93,13 +92,6 @@ export  const columns = [
     dataIndex: 'firstName',
     onFilter: (value, record) => record.firstName.indexOf(value) === 0,
     sorter: (a, b) => a.firstName?.localeCompare(b.firstName),
-    sortDirections: ['descend'],
-  },
-  {
-    title: 'Tên đăng nhập',
-    dataIndex: 'loginName',
-    onFilter: (value, record) => record.loginName.indexOf(value) === 0,
-    sorter: (a, b) => a.loginName.localeCompare(b.loginName),
     sortDirections: ['descend'],
   },
   {

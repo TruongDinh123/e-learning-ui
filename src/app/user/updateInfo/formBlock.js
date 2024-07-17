@@ -86,25 +86,6 @@ const FormBlock = ({formik, user, imageUrl, file, setFile}) => {
           />
         </div>
       </div>
-      <div className='space-y-2'>
-        <label className='text-base' htmlFor='loginName'>
-          Tên đăng nhập
-        </label>
-        <CustomInput
-          className='mb-3'
-          onChange={formik.handleChange('loginName')}
-          onBlur={formik.handleBlur('loginName')}
-          value={formik.values.loginName}
-          disabled
-          error={
-            formik.submitCount > 0 &&
-            formik.touched.loginName &&
-            formik.errors.loginName
-              ? formik.errors.loginName
-              : null
-          }
-        />
-      </div>
 
       <div className='space-y-2'>
         <label className='text-base' htmlFor='email'>
@@ -115,6 +96,7 @@ const FormBlock = ({formik, user, imageUrl, file, setFile}) => {
           onChange={formik.handleChange('email')}
           onBlur={formik.handleBlur('email')}
           value={formik.values.email}
+          disabled
           error={
             formik.submitCount > 0 &&
             formik.touched.email &&

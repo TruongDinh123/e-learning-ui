@@ -53,18 +53,6 @@ const FormBlock = ({formik}) => {
           </div>
         </label>
 
-        <label className='flex flex-col' htmlFor='loginName'>
-          <span className='text-sm font-medium'>Tên đăng nhập</span>
-          <CustomInput
-            prefix={<MdOutlinePermIdentity />}
-            placeholder='Tên đăng nhập'
-            onChange={formik.handleChange('loginName')}
-            onBlur={formik.handleBlur('loginName')}
-            value={formik.values.loginName}
-            error={formik.touched.loginName && formik.errors.loginName}
-          />
-        </label>
-
         <label className='flex flex-col' htmlFor='email'>
           <span className='text-sm font-medium'>Email</span>
           <CustomInput

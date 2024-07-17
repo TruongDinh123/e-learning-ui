@@ -16,10 +16,16 @@ const Userchema = yup.object().shape({
   firstName: yup.string(),
   email: yup.string().email(),
   dob: yup.date(),
-  phoneNumber: yup.string(),
+  phoneNumber: yup
+    .string()
+    .min(6, 'Số điện thoại phải có ít nhất 6 kí tự')
+    .required('Yêu cầu nhập SĐT'),
   gender: yup.string(),
-  cmnd: yup.string(),
-  address: yup.string(),
+  cmnd: yup.string().min(6, 'CMND phải có ít nhất 6 kí tự'),
+  address: yup
+    .string()
+    .min(6, 'Địa chỉ phải có ít nhất 6 kí tự')
+    .required('Yêu cầu nhập địa chỉ'),
   cap: yup.string(),
 });
 
@@ -33,7 +39,6 @@ const UpdateInfo = () => {
   const [loading, setLoading] = useState(false);
 
   const handleOk = () => {
-    setLoading(true);
     formik.submitForm();
   };
 
@@ -41,7 +46,6 @@ const UpdateInfo = () => {
     validationSchema: Userchema,
     enableReinitialize: true,
     initialValues: {
-      loginName: user?.loginName,
       lastName: user?.lastName,
       firstName: user?.firstName,
       email: user?.email,
@@ -53,7 +57,8 @@ const UpdateInfo = () => {
       cap: user?.cap || '',
     },
     onSubmit: (values) => {
-      values.lastName = values.lastName.trim();
+    setLoading(true);
+    values.lastName = values.lastName.trim();
       dispatch(updateUser({id: id, values}))
         .then(unwrapResult)
         .then((res) => {
@@ -125,7 +130,6 @@ const UpdateInfo = () => {
             imageUrl={imageUrl}
             file={file}
             setFile={setFile}
-         
           />
         </Content>
         <Button

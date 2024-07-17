@@ -14,7 +14,10 @@ import './signup.css';
 import FormBlock from './formBlock';
 
 const registerSchema = yup.object({
-  email: yup.string().email('Email không hợp lệ'),
+  email: yup
+    .string()
+    .email('Email không hợp lệ')
+    .required('Yêu cầu nhập email'),
 
   password: yup
     .string()
@@ -22,10 +25,6 @@ const registerSchema = yup.object({
     .required('Yêu cầu nhập mật khẩu'),
   lastName: yup.string().required('Yêu cầu nhập tên'),
   firstName: yup.string().required('Yêu cầu nhập họ'),
-  loginName: yup
-    .string()
-    .min(4, 'Tên đăng nhập phải có ít nhất 4 kí tự')
-    .required('Yêu cầu nhập tên đăng nhập'),
 
   phone: yup
     .string()
@@ -48,7 +47,6 @@ export default function SignUp() {
   const formik = useFormik({
     validationSchema: registerSchema,
     initialValues: {
-      loginName: '',
       email: '',
       password: '',
       address: '',
@@ -59,7 +57,7 @@ export default function SignUp() {
       firstName: '',
     },
     onSubmit: (values) => {
-      if (values.password && values.loginName) {
+      if (values.password && values.email) {
         dispatch(registerUser(values))
           .then(unwrapResult)
           .then((res) => {
