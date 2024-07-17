@@ -114,6 +114,7 @@ const ModalBlock = ({
       footer={<></>}
       width={1000}
       loading={isLoading}
+      maskClosable={false}
     >
       <Form
         form={form}

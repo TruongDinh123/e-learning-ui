@@ -1,10 +1,10 @@
 'use client';
-import {Form, Input, Button, InputNumber} from 'antd';
-import React, { useState} from 'react';
+import {Form, Input, InputNumber} from 'antd';
+import React, {useState} from 'react';
 
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.snow.css';
-import ModalContentItem from './modalContentItem';
+import ModalContentListItem from './modalContentListItem';
 
 const ModalContent = ({
   form,
@@ -27,6 +27,7 @@ const ModalContent = ({
       inline: 'nearest',
     });
   };
+  console.log(form, 'glkjasdf');
   return (
     <>
       <Form.Item name='timeLimit' label='Thời gian làm bài (phút)'>
@@ -40,42 +41,14 @@ const ModalContent = ({
       >
         <Input placeholder='Tên bài tập' />
       </Form.Item>
-      <Form.List name='questions'>
-        {(fields, {add, remove}) => (
-          <div
-            className='overflow-auto scrollbar scrollbar-thin'
-            style={{
-              height: '34rem',
-            }}
-          >
-            {fields.map((field, index) => (
-              <ModalContentItem
-                key={index}
-                fields={fields}
-                setContainEl={setContainEl}
-                form={form}
-                field={field}
-                index={index}
-                fileQuestion={fileQuestion}
-                setFileQuestion={setFileQuestion}
-                setQuestionImages={setQuestionImages}
-              />
-            ))}
-            <Button
-              className='bg-orange-200 mt-2'
-              type='dashed'
-              onClick={handleAddQuestion}
-              style={{
-                position: 'sticky',
-                bottom: 0,
-              }}
-              block
-            >
-              + Thêm câu hỏi
-            </Button>
-          </div>
-        )}
-      </Form.List>
+      <ModalContentListItem
+        form={form}
+        setContainEl={setContainEl}
+        fileQuestion={fileQuestion}
+        setFileQuestion={setFileQuestion}
+        setQuestionImages={setQuestionImages}
+        handleAddQuestion={handleAddQuestion}
+      />
     </>
   );
 };
