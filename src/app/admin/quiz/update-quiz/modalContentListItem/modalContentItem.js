@@ -6,6 +6,7 @@ import {CloseOutlined, UploadOutlined} from '@ant-design/icons';
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.snow.css';
 import Editor from '@/config/quillConfig';
+import AddListItemBlock from './addListItemBlock';
 
 const htmlToJson = (html) => {
   return JSON.stringify(html);
@@ -19,7 +20,7 @@ const ModalContentItem = ({
   setFileQuestion,
   setQuestionImages,
   fields,
-  setContainEl
+  setContainEl,
 }) => {
   const containBlock = useRef(null);
   const propsQuestion = {
@@ -50,11 +51,11 @@ const ModalContentItem = ({
   };
 
   useEffect(() => {
-    if(fields && fields.length - 1 === index) {
-      setContainEl(containBlock)
+    if (fields && fields.length - 1 === index) {
+      setContainEl(containBlock);
     }
-  }, [fields, index, setContainEl])
-  
+  }, [fields, index, setContainEl]);
+
   return (
     <Card
       key={field.key}
@@ -103,62 +104,14 @@ const ModalContentItem = ({
             alt={`Question ${index + 1}`}
             className='max-w-auto h-40'
             style={{
-              maxWidth: '50%'
+              maxWidth: '50%',
             }}
-            />
+          />
         )}
       </Form.Item>
-      <Form.List name={[field.name, 'options']}>
-        {(subFields, {add, remove}) => (
-          <div>
-            {subFields.map((subField, subIndex) => (
-              <div
-                key={subField.key}
-                style={{
-                  display: 'flex',
-                  marginBottom: 8,
-                  alignItems: 'center',
-                }}
-              >
-                <Form.Item
-                  {...subField}
-                  name={[subField.name, 'option']}
-                  fieldKey={[subField.fieldKey, 'option']}
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Vui lòng nhập lựa chọn',
-                    },
-                  ]}
-                  style={{flex: 1, marginRight: 8}}
-                >
-                  <Input.TextArea
-                    placeholder='Lựa chọn'
-                    autoSize={{
-                      minRows: 1,
-                      maxRows: 5,
-                    }}
-                    style={{width: '100%'}}
-                  />
-                </Form.Item>
-                <CloseOutlined
-                  onClick={() => remove(subIndex)}
-                  style={{
-                    color: 'red',
-                    cursor: 'pointer',
-                    fontSize: '16px',
-                    marginBottom: 8,
-                    alignSelf: 'center',
-                  }}
-                />
-              </div>
-            ))}
-            <Button type='dashed' onClick={() => add()} block>
-              + Thêm lựa chọn
-            </Button>
-          </div>
-        )}
-      </Form.List>
+      
+      <AddListItemBlock field={field} />
+
       <Form.Item
         label='Đáp án'
         name={[field.name, 'answer']}

@@ -4,7 +4,7 @@ import React, {useState} from 'react';
 
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.snow.css';
-import ModalContentListItem from './modalContentListItem';
+import ModalContentListItem from './modalContentListItem/modalContentListItem';
 
 const ModalContent = ({
   form,
@@ -27,7 +27,7 @@ const ModalContent = ({
       inline: 'nearest',
     });
   };
-  console.log(form, 'glkjasdf');
+
   return (
     <>
       <Form.Item name='timeLimit' label='Thời gian làm bài (phút)'>
