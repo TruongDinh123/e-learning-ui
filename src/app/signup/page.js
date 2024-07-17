@@ -24,7 +24,7 @@ const registerSchema = yup.object({
     .min(6, 'Password phải có ít nhất 6 kí tự')
     .required('Yêu cầu nhập mật khẩu'),
   lastName: yup.string().required('Yêu cầu nhập tên'),
-  firstName: yup.string().required('Yêu cầu nhập họ'),
+  firstName: yup.string(),
 
   phone: yup
     .string()
@@ -64,7 +64,7 @@ export default function SignUp() {
             if (res.user) {
               messageApi
                 .open({
-                  type: 'Thành công',
+                  type: 'success',
                   content: 'Đăng ký thành công',
                   duration: 1,
                 })
@@ -74,7 +74,7 @@ export default function SignUp() {
                 });
             } else {
               messageApi.open({
-                type: 'Thất bại',
+                type: 'error',
                 content: res.message ?? 'Có lỗi xảy ra',
                 duration: 2,
               });

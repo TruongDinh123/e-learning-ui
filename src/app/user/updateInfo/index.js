@@ -50,7 +50,7 @@ const UpdateInfo = () => {
       firstName: user?.firstName,
       email: user?.email,
       phoneNumber: user?.phoneNumber,
-      dob: user && user.dob ? moment(user.dob) : null,
+      dob: user && user.dob ? moment(user.dob) : undefined,
       gender: user?.gender,
       cmnd: user?.cmnd || '',
       address: user?.address || '',
