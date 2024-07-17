@@ -1,19 +1,13 @@
 'use client';
-import CustomInput from '@/components/comman/CustomInput';
 import {getAUser, updateUser, uploadImageUser} from '@/features/User/userSlice';
-import {AntDesignOutlined, UploadOutlined} from '@ant-design/icons';
 import {unwrapResult} from '@reduxjs/toolkit';
-import {Avatar, Button, Card, DatePicker, Upload, message} from 'antd';
+import {Button, Card, message} from 'antd';
 import {Content} from 'antd/es/layout/layout';
 import {useFormik} from 'formik';
 import {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import * as yup from 'yup';
 import '../../users/edit-user-form/page.css';
-import moment from 'moment/moment';
-import {RiHome4Line} from 'react-icons/ri';
-import District from './district';
-import {MdOutlinePermIdentity} from 'react-icons/md';
 import FormBlock from './formBlock';
 
 const Userchema = yup.object({
@@ -26,8 +20,6 @@ const Userchema = yup.object({
   cmnd: yup.string(),
   address: yup.string(),
   cap: yup.string(),
-  donvi: yup.string(),
-  donvicon: yup.string(),
 });
 export default function EditUserForm() {
   const id = localStorage.getItem('x-client-id');
@@ -37,11 +29,9 @@ export default function EditUserForm() {
   const dispatch = useDispatch();
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [selectedCap, setSelectedCap] = useState('');
-  const [selectedDonVi, setSelectedDonVi] = useState('');
-  const [donViCon, setDonViCon] = useState('');
 
-  const handleOk = () => {
+  const handleOk = (e) => {
+    e.preventDefault();
     setLoading(true);
     formik.submitForm();
   };
@@ -55,9 +45,6 @@ export default function EditUserForm() {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setSelectedCap(res.metadata['cap']);
-          setSelectedDonVi(res.metadata['donvi']);
-          setDonViCon(res.metadata['donvicon']);
           setData(res.metadata);
         } else {
           messageApi.error(res.message);
@@ -80,13 +67,8 @@ export default function EditUserForm() {
       cmnd: data?.cmnd || '',
       address: data?.address || '',
       cap: data?.cap || '',
-      donvi: data?.donvi || '',
-      donvicon: data?.donvicon || '',
     },
     onSubmit: (values) => {
-      values.cap = selectedCap;
-      values.donvi = selectedDonVi;
-      values.donvicon = donViCon;
       dispatch(updateUser({id: id, values}))
         .then(unwrapResult)
         .then((res) => {
@@ -113,7 +95,6 @@ export default function EditUserForm() {
           return res;
         })
         .then(() => {
-          window.location.reload();
           setLoading(false);
         })
         .catch((error) => {
@@ -143,12 +124,6 @@ export default function EditUserForm() {
             file={file}
             data={data}
             setFile={setFile}
-            selectedCap={selectedCap}
-            selectedDonVi={selectedDonVi}
-            donViCon={donViCon}
-            setSelectedCap={setSelectedCap}
-            setSelectedDonVi={setSelectedDonVi}
-            setDonViCon={setDonViCon}
           />
         </Content>
         <Button

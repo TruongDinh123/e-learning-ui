@@ -81,7 +81,7 @@ body {
 }
 
 .carousel-slide {
-  width: 300px !important; 
+  width: 300px !important;
   margin: auto;
 }
 
@@ -105,20 +105,27 @@ body {
   object-fit: cover;
 }
 
+.ql-editor .ql-indent-1 {
+  padding-left: 3em;
+}
+.ql-editor .ql-indent-2 {
+  padding-left: 6em;
+}
+.ql-editor .ql-indent-3 {
+  padding-left: 9em;
+}
+.ql-editor .ql-align-justify {
+  text-align: justify;
+}
 
-.ql-editor .ql-indent-1 { padding-left: 3em; }
-.ql-editor .ql-indent-2 { padding-left: 6em; }
-.ql-editor .ql-indent-3 { padding-left: 9em; }
-.ql-editor .ql-align-justify { text-align: justify; }
-
-.fixedButton{
+.fixedButton {
   position: fixed;
   bottom: 0px;
   right: 20px;
   padding: 20px;
   z-index: 10000;
 }
-.roundedFixedBtn{
+.roundedFixedBtn {
   align-items: center;
   height: 50px;
   padding: 10px;
@@ -219,7 +226,7 @@ section {
 .table-course-quick-choice td {
   vertical-align: bottom;
   padding-right: 12px;
-  padding-top: 12px
+  padding-top: 12px;
 }
 
 table#choice-present-block td {
@@ -236,7 +243,7 @@ table#choice-present-block {
   width: 182px;
 }
 
-.mb-20 { 
+.mb-20 {
   margin-bottom: 20px;
 }
 

@@ -1,10 +1,10 @@
 import {useEffect, useState} from 'react';
-import {options} from './utils';
+import {options} from '../../signup/utils';
 
-const UnitBlock = ({
-  formik,
+const DistrictSelectBlock = ({
   selectedCap,
   selectedDonVi,
+  donViCon,
   setSelectedCap,
   setSelectedDonVi,
   setDonViCon,
@@ -13,31 +13,29 @@ const UnitBlock = ({
   const [subUnits, setSubUnits] = useState([]);
 
   useEffect(() => {
+    if (selectedCap === 'Cấp tỉnh') {
+      setDonViOptions(options['Cấp tỉnh']);
+    } else if (selectedCap === 'Cấp huyện') {
+      setDonViOptions(Object.keys(options['Cấp huyện']));
+    } else {
+        setDonViOptions(options['Cấp xã']);
+    }
+    setSelectedDonVi(selectedDonVi || '');
+    setSubUnits([]);
+  }, [selectedCap, setSelectedDonVi]);
+
+  useEffect(() => {
     if (selectedCap === 'Cấp huyện') {
       setSubUnits(options['Cấp huyện'][selectedDonVi] || []);
     } else {
       setSubUnits([]);
     }
   }, [selectedDonVi, selectedCap]);
-
-  useEffect(() => {
-    if (selectedCap === 'Cấp tỉnh') {
-      setDonViOptions(options['Cấp tỉnh']);
-      formik.handleChange('cap');
-    } else if (selectedCap === 'Cấp huyện') {
-      setDonViOptions(Object.keys(options['Cấp huyện']));
-    } else if (selectedCap === 'Cấp xã') {
-      setDonViOptions(options['Cấp xã']);
-    }
-    setSelectedDonVi('');
-    setSubUnits([]);
-  }, [selectedCap]);
-
+  
   return (
-    <div>
-      <span className='text-sm font-medium'>Đơn vị công tác</span>
-
-      <label className='flex flex-col' htmlFor='cap'>
+    <div className='space-y-2 mb-3'>
+      <p className='text-sm font-medium'>Đơn vị công tác</p>
+      <label className='text-base text-sm mt-1' htmlFor='cap'>
         <select
           value={selectedCap}
           onChange={(e) => setSelectedCap(e.target.value)}
@@ -47,9 +45,10 @@ const UnitBlock = ({
           <option value='Cấp huyện'>Cấp huyện</option>
           <option value='Cấp xã'>Cấp xã</option>
         </select>
-      </label>
-      <label className='flex flex-col' htmlFor='donvi'>
-        {selectedCap && (
+      </label>{' '}
+      <br />
+      <label className='text-base text-sm mt-1' htmlFor='donvi'>
+        {selectedCap  && (
           <select
             className='mt-2'
             value={selectedDonVi}
@@ -65,10 +64,12 @@ const UnitBlock = ({
           </select>
         )}
       </label>
-      <label className='flex flex-col' htmlFor='donvicon'>
+      <br />
+      <label className='text-base text-sm mt-1' htmlFor='donvicon'>
         {selectedDonVi && subUnits.length !== 0 && (
           <select
             className='mt-2'
+            value={donViCon}
             disabled={!selectedDonVi || subUnits.length === 0}
             onChange={(e) => setDonViCon(e.target.value)}
           >
@@ -85,4 +86,4 @@ const UnitBlock = ({
   );
 };
 
-export default UnitBlock;
+export default DistrictSelectBlock;

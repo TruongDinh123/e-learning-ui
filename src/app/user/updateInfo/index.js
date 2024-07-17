@@ -21,8 +21,6 @@ const Userchema = yup.object().shape({
   cmnd: yup.string(),
   address: yup.string(),
   cap: yup.string(),
-  donvi: yup.string(),
-  donvicon: yup.string(),
 });
 
 const UpdateInfo = () => {
@@ -33,9 +31,6 @@ const UpdateInfo = () => {
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
-  const [selectedCap, setSelectedCap] = useState('');
-  const [selectedDonVi, setSelectedDonVi] = useState('');
-  const [donViCon, setDonViCon] = useState('');
 
   const handleOk = () => {
     setLoading(true);
@@ -56,13 +51,8 @@ const UpdateInfo = () => {
       cmnd: user?.cmnd || '',
       address: user?.address || '',
       cap: user?.cap || '',
-      donvi: user?.donvi || '',
-      donvicon: user?.donvicon || '',
     },
     onSubmit: (values) => {
-      values.cap = selectedCap;
-      values.donvi = selectedDonVi;
-      values.donvicon = donViCon;
       values.lastName = values.lastName.trim();
       dispatch(updateUser({id: id, values}))
         .then(unwrapResult)
@@ -111,9 +101,6 @@ const UpdateInfo = () => {
       .then(unwrapResult)
       .then((res) => {
         if (res.status) {
-          setSelectedCap(res.metadata['cap']);
-          setSelectedDonVi(res.metadata['donvi']);
-          setDonViCon(res.metadata['donvicon']);
           setUser(res.metadata);
         } else {
           messageApi.error(res.message);
@@ -138,12 +125,7 @@ const UpdateInfo = () => {
             imageUrl={imageUrl}
             file={file}
             setFile={setFile}
-            donViCon={donViCon}
-            selectedCap={selectedCap}
-            selectedDonVi={selectedDonVi}
-            setSelectedCap={setSelectedCap}
-            setSelectedDonVi={setSelectedDonVi}
-            setDonViCon={setDonViCon}
+         
           />
         </Content>
         <Button

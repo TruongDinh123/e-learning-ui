@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
-import {options} from '../../signup/utils';
+import {options} from '../../../signup/utils';
 
-const District = ({
+const DistrictSelectBlock = ({
   selectedCap,
   selectedDonVi,
   donViCon,
@@ -18,7 +18,7 @@ const District = ({
     } else if (selectedCap === 'Cấp huyện') {
       setDonViOptions(Object.keys(options['Cấp huyện']));
     } else {
-        setDonViOptions(options['Cấp xã']);
+      setDonViOptions(options['Cấp xã']);
     }
     setSelectedDonVi(selectedDonVi || '');
     setSubUnits([]);
@@ -48,7 +48,7 @@ const District = ({
       </label>{' '}
       <br />
       <label className='text-base text-sm mt-1' htmlFor='donvi'>
-        {selectedCap  && (
+        {selectedCap && selectedCap !== 'Cấp xã' && (
           <select
             className='mt-2'
             value={selectedDonVi}
@@ -86,4 +86,4 @@ const District = ({
   );
 };
 
-export default District;
+export default DistrictSelectBlock;

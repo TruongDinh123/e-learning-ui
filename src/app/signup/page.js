@@ -8,7 +8,6 @@ import {unwrapResult} from '@reduxjs/toolkit';
 import * as yup from 'yup';
 import {message} from 'antd';
 import {useRouter} from 'next/navigation';
-import {useState} from 'react';
 import backgroundImage from '/public/images/backgroundInit.jpg';
 import Image from 'next/image';
 import './signup.css';
@@ -46,10 +45,6 @@ export default function SignUp() {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const [selectedCap, setSelectedCap] = useState('');
-  const [selectedDonVi, setSelectedDonVi] = useState('');
-  const [donViCon, setDonViCon] = useState('');
-
   const formik = useFormik({
     validationSchema: registerSchema,
     initialValues: {
@@ -60,16 +55,10 @@ export default function SignUp() {
       cmnd: '',
       phone: '',
       cap: '',
-      donvi: '',
-      donvicon: '',
       lastName: '',
       firstName: '',
     },
     onSubmit: (values) => {
-      values.cap = selectedCap;
-      values.donvi = selectedDonVi;
-      values.donvicon = donViCon;
-
       if (values.password && values.loginName) {
         dispatch(registerUser(values))
           .then(unwrapResult)
@@ -123,14 +112,7 @@ export default function SignUp() {
 
         <div className='bg-white p-8 rounded-lg shadow-md w-full max-w-sm md:max-w-md'>
           <h1 className='text-3xl font-bold p-2'>Đăng ký tài khoản</h1>
-          <FormBlock
-            formik={formik}
-            selectedCap={selectedCap}
-            selectedDonVi={selectedDonVi}
-            setSelectedCap={setSelectedCap}
-            setSelectedDonVi={setSelectedDonVi}
-            setDonViCon={setDonViCon}
-          />
+          <FormBlock formik={formik} />
         </div>
       </div>
     </div>

@@ -11,51 +11,51 @@ const RankingContent = () => {
   const [rankingCalculatorState, setRankingCalculatorState] = useState([]);
   
 
-  useEffect(() => {
-    const getDataForRanking = async () => {
-      try {
-        dispatch(getAllUserFinishedCourse(activeQuizByCourseId)).then(
-          unwrapResult
-        );
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  // useEffect(() => {
+  //   const getDataForRanking = async () => {
+  //     try {
+  //       dispatch(getAllUserFinishedCourse(activeQuizByCourseId)).then(
+  //         unwrapResult
+  //       );
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
 
-    !allUserFinishedCourse && activeQuizByCourseId && getDataForRanking();
-  }, [dispatch, activeQuizByCourseId, allUserFinishedCourse]);
+  //   !allUserFinishedCourse && activeQuizByCourseId && getDataForRanking();
+  // }, [dispatch, activeQuizByCourseId, allUserFinishedCourse]);
 
-  useEffect(() => {
-    if (allUserFinishedCourse && allUserFinishedCourse.length) {
-      const capCount = allUserFinishedCourse.reduce((acc, user) => {
-        const donvi = user.donvi || "";
-        const donvicon = user.donvicon || "";
-        let key = "";
-        if (user.cap === "Cấp tỉnh") {
-          key = `${user.cap} ${donvi}`;
-        } else if (user.cap === "Cấp huyện") {
-          key = `${user.donvi} ${donvicon}`
-        }
-        else if (user.cap === "Cấp xã") {
-          key = `${user.donvi} ${donvicon}`
-        }
-        else {
-          key = "Đơn vị khác"
-        }
-        acc[key] = (acc[key] || 0) + 1;
-        return acc;
-      }, {});
+  // useEffect(() => {
+  //   if (allUserFinishedCourse && allUserFinishedCourse.length) {
+  //     const capCount = allUserFinishedCourse.reduce((acc, user) => {
+  //       const donvi = user.donvi || "";
+  //       const donvicon = user.donvicon || "";
+  //       let key = "";
+  //       if (user.cap === "Cấp tỉnh") {
+  //         key = `${user.cap} ${donvi}`;
+  //       } else if (user.cap === "Cấp huyện") {
+  //         key = `${user.donvi} ${donvicon}`
+  //       }
+  //       else if (user.cap === "Cấp xã") {
+  //         key = `${user.donvi} ${donvicon}`
+  //       }
+  //       else {
+  //         key = "Đơn vị khác"
+  //       }
+  //       acc[key] = (acc[key] || 0) + 1;
+  //       return acc;
+  //     }, {});
 
-      const sortedCaps = Object.entries(capCount).sort((a, b) => b[1] - a[1]);
-      const rankedResults = sortedCaps.map((item, index) => ({
-        rank: index + 1,
-        description: item[0],
-        count: item[1]
-      }));
+  //     const sortedCaps = Object.entries(capCount).sort((a, b) => b[1] - a[1]);
+  //     const rankedResults = sortedCaps.map((item, index) => ({
+  //       rank: index + 1,
+  //       description: item[0],
+  //       count: item[1]
+  //     }));
 
-      setRankingCalculatorState(rankedResults.slice(0, 5));
-    }
-  }, [allUserFinishedCourse]);
+  //     setRankingCalculatorState(rankedResults.slice(0, 5));
+  //   }
+  // }, [allUserFinishedCourse]);
 
   return (
     <div>
@@ -65,7 +65,8 @@ const RankingContent = () => {
           <div>
             <div className='text-center py-4 mt-4 typewriter'>
               {' '}
-              Chưa có dữ liệu thống kê{' '}
+              {/* Chưa có dữ liệu thống kê{' '} */}
+              Đang cập nhật {' '}
               <span className='elipsis-blink'>...</span>
             </div>
           </div>

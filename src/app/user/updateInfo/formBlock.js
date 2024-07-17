@@ -6,21 +6,8 @@ import CustomInput from '@/components/comman/CustomInput';
 import moment from 'moment';
 import {MdOutlinePermIdentity} from 'react-icons/md';
 import {RiHome4Line} from 'react-icons/ri';
-import District from './district';
 
-const FormBlock = ({
-  formik,
-  user,
-  imageUrl,
-  file,
-  setFile,
-  donViCon,
-  selectedCap,
-  selectedDonVi,
-  setSelectedCap,
-  setSelectedDonVi,
-  setDonViCon,
-}) => {
+const FormBlock = ({formik, user, imageUrl, file, setFile}) => {
   const propsUdateImage = {
     onRemove: () => {
       setFile(null);
@@ -225,16 +212,20 @@ const FormBlock = ({
         />
       </div>
 
-  
+      <div className='space-y-2 mb-20'>
+        <label className='text-base' htmlFor='cap'>
+          <span className='text-sm font-medium'>Đơn vị công tác</span>
+        </label>
 
-      <District
-        selectedCap={selectedCap}
-        selectedDonVi={selectedDonVi}
-        donViCon={donViCon}
-        setSelectedCap={setSelectedCap}
-        setSelectedDonVi={setSelectedDonVi}
-        setDonViCon={setDonViCon}
-      />
+        <CustomInput
+          prefix={<MdOutlinePermIdentity />}
+          placeholder='Đơn vị công tác'
+          onChange={formik.handleChange('cap')}
+          onBlur={formik.handleBlur('cap')}
+          value={formik.values.cap}
+          error={formik.touched.cap && formik.errors.cap}
+        />
+      </div>
     </form>
   );
 };

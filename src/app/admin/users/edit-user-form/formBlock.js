@@ -5,22 +5,9 @@ import {Avatar, Button, DatePicker, Upload} from 'antd';
 import '../../users/edit-user-form/page.css';
 import moment from 'moment/moment';
 import {RiHome4Line} from 'react-icons/ri';
-import District from './district';
 import {MdOutlinePermIdentity} from 'react-icons/md';
 
-const FormBlock = ({
-  formik,
-  imageUrl,
-  file,
-  data,
-  setFile,
-  selectedCap,
-  selectedDonVi,
-  donViCon,
-  setSelectedCap,
-  setSelectedDonVi,
-  setDonViCon,
-}) => {
+const FormBlock = ({formik, imageUrl, file, data, setFile}) => {
   const propsUdateImage = {
     onRemove: () => {
       setFile(null);
@@ -174,7 +161,6 @@ const FormBlock = ({
         />
       </div>
 
-
       <div className='space-y-2'>
         <label className='text-base' htmlFor='address'>
           Địa chỉ
@@ -227,15 +213,20 @@ const FormBlock = ({
         />
       </div>
 
+      <div className='space-y-2 mb-20'>
+        <label className='text-base' htmlFor='cap'>
+          <span className='text-sm font-medium'>Đơn vị công tác</span>
 
-      <District
-        selectedCap={selectedCap}
-        selectedDonVi={selectedDonVi}
-        donViCon={donViCon}
-        setSelectedCap={setSelectedCap}
-        setSelectedDonVi={setSelectedDonVi}
-        setDonViCon={setDonViCon}
-      />
+          <CustomInput
+            prefix={<MdOutlinePermIdentity />}
+            placeholder='Đơn vị công tác'
+            onChange={formik.handleChange('cap')}
+            onBlur={formik.handleBlur('cap')}
+            value={formik.values.cap}
+            error={formik.touched.cap && formik.errors.cap}
+          />
+        </label>
+      </div>
     </form>
   );
 };

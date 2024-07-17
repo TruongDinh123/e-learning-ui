@@ -11,17 +11,9 @@ import {TbUserSearch} from 'react-icons/tb';
 import {TbUserShield} from 'react-icons/tb';
 
 import {BsEye, BsEyeSlash} from 'react-icons/bs';
-import UnitBlock from './unitBlock';
 import {useState} from 'react';
 
-const FormBlock = ({
-  formik,
-  selectedCap,
-  selectedDonVi,
-  setSelectedCap,
-  setSelectedDonVi,
-  setDonViCon,
-}) => {
+const FormBlock = ({formik}) => {
   const [showPassword, setShowPassword] = useState(false);
   const [passwordValue, setPasswordValue] = useState('');
 
@@ -152,20 +144,26 @@ const FormBlock = ({
           />
         </label>
 
-        <UnitBlock
-          formik={formik}
-          selectedCap={selectedCap}
-          selectedDonVi={selectedDonVi}
-          setSelectedCap={setSelectedCap}
-          setSelectedDonVi={setSelectedDonVi}
-          setDonViCon={setDonViCon}
-        />
+        <div className='space-y-2'>
+          <label className='text-base' htmlFor='cap'>
+            <span className='text-sm font-medium'>Đơn vị công tác</span>
+
+            <CustomInput
+              prefix={<MdOutlinePermIdentity />}
+              placeholder='Đơn vị công tác'
+              onChange={formik.handleChange('cap')}
+              onBlur={formik.handleBlur('cap')}
+              value={formik.values.cap}
+              error={formik.touched.cap && formik.errors.cap}
+            />
+          </label>
+        </div>
       </div>
 
       <CustomButton
         title='Đăng ký'
         type='primary'
-        className='py-1 px-8 bg-blue-900 hover:bg-blue-400 mt-5
+        className='py-1 px-8 bg-blue-900 hover:bg-blue-400 mt-2
                 text-white text-center inline-block text-lg
                 my-1 mx-1 rounded-lg cursor-pointer border-none w-full signup-block'
       />
