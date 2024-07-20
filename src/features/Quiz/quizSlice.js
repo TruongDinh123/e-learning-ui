@@ -985,7 +985,7 @@ const quizSlice = createSlice({
           dataInit = dataInit.concat(usersTestedItem.usersTested);
         });
         const uniqueArr = getUniqueItemInArray(dataInit, ['quizId', '_id']);
-        state.quizAndUserTested = uniqueArr;
+        state.quizAndUserTested = uniqueArr.reverse();;
 
         dataInit = [];
         Object.values(scoreAllQuizData).forEach((scoreAllQuizItem) => {

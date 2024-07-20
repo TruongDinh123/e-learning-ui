@@ -29,7 +29,7 @@ const Scores = () => {
   }, [dispatch, quiz, refresh]);
 
   return (
-    <div className='p-3'>
+    <div className='p-3 mb-80'>
       <Row gutter={[24, 0]}>
         <Col sx={{span: 12}} lg={{span: 6}}>
           <h1 className='text-2xl font-bold text-[#002c6a] mb-3'>

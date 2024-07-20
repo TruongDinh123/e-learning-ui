@@ -251,4 +251,8 @@ table#choice-present-block {
   gap: 12px;
 }
 
+.mb-80 {
+  margin-bottom: 80px;
+}
+
 /* .mb- */

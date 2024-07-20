@@ -57,7 +57,7 @@ const SearchBlock = ({setDataFiltered, quizsFilter, setQuizsFilter}) => {
 
         dataFiltered = result;
       }
-      setDataFiltered(dataFiltered);
+      setDataFiltered(dataFiltered.reverse());
     } else {
       setDataFiltered(null);
     }
