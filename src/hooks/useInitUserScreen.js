@@ -1,17 +1,17 @@
-import {useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getActiveCoursePresent,
   updateCourseCurrent,
-} from '../features/Courses/courseSlice';
-import {unwrapResult} from '@reduxjs/toolkit';
+} from "../features/Courses/courseSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
 import {
   getSubmissionTimeActiveQuizByCourseId,
   getQuizForUserScreen,
-} from '../features/Quiz/quizSlice';
-import {message} from 'antd';
+} from "../features/Quiz/quizSlice";
+import { message } from "antd";
 
-const useInitUserScreen = ({idCourse}) => {
+const useInitUserScreen = ({ idCourse }) => {
   const dispatch = useDispatch();
   const [messageApi] = message.useMessage();
   const user = useSelector((state) => state.user.user);
@@ -24,9 +24,11 @@ const useInitUserScreen = ({idCourse}) => {
           const desiredCourse = res.metadata;
 
           dispatch(
-            getSubmissionTimeActiveQuizByCourseId({courseId: desiredCourse._id})
+            getSubmissionTimeActiveQuizByCourseId({
+              courseId: desiredCourse._id,
+            })
           );
-          dispatch(updateCourseCurrent({quizCurrent: desiredCourse}));
+          dispatch(updateCourseCurrent({ quizCurrent: desiredCourse }));
         }
       } catch (error) {
         console.error(error);
@@ -41,6 +43,7 @@ const useInitUserScreen = ({idCourse}) => {
       dispatch(getQuizForUserScreen())
         .then(unwrapResult)
         .then((res) => {
+          console.log("🚀 ~ res:", res);
           if (!res.status) {
             messageApi.error(res.message);
           }

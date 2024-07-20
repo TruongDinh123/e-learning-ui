@@ -1,11 +1,11 @@
-'use client';
-import React, {useMemo, useState} from 'react';
-import 'react-quill/dist/quill.snow.css';
-import HeaderExams from './headerExams';
-import QuizItemFooter from './quizItemFooter';
-import QuizQuestionBlock from './quizQuestionBlock';
-import {QUESTION_PER_PAGE} from '../../../../constants';
-import {Spin} from 'antd';
+"use client";
+import React, { useMemo, useState } from "react";
+import "react-quill/dist/quill.snow.css";
+import HeaderExams from "./headerExams";
+import QuizItemFooter from "./quizItemFooter";
+import QuizQuestionBlock from "./quizQuestionBlock";
+import { QUESTION_PER_PAGE } from "../../../../constants";
+import { Spin } from "antd";
 
 const QuizItemBlock = ({
   quiz,
@@ -51,14 +51,14 @@ const QuizItemBlock = ({
         handleSubmit={handleSubmit}
         loading={loading}
       />
-      <div className='card bg-white shadow-lg rounded-lg p-6 mb-4'>
+      <div className="card bg-white shadow-lg rounded-lg p-6 mb-4">
         {quiz && (
-          <h2 className='text-xl font-semibold text-gray-800 mb-4'>
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
             {quiz.name}
           </h2>
         )}
         {showCountdown && !isComplete && deadline && (
-          <div className='text-red-500 mb-4'>
+          <div className="text-red-500 mb-4">
             <p>
               Lưu ý: Đừng thoát ra khỏi trang khi thời gian làm bài chưa kết
               thúc.
@@ -67,8 +67,8 @@ const QuizItemBlock = ({
           </div>
         )}
         {loading ? (
-          <div className='flex justify-center items-center'>
-            <Spin size='small' />
+          <div className="flex justify-center items-center">
+            <Spin size="small" />
           </div>
         ) : (
           <QuizQuestionBlock
