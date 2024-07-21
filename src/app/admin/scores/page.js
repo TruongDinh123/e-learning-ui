@@ -10,7 +10,9 @@ import SearchBlock from './searchBlock/page';
 
 const Scores = () => {
   const dispatch = useDispatch();
-  const quizAndUserTested = useSelector((state) => state.quiz.quizAndUserTested);
+  const quizAndUserTested = useSelector(
+    (state) => state.quiz.quizAndUserTested
+  );
   const isScoresUsertestedLoading = useSelector(
     (state) => state.quiz.isScoresUsertestedLoading
   );

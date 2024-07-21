@@ -31,12 +31,19 @@ const ListItem = ({userTested, quizsFilter}) => {
         })
         .sort((item1, item2) => item1.orderNum - item2.orderNum);
 
-      const dataSelectInit = scoresUser.map((item) => ({
-        label: `Lần ${item.orderNum}`,
-        value: item._id,
-      }));
+      let isExist = false;
+      const dataSelectInit = scoresUser.map((item) => {
+        if (scoreCurrentInfo?._id === item._id) isExist = true;
+        return {
+          label: `Lần ${item.orderNum}`,
+          value: item._id,
+        };
+      });
 
-      const scoreCurrentId = scoreCurrentInfo?._id || dataSelectInit[scoresUser.length - 1]?.value;
+      const scoreCurrentId =
+        (isExist && scoreCurrentInfo?._id) ||
+        dataSelectInit[dataSelectInit.length - 1]?.value;
+
       setSelectTestNumData(dataSelectInit);
       const scoreInfo = allscoreQuiz.find((item) => {
         const checkScoreCurrent = item._id === scoreCurrentId;
@@ -51,7 +58,7 @@ const ListItem = ({userTested, quizsFilter}) => {
 
       setScoreCurrentInfo(scoreInfo);
     }
-  }, [allscoreQuiz, quizsFilter, scoreCurrentInfo?._id, userTested._id, userTested.quizId]);
+  }, [allscoreQuiz, quizsFilter, scoreCurrentInfo, userTested._id, userTested.quizId]);
 
   const handleChange = (value) => {
     const scoreInfo = allscoreQuiz.find((item) => item._id === value);
