@@ -4,8 +4,19 @@ import Countdown from './countdown';
 import RankingImage from './rankingImage';
 import RankingContent from './rankingContent';
 import Rules from './rules';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { message } from 'antd';
 
 export default function ContentExemplOnline({}) {
+  const isLoadingSubmit = useSelector(state => state.quiz.isLoading);
+
+  useEffect(() => {
+
+    if(isLoadingSubmit) {
+      message.success('Nộp bài thi thành công!', 4)
+    }
+  }, [isLoadingSubmit])
   return (
     <main
       style={{

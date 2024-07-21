@@ -96,10 +96,6 @@ export default function Quizs({params}) {
     }
   }, [isComplete]);
 
-  useEffect(() => {
-    return () => isSubmitActive && setIsSubmitActive(false);
-  }, [isSubmitActive]);
-
   const handleSubmit = useCallback(async () => {
     if (isSubmitActive) return;
     setIsSubmitActive(true);
@@ -149,6 +145,7 @@ export default function Quizs({params}) {
       console.error('Error submitting quiz:', error);
       messageApi.error('Lỗi khi nộp bài.');
     } finally {
+      isSubmitActive && setIsSubmitActive(false);
       setSubmitting(false);
     }
   }, [
