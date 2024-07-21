@@ -494,6 +494,7 @@ const initialState = {
   isSuccess: false,
   isLoading: false,
   isLoadingSubmit: false,
+  isSubmitSuccess: false,
   newQuizCreated: false,
   isLoadingQuiz: false,
   message: '',
@@ -545,9 +546,10 @@ const quizSlice = createSlice({
     updateScoreAllQuiz: (state, action) => {
       state.scoreAllQuiz = action.payload.metadata;
     },
-    // updateScoreByQuizIdInfo: (state,action) => {
-    //   state.scoreByQuizIdInfo = action.payload.metadata;
-    // }
+    updateIsSubmitSuccess: (state, action) => {
+      state.isSubmitSuccess = action.payload.metadata;
+    },
+    
   },
   extraReducers: (builder) => {
     builder
@@ -619,6 +621,7 @@ const quizSlice = createSlice({
       })
       .addCase(submitQuiz.fulfilled, (state, action) => {
         state.isLoadingSubmit = false;
+        state.isSubmitSuccess = true;
         state.isError = false;
         state.isSuccess = true;
       })
@@ -1012,6 +1015,7 @@ export const {
   addQuizStore,
   updateQuizStore,
   updateNewCourseIdsQuizCreated,
+  updateIsSubmitSuccess
 } = quizSlice.actions;
 
 export default quizSlice.reducer;

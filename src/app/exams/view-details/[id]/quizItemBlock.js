@@ -66,7 +66,7 @@ const QuizItemBlock = ({
             <p>Khi hết thời gian sẽ tự động nộp bài.</p>
           </div>
         )}
-        {loading ? (
+        {submitting || loading ? (
           <div className="flex justify-center items-center">
             <Spin size="small" />
           </div>

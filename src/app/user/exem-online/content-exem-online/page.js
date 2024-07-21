@@ -4,19 +4,22 @@ import Countdown from './countdown';
 import RankingImage from './rankingImage';
 import RankingContent from './rankingContent';
 import Rules from './rules';
-import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { message } from 'antd';
+import {useDispatch, useSelector} from 'react-redux';
+import {useEffect} from 'react';
+import {message} from 'antd';
+import {updateIsSubmitSuccess} from '../../../../features/Quiz/quizSlice';
 
 export default function ContentExemplOnline({}) {
-  const isLoadingSubmit = useSelector(state => state.quiz.isLoadingSubmit);
+  const isSubmitSuccess = useSelector((state) => state.quiz.isSubmitSuccess);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-
-    if(isLoadingSubmit) {
-      message.success('Nộp bài thi thành công!', 4)
+    if (isSubmitSuccess) {
+      message.success('Nộp bài thi thành công!', 4).then(() => {
+        dispatch(updateIsSubmitSuccess(false));
+      });
     }
-  }, [isLoadingSubmit])
+  }, [dispatch, isSubmitSuccess]);
   return (
     <main
       style={{
