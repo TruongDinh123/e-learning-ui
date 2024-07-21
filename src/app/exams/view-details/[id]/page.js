@@ -1,17 +1,17 @@
-"use client";
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import { message } from "antd";
-import { submitQuiz } from "@/features/Quiz/quizSlice";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { useDispatch, useSelector } from "react-redux";
-import "react-quill/dist/quill.snow.css";
-import debounce from "lodash.debounce";
-import { useRouter } from "next/navigation";
-import QuizItemBlock from "./quizItemBlock";
-import BreadCrumbBlock from "./breadCrumbBlock";
-import { decryptQuiz } from "../../../../utils";
+'use client';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
+import {message} from 'antd';
+import {submitQuiz} from '@/features/Quiz/quizSlice';
+import {unwrapResult} from '@reduxjs/toolkit';
+import {useDispatch, useSelector} from 'react-redux';
+import 'react-quill/dist/quill.snow.css';
+import debounce from 'lodash.debounce';
+import {useRouter} from 'next/navigation';
+import QuizItemBlock from './quizItemBlock';
+import BreadCrumbBlock from './breadCrumbBlock';
+import {decryptQuiz} from '../../../../utils';
 
-export default function Quizs({ params }) {
+export default function Quizs({params}) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
@@ -24,7 +24,7 @@ export default function Quizs({ params }) {
   const [submitting, setSubmitting] = useState(false);
   const [quiz, setQuiz] = useState(null);
   const [predictAmount, onChangePredictAmount] = useState(
-    localStorage.getItem("predictAmount") || ""
+    localStorage.getItem('predictAmount') || ''
   );
   const [initialSize, setInitialSize] = useState({
     width: window.innerWidth,
@@ -33,6 +33,7 @@ export default function Quizs({ params }) {
   const [hasWarned, setHasWarned] = useState(false);
   const resizeTimeoutRef = useRef(null);
   const router = useRouter();
+  const [isSubmitActive, setIsSubmitActive] = useState(false);
 
   const infoCommonScoreByUserId = useSelector(
     (state) => state.quiz.infoCommonScoreByUserId
@@ -56,7 +57,7 @@ export default function Quizs({ params }) {
 
       encryptoQuiz(quizStoreByID)
         .then((res) => {
-          console.log("🚀 ~ res:", res);
+          console.log('🚀 ~ res:', res);
           return setQuiz(JSON.parse(res));
         })
         .catch((error) => console.log(error.message));
@@ -69,7 +70,7 @@ export default function Quizs({ params }) {
         onChangePredictAmount(
           infoCommonScoreByUserId.predictAmount
             ? infoCommonScoreByUserId.predictAmount.toString()
-            : "0"
+            : '0'
         );
       }
       setStartTime(infoCommonScoreByUserId.startTime);
@@ -78,7 +79,7 @@ export default function Quizs({ params }) {
   }, [infoCommonScoreByUserId]);
 
   useEffect(() => {
-    const savedAnswers = localStorage.getItem("quizAnswers");
+    const savedAnswers = localStorage.getItem('quizAnswers');
     if (savedAnswers) {
       setSelectedAnswers(JSON.parse(savedAnswers));
     }
@@ -86,19 +87,26 @@ export default function Quizs({ params }) {
 
   useEffect(() => {
     if (isComplete) {
-      localStorage.removeItem("quizStartTime");
+      localStorage.removeItem('quizStartTime');
     } else {
       const startTime =
-        localStorage.getItem("quizStartTime") || new Date().toISOString();
-      localStorage.setItem("quizStartTime", startTime);
+        localStorage.getItem('quizStartTime') || new Date().toISOString();
+      localStorage.setItem('quizStartTime', startTime);
       setStartTime(startTime);
     }
   }, [isComplete]);
 
+  useEffect(() => {
+    return () => isSubmitActive && setIsSubmitActive(false);
+  }, [isSubmitActive]);
+
   const handleSubmit = useCallback(async () => {
+    if (isSubmitActive) return;
+    setIsSubmitActive(true);
+
     let savedAnswers = selectedAnswers;
     if (Object.keys(savedAnswers).length === 0) {
-      const savedAnswersStr = localStorage.getItem("quizAnswers");
+      const savedAnswersStr = localStorage.getItem('quizAnswers');
       if (savedAnswersStr) {
         savedAnswers = JSON.parse(savedAnswersStr) || {};
       }
@@ -113,7 +121,7 @@ export default function Quizs({ params }) {
     setSubmitting(true);
     try {
       messageApi.info({
-        content: "Đang nộp bài...",
+        content: 'Đang nộp bài...',
       });
 
       dispatch(
@@ -129,21 +137,29 @@ export default function Quizs({ params }) {
             // setQuizSubmission(res.metadata);
             // setSubmitted(true);
             // setShowCountdown(false);
-            localStorage.removeItem("quizAnswers");
-            localStorage.removeItem("quizStartTime");
-            localStorage.removeItem("predictAmount");
-            router.push("/");
+            localStorage.removeItem('quizAnswers');
+            localStorage.removeItem('quizStartTime');
+            localStorage.removeItem('predictAmount');
+            router.push('/');
           } else {
             messageApi.error(res.message);
           }
         });
     } catch (error) {
-      console.error("Error submitting quiz:", error);
-      messageApi.error("Lỗi khi nộp bài.");
+      console.error('Error submitting quiz:', error);
+      messageApi.error('Lỗi khi nộp bài.');
     } finally {
       setSubmitting(false);
     }
-  }, [dispatch, messageApi, predictAmount, quiz?._id, router, selectedAnswers]);
+  }, [
+    dispatch,
+    messageApi,
+    predictAmount,
+    quiz?._id,
+    router,
+    selectedAnswers,
+    isSubmitActive,
+  ]);
 
   useEffect(() => {
     const tolerance = 1;
@@ -172,7 +188,7 @@ export default function Quizs({ params }) {
           setHasWarned(true);
           if (!resizeTimeoutRef.current) {
             messageApi.error(
-              "Bạn có dấu hiệu vi phạm. Vui lòng resize như cũ. Nếu 10s nữa bạn chưa thực hiện, bài thi sẽ kết thúc."
+              'Bạn có dấu hiệu vi phạm. Vui lòng resize như cũ. Nếu 10s nữa bạn chưa thực hiện, bài thi sẽ kết thúc.'
             );
             resizeTimeoutRef.current = setTimeout(() => {
               const widthChangeWithinTolerance = sizeWithinTolerance(
@@ -186,14 +202,14 @@ export default function Quizs({ params }) {
 
               if (widthChangeWithinTolerance || heightChangeWithinTolerance) {
                 messageApi.error(
-                  "Bạn vẫn chưa trả màn hình như cũ. Hệ thống sẽ nộp bài trong 10s nữa."
+                  'Bạn vẫn chưa trả màn hình như cũ. Hệ thống sẽ nộp bài trong 10s nữa.'
                 );
                 setTimeout(() => {
                   handleSubmit();
                 }, 10000);
               } else {
                 messageApi.success(
-                  "Bạn đã trả về màn hình như cũ. Tiếp tục thi."
+                  'Bạn đã trả về màn hình như cũ. Tiếp tục thi.'
                 );
               }
               resizeTimeoutRef.current = null;
@@ -204,9 +220,9 @@ export default function Quizs({ params }) {
       }
     }, 100);
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
-    return () => window.removeEventListener("resize", handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [handleSubmit, hasWarned, initialSize, messageApi]);
 
   //countdount queries
@@ -224,7 +240,7 @@ export default function Quizs({ params }) {
           setDeadline(null);
           setShowCountdown(false);
           messageApi.error(
-            "Thời gian làm bài đã hết. Bài quiz của bạn sẽ được tự động nộp."
+            'Thời gian làm bài đã hết. Bài quiz của bạn sẽ được tự động nộp.'
           );
           handleSubmit();
         }
@@ -235,7 +251,7 @@ export default function Quizs({ params }) {
   }, [quiz, startTime, isComplete, messageApi, handleSubmit]);
 
   return (
-    <div className="bg-blue-200 p-4">
+    <div className='bg-blue-200 p-4'>
       <BreadCrumbBlock
         quiz={quiz}
         isComplete={isComplete}
@@ -244,8 +260,8 @@ export default function Quizs({ params }) {
         showCountdown={showCountdown}
         deadline={deadline}
       />
-      <div className="pb-48 flex justify-center items-center bg-blue-200">
-        <div className="w-full md:w-2/3 lg:w-1/2">
+      <div className='pb-48 flex justify-center items-center bg-blue-200'>
+        <div className='w-full md:w-2/3 lg:w-1/2'>
           {contextHolder}
 
           <React.Fragment>
