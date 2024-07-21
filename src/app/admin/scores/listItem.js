@@ -105,7 +105,7 @@ const ListItem = ({userTested, quizsFilter}) => {
             Xem chi tiết
           </Button>
         </Col>
-        <Col span={2}>{scoreCurrentInfo?.scoreCustom || 0}</Col>
+        <Col span={2}>{scoreCurrentInfo?.score || 0}</Col>
         <Col span={4}>
           {moment(scoreCurrentInfo?.submitTime).format('DD/MM/YYYY HH:mm:ss')}
         </Col>
