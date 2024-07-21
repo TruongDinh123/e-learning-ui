@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { message } from 'antd';
 
 export default function ContentExemplOnline({}) {
-  const isLoadingSubmit = useSelector(state => state.quiz.isLoading);
+  const isLoadingSubmit = useSelector(state => state.quiz.isLoadingSubmit);
 
   useEffect(() => {
 
