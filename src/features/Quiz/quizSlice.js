@@ -493,6 +493,7 @@ const initialState = {
   isError: false,
   isSuccess: false,
   isLoading: false,
+  isLoadingSubmit: false,
   newQuizCreated: false,
   isLoadingQuiz: false,
   message: '',
@@ -614,15 +615,15 @@ const quizSlice = createSlice({
         state.message = 'Something went wrong!';
       })
       .addCase(submitQuiz.pending, (state, action) => {
-        state.isLoading = true;
+        state.isLoadingSubmit = true;
       })
       .addCase(submitQuiz.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.isLoadingSubmit = false;
         state.isError = false;
         state.isSuccess = true;
       })
       .addCase(submitQuiz.rejected, (state, action) => {
-        state.isLoading = false;
+        state.isLoadingSubmit = false;
         state.isError = true;
         state.isSuccess = false;
         state.message = 'Something went wrong!';
