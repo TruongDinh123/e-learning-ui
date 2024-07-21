@@ -39,7 +39,7 @@ export default function Quizs({params}) {
     (state) => state.quiz.infoCommonScoreByUserId
   );
   const quizStoreByID = useSelector((state) => state.quiz.quizsExisted);
-  const loading = useSelector((state) => state.quiz.isLoading);
+  const loading = useSelector((state) => state.quiz.isLoadingSubmit);
 
   useEffect(() => {
     setInitialSize({
