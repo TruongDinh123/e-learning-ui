@@ -549,6 +549,7 @@ const quizSlice = createSlice({
     updateIsSubmitSuccess: (state, action) => {
       state.isSubmitSuccess = action.payload.metadata;
     },
+
     
   },
   extraReducers: (builder) => {
@@ -1015,7 +1016,7 @@ export const {
   addQuizStore,
   updateQuizStore,
   updateNewCourseIdsQuizCreated,
-  updateIsSubmitSuccess
+  updateIsSubmitSuccess,
 } = quizSlice.actions;
 
 export default quizSlice.reducer;

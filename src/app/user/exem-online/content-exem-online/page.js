@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
 import {message} from 'antd';
 import {updateIsSubmitSuccess} from '../../../../features/Quiz/quizSlice';
+import {IS_ACTIVE_LOCAL_STORAGE} from '../../../../constants';
 
 export default function ContentExemplOnline({}) {
   const isSubmitSuccess = useSelector((state) => state.quiz.isSubmitSuccess);
@@ -17,9 +18,11 @@ export default function ContentExemplOnline({}) {
     if (isSubmitSuccess) {
       message.success('Nộp bài thi thành công!', 4).then(() => {
         dispatch(updateIsSubmitSuccess(false));
+        localStorage.removeItem(IS_ACTIVE_LOCAL_STORAGE);
       });
     }
   }, [dispatch, isSubmitSuccess]);
+
   return (
     <main
       style={{

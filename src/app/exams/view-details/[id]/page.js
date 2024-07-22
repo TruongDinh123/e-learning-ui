@@ -10,6 +10,7 @@ import {useRouter} from 'next/navigation';
 import QuizItemBlock from './quizItemBlock';
 import BreadCrumbBlock from './breadCrumbBlock';
 import {decryptQuiz} from '../../../../utils';
+import {IS_ACTIVE_LOCAL_STORAGE} from '../../../../constants';
 
 export default function Quizs({params}) {
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -33,7 +34,6 @@ export default function Quizs({params}) {
   const [hasWarned, setHasWarned] = useState(false);
   const resizeTimeoutRef = useRef(null);
   const router = useRouter();
-  const [isSubmitActive, setIsSubmitActive] = useState(false);
 
   const infoCommonScoreByUserId = useSelector(
     (state) => state.quiz.infoCommonScoreByUserId
@@ -97,8 +97,9 @@ export default function Quizs({params}) {
   }, [isComplete]);
 
   const handleSubmit = useCallback(async () => {
-    if (isSubmitActive) return;
-    setIsSubmitActive(true);
+    let isSubmitActived = localStorage.getItem(IS_ACTIVE_LOCAL_STORAGE);
+    if (isSubmitActived) return;
+    localStorage.setItem(IS_ACTIVE_LOCAL_STORAGE, 'true');
 
     let savedAnswers = selectedAnswers;
     if (Object.keys(savedAnswers).length === 0) {
@@ -108,13 +109,15 @@ export default function Quizs({params}) {
       }
     }
 
-    const formattedAnswers = quiz?.questions.map(question => {
-      const answerObj = ({
-        [question._id]: savedAnswers[question._id] ? savedAnswers[question._id] : "",
-      });
+    const formattedAnswers = quiz?.questions.map((question) => {
+      const answerObj = {
+        [question._id]: savedAnswers[question._id]
+          ? savedAnswers[question._id]
+          : '',
+      };
 
       return answerObj;
-    }) ;
+    });
 
     setSubmitting(true);
     try {
@@ -138,7 +141,6 @@ export default function Quizs({params}) {
             localStorage.removeItem('quizAnswers');
             localStorage.removeItem('quizStartTime');
             localStorage.removeItem('predictAmount');
-            router.push('/');
           } else {
             messageApi.error(res.message);
           }
@@ -147,18 +149,10 @@ export default function Quizs({params}) {
       console.error('Error submitting quiz:', error);
       messageApi.error('Lỗi khi nộp bài.');
     } finally {
-      isSubmitActive && setIsSubmitActive(false);
       setSubmitting(false);
+      router.push('/');
     }
-  }, [
-    dispatch,
-    messageApi,
-    predictAmount,
-    quiz?._id,
-    router,
-    selectedAnswers,
-    isSubmitActive,
-  ]);
+  }, [dispatch, messageApi, predictAmount, quiz?._id, router, selectedAnswers]);
 
   useEffect(() => {
     const tolerance = 1;
