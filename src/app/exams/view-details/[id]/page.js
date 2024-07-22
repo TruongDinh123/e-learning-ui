@@ -108,11 +108,13 @@ export default function Quizs({params}) {
       }
     }
 
-    const formattedAnswers = Object.entries(savedAnswers).map(
-      ([questionId, answer]) => ({
-        [questionId]: answer,
-      })
-    );
+    const formattedAnswers = quiz?.questions.map(question => {
+      const answerObj = ({
+        [question._id]: savedAnswers[question._id] ? savedAnswers[question._id] : "",
+      });
+
+      return answerObj;
+    }) ;
 
     setSubmitting(true);
     try {
