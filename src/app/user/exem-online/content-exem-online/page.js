@@ -16,7 +16,7 @@ export default function ContentExemplOnline({}) {
 
   useEffect(() => {
     if (isSubmitSuccess) {
-      message.success('Nộp bài thi thành công!', 4).then(() => {
+      message.success('Nộp bài thi thành công!', 10).then(() => {
         dispatch(updateIsSubmitSuccess(false));
         localStorage.removeItem(IS_ACTIVE_LOCAL_STORAGE);
       });
