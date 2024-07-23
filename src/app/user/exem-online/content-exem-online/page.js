@@ -18,7 +18,9 @@ export default function ContentExemplOnline({}) {
     if (isSubmitSuccess) {
       message.success('Nộp bài thi thành công!', 10).then(() => {
         dispatch(updateIsSubmitSuccess(false));
-        localStorage.removeItem(IS_ACTIVE_LOCAL_STORAGE);
+        setTimeout(() => {
+          localStorage.removeItem(IS_ACTIVE_LOCAL_STORAGE);
+        }, 60000);
       });
     }
   }, [dispatch, isSubmitSuccess]);
