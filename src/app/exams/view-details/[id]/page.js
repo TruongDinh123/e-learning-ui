@@ -141,6 +141,7 @@ export default function Quizs({params}) {
             localStorage.removeItem('quizAnswers');
             localStorage.removeItem('quizStartTime');
             localStorage.removeItem('predictAmount');
+            router.push('/');
           } else {
             messageApi.error(res.message);
           }
@@ -150,7 +151,6 @@ export default function Quizs({params}) {
       messageApi.error('Lỗi khi nộp bài.');
     } finally {
       setSubmitting(false);
-      router.push('/');
     }
   }, [dispatch, messageApi, predictAmount, quiz?._id, router, selectedAnswers]);
 

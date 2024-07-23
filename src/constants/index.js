@@ -6,4 +6,5 @@ export const QUESTION_PER_PAGE = 10;
 export const SELECTED_COURSE_ID = '6634fc03bf25515f1e563504';
 
 export const MESSAGE_FORGET_PASSWORD = 'Email không đúng hoặc không tồn tại';
-    
+
+export const IS_ACTIVE_LOCAL_STORAGE = 'isSubmitActived';
