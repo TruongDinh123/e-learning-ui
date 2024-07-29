@@ -362,6 +362,15 @@ const getAllQuizNotDraft = async () => {
   return res.data;
 };
 
+const updateScoreCustom = async (data) => {
+  const res = await axiosInstance({
+    url: '/e-learning/update-score-custom',
+    method: 'POST',
+    data: data,
+  });
+  return res.data;
+};
+
 export const QuizService = {
   createQuiz,
   draftQuiz,
@@ -402,5 +411,6 @@ export const QuizService = {
   activeQuizPresent,
   getActiveQuizPresent,
   getScoreHasUsersTested,
-  getAllQuizNotDraft
+  getAllQuizNotDraft,
+  updateScoreCustom
 };

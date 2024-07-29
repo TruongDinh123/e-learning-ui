@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getScoreHasUsersTested} from '../../../features/Quiz/quizSlice';
 import TitleList from './titleList';
 import SearchBlock from './searchBlock/page';
+import ScoreCustom from './scoreCustom';
 
 const Scores = () => {
   const dispatch = useDispatch();
@@ -57,6 +58,8 @@ const Scores = () => {
         quizsFilter={quizsFilter}
         setQuizsFilter={setQuizsFilter}
       />
+
+      <ScoreCustom />
 
       <List
         header={<TitleList />}

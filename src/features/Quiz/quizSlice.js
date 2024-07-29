@@ -484,6 +484,19 @@ export const getAllQuizNotDraft = createAsyncThunk(
   }
 );
 
+export const updateScoreCustom = createAsyncThunk(
+  '/e-learning/update-score-custom',
+  async (data, {rejectWithValue}) => {
+    try {
+      const response = await QuizService.updateScoreCustom(data);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+
 const initialState = {
   quiz: null,
   getQuizzesByStudentAndCourse: [],

@@ -255,4 +255,8 @@ table#choice-present-block {
   margin-bottom: 80px;
 }
 
+.btn-custom .ant-btn-primary {
+  background-color: #1677ff;
+}
+
 /* .mb- */
