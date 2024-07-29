@@ -8,7 +8,7 @@ import {useState} from 'react';
 const {RangePicker} = DatePicker;
 const {Title} = Typography;
 
-const ModalBlock = ({isOpen, handleCancel}) => {
+const ModalBlock = ({handleRefresh, isOpen, handleCancel}) => {
   const [dateInit, setDateInit] = useState('');
 
   const rangePickerHandle = (dates, dateStrings) => {
@@ -22,7 +22,13 @@ const ModalBlock = ({isOpen, handleCancel}) => {
       onCancel={handleCancel}
       maskClosable={false}
       width={400}
-      footer={<ModalFooter dateInit={dateInit} handleCancel={handleCancel} />}
+      footer={
+        <ModalFooter
+          dateInit={dateInit}
+          handleCancel={handleCancel}
+          handleRefresh={handleRefresh}
+        />
+      }
     >
       <Title level={5} className='mb-2'>
         Chọn bài thi đại diện

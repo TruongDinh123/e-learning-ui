@@ -31,6 +31,10 @@ const Scores = () => {
     }
   }, [dispatch, quiz, refresh]);
 
+  const handleRefresh = () => {
+    setRefresh(refresh + 1)
+  }
+
   return (
     <div className='p-3 mb-80'>
       <Row gutter={[24, 0]}>
@@ -45,7 +49,7 @@ const Scores = () => {
             htmlType='submit'
             className='custom-button mb-20'
             loading={isScoresUsertestedLoading}
-            onClick={() => setRefresh(refresh + 1)}
+            onClick={handleRefresh}
           >
             Làm mới dữ liệu
           </Button>
@@ -59,7 +63,7 @@ const Scores = () => {
         setQuizsFilter={setQuizsFilter}
       />
 
-      <ScoreCustom />
+      <ScoreCustom handleRefresh={handleRefresh} />
 
       <List
         header={<TitleList />}

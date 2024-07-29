@@ -2,7 +2,7 @@ import {Button} from 'antd';
 import { useState } from 'react';
 import ModalBlock from './modalBlock';
 
-const ScoreCustom = () => {
+const ScoreCustom = ({handleRefresh}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleCancel = () => {
@@ -23,8 +23,7 @@ const ScoreCustom = () => {
 
       {isOpen && (
         <ModalBlock
-          // isLoading={isLoading}
-          // setIsLoading={setIsLoading}
+          handleRefresh={handleRefresh}
           isOpen={isOpen}
           handleCancel={handleCancel}
         />

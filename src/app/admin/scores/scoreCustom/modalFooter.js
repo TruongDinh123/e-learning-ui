@@ -5,7 +5,7 @@ import {useDispatch} from 'react-redux';
 import { updateScoreCustom } from '../../../../features/Quiz/quizSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 
-const ModalFooter = ({dateInit, handleCancel}) => {
+const ModalFooter = ({dateInit, handleCancel, handleRefresh}) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -23,6 +23,7 @@ const ModalFooter = ({dateInit, handleCancel}) => {
       .then(unwrapResult)
       .then((res) => {
         message.success('Cập nhật điểm cộng thành công!');
+        handleRefresh();
         setIsLoading(false);
         handleCancel();
       });
