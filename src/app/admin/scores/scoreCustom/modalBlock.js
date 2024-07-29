@@ -31,7 +31,8 @@ const ModalBlock = ({handleRefresh, isOpen, handleCancel}) => {
       }
     >
       <Title level={5} className='mb-2'>
-        Chọn bài thi đại diện
+        Nhập ngày bắt đầu và ngày kết thúc <br/>
+        <small>(Những bài thi trong khoảng thời gian này sẽ được cập nhật lại điểm)</small>
       </Title>
       <RangePicker
         onChange={rangePickerHandle}
