@@ -346,10 +346,11 @@ const getActiveQuizPresent = async () => {
   return res.data;
 };
 
-const getScoreHasUsersTested = async () => {
+const getScoreHasUsersTested = async (data) => {
   const res = await axiosInstance({
     url: '/e-learning/scores-has-users-tested',
-    method: 'GET',
+    method: 'POST',
+    data: data,
   });
   return res.data;
 };

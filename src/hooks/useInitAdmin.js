@@ -22,6 +22,7 @@ const useInitAdmin = () => {
   const allscoreQuiz = useSelector((state) => state.quiz.allscoreQuiz);
   const users = useSelector((state) => state?.user?.allUsers);
   const roles = useSelector((state) => state?.user?.allRoles);
+  const quizPresent = useSelector((state) => state.quiz.quizPresent);
 
   useEffect(() => {
     isAdminCheck &&
@@ -34,10 +35,10 @@ const useInitAdmin = () => {
   }, [dispatch, isAdminCheck, quiz]);
 
   useEffect(() => {
-    if (isAdminCheck && !allscoreQuiz) {
-      dispatch(getScoreHasUsersTested());
+    if (isAdminCheck && !allscoreQuiz && quizPresent) {
+      dispatch(getScoreHasUsersTested({quizsFilter: [quizPresent?._id]}));
     }
-  }, [allscoreQuiz, dispatch, isAdminCheck]);
+  }, [allscoreQuiz, dispatch, isAdminCheck, quizPresent]);
 
   useEffect(() => {
     isAdminCheck && !users && dispatch(getAllUser()).then(unwrapResult);

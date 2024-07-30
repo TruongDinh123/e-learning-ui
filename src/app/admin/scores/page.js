@@ -11,6 +11,7 @@ import ScoreCustom from './scoreCustom';
 
 const Scores = () => {
   const dispatch = useDispatch();
+  const quizPresent = useSelector((state) => state.quiz.quizPresent);
   const quizAndUserTested = useSelector(
     (state) => state.quiz.quizAndUserTested
   );
@@ -20,16 +21,17 @@ const Scores = () => {
   const quiz = useSelector((state) => state.quiz.quiz);
   const [refresh, setRefresh] = useState(0);
   const [dataFiltered, setDataFiltered] = useState(null);
-  const [quizsFilter, setQuizsFilter] = useState([]);
+  const [quizsFilter, setQuizsFilter] = useState([quizPresent?._id]);
 
   useEffect(() => {
     if (refresh && quiz && quiz.length) {
-      const quizIds = quiz.map((item) => item._id);
-      dispatch(getScoreHasUsersTested({quizIds})).then((res) => {
-        message.success('Đã làm mới dữ liệu!', 1.5);
-      });
+      setTimeout(() => {
+        dispatch(getScoreHasUsersTested({quizsFilter})).then((res) => {
+          message.success('Đã làm mới dữ liệu!', 1.5);
+        });
+      }, 100);
     }
-  }, [dispatch, quiz, refresh]);
+  }, [dispatch, quiz, refresh, quizsFilter]);
 
   const handleRefresh = () => {
     setRefresh(refresh + 1)
