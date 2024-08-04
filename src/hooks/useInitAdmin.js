@@ -9,17 +9,22 @@ import {unwrapResult} from '@reduxjs/toolkit';
 import {
   getActiveQuizPresent,
   getAllQuizNotDraft,
-  getScoreHasUsersTested,
 } from '../features/Quiz/quizSlice';
 import {getAllRole, getAllUser} from '../features/User/userSlice';
 import {isAdmin} from '@/middleware';
+import {
+  getNumberUserInQuiz,
+  getScoreHasUsersTested,
+} from '../features/Quiz/scoreThunk';
 
 const useInitAdmin = () => {
   const isAdminCheck = isAdmin();
   const dispatch = useDispatch();
   const coursesStore = useCoursesData();
   const quiz = useSelector((state) => state.quiz.quiz);
-  const allscoreQuiz = useSelector((state) => state.quiz.allscoreQuiz);
+  const scoreHasUsersTested = useSelector(
+    (state) => state.quiz.scoreHasUsersTested
+  );
   const users = useSelector((state) => state?.user?.allUsers);
   const roles = useSelector((state) => state?.user?.allRoles);
   const quizPresent = useSelector((state) => state.quiz.quizPresent);
@@ -35,10 +40,19 @@ const useInitAdmin = () => {
   }, [dispatch, isAdminCheck, quiz]);
 
   useEffect(() => {
-    if (isAdminCheck && !allscoreQuiz && quizPresent) {
-      dispatch(getScoreHasUsersTested({quizsFilter: [quizPresent?._id]}));
+    if (isAdminCheck && !scoreHasUsersTested && quizPresent) {
+      const quizsFilter = [quizPresent?._id];
+      dispatch(getNumberUserInQuiz({quizsFilter, searchName: ""}));
+      dispatch(
+        getScoreHasUsersTested({
+          quizsFilter,
+          limit: 10,
+          skip: 0,
+          searchName: '',
+        })
+      );
     }
-  }, [allscoreQuiz, dispatch, isAdminCheck, quizPresent]);
+  }, [scoreHasUsersTested, dispatch, isAdminCheck, quizPresent]);
 
   useEffect(() => {
     isAdminCheck && !users && dispatch(getAllUser()).then(unwrapResult);

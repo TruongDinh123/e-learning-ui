@@ -4,8 +4,7 @@ import {useSelector} from 'react-redux';
 import ModalDetailQuiz from './modalDetailQuiz';
 import moment from 'moment';
 
-const ListItem = ({userTested, quizsFilter}) => {
-  const allscoreQuiz = useSelector((state) => state.quiz.allscoreQuiz);
+const ListItem = ({scoreHasUsersTestedItem}) => {
   const [selectTestNumData, setSelectTestNumData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scoreCurrentInfo, setScoreCurrentInfo] = useState(null);
@@ -15,53 +14,26 @@ const ListItem = ({userTested, quizsFilter}) => {
   };
 
   useEffect(() => {
-    if (allscoreQuiz && allscoreQuiz.length) {
-      const scoresUser = allscoreQuiz
-        .filter((score) => {
-          const checkScoreCurrent =
-            score.user === userTested._id &&
-            userTested.quizId === score.quiz._id;
-          const checkquizCurrent = quizsFilter.includes(score.quiz._id);
-          const isValid =
-            quizsFilter && quizsFilter.length
-              ? checkScoreCurrent && checkquizCurrent
-              : checkScoreCurrent;
+    if (scoreHasUsersTestedItem) {
+      const scores = scoreHasUsersTestedItem.scores;
 
-          return isValid;
-        })
-        .sort((item1, item2) => item1.orderNum - item2.orderNum);
+      const selectTestNumDataInit = scores.map((score, index) => ({
+        label: `lần ${index + 1}`,
+        value: score._id,
+      }));
 
-      let isExist = false;
-      const dataSelectInit = scoresUser.map((item) => {
-        if (scoreCurrentInfo?._id === item._id) isExist = true;
-        return {
-          label: `Lần ${item.orderNum}`,
-          value: item._id,
-        };
-      });
-
-      const scoreCurrentId =
-        (isExist && scoreCurrentInfo?._id) ||
-        dataSelectInit[dataSelectInit.length - 1]?.value;
-
-      setSelectTestNumData(dataSelectInit);
-      const scoreInfo = allscoreQuiz.find((item) => {
-        const checkScoreCurrent = item._id === scoreCurrentId;
-        const checkquizCurrent = quizsFilter.includes(item.quiz._id);
-
-        const isValid =
-          quizsFilter && quizsFilter.length
-            ? checkScoreCurrent && checkquizCurrent
-            : checkScoreCurrent;
-        return isValid;
-      });
-
-      setScoreCurrentInfo(scoreInfo);
+      setSelectTestNumData(selectTestNumDataInit);
+      const scoreLast = scores[scores.length - 1];
+      Object.assign(scoreLast.quiz, scoreHasUsersTestedItem.quiz)
+      setScoreCurrentInfo(scoreLast);
     }
-  }, [allscoreQuiz, quizsFilter, scoreCurrentInfo, userTested._id, userTested.quizId]);
+  }, [scoreHasUsersTestedItem]);
 
   const handleChange = (value) => {
-    const scoreInfo = allscoreQuiz.find((item) => item._id === value);
+    const scoreInfo = scoreHasUsersTestedItem.scores.find(
+      (item) => item._id === value
+    );
+      Object.assign(scoreInfo.quiz, scoreHasUsersTestedItem.quiz)
     setScoreCurrentInfo(scoreInfo);
   };
 
@@ -69,11 +41,14 @@ const ListItem = ({userTested, quizsFilter}) => {
     <List.Item>
       <Row style={{width: '100%'}}>
         <Col span={6}>
-          <Typography>{userTested.quizName}</Typography>
+          <Typography>
+            {scoreHasUsersTestedItem && scoreHasUsersTestedItem.quiz.name}
+          </Typography>
         </Col>
         <Col span={4}>
           <Typography>
-            {userTested.firstName} {userTested.lastName}
+            {scoreHasUsersTestedItem?.user?.firstName}{' '}
+            {scoreHasUsersTestedItem?.user?.lastName}
           </Typography>
         </Col>
         <Col span={8}>
@@ -82,7 +57,7 @@ const ListItem = ({userTested, quizsFilter}) => {
             style={{
               width: 140,
             }}
-            loading={!!!allscoreQuiz}
+            loading={!!!scoreHasUsersTestedItem}
             value={scoreCurrentInfo?._id}
             onChange={handleChange}
             placeholder='Search to Select'
@@ -105,7 +80,9 @@ const ListItem = ({userTested, quizsFilter}) => {
             Xem chi tiết
           </Button>
         </Col>
-        <Col span={2}>{scoreCurrentInfo?.scoreCustom || scoreCurrentInfo?.score || 0}</Col>
+        <Col span={2}>
+          {scoreCurrentInfo?.scoreCustom || scoreCurrentInfo?.score || 0}
+        </Col>
         <Col span={4}>
           {moment(scoreCurrentInfo?.submitTime).format('DD/MM/YYYY HH:mm:ss')}
         </Col>

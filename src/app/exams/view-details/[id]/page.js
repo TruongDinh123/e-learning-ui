@@ -57,7 +57,6 @@ export default function Quizs({params}) {
 
       encryptoQuiz(quizStoreByID)
         .then((res) => {
-          console.log('🚀 ~ res:', res);
           return setQuiz(JSON.parse(res));
         })
         .catch((error) => console.log(error.message));

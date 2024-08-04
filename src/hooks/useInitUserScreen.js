@@ -43,7 +43,6 @@ const useInitUserScreen = ({ idCourse }) => {
       dispatch(getQuizForUserScreen())
         .then(unwrapResult)
         .then((res) => {
-          console.log("🚀 ~ res:", res);
           if (!res.status) {
             messageApi.error(res.message);
           }

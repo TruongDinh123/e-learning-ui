@@ -259,4 +259,6 @@ table#choice-present-block {
   background-color: #1677ff;
 }
 
-/* .mb- */
+.ant-layout {
+  height: max-content
+}

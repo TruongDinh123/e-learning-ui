@@ -1,6 +1,6 @@
 import {createAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {QuizService} from './quizService';
-import {getUniqueItemInArray} from '../../utils';
+import {getNumberUserInQuiz, getScoreHasUsersTested} from './scoreThunk';
 
 export const createQuiz = createAsyncThunk(
   '/e-learning/create-quiz',
@@ -460,18 +460,6 @@ export const getActiveQuizPresent = createAsyncThunk(
   }
 );
 
-export const getScoreHasUsersTested = createAsyncThunk(
-  '/e-learning/scores-has-users-tested',
-  async (data, {rejectWithValue}) => {
-    try {
-      const response = await QuizService.getScoreHasUsersTested(data);
-      return response;
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  }
-);
-
 export const getAllQuizNotDraft = createAsyncThunk(
   '/e-learning/get-all-quiz-not-draft',
   async (data, {rejectWithValue}) => {
@@ -496,7 +484,6 @@ export const updateScoreCustom = createAsyncThunk(
   }
 );
 
-
 const initialState = {
   quiz: null,
   getQuizzesByStudentAndCourse: [],
@@ -520,10 +507,10 @@ const initialState = {
   newCourseIdsQuizCreated: null,
   quizPresent: null,
   isScoresUsertestedLoading: false,
-  usersTested: null,
+  scoreHasUsersTested: null,
   quizAndUserTested: null,
-  scoreAllQuiz: null,
   allscoreQuiz: null,
+  numberUserInQuiz: 0,
   // scoreByQuizIdInfo: null,
 };
 
@@ -556,14 +543,9 @@ const quizSlice = createSlice({
     updateNewCourseIdsQuizCreated: (state, action) => {
       state.newCourseIdsQuizCreated = null;
     },
-    updateScoreAllQuiz: (state, action) => {
-      state.scoreAllQuiz = action.payload.metadata;
-    },
     updateIsSubmitSuccess: (state, action) => {
       state.isSubmitSuccess = action.payload.metadata;
     },
-
-    
   },
   extraReducers: (builder) => {
     builder
@@ -992,24 +974,9 @@ const quizSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
 
-        const usersTestedData = action.payload.metadata.usersTested;
-        const scoreAllQuizData = action.payload.metadata.scores;
+        const scoreHasUsersTested = action.payload.metadata;
 
-        state.usersTested = usersTestedData;
-        state.scoreAllQuiz = scoreAllQuizData;
-
-        let dataInit = [];
-        Object.values(usersTestedData).forEach((usersTestedItem) => {
-          dataInit = dataInit.concat(usersTestedItem.usersTested);
-        });
-        const uniqueArr = getUniqueItemInArray(dataInit, ['quizId', '_id']);
-        state.quizAndUserTested = uniqueArr;
-
-        dataInit = [];
-        Object.values(scoreAllQuizData).forEach((scoreAllQuizItem) => {
-          dataInit = dataInit.concat(scoreAllQuizItem);
-        });
-        state.allscoreQuiz = dataInit;
+        state.scoreHasUsersTested = scoreHasUsersTested;
       })
       .addCase(getScoreHasUsersTested.rejected, (state, action) => {
         state.isScoresUsertestedLoading = false;
@@ -1017,6 +984,9 @@ const quizSlice = createSlice({
         state.isSuccess = false;
 
         state.message = 'getScoreHasUsersTested: Something went wrong!';
+      })
+      .addCase(getNumberUserInQuiz.fulfilled, (state, action) => {
+        state.numberUserInQuiz = action.payload.metadata;
       });
   },
 });

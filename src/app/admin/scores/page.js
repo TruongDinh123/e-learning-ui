@@ -1,41 +1,53 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
-import {Button, Col, List, Row, message} from 'antd';
+import React, {useEffect} from 'react';
+import {Button, Col, List, Row} from 'antd';
 import ListItem from './listItem';
-import {useDispatch, useSelector} from 'react-redux';
-import {getScoreHasUsersTested} from '../../../features/Quiz/quizSlice';
+import {useSelector} from 'react-redux';
 import TitleList from './titleList';
 import SearchBlock from './searchBlock/page';
 import ScoreCustom from './scoreCustom';
+import {refreshStatusInit} from './setting';
+import useScores from '../../../hooks/useScores';
 
 const Scores = () => {
-  const dispatch = useDispatch();
-  const quizPresent = useSelector((state) => state.quiz.quizPresent);
-  const quizAndUserTested = useSelector(
-    (state) => state.quiz.quizAndUserTested
+  const scoreHasUsersTested = useSelector(
+    (state) => state.quiz.scoreHasUsersTested
   );
+  const quizPresent = useSelector((state) => state.quiz.quizPresent);
+  const numberUserInQuiz = useSelector((state) => state.quiz.numberUserInQuiz);
+
   const isScoresUsertestedLoading = useSelector(
     (state) => state.quiz.isScoresUsertestedLoading
   );
-  const quiz = useSelector((state) => state.quiz.quiz);
-  const [refresh, setRefresh] = useState(0);
-  const [dataFiltered, setDataFiltered] = useState(null);
-  const [quizsFilter, setQuizsFilter] = useState([quizPresent?._id]);
+  const {
+    refresh,
+    quizsFilter,
+    textSearch,
+    pagination,
+    setRefresh,
+    setPagination,
+    setQuizsFilter,
+    setTextSearch,
+    setRefreshStatus,
+  } = useScores();
 
   useEffect(() => {
-    if (refresh && quiz && quiz.length) {
-      setTimeout(() => {
-        dispatch(getScoreHasUsersTested({quizsFilter})).then((res) => {
-          message.success('Đã làm mới dữ liệu!', 1.5);
-        });
-      }, 100);
-    }
-  }, [dispatch, quiz, refresh, quizsFilter]);
+    quizPresent && quizPresent._id && setQuizsFilter([quizPresent?._id]);
+  }, [quizPresent]);
 
   const handleRefresh = () => {
-    setRefresh(refresh + 1)
-  }
+    setRefresh(refresh + 1);
+  };
+
+  const onChangeListScores = (page, pageSize) => {
+    setPagination({
+      limit: pageSize,
+      skip: (page - 1) * pageSize,
+      current: page,
+    });
+    setRefreshStatus(refreshStatusInit.pagination);
+  };
 
   return (
     <div className='p-3 mb-80'>
@@ -59,10 +71,11 @@ const Scores = () => {
       </Row>
 
       <SearchBlock
-        dataFiltered={dataFiltered}
-        setDataFiltered={setDataFiltered}
+        textSearch={textSearch}
+        setTextSearch={setTextSearch}
         quizsFilter={quizsFilter}
         setQuizsFilter={setQuizsFilter}
+        setRefreshStatus={setRefreshStatus}
       />
 
       <ScoreCustom handleRefresh={handleRefresh} />
@@ -74,11 +87,18 @@ const Scores = () => {
           position: 'bottom',
           align: 'start',
           pageSize: 10,
+          onChange: onChangeListScores,
+          total: numberUserInQuiz,
+          current: pagination.current,
         }}
-        loading={!!!quizAndUserTested}
-        dataSource={dataFiltered || quizAndUserTested || []}
+        loading={isScoresUsertestedLoading}
+        dataSource={scoreHasUsersTested || []}
         renderItem={(item, index) => (
-          <ListItem key={index} quizsFilter={quizsFilter} userTested={item} />
+          <ListItem
+            key={index}
+            quizsFilter={quizsFilter}
+            scoreHasUsersTestedItem={item}
+          />
         )}
       />
     </div>

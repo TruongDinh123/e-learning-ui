@@ -1,14 +1,19 @@
 import React, {memo, useEffect, useState} from 'react';
 import {Select, Space} from 'antd';
 import {useSelector} from 'react-redux';
+import {refreshStatusInit} from '../setting';
 
-
-const SelectQuizBlock = ({quizsFilter, setQuizsFilter}) => {
+const SelectQuizBlock = ({
+  quizsFilter,
+  setQuizsFilter,
+  setRefreshStatus,
+}) => {
   const quiz = useSelector((state) => state.quiz.quiz);
   const [selectData, setSelectData] = useState(null);
 
   const handleChange = (value) => {
     setQuizsFilter(value);
+    setRefreshStatus(refreshStatusInit.quizsFilter);
   };
 
   useEffect(() => {
@@ -21,7 +26,6 @@ const SelectQuizBlock = ({quizsFilter, setQuizsFilter}) => {
       setSelectData(initData);
     }
   }, [quiz, quizsFilter]);
-
 
   return (
     <Space
@@ -41,6 +45,7 @@ const SelectQuizBlock = ({quizsFilter, setQuizsFilter}) => {
           width: 300,
         }}
         defaultValue={quizsFilter}
+        value={quizsFilter}
         onChange={handleChange}
         placeholder='Chọn đề thi'
         optionFilterProp='children'
