@@ -1,6 +1,5 @@
 import {Button, Col, List, Row, Select, Typography} from 'antd';
 import {memo, useEffect, useState} from 'react';
-import {useSelector} from 'react-redux';
 import ModalDetailQuiz from './modalDetailQuiz';
 import moment from 'moment';
 
@@ -23,8 +22,10 @@ const ListItem = ({scoreHasUsersTestedItem}) => {
       }));
 
       setSelectTestNumData(selectTestNumDataInit);
-      const scoreLast = scores[scores.length - 1];
-      Object.assign(scoreLast.quiz, scoreHasUsersTestedItem.quiz)
+      const scoreLast = JSON.parse(JSON.stringify(scores[scores.length - 1])) ;
+
+      scoreLast.quiz = scoreHasUsersTestedItem.quiz;
+      console.log(scoreHasUsersTestedItem, 'scoreHasUsersTestedItemscoreHasUsersTestedItem', scoreLast);
       setScoreCurrentInfo(scoreLast);
     }
   }, [scoreHasUsersTestedItem]);
@@ -33,7 +34,8 @@ const ListItem = ({scoreHasUsersTestedItem}) => {
     const scoreInfo = scoreHasUsersTestedItem.scores.find(
       (item) => item._id === value
     );
-      Object.assign(scoreInfo.quiz, scoreHasUsersTestedItem.quiz)
+
+    scoreInfo.quiz = scoreHasUsersTestedItem.quiz
     setScoreCurrentInfo(scoreInfo);
   };
 

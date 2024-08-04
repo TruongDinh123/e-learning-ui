@@ -26,7 +26,7 @@ const ModalDetailQuiz = ({isModalOpen, handleCancel, scoreCurrentInfo}) => {
         <ModalContentEssayQuiz />
       ) : (
         <div className='space-y-4 mb-5'>
-          {scoreCurrentInfo.quiz.questions.map((question, index) => {
+          {scoreCurrentInfo.quizCustom.questions.map((question, index) => {
             const studentAnswer = scoreCurrentInfo.answers?.find((answer) =>
               answer?.hasOwnProperty(question?._id)
             );
@@ -76,7 +76,7 @@ const ModalDetailQuiz = ({isModalOpen, handleCancel, scoreCurrentInfo}) => {
           <div className='p-4 border rounded-lg shadow-sm'>
             <div className='mb-2'>
               <span className='font-bold text-lg text-green-600'>
-                Câu {scoreCurrentInfo.quiz.questions.length + 1}:
+                Câu {scoreCurrentInfo.quizCustom.questions.length + 1}:
               </span>
               <span
                 className={`block overflow-hidden ${

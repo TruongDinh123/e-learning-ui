@@ -56,7 +56,7 @@ const useScores = () => {
 
   useEffect(() => {
     if (refreshStatus === refreshStatusInit.quizsFilter) {
-      dispatch(getNumberUserInQuiz({quizsFilter, searchName: ''}));
+      dispatch(getNumberUserInQuiz({quizsFilter, searchName: textSearch}));
 
       dispatch(
         getScoreHasUsersTested({
