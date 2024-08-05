@@ -13,7 +13,7 @@ const ListItem = ({scoreHasUsersTestedItem}) => {
   };
 
   useEffect(() => {
-    if (scoreHasUsersTestedItem) {
+    if (scoreHasUsersTestedItem && scoreHasUsersTestedItem.scores?.length) {
       const scores = scoreHasUsersTestedItem.scores;
 
       const selectTestNumDataInit = scores.map((score, index) => ({
@@ -25,7 +25,6 @@ const ListItem = ({scoreHasUsersTestedItem}) => {
       const scoreLast = JSON.parse(JSON.stringify(scores[scores.length - 1])) ;
 
       scoreLast.quiz = scoreHasUsersTestedItem.quiz;
-      console.log(scoreHasUsersTestedItem, 'scoreHasUsersTestedItemscoreHasUsersTestedItem', scoreLast);
       setScoreCurrentInfo(scoreLast);
     }
   }, [scoreHasUsersTestedItem]);
